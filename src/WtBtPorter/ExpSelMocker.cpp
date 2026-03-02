@@ -40,7 +40,7 @@ void ExpSelMocker::on_session_end(uint32_t uDate)
 	getRunner().on_session_event(uDate, false);
 }
 
-void ExpSelMocker::on_tick_updated(const char* stdCode, WTSTickData* newTick)
+void ExpSelMocker::on_tick_updated(const char* stdCode, VvTSTickData* newTick)
 {
 	auto it = _tick_subs.find(stdCode);
 	if (it == _tick_subs.end())
@@ -50,7 +50,7 @@ void ExpSelMocker::on_tick_updated(const char* stdCode, WTSTickData* newTick)
 	getRunner().ctx_on_tick(_context_id, stdCode, newTick, ET_SEL);
 }
 
-void ExpSelMocker::on_bar_close(const char* stdCode, const char* period, WTSBarStruct* newBar)
+void ExpSelMocker::on_bar_close(const char* stdCode, const char* period, VvTSBarStruct* newBar)
 {
 	SelMocker::on_bar_close(stdCode, period, newBar);
 	//要向外部回调

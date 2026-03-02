@@ -12,14 +12,14 @@
 #include "../Share/StdUtils.hpp"
 #include "../Share/fmtlib.h"
 
-NS_WTP_BEGIN
-class WTSVariant;
-class WTSTickSlice;
-class WTSKlineSlice;
-class WTSOrdDtlSlice;
-class WTSOrdQueSlice;
-class WTSTransSlice;
-class WTSArray;
+NS_VVTP_BEGIN
+class VvTSVariant;
+class VvTSTickSlice;
+class VvTSKlineSlice;
+class VvTSOrdDtlSlice;
+class VvTSOrdQueSlice;
+class VvTSTransSlice;
+class VvTSArray;
 
 class IBaseDataMgr;
 class IHotMgr;
@@ -211,7 +211,7 @@ private:
 	HisTransBlockMap	_his_trans_map;
 
 private:
-	RTKlineBlockPair* getRTKilneBlock(const char* exchg, const char* code, WTSKlinePeriod period);
+	RTKlineBlockPair* getRTKilneBlock(const char* exchg, const char* code, VvTSKlinePeriod period);
 	TickBlockPair* getRTTickBlock(const char* exchg, const char* code);
 	OrdQueBlockPair* getRTOrdQueBlock(const char* exchg, const char* code);
 	OrdDtlBlockPair* getRTOrdDtlBlock(const char* exchg, const char* code);
@@ -220,12 +220,12 @@ private:
 	/*
 	 *	将历史数据放入缓存
 	 */
-	bool		cacheHisBarsFromFile(void* codeInfo, const std::string& key, const char* stdCode, WTSKlinePeriod period);
+	bool		cacheHisBarsFromFile(void* codeInfo, const std::string& key, const char* stdCode, VvTSKlinePeriod period);
 
-	uint32_t		readBarsFromCacheByRange(const std::string& key, uint64_t stime, uint64_t etime, std::vector<WTSBarStruct>& ayBars, bool isDay = false);
-	WTSBarStruct*	indexBarFromCacheByRange(const std::string& key, uint64_t stime, uint64_t etime, uint32_t& count, bool isDay = false);
+	uint32_t		readBarsFromCacheByRange(const std::string& key, uint64_t stime, uint64_t etime, std::vector<VvTSBarStruct>& ayBars, bool isDay = false);
+	VvTSBarStruct*	indexBarFromCacheByRange(const std::string& key, uint64_t stime, uint64_t etime, uint32_t& count, bool isDay = false);
 
-	WTSBarStruct*	indexBarFromCacheByCount(const std::string& key, uint64_t etime, uint32_t& count, bool isDay = false);
+	VvTSBarStruct*	indexBarFromCacheByCount(const std::string& key, uint64_t etime, uint32_t& count, bool isDay = false);
 
 	bool	loadStkAdjFactorsFromFile(const char* adjfile);
 	
@@ -233,19 +233,19 @@ private:
 //////////////////////////////////////////////////////////////////////////
 //IRdmDtReader
 public:
-	virtual void init(WTSVariant* cfg, IRdmDtReaderSink* sink);
+	virtual void init(VvTSVariant* cfg, IRdmDtReaderSink* sink);
 
-	virtual WTSOrdDtlSlice*	readOrdDtlSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime = 0) override;
-	virtual WTSOrdQueSlice*	readOrdQueSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime = 0) override;
-	virtual WTSTransSlice*	readTransSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime = 0) override;
+	virtual VvTSOrdDtlSlice*	readOrdDtlSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime = 0) override;
+	virtual VvTSOrdQueSlice*	readOrdQueSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime = 0) override;
+	virtual VvTSTransSlice*	readTransSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime = 0) override;
 
-	virtual WTSTickSlice*	readTickSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime = 0) override;
-	virtual WTSKlineSlice*	readKlineSliceByRange(const char* stdCode, WTSKlinePeriod period, uint64_t stime, uint64_t etime = 0) override;
+	virtual VvTSTickSlice*	readTickSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime = 0) override;
+	virtual VvTSKlineSlice*	readKlineSliceByRange(const char* stdCode, VvTSKlinePeriod period, uint64_t stime, uint64_t etime = 0) override;
 
-	virtual WTSTickSlice*	readTickSliceByCount(const char* stdCode, uint32_t count, uint64_t etime = 0) override;
-	virtual WTSKlineSlice*	readKlineSliceByCount(const char* stdCode, WTSKlinePeriod period, uint32_t count, uint64_t etime = 0) override;
+	virtual VvTSTickSlice*	readTickSliceByCount(const char* stdCode, uint32_t count, uint64_t etime = 0) override;
+	virtual VvTSKlineSlice*	readKlineSliceByCount(const char* stdCode, VvTSKlinePeriod period, uint32_t count, uint64_t etime = 0) override;
 
-	virtual WTSTickSlice*	readTickSliceByDate(const char* stdCode, uint32_t uDate = 0 ) override;
+	virtual VvTSTickSlice*	readTickSliceByDate(const char* stdCode, uint32_t uDate = 0 ) override;
 
 	virtual double		getAdjFactorByDate(const char* stdCode, uint32_t date = 0) override;
 
@@ -262,14 +262,14 @@ private:
 	{
 		std::string		_exchg;
 		std::string		_code;
-		WTSKlinePeriod	_period;
+		VvTSKlinePeriod	_period;
 		std::string		_raw_code;
 		double			_factor;
 
 		_BarsList():_factor(1.0){}
 
-		std::vector<WTSBarStruct>	_bars;
-		std::vector<WTSBarStruct>	_rt_bars;	//如果是后复权，就需要把实时数据拷贝到这里来
+		std::vector<VvTSBarStruct>	_bars;
+		std::vector<VvTSBarStruct>	_rt_bars;	//如果是后复权，就需要把实时数据拷贝到这里来
 	} BarsList;
 
 	typedef std::unordered_map<std::string, BarsList> BarsCache;
@@ -293,4 +293,4 @@ private:
 	}
 };
 
-NS_WTP_END
+NS_VVTP_END

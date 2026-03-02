@@ -11,9 +11,9 @@
 #include "DataManager.h"
 
 #include "../Share/TimeUtils.hpp"
-#include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSSessionInfo.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/VvTSSessionInfo.hpp"
+#include "../Includes/VvTSVariant.hpp"
 
 #include "../WTSTools/WTSBaseDataMgr.h"
 #include "../WTSTools/WTSLogger.h"
@@ -43,7 +43,7 @@ bool StateMonitor::initialize(const char* filename, WTSBaseDataMgr* bdMgr, DataM
 		return false;
 	}
 
-	WTSVariant* config = WTSCfgLoader::load_from_file(filename);
+	VvTSVariant* config = WTSCfgLoader::load_from_file(filename);
 	if (config == NULL)
 	{
 		WTSLogger::error("Loading state config failed");
@@ -53,9 +53,9 @@ bool StateMonitor::initialize(const char* filename, WTSBaseDataMgr* bdMgr, DataM
 	auto keys = config->memberNames();
 	for (const std::string& sid : keys)
 	{
-		WTSVariant* jItem = config->get(sid.c_str());
+		VvTSVariant* jItem = config->get(sid.c_str());
 
-		WTSSessionInfo* ssInfo = _bd_mgr->getSession(sid.c_str());
+		VvTSSessionInfo* ssInfo = _bd_mgr->getSession(sid.c_str());
 		if (ssInfo == NULL)
 		{
 			WTSLogger::error("Trading session template [{}] not exists,state control rule skipped", sid);
@@ -166,7 +166,7 @@ void StateMonitor::run()
 				{
 					StatePtr& stateInfo = (StatePtr&)it->second;
 
-					WTSSessionInfo* sInfo = stateInfo->_sInfo;
+					VvTSSessionInfo* sInfo = stateInfo->_sInfo;
 
 					uint32_t offDate = sInfo->getOffsetDate(curDate, curMin);
 					uint32_t prevDate = TimeUtils::getNextDate(curDate, -1);

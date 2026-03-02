@@ -14,11 +14,11 @@
 #include <boost/core/noncopyable.hpp>
 #include "../Includes/IParserApi.h"
 
-NS_WTP_BEGIN
-class WTSVariant;
-NS_WTP_END
+NS_VVTP_BEGIN
+class VvTSVariant;
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 class WTSBaseDataMgr;
 class WtDtRunner;
 
@@ -29,7 +29,7 @@ public:
 	~ParserAdapter();
 
 public:
-	bool	init(const char* id, WTSVariant* cfg);
+	bool	init(const char* id, VvTSVariant* cfg);
 
 	bool	initExt(const char* id, IParserApi* api);
 
@@ -40,17 +40,17 @@ public:
 	const char* id() const { return _id.c_str(); }
 
 public:
-	virtual void handleSymbolList(const WTSArray* aySymbols) override;
+	virtual void handleSymbolList(const VvTSArray* aySymbols) override;
 
-	virtual void handleQuote(WTSTickData *quote, uint32_t procFlag) override;
+	virtual void handleQuote(VvTSTickData *quote, uint32_t procFlag) override;
 
-	virtual void handleOrderQueue(WTSOrdQueData* ordQueData) override;
+	virtual void handleOrderQueue(VvTSOrdQueData* ordQueData) override;
 
-	virtual void handleTransaction(WTSTransData* transData) override;
+	virtual void handleTransaction(VvTSTransData* transData) override;
 
-	virtual void handleOrderDetail(WTSOrdDtlData* ordDetailData) override;
+	virtual void handleOrderDetail(VvTSOrdDtlData* ordDetailData) override;
 
-	virtual void handleParserLog(WTSLogLevel ll, const char* message) override;
+	virtual void handleParserLog(VvTSLogLevel ll, const char* message) override;
 
 	virtual IBaseDataMgr* getBaseDataMgr() override;
 
@@ -62,15 +62,15 @@ private:
 
 	bool				_stopped;
 
-	typedef wt_hashset<std::string>	ExchgFilter;
+	typedef vvt_hashset<std::string>	ExchgFilter;
 	ExchgFilter			_exchg_filter;
 	ExchgFilter			_code_filter;
-	WTSVariant*			_cfg;
+	VvTSVariant*			_cfg;
 	std::string			_id;
 };
 
 typedef std::shared_ptr<ParserAdapter>	ParserAdapterPtr;
-typedef wt_hashmap<std::string, ParserAdapterPtr>	ParserAdapterMap;
+typedef vvt_hashmap<std::string, ParserAdapterPtr>	ParserAdapterMap;
 
 class ParserAdapterMgr : private boost::noncopyable
 {

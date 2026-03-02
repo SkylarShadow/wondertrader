@@ -1,10 +1,10 @@
 ﻿#include "WtDataWriterAD.h"
 #include "LMDBKeys.h"
 
-#include "../Includes/WTSSessionInfo.hpp"
-#include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VvTSSessionInfo.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/VvTSDataDef.hpp"
+#include "../Includes/VvTSVariant.hpp"
 #include "../Share/BoostFile.hpp"
 #include "../Share/StrUtil.hpp"
 #include "../Share/decimal.h"
@@ -16,7 +16,7 @@ using namespace std;
 //By Wesley @ 2022.01.05
 #include "../Share/fmtlib.h"
 template<typename... Args>
-inline void pipe_writer_log(IDataWriterSink* sink, WTSLogLevel ll, const char* format, const Args&... args)
+inline void pipe_writer_log(IDataWriterSink* sink, VvTSLogLevel ll, const char* format, const Args&... args)
 {
 	if (sink == NULL)
 		return;
@@ -67,7 +67,7 @@ WtDataWriterAD::~WtDataWriterAD()
 {
 }
 
-bool WtDataWriterAD::init(WTSVariant* params, IDataWriterSink* sink)
+bool WtDataWriterAD::init(VvTSVariant* params, IDataWriterSink* sink)
 {
 	IDataWriter::init(params, sink);
 
@@ -321,7 +321,7 @@ void* WtDataWriterAD::resizeRTBlock(BoostMFPtr& mfPtr, uint32_t nCount)
 	return mfPtr->addr();
 }
 
-bool WtDataWriterAD::writeTick(WTSTickData* curTick, uint32_t procFlag)
+bool WtDataWriterAD::writeTick(VvTSTickData* curTick, uint32_t procFlag)
 {
 	if (curTick == NULL)
 		return false;
@@ -331,11 +331,11 @@ bool WtDataWriterAD::writeTick(WTSTickData* curTick, uint32_t procFlag)
 
 		do
 		{
-			WTSContractInfo* ct = curTick->getContractInfo();
+			VvTSContractInfo* ct = curTick->getContractInfo();
 			if(ct == NULL)
 				break;
 
-			WTSCommodityInfo* commInfo = ct->getCommInfo();
+			VvTSCommodityInfo* commInfo = ct->getCommInfo();
 
 			//再根据状态过滤
 			if (!_sink->canSessionReceive(commInfo->getSession()))
@@ -354,7 +354,7 @@ bool WtDataWriterAD::writeTick(WTSTickData* curTick, uint32_t procFlag)
 
 			_sink->broadcastTick(curTick);
 
-			static wt_hashmap<std::string, uint64_t> _tcnt_map;
+			static vvt_hashmap<std::string, uint64_t> _tcnt_map;
 			_tcnt_map[curTick->exchg()]++;
 			if (_tcnt_map[curTick->exchg()] % _log_group_size == 0)
 			{
@@ -410,7 +410,7 @@ void WtDataWriterAD::pushTask(TaskInfo task)
 	}
 }
 
-void WtDataWriterAD::pipeToTicks(WTSContractInfo* ct, WTSTickData* curTick)
+void WtDataWriterAD::pipeToTicks(VvTSContractInfo* ct, VvTSTickData* curTick)
 {
 	//直接落地
 	WtLMDBPtr db = get_t_db(ct->getExchg(), ct->getCode());
@@ -423,7 +423,7 @@ void WtDataWriterAD::pipeToTicks(WTSContractInfo* ct, WTSTickData* curTick)
 
 		LMDBHftKey key(ct->getExchg(), ct->getCode(), curTick->tradingdate(), offTime);
 		WtLMDBQuery query(*db);
-		if (!query.put_and_commit((void*)&key, sizeof(key), &curTick->getTickStruct(), sizeof(WTSTickStruct)))
+		if (!query.put_and_commit((void*)&key, sizeof(key), &curTick->getTickStruct(), sizeof(VvTSTickStruct)))
 		{
 			pipe_writer_log(_sink, LL_ERROR, "pipe tick of {} to db failed: {}", ct->getFullCode(), db->errmsg());
 		}
@@ -444,7 +444,7 @@ void WtDataWriterAD::pipeToTicks(WTSContractInfo* ct, WTSTickData* curTick)
 	}
 }
 
-void WtDataWriterAD::pipeToDayBars(WTSContractInfo* ct, const WTSBarStruct& bar)
+void WtDataWriterAD::pipeToDayBars(VvTSContractInfo* ct, const VvTSBarStruct& bar)
 {
 	//直接落地
 	WtLMDBPtr db = get_k_db(ct->getExchg(), KP_DAY);
@@ -452,7 +452,7 @@ void WtDataWriterAD::pipeToDayBars(WTSContractInfo* ct, const WTSBarStruct& bar)
 	{
 		LMDBBarKey key(ct->getExchg(), ct->getCode(), bar.date);
 		WtLMDBQuery query(*db);
-		if (!query.put_and_commit((void*)&key, sizeof(key), (void*)&bar, sizeof(WTSBarStruct)))
+		if (!query.put_and_commit((void*)&key, sizeof(key), (void*)&bar, sizeof(VvTSBarStruct)))
 		{
 			pipe_writer_log(_sink, LL_ERROR, "pipe day bar @ {} of {} to db failed", bar.date, ct->getFullCode());
 		}
@@ -469,7 +469,7 @@ void WtDataWriterAD::pipeToDayBars(WTSContractInfo* ct, const WTSBarStruct& bar)
 		if (dumper == NULL)
 			continue;
 
-		bool bSucc = dumper->dumpHisBars(ct->getFullCode(), "d1", (WTSBarStruct*)&bar, 1);
+		bool bSucc = dumper->dumpHisBars(ct->getFullCode(), "d1", (VvTSBarStruct*)&bar, 1);
 		if (!bSucc)
 		{
 			pipe_writer_log(_sink, LL_ERROR, "pipe day bar @ {} of {} via extended dumper {} failed", bar.date, ct->getFullCode(), id);
@@ -477,7 +477,7 @@ void WtDataWriterAD::pipeToDayBars(WTSContractInfo* ct, const WTSBarStruct& bar)
 	}
 }
 
-void WtDataWriterAD::pipeToM1Bars(WTSContractInfo* ct, const WTSBarStruct& bar)
+void WtDataWriterAD::pipeToM1Bars(VvTSContractInfo* ct, const VvTSBarStruct& bar)
 {
 	//直接落地
 	WtLMDBPtr db = get_k_db(ct->getExchg(), KP_Minute1);
@@ -485,7 +485,7 @@ void WtDataWriterAD::pipeToM1Bars(WTSContractInfo* ct, const WTSBarStruct& bar)
 	{
 		LMDBBarKey key(ct->getExchg(), ct->getCode(), (uint32_t)bar.time);
 		WtLMDBQuery query(*db);
-		if(!query.put_and_commit((void*)&key, sizeof(key), (void*)&bar, sizeof(WTSBarStruct)))
+		if(!query.put_and_commit((void*)&key, sizeof(key), (void*)&bar, sizeof(VvTSBarStruct)))
 		{
 			pipe_writer_log(_sink, LL_ERROR, "pipe m1 bar @ {} of {} to db failed", bar.time, ct->getFullCode());
 		}
@@ -502,7 +502,7 @@ void WtDataWriterAD::pipeToM1Bars(WTSContractInfo* ct, const WTSBarStruct& bar)
 		if (dumper == NULL)
 			continue;
 
-		bool bSucc = dumper->dumpHisBars(ct->getFullCode(), "m1", (WTSBarStruct*)&bar, 1);
+		bool bSucc = dumper->dumpHisBars(ct->getFullCode(), "m1", (VvTSBarStruct*)&bar, 1);
 		if (!bSucc)
 		{
 			pipe_writer_log(_sink, LL_ERROR, "pipe m1 bar @ {} of {} via extended dumper {} failed", bar.time, ct->getFullCode(), id);
@@ -510,7 +510,7 @@ void WtDataWriterAD::pipeToM1Bars(WTSContractInfo* ct, const WTSBarStruct& bar)
 	}
 }
 
-void WtDataWriterAD::pipeToM5Bars(WTSContractInfo* ct, const WTSBarStruct& bar)
+void WtDataWriterAD::pipeToM5Bars(VvTSContractInfo* ct, const VvTSBarStruct& bar)
 {
 	//直接落地
 	WtLMDBPtr db = get_k_db(ct->getExchg(), KP_Minute5);
@@ -535,7 +535,7 @@ void WtDataWriterAD::pipeToM5Bars(WTSContractInfo* ct, const WTSBarStruct& bar)
 		if (dumper == NULL)
 			continue;
 
-		bool bSucc = dumper->dumpHisBars(ct->getFullCode(), "m5", (WTSBarStruct*)&bar, 1);
+		bool bSucc = dumper->dumpHisBars(ct->getFullCode(), "m5", (VvTSBarStruct*)&bar, 1);
 		if (!bSucc)
 		{
 			pipe_writer_log(_sink, LL_ERROR, "pipe m5 bar @ {} of {} via extended dumper {} failed", bar.time, ct->getFullCode(), id);
@@ -543,10 +543,10 @@ void WtDataWriterAD::pipeToM5Bars(WTSContractInfo* ct, const WTSBarStruct& bar)
 	}
 }
 
-void WtDataWriterAD::updateBarCache(WTSContractInfo* ct, WTSTickData* curTick)
+void WtDataWriterAD::updateBarCache(VvTSContractInfo* ct, VvTSTickData* curTick)
 {
 	uint32_t uDate = curTick->actiondate();
-	WTSSessionInfo* sInfo = _bd_mgr->getSessionByCode(curTick->code(), curTick->exchg());
+	VvTSSessionInfo* sInfo = _bd_mgr->getSessionByCode(curTick->code(), curTick->exchg());
 	uint32_t curTime = curTick->actiontime() / 100000;
 
 	uint32_t minutes = sInfo->timeToMinutes(curTime, false);
@@ -592,7 +592,7 @@ void WtDataWriterAD::updateBarCache(WTSContractInfo* ct, WTSTickData* curTick)
 			strcpy(item._exchg, curTick->exchg());
 			strcpy(item._code, curTick->code());
 		}
-		WTSBarStruct* lastBar = &item._bar;
+		VvTSBarStruct* lastBar = &item._bar;
 
 		//检查日期是否一致
 		uint32_t barDate = curTick->tradingdate();
@@ -603,7 +603,7 @@ void WtDataWriterAD::updateBarCache(WTSContractInfo* ct, WTSTickData* curTick)
 			bNewBar = true;
 		}
 
-		WTSBarStruct* newBar = lastBar;
+		VvTSBarStruct* newBar = lastBar;
 		if (bNewBar)
 		{
 			//这里要将lastBar往外写
@@ -681,7 +681,7 @@ void WtDataWriterAD::updateBarCache(WTSContractInfo* ct, WTSTickData* curTick)
 			strcpy(item._exchg, curTick->exchg());
 			strcpy(item._code, curTick->code());
 		}
-		WTSBarStruct* lastBar = &item._bar;
+		VvTSBarStruct* lastBar = &item._bar;
 
 
 		//拼接1分钟线
@@ -700,7 +700,7 @@ void WtDataWriterAD::updateBarCache(WTSContractInfo* ct, WTSTickData* curTick)
 			bNewBar = true;
 		}
 
-		WTSBarStruct* newBar = lastBar;
+		VvTSBarStruct* newBar = lastBar;
 		if (bNewBar)
 		{
 			//这里要将lastBar往外写
@@ -784,7 +784,7 @@ void WtDataWriterAD::updateBarCache(WTSContractInfo* ct, WTSTickData* curTick)
 			strcpy(item._exchg, curTick->exchg());
 			strcpy(item._code, curTick->code());
 		}
-		WTSBarStruct* lastBar = &item._bar;
+		VvTSBarStruct* lastBar = &item._bar;
 
 		//拼接5分钟线
 		uint32_t barMins = (minutes / 5) * 5 + 5;
@@ -802,7 +802,7 @@ void WtDataWriterAD::updateBarCache(WTSContractInfo* ct, WTSTickData* curTick)
 			bNewBar = true;
 		}
 
-		WTSBarStruct* newBar = lastBar;
+		VvTSBarStruct* newBar = lastBar;
 		if (bNewBar)
 		{
 			//这里要将lastBar往外写
@@ -836,12 +836,12 @@ void WtDataWriterAD::updateBarCache(WTSContractInfo* ct, WTSTickData* curTick)
 	}
 }
 
-WTSTickData* WtDataWriterAD::getCurTick(const char* code, const char* exchg/* = ""*/)
+VvTSTickData* WtDataWriterAD::getCurTick(const char* code, const char* exchg/* = ""*/)
 {
 	if (strlen(code) == 0)
 		return NULL;
 
-	WTSContractInfo* ct = _bd_mgr->getContract(code, exchg);
+	VvTSContractInfo* ct = _bd_mgr->getContract(code, exchg);
 	if (ct == NULL)
 		return NULL;
 
@@ -853,10 +853,10 @@ WTSTickData* WtDataWriterAD::getCurTick(const char* code, const char* exchg/* = 
 
 	uint32_t idx = it->second;
 	TickCacheItem& item = _tick_cache_block->_items[idx];
-	return WTSTickData::create(item._tick);
+	return VvTSTickData::create(item._tick);
 }
 
-bool WtDataWriterAD::updateTickCache(WTSContractInfo* ct, WTSTickData* curTick, uint32_t procFlag)
+bool WtDataWriterAD::updateTickCache(VvTSContractInfo* ct, VvTSTickData* curTick, uint32_t procFlag)
 {
 	if (curTick == NULL || _tick_cache_block == NULL)
 	{
@@ -891,7 +891,7 @@ bool WtDataWriterAD::updateTickCache(WTSContractInfo* ct, WTSTickData* curTick, 
 		return false;
 	}
 
-	WTSTickStruct& newTick = curTick->getTickStruct();
+	VvTSTickStruct& newTick = curTick->getTickStruct();
 
 	if (curTick->tradingdate() > item._date)
 	{
@@ -899,11 +899,11 @@ bool WtDataWriterAD::updateTickCache(WTSContractInfo* ct, WTSTickData* curTick, 
 		
 		if(procFlag == 0)
 		{
-			memcpy(&item._tick, &newTick, sizeof(WTSTickStruct));
+			memcpy(&item._tick, &newTick, sizeof(VvTSTickStruct));
 		}
 		else if (procFlag == 1)
 		{
-			memcpy(&item._tick, &newTick, sizeof(WTSTickStruct));
+			memcpy(&item._tick, &newTick, sizeof(VvTSTickStruct));
 
 			item._tick.volume = item._tick.total_volume;
 			item._tick.turn_over = item._tick.total_turnover;
@@ -933,7 +933,7 @@ bool WtDataWriterAD::updateTickCache(WTSContractInfo* ct, WTSTickData* curTick, 
 			if (decimal::eq(newTick.low, 0))
 				newTick.low =newTick.price;
 
-			memcpy(&item._tick, &newTick, sizeof(WTSTickStruct));
+			memcpy(&item._tick, &newTick, sizeof(VvTSTickStruct));
 			item._tick.pre_close = pre_close;
 			item._tick.pre_interest = pre_interest;
 		}
@@ -948,7 +948,7 @@ bool WtDataWriterAD::updateTickCache(WTSContractInfo* ct, WTSTickData* curTick, 
 	{
 		//如果缓存里的数据日期大于最新行情的日期
 		//或者缓存里的时间大于等于最新行情的时间,数据就不需要处理
-		WTSSessionInfo* sInfo = _bd_mgr->getSessionByCode(curTick->code(), curTick->exchg());
+		VvTSSessionInfo* sInfo = _bd_mgr->getSessionByCode(curTick->code(), curTick->exchg());
 		uint32_t tdate = sInfo->getOffsetDate(curTick->actiondate(), curTick->actiontime() / 100000);
 		if (tdate > curTick->tradingdate())
 		{
@@ -974,7 +974,7 @@ bool WtDataWriterAD::updateTickCache(WTSContractInfo* ct, WTSTickData* curTick, 
 		//这里就要看需不需要预处理了
 		if(procFlag == 0)
 		{
-			memcpy(&item._tick, &newTick, sizeof(WTSTickStruct));
+			memcpy(&item._tick, &newTick, sizeof(VvTSTickStruct));
 		}
 		else if (procFlag == 1)
 		{
@@ -982,7 +982,7 @@ bool WtDataWriterAD::updateTickCache(WTSContractInfo* ct, WTSTickData* curTick, 
 			newTick.turn_over = newTick.total_turnover - item._tick.total_turnover;
 			newTick.diff_interest = newTick.open_interest - item._tick.open_interest;
 
-			memcpy(&item._tick, &newTick, sizeof(WTSTickStruct));
+			memcpy(&item._tick, &newTick, sizeof(VvTSTickStruct));
 		}
 		else if (procFlag == 2)
 		{
@@ -1003,14 +1003,14 @@ bool WtDataWriterAD::updateTickCache(WTSContractInfo* ct, WTSTickData* curTick, 
 			if (decimal::eq(newTick.low, 0))
 				newTick.low = max(newTick.price, item._tick.low);
 
-			memcpy(&item._tick, &newTick, sizeof(WTSTickStruct));
+			memcpy(&item._tick, &newTick, sizeof(VvTSTickStruct));
 		}
 	}
 
 	return true;
 }
 
-WtDataWriterAD::WtLMDBPtr WtDataWriterAD::get_k_db(const char* exchg, WTSKlinePeriod period)
+WtDataWriterAD::WtLMDBPtr WtDataWriterAD::get_k_db(const char* exchg, VvTSKlinePeriod period)
 {
 	WtLMDBMap* the_map = NULL;
 	std::string subdir;

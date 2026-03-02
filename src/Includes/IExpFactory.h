@@ -8,18 +8,18 @@
  * \brief 指标工接口定义
  */
 #pragma once
-#include "WTSMarcos.h"
+#include "VvTSMarcos.h"
 
-NS_WTP_BEGIN
-class WTSKlineData;
-class WTSExpressParams;
-class WTSExpressData;
-class WTSHisTrendData;
+NS_VVTP_BEGIN
+class VvTSKlineData;
+class VvTSExpressParams;
+class VvTSExpressData;
+class VvTSHisTrendData;
 
 class IExpFactory
 {
 public:
-	virtual WTSExpressData *calcKlineExpress(const char* expName, WTSKlineData* klineData, WTSExpressParams* params) = 0;
-	virtual WTSExpressData *calcTrendExpress(const char* expName, WTSHisTrendData* trendData, WTSExpressParams* params) = 0;
+	virtual VvTSExpressData *calcKlineExpress(const char* expName, VvTSKlineData* klineData, VvTSExpressParams* params) = 0;
+	virtual VvTSExpressData *calcTrendExpress(const char* expName, VvTSHisTrendData* trendData, VvTSExpressParams* params) = 0;
 };
-NS_WTP_END
+NS_VVTP_END

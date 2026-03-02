@@ -54,12 +54,12 @@ private:
 public:
 	//////////////////////////////////////////////////////////////////////////
 	//IDataSink
-	virtual void	handle_tick(const char* stdCode, WTSTickData* curTick, uint32_t pxType) override;
-	virtual void	handle_order_queue(const char* stdCode, WTSOrdQueData* curOrdQue) override;
-	virtual void	handle_order_detail(const char* stdCode, WTSOrdDtlData* curOrdDtl) override;
-	virtual void	handle_transaction(const char* stdCode, WTSTransData* curTrans) override;
+	virtual void	handle_tick(const char* stdCode, VvTSTickData* curTick, uint32_t pxType) override;
+	virtual void	handle_order_queue(const char* stdCode, VvTSOrdQueData* curOrdQue) override;
+	virtual void	handle_order_detail(const char* stdCode, VvTSOrdDtlData* curOrdDtl) override;
+	virtual void	handle_transaction(const char* stdCode, VvTSTransData* curTrans) override;
 
-	virtual void	handle_bar_close(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar) override;
+	virtual void	handle_bar_close(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar) override;
 	virtual void	handle_schedule(uint32_t uDate, uint32_t uTime) override;
 
 	virtual void	handle_init() override;
@@ -68,26 +68,26 @@ public:
 
 	virtual void	handle_replay_done() override;
 
-	virtual void	on_tick_updated(const char* stdCode, WTSTickData* newTick) override;
-	virtual void	on_ordque_updated(const char* stdCode, WTSOrdQueData* newOrdQue) override;
-	virtual void	on_orddtl_updated(const char* stdCode, WTSOrdDtlData* newOrdDtl) override;
-	virtual void	on_trans_updated(const char* stdCode, WTSTransData* newTrans) override;
+	virtual void	on_tick_updated(const char* stdCode, VvTSTickData* newTick) override;
+	virtual void	on_ordque_updated(const char* stdCode, VvTSOrdQueData* newOrdQue) override;
+	virtual void	on_orddtl_updated(const char* stdCode, VvTSOrdDtlData* newOrdDtl) override;
+	virtual void	on_trans_updated(const char* stdCode, VvTSTransData* newTrans) override;
 
 	//////////////////////////////////////////////////////////////////////////
 	//IUftStraCtx
-	virtual void on_tick(const char* stdCode, WTSTickData* newTick) override;
+	virtual void on_tick(const char* stdCode, VvTSTickData* newTick) override;
 
-	virtual void on_order_queue(const char* stdCode, WTSOrdQueData* newOrdQue) override;
+	virtual void on_order_queue(const char* stdCode, VvTSOrdQueData* newOrdQue) override;
 
-	virtual void on_order_detail(const char* stdCode, WTSOrdDtlData* newOrdDtl) override;
+	virtual void on_order_detail(const char* stdCode, VvTSOrdDtlData* newOrdDtl) override;
 
-	virtual void on_transaction(const char* stdCode, WTSTransData* newTrans) override;
+	virtual void on_transaction(const char* stdCode, VvTSTransData* newTrans) override;
 
 	virtual uint32_t id() override;
 
 	virtual void on_init() override;
 
-	virtual void on_bar(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar) override;
+	virtual void on_bar(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar) override;
 
 	virtual void on_session_begin(uint32_t curTDate) override;
 
@@ -139,19 +139,19 @@ public:
 	 */
 	virtual uint32_t	stra_exit_short(const char* stdCode, double price, double qty, bool isToday = false, int flag = 0) override;
 
-	virtual WTSCommodityInfo* stra_get_comminfo(const char* stdCode) override;
+	virtual VvTSCommodityInfo* stra_get_comminfo(const char* stdCode) override;
 
-	virtual WTSKlineSlice* stra_get_bars(const char* stdCode, const char* period, uint32_t count) override;
+	virtual VvTSKlineSlice* stra_get_bars(const char* stdCode, const char* period, uint32_t count) override;
 
-	virtual WTSTickSlice* stra_get_ticks(const char* stdCode, uint32_t count) override;
+	virtual VvTSTickSlice* stra_get_ticks(const char* stdCode, uint32_t count) override;
 
-	virtual WTSOrdDtlSlice*	stra_get_order_detail(const char* stdCode, uint32_t count) override;
+	virtual VvTSOrdDtlSlice*	stra_get_order_detail(const char* stdCode, uint32_t count) override;
 
-	virtual WTSOrdQueSlice*	stra_get_order_queue(const char* stdCode, uint32_t count) override;
+	virtual VvTSOrdQueSlice*	stra_get_order_queue(const char* stdCode, uint32_t count) override;
 
-	virtual WTSTransSlice*	stra_get_transaction(const char* stdCode, uint32_t count) override;
+	virtual VvTSTransSlice*	stra_get_transaction(const char* stdCode, uint32_t count) override;
 
-	virtual WTSTickData* stra_get_last_tick(const char* stdCode) override;
+	virtual VvTSTickData* stra_get_last_tick(const char* stdCode) override;
 
 	/*
 	 *	获取持仓
@@ -198,7 +198,7 @@ public:
 	virtual void on_entrust(uint32_t localid, const char* stdCode, bool bSuccess, const char* message);
 
 public:
-	bool	init_uft_factory(WTSVariant* cfg);
+	bool	init_uft_factory(VvTSVariant* cfg);
 
 private:
 	typedef std::function<void()> Task;
@@ -208,7 +208,7 @@ private:
 	bool	procOrder(uint32_t localid);
 
 	void	update_position(const char* stdCode, bool isLong, uint32_t offset, double qty, double price = 0.0);
-	void	update_dyn_profit(const char* stdCode, WTSTickData* newTick);
+	void	update_dyn_profit(const char* stdCode, VvTSTickData* newTick);
 
 	void	dump_outputs();
 	void	log_trade(const char* stdCode, bool isLong, uint32_t offset, uint64_t curTime, double price, double qty, double fee);
@@ -222,7 +222,7 @@ private:
 	uint32_t		_error_rate;
 	bool			_match_this_tick;	//是否在当前tick撮合
 
-	typedef wt_hashmap<std::string, double> PriceMap;
+	typedef vvt_hashmap<std::string, double> PriceMap;
 	PriceMap		_price_map;
 
 
@@ -274,12 +274,12 @@ private:
 		}
 
 	} OrderInfo;
-	typedef wt_hashmap<uint32_t, OrderInfo> Orders;
+	typedef vvt_hashmap<uint32_t, OrderInfo> Orders;
 	StdRecurMutex	_mtx_ords;
 	Orders			_orders;
 
 	//用户数据
-	typedef wt_hashmap<std::string, std::string> StringHashMap;
+	typedef vvt_hashmap<std::string, std::string> StringHashMap;
 	StringHashMap	_user_datas;
 	bool			_ud_modified;
 
@@ -336,7 +336,7 @@ private:
 		inline double closeprofit() const{ return _long._closeprofit + _short._closeprofit; }
 		inline double dynprofit() const { return _long._dynprofit + _short._dynprofit; }
 	} PosInfo;
-	typedef wt_hashmap<std::string, PosInfo> PositionMap;
+	typedef vvt_hashmap<std::string, PosInfo> PositionMap;
 	PositionMap		_pos_map;
 
 	std::stringstream	_trade_logs;
@@ -362,6 +362,6 @@ protected:
 	uint32_t		_context_id;
 
 	//tick订阅列表
-	wt_hashset<std::string> _tick_subs;
+	vvt_hashset<std::string> _tick_subs;
 };
 

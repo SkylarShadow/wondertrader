@@ -10,7 +10,7 @@
 #pragma once
 #include "../Includes/IDataFactory.h"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class WTSDataFactory : public IDataFactory
 {
@@ -21,7 +21,7 @@ public:
 	 *	@tick		tick数据
 	 *	@sInfo		交易时间模板
 	 */
-	virtual WTSBarStruct*	updateKlineData(WTSKlineData* klineData, WTSTickData* tick, WTSSessionInfo* sInfo, bool bAlignSec = false);
+	virtual VvTSBarStruct*	updateKlineData(VvTSKlineData* klineData, VvTSTickData* tick, VvTSSessionInfo* sInfo, bool bAlignSec = false);
 
 	/*
 	 *	利用基础周期K线数据更新K线
@@ -29,7 +29,7 @@ public:
 	 *	@newBasicBar	基础周期K线数据
 	 *	@sInfo			交易时间模板
 	 */
-	virtual WTSBarStruct*	updateKlineData(WTSKlineData* klineData, WTSBarStruct* newBasicBar, WTSSessionInfo* sInfo, bool bAlignSec = false);
+	virtual VvTSBarStruct*	updateKlineData(VvTSKlineData* klineData, VvTSBarStruct* newBasicBar, VvTSSessionInfo* sInfo, bool bAlignSec = false);
 
 	/*
 	 *	从基础周期K线数据提取非基础周期的K线数据
@@ -40,7 +40,7 @@ public:
 	 *	@bIncludeOpen	是否包含未闭合的K线
 	 *	@bAlignSec	是否按小节对齐
 	 */
-	virtual WTSKlineData*	extractKlineData(WTSKlineSlice* baseKline, WTSKlinePeriod period, uint32_t times, WTSSessionInfo* sInfo, bool bIncludeOpen = true, bool bAlignSec = false);
+	virtual VvTSKlineData*	extractKlineData(VvTSKlineSlice* baseKline, VvTSKlinePeriod period, uint32_t times, VvTSSessionInfo* sInfo, bool bIncludeOpen = true, bool bAlignSec = false);
 
 	/*
 	 *	从tick数据提取秒周期的K线数据
@@ -50,27 +50,27 @@ public:
 	 *	@bUnixTime	tick时间戳是否是unixtime
 	 *	@bAlignSec	是否按小节对齐
 	 */
-	virtual WTSKlineData*	extractKlineData(WTSTickSlice* ayTicks, uint32_t seconds, WTSSessionInfo* sInfo, bool bUnixTime = false, bool bAlignSec = false);
+	virtual VvTSKlineData*	extractKlineData(VvTSTickSlice* ayTicks, uint32_t seconds, VvTSSessionInfo* sInfo, bool bUnixTime = false, bool bAlignSec = false);
 
 	/*
 	 *	合并K线
 	 *	@klineData	目标K线
 	 *	@newKline	待合并的K线
 	 */
-	virtual bool			mergeKlineData(WTSKlineData* klineData, WTSKlineData* newKline);
+	virtual bool			mergeKlineData(VvTSKlineData* klineData, VvTSKlineData* newKline);
 
 protected:
-	WTSBarStruct* updateMin1Data(WTSSessionInfo* sInfo, WTSKlineData* klineData, WTSTickData* tick, bool bAlignSec = false);
-	WTSBarStruct* updateMin5Data(WTSSessionInfo* sInfo, WTSKlineData* klineData, WTSTickData* tick, bool bAlignSec = false);
-	WTSBarStruct* updateDayData(WTSSessionInfo* sInfo, WTSKlineData* klineData, WTSTickData* tick);
-	WTSBarStruct* updateSecData(WTSSessionInfo* sInfo, WTSKlineData* klineData, WTSTickData* tick);
+	VvTSBarStruct* updateMin1Data(VvTSSessionInfo* sInfo, VvTSKlineData* klineData, VvTSTickData* tick, bool bAlignSec = false);
+	VvTSBarStruct* updateMin5Data(VvTSSessionInfo* sInfo, VvTSKlineData* klineData, VvTSTickData* tick, bool bAlignSec = false);
+	VvTSBarStruct* updateDayData(VvTSSessionInfo* sInfo, VvTSKlineData* klineData, VvTSTickData* tick);
+	VvTSBarStruct* updateSecData(VvTSSessionInfo* sInfo, VvTSKlineData* klineData, VvTSTickData* tick);
 
-	WTSBarStruct* updateMin1Data(WTSSessionInfo* sInfo, WTSKlineData* klineData, WTSBarStruct* newBasicBar, bool bAlignSec = false);
-	WTSBarStruct* updateMin5Data(WTSSessionInfo* sInfo, WTSKlineData* klineData, WTSBarStruct* newBasicBar, bool bAlignSec = false);
+	VvTSBarStruct* updateMin1Data(VvTSSessionInfo* sInfo, VvTSKlineData* klineData, VvTSBarStruct* newBasicBar, bool bAlignSec = false);
+	VvTSBarStruct* updateMin5Data(VvTSSessionInfo* sInfo, VvTSKlineData* klineData, VvTSBarStruct* newBasicBar, bool bAlignSec = false);
 
-	WTSKlineData* extractMin1Data(WTSKlineSlice* baseKline, uint32_t times, WTSSessionInfo* sInfo, bool bIncludeOpen = true, bool bAlignSec = false);
-	WTSKlineData* extractMin5Data(WTSKlineSlice* baseKline, uint32_t times, WTSSessionInfo* sInfo, bool bIncludeOpen = true, bool bAlignSec = false);
-	WTSKlineData* extractDayData(WTSKlineSlice* baseKline, uint32_t times, bool bIncludeOpen = true);
+	VvTSKlineData* extractMin1Data(VvTSKlineSlice* baseKline, uint32_t times, VvTSSessionInfo* sInfo, bool bIncludeOpen = true, bool bAlignSec = false);
+	VvTSKlineData* extractMin5Data(VvTSKlineSlice* baseKline, uint32_t times, VvTSSessionInfo* sInfo, bool bIncludeOpen = true, bool bAlignSec = false);
+	VvTSKlineData* extractDayData(VvTSKlineSlice* baseKline, uint32_t times, bool bIncludeOpen = true);
 
 protected:
 	static uint32_t getPrevMinute(uint32_t curMinute, int period = 1);

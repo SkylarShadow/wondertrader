@@ -31,11 +31,11 @@ public:
 
 	void on_order(const char* channelid, const char* exchg, const char* code, uint32_t curTDate,
 		const char* orderid, uint32_t direct, uint32_t offset, double volume, double leftover, double traded, double price, uint32_t ordertype,
-		uint32_t pricetype, WtUInt64 ordertime, uint32_t state, const char* statemsg, bool isLast);
+		uint32_t pricetype, VvTUInt64 ordertime, uint32_t state, const char* statemsg, bool isLast);
 
 	void on_trade(const char* channelid, const char* exchg, const char* code, uint32_t curTDate,
 		const char* tradeid, const char* orderid, uint32_t direct, uint32_t offset, double volume, double price,
-		double amount, uint32_t ordertype, uint32_t tradetype, WtUInt64 tradetime, bool isLast);
+		double amount, uint32_t ordertype, uint32_t tradetype, VvTUInt64 tradetime, bool isLast);
 
 	void on_position(const char* channelid, const char* exchg, const char* code, uint32_t curTDate, uint32_t direct,
 		double volume, double cost, double margin, double avgpx, double dynprofit, uint32_t volscale, bool isLast);

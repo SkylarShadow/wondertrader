@@ -11,9 +11,9 @@
 #include "../WTSUtils/WTSCfgLoader.h"
 #include "WTSLogger.h"
 
-#include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSSessionInfo.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/VvTSSessionInfo.hpp"
+#include "../Includes/VvTSVariant.hpp"
 
 #include "../Share/StrUtil.hpp"
 #include "../Share/StdUtils.hpp"
@@ -60,13 +60,13 @@ WTSBaseDataMgr::~WTSBaseDataMgr()
 	}
 }
 
-WTSCommodityInfo* WTSBaseDataMgr::getCommodity(const char* exchgpid)
+VvTSCommodityInfo* WTSBaseDataMgr::getCommodity(const char* exchgpid)
 {
-	return (WTSCommodityInfo*)m_mapCommodities->get(exchgpid);
+	return (VvTSCommodityInfo*)m_mapCommodities->get(exchgpid);
 }
 
 
-WTSCommodityInfo* WTSBaseDataMgr::getCommodity(const char* exchg, const char* pid)
+VvTSCommodityInfo* WTSBaseDataMgr::getCommodity(const char* exchg, const char* pid)
 {
 	if (m_mapCommodities == NULL)
 		return NULL;
@@ -74,11 +74,11 @@ WTSCommodityInfo* WTSBaseDataMgr::getCommodity(const char* exchg, const char* pi
 	char key[64] = { 0 };
 	fmt::format_to(key, "{}.{}", exchg, pid);
 
-	return (WTSCommodityInfo*)m_mapCommodities->get(key);
+	return (VvTSCommodityInfo*)m_mapCommodities->get(key);
 }
 
 
-WTSContractInfo* WTSBaseDataMgr::getContract(const char* code, const char* exchg /* = "" */, uint32_t uDate /* = 0 */)
+VvTSContractInfo* WTSBaseDataMgr::getContract(const char* code, const char* exchg /* = "" */, uint32_t uDate /* = 0 */)
 {
 	//如果直接找到对应的市场代码,则直接
 	
@@ -90,13 +90,13 @@ WTSContractInfo* WTSBaseDataMgr::getContract(const char* code, const char* exchg
 		if (it == m_mapContracts->end())
 			return NULL;
 
-		WTSArray* ayInst = (WTSArray*)it->second;
+		VvTSArray* ayInst = (VvTSArray*)it->second;
 		if (ayInst == NULL || ayInst->size() == 0)
 			return NULL;
 
 		for(std::size_t i = 0; i < ayInst->size(); i++)
 		{
-			WTSContractInfo* cInfo = (WTSContractInfo*)ayInst->at(i);
+			VvTSContractInfo* cInfo = (VvTSContractInfo*)ayInst->at(i);
 			/*
 			 *	By Wesley @ 2023.10.23
 			 *	if param uDate is not zero, need to check whether contract is valid
@@ -116,7 +116,7 @@ WTSContractInfo* WTSBaseDataMgr::getContract(const char* code, const char* exchg
 			auto it = contractList->find(lKey);
 			if (it != contractList->end())
 			{
-				WTSContractInfo* cInfo = (WTSContractInfo*)it->second;
+				VvTSContractInfo* cInfo = (VvTSContractInfo*)it->second;
 				/*
 				 *	By Wesley @ 2023.10.23
 				 *	if param uDate is not zero, need to check whether contract is valid
@@ -144,7 +144,7 @@ uint32_t  WTSBaseDataMgr::getContractSize(const char* exchg /* = "" */, uint32_t
 			auto it2 = contractList->begin();
 			for (; it2 != contractList->end(); it2++)
 			{
-				WTSContractInfo* cInfo = (WTSContractInfo*)it2->second;
+				VvTSContractInfo* cInfo = (VvTSContractInfo*)it2->second;
 				if (uDate == 0 || (cInfo->getOpenDate() <= uDate && cInfo->getExpireDate() >= uDate))
 					ret++;
 			}
@@ -159,7 +159,7 @@ uint32_t  WTSBaseDataMgr::getContractSize(const char* exchg /* = "" */, uint32_t
 			auto it2 = contractList->begin();
 			for (; it2 != contractList->end(); it2++)
 			{
-				WTSContractInfo* cInfo = (WTSContractInfo*)it2->second;
+				VvTSContractInfo* cInfo = (VvTSContractInfo*)it2->second;
 				if (uDate == 0 || (cInfo->getOpenDate() <= uDate && cInfo->getExpireDate() >= uDate))
 					ret++;
 			}
@@ -169,9 +169,9 @@ uint32_t  WTSBaseDataMgr::getContractSize(const char* exchg /* = "" */, uint32_t
 	return ret;
 }
 
-WTSArray* WTSBaseDataMgr::getContracts(const char* exchg /* = "" */, uint32_t uDate /* = 0 */)
+VvTSArray* WTSBaseDataMgr::getContracts(const char* exchg /* = "" */, uint32_t uDate /* = 0 */)
 {
-	WTSArray* ay = WTSArray::create();
+	VvTSArray* ay = VvTSArray::create();
 	if(strlen(exchg) > 0)
 	{
 		auto it = m_mapExchgContract->find(std::string(exchg));
@@ -181,7 +181,7 @@ WTSArray* WTSBaseDataMgr::getContracts(const char* exchg /* = "" */, uint32_t uD
 			auto it2 = contractList->begin();
 			for (; it2 != contractList->end(); it2++)
 			{
-				WTSContractInfo* cInfo = (WTSContractInfo*)it2->second;
+				VvTSContractInfo* cInfo = (VvTSContractInfo*)it2->second;
 				/*
 				 *	By Wesley @ 2023.10.23
 				 *	if param uDate is not zero, need to check whether contract is valid
@@ -200,7 +200,7 @@ WTSArray* WTSBaseDataMgr::getContracts(const char* exchg /* = "" */, uint32_t uD
 			auto it2 = contractList->begin();
 			for (; it2 != contractList->end(); it2++)
 			{
-				WTSContractInfo* cInfo = (WTSContractInfo*)it2->second;
+				VvTSContractInfo* cInfo = (VvTSContractInfo*)it2->second;
 				/*
 				 *	By Wesley @ 2023.10.23
 				 *	if param uDate is not zero, need to check whether contract is valid
@@ -214,9 +214,9 @@ WTSArray* WTSBaseDataMgr::getContracts(const char* exchg /* = "" */, uint32_t uD
 	return ay;
 }
 
-WTSArray* WTSBaseDataMgr::getAllSessions()
+VvTSArray* WTSBaseDataMgr::getAllSessions()
 {
-	WTSArray* ay = WTSArray::create();
+	VvTSArray* ay = VvTSArray::create();
 	for (auto it = m_mapSessions->begin(); it != m_mapSessions->end(); it++)
 	{
 		ay->append(it->second, true);
@@ -224,14 +224,14 @@ WTSArray* WTSBaseDataMgr::getAllSessions()
 	return ay;
 }
 
-WTSSessionInfo* WTSBaseDataMgr::getSession(const char* sid)
+VvTSSessionInfo* WTSBaseDataMgr::getSession(const char* sid)
 {
-	return (WTSSessionInfo*)m_mapSessions->get(sid);
+	return (VvTSSessionInfo*)m_mapSessions->get(sid);
 }
 
-WTSSessionInfo* WTSBaseDataMgr::getSessionByCode(const char* code, const char* exchg /* = "" */)
+VvTSSessionInfo* WTSBaseDataMgr::getSessionByCode(const char* code, const char* exchg /* = "" */)
 {
-	WTSContractInfo* ct = getContract(code, exchg);
+	VvTSContractInfo* ct = getContract(code, exchg);
 	if (ct == NULL)
 		return NULL;
 
@@ -288,7 +288,7 @@ bool WTSBaseDataMgr::loadSessions(const char* filename)
 		return false;
 	}
 
-	WTSVariant* root = WTSCfgLoader::load_from_file(filename);
+	VvTSVariant* root = WTSCfgLoader::load_from_file(filename);
 	if (root == NULL)
 	{
 		WTSLogger::error("Loading session config file {} failed", filename);
@@ -297,35 +297,35 @@ bool WTSBaseDataMgr::loadSessions(const char* filename)
 
 	for(const std::string& id : root->memberNames())
 	{
-		WTSVariant* jVal = root->get(id);
+		VvTSVariant* jVal = root->get(id);
 
 		const char* name = jVal->getCString("name");
 		int32_t offset = jVal->getInt32("offset");
 
-		WTSSessionInfo* sInfo = WTSSessionInfo::create(id.c_str(), name, offset);
+		VvTSSessionInfo* sInfo = VvTSSessionInfo::create(id.c_str(), name, offset);
 
 		if (jVal->has("auction"))
 		{
-			WTSVariant* jAuc = jVal->get("auction");
+			VvTSVariant* jAuc = jVal->get("auction");
 			sInfo->setAuctionTime(jAuc->getUInt32("from"), jAuc->getUInt32("to"));
 		}
 		else if (jVal->has("auctions"))
 		{
-			WTSVariant* jAucs = jVal->get("auctions");
+			VvTSVariant* jAucs = jVal->get("auctions");
 			for (uint32_t i = 0; i < jAucs->size(); i++)
 			{
-				WTSVariant* jSec = jAucs->get(i);
+				VvTSVariant* jSec = jAucs->get(i);
 				sInfo->addAuctionTime(jSec->getUInt32("from"), jSec->getUInt32("to"));
 			}
 		}
 
-		WTSVariant* jSecs = jVal->get("sections");
+		VvTSVariant* jSecs = jVal->get("sections");
 		if (jSecs == NULL || !jSecs->isArray())
 			continue;
 
 		for (uint32_t i = 0; i < jSecs->size(); i++)
 		{
-			WTSVariant* jSec = jSecs->get(i);
+			VvTSVariant* jSec = jSecs->get(i);
 			sInfo->addTradingSection(jSec->getUInt32("from"), jSec->getUInt32("to"));
 		}
 
@@ -337,7 +337,7 @@ bool WTSBaseDataMgr::loadSessions(const char* filename)
 	return true;
 }
 
-void parseCommodity(WTSCommodityInfo* pCommInfo, WTSVariant* jPInfo)
+void parseCommodity(VvTSCommodityInfo* pCommInfo, VvTSVariant* jPInfo)
 {
 	pCommInfo->setPriceTick(jPInfo->getDouble("pricetick"));
 	pCommInfo->setVolScale(jPInfo->getUInt32("volscale"));
@@ -373,7 +373,7 @@ bool WTSBaseDataMgr::loadCommodities(const char* filename)
 		return false;
 	}
 
-	WTSVariant* root = WTSCfgLoader::load_from_file(filename);
+	VvTSVariant* root = WTSCfgLoader::load_from_file(filename);
 	if (root == NULL)
 	{
 		WTSLogger::error("Loading commodities config file {} failed", filename);
@@ -382,11 +382,11 @@ bool WTSBaseDataMgr::loadCommodities(const char* filename)
 
 	for(const std::string& exchg : root->memberNames())
 	{
-		WTSVariant* jExchg = root->get(exchg);
+		VvTSVariant* jExchg = root->get(exchg);
 
 		for (const std::string& pid : jExchg->memberNames())
 		{
-			WTSVariant* jPInfo = jExchg->get(pid);
+			VvTSVariant* jPInfo = jExchg->get(pid);
 
 			const char* name = jPInfo->getCString("name");
 			const char* sid = jPInfo->getCString("session");
@@ -398,10 +398,10 @@ bool WTSBaseDataMgr::loadCommodities(const char* filename)
 				continue;
 			}
 
-			WTSCommodityInfo* pCommInfo = WTSCommodityInfo::create(pid.c_str(), name, exchg.c_str(), sid, hid);
+			VvTSCommodityInfo* pCommInfo = VvTSCommodityInfo::create(pid.c_str(), name, exchg.c_str(), sid, hid);
 			parseCommodity(pCommInfo, jPInfo);
 
-			WTSSessionInfo* sInfo = getSession(sid);
+			VvTSSessionInfo* sInfo = getSession(sid);
 			pCommInfo->setSessionInfo(sInfo);
 
 			std::string key = fmt::format("{}.{}", exchg.c_str(), pid.c_str());
@@ -427,7 +427,7 @@ bool WTSBaseDataMgr::loadContracts(const char* filename)
 		return false;
 	}
 
-	WTSVariant* root = WTSCfgLoader::load_from_file(filename);
+	VvTSVariant* root = WTSCfgLoader::load_from_file(filename);
 	if (root == NULL)
 	{
 		WTSLogger::error("Loading contracts config file {} failed", filename);
@@ -436,18 +436,18 @@ bool WTSBaseDataMgr::loadContracts(const char* filename)
 
 	for(const std::string& exchg : root->memberNames())
 	{
-		WTSVariant* jExchg = root->get(exchg);
+		VvTSVariant* jExchg = root->get(exchg);
 
 		for(const std::string& code : jExchg->memberNames())
 		{
-			WTSVariant* jcInfo = jExchg->get(code);
+			VvTSVariant* jcInfo = jExchg->get(code);
 
 			/*
 			 *	By Wesley @ 2021.12.28
 			 *	这里做一个兼容，如果product为空,先检查是否配置了rules属性，如果配置了rules属性，把合约单独当成品种自动加入
 			 *	如果没有配置rules，则直接跳过该合约
 			 */
-			WTSCommodityInfo* commInfo = NULL;
+			VvTSCommodityInfo* commInfo = NULL;
 			std::string pid;
 			if(jcInfo->has("product"))
 			{
@@ -457,7 +457,7 @@ bool WTSBaseDataMgr::loadContracts(const char* filename)
 			else if(jcInfo->has("rules"))
 			{
 				pid = code.c_str();
-				WTSVariant* jPInfo = jcInfo->get("rules");
+				VvTSVariant* jPInfo = jcInfo->get("rules");
 				const char* name = jcInfo->getCString("name");
 				std::string sid = jPInfo->getCString("session");
 				std::string hid;
@@ -468,9 +468,9 @@ bool WTSBaseDataMgr::loadContracts(const char* filename)
 				if (sid.empty())
 					sid = "ALLDAY";
 
-				commInfo = WTSCommodityInfo::create(pid.c_str(), name, exchg.c_str(), sid.c_str(), hid.c_str());
+				commInfo = VvTSCommodityInfo::create(pid.c_str(), name, exchg.c_str(), sid.c_str(), hid.c_str());
 				parseCommodity(commInfo, jPInfo);
-				WTSSessionInfo* sInfo = getSession(sid.c_str());
+				VvTSSessionInfo* sInfo = getSession(sid.c_str());
 				commInfo->setSessionInfo(sInfo);
 
 				std::string key = fmt::format("{}.{}", exchg.c_str(), pid.c_str());
@@ -490,7 +490,7 @@ bool WTSBaseDataMgr::loadContracts(const char* filename)
 				continue;
 			}
 
-			WTSContractInfo* cInfo = WTSContractInfo::create(code.c_str(),
+			VvTSContractInfo* cInfo = VvTSContractInfo::create(code.c_str(),
 				jcInfo->getCString("name"),
 				jcInfo->getCString("exchg"),
 				pid.c_str());
@@ -538,10 +538,10 @@ bool WTSBaseDataMgr::loadContracts(const char* filename)
 			commInfo->addCode(code.c_str());
 
 			std::string key = std::string(cInfo->getCode());
-			WTSArray* ayInst = (WTSArray*)m_mapContracts->get(key);
+			VvTSArray* ayInst = (VvTSArray*)m_mapContracts->get(key);
 			if(ayInst == NULL)
 			{
-				ayInst = WTSArray::create();
+				ayInst = VvTSArray::create();
 				m_mapContracts->add(key, ayInst, false);
 			}
 
@@ -562,7 +562,7 @@ bool WTSBaseDataMgr::loadHolidays(const char* filename)
 		return false;
 	}
 
-	WTSVariant* root = WTSCfgLoader::load_from_file(filename);
+	VvTSVariant* root = WTSCfgLoader::load_from_file(filename);
 	if (root == NULL)
 	{
 		WTSLogger::error("Loading holidays config file {} failed", filename);
@@ -571,14 +571,14 @@ bool WTSBaseDataMgr::loadHolidays(const char* filename)
 
 	for (const std::string& hid : root->memberNames())
 	{
-		WTSVariant* jHolidays = root->get(hid);
+		VvTSVariant* jHolidays = root->get(hid);
 		if(!jHolidays->isArray())
 			continue;
 
 		TradingDayTpl& trdDayTpl = m_mapTradingDay[hid];
 		for(uint32_t i = 0; i < jHolidays->size(); i++)
 		{
-			WTSVariant* hItem = jHolidays->get(i);
+			VvTSVariant* hItem = jHolidays->get(i);
 			trdDayTpl._holidays.insert(hItem->asUInt32());
 		}
 	}
@@ -595,7 +595,7 @@ uint64_t WTSBaseDataMgr::getBoundaryTime(const char* stdPID, uint32_t tDate, boo
 	
 	std::string tplid = stdPID;
 	bool isTpl = false;
-	WTSSessionInfo* sInfo = NULL;
+	VvTSSessionInfo* sInfo = NULL;
 	if (isSession)
 	{
 		sInfo = getSession(stdPID);
@@ -604,7 +604,7 @@ uint64_t WTSBaseDataMgr::getBoundaryTime(const char* stdPID, uint32_t tDate, boo
 	}
 	else
 	{
-		WTSCommodityInfo* cInfo = getCommodity(stdPID);
+		VvTSCommodityInfo* cInfo = getCommodity(stdPID);
 		if (cInfo == NULL)
 			return 0;
 
@@ -666,7 +666,7 @@ uint32_t WTSBaseDataMgr::calcTradingDate(const char* stdPID, uint32_t uDate, uin
 
 	std::string tplid = stdPID;
 	bool isTpl = false;
-	WTSSessionInfo* sInfo = NULL;
+	VvTSSessionInfo* sInfo = NULL;
 	if(isSession)
 	{
 		sInfo = getSession(stdPID);
@@ -675,7 +675,7 @@ uint32_t WTSBaseDataMgr::calcTradingDate(const char* stdPID, uint32_t uDate, uin
 	}
 	else
 	{
-		WTSCommodityInfo* cInfo = getCommodity(stdPID);
+		VvTSCommodityInfo* cInfo = getCommodity(stdPID);
 		if (cInfo == NULL)
 			return uDate;
 		
@@ -866,7 +866,7 @@ CodeSet* WTSBaseDataMgr::getSessionComms(const char* sid)
 const char* WTSBaseDataMgr::getTplIDByPID(const char* pid)
 {
 	const StringVector& ay = StrUtil::split(pid, ".");
-	WTSCommodityInfo* commInfo = getCommodity(ay[0].c_str(), ay[1].c_str());
+	VvTSCommodityInfo* commInfo = getCommodity(ay[0].c_str(), ay[1].c_str());
 	if (commInfo == NULL)
 		return "";
 

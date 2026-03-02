@@ -13,7 +13,7 @@
 #include "WtHelper.h"
 #include "IDataCaster.h"
 
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VvTSVariant.hpp"
 #include "../Share/DLLHelper.hpp"
 
 #include "../WTSTools/WTSBaseDataMgr.h"
@@ -40,7 +40,7 @@ bool DataManager::isSessionProceeded(const char* sid)
 	return _writer->isSessionProceeded(sid);
 }
 
-bool DataManager::init(WTSVariant* params, WTSBaseDataMgr* bdMgr, StateMonitor* stMonitor)
+bool DataManager::init(VvTSVariant* params, WTSBaseDataMgr* bdMgr, StateMonitor* stMonitor)
 {
 	_bd_mgr = bdMgr;
 	_state_mon = stMonitor;
@@ -99,7 +99,7 @@ void DataManager::release()
 	}
 }
 
-bool DataManager::writeTick(WTSTickData* curTick, uint32_t procFlag)
+bool DataManager::writeTick(VvTSTickData* curTick, uint32_t procFlag)
 {
 	if (_writer == NULL)
 		return false;
@@ -107,7 +107,7 @@ bool DataManager::writeTick(WTSTickData* curTick, uint32_t procFlag)
 	return _writer->writeTick(curTick, procFlag);
 }
 
-bool DataManager::writeOrderQueue(WTSOrdQueData* curOrdQue)
+bool DataManager::writeOrderQueue(VvTSOrdQueData* curOrdQue)
 {
 	if (_writer == NULL)
 		return false;
@@ -115,7 +115,7 @@ bool DataManager::writeOrderQueue(WTSOrdQueData* curOrdQue)
 	return _writer->writeOrderQueue(curOrdQue);
 }
 
-bool DataManager::writeOrderDetail(WTSOrdDtlData* curOrdDtl)
+bool DataManager::writeOrderDetail(VvTSOrdDtlData* curOrdDtl)
 {
 	if (_writer == NULL)
 		return false;
@@ -123,7 +123,7 @@ bool DataManager::writeOrderDetail(WTSOrdDtlData* curOrdDtl)
 	return _writer->writeOrderDetail(curOrdDtl);
 }
 
-bool DataManager::writeTransaction(WTSTransData* curTrans)
+bool DataManager::writeTransaction(VvTSTransData* curTrans)
 {
 	if (_writer == NULL)
 		return false;
@@ -131,7 +131,7 @@ bool DataManager::writeTransaction(WTSTransData* curTrans)
 	return _writer->writeTransaction(curTrans);
 }
 
-WTSTickData* DataManager::getCurTick(const char* code, const char* exchg/* = ""*/)
+VvTSTickData* DataManager::getCurTick(const char* code, const char* exchg/* = ""*/)
 {
 	if (_writer == NULL)
 		return NULL;
@@ -162,25 +162,25 @@ bool DataManager::canSessionReceive(const char* sid)
 	return _state_mon->isInState(sid, SS_RECEIVING);
 }
 
-void DataManager::broadcastTick(WTSTickData* curTick)
+void DataManager::broadcastTick(VvTSTickData* curTick)
 {
 	for(IDataCaster* caster : _casters)
 		caster->broadcast(curTick);
 }
 
-void DataManager::broadcastOrdDtl(WTSOrdDtlData* curOrdDtl)
+void DataManager::broadcastOrdDtl(VvTSOrdDtlData* curOrdDtl)
 {
 	for (IDataCaster* caster : _casters)
 		caster->broadcast(curOrdDtl);
 }
 
-void DataManager::broadcastOrdQue(WTSOrdQueData* curOrdQue)
+void DataManager::broadcastOrdQue(VvTSOrdQueData* curOrdQue)
 {
 	for (IDataCaster* caster : _casters)
 		caster->broadcast(curOrdQue);
 }
 
-void DataManager::broadcastTrans(WTSTransData* curTrans)
+void DataManager::broadcastTrans(VvTSTransData* curTrans)
 {
 	for (IDataCaster* caster : _casters)
 		caster->broadcast(curTrans);
@@ -196,7 +196,7 @@ uint32_t DataManager::getTradingDate(const char* pid)
 	return  _bd_mgr->getTradingDate(pid);
 }
 
-void DataManager::outputLog(WTSLogLevel ll, const char* message)
+void DataManager::outputLog(VvTSLogLevel ll, const char* message)
 {
 	WTSLogger::log_raw(ll, message);
 }

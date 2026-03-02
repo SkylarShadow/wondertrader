@@ -13,11 +13,11 @@
 #include "../API/yd1.108.360/ydApi.h"
 #include <map>
 
-NS_WTP_BEGIN
-class WTSTickData;
-NS_WTP_END
+NS_VVTP_BEGIN
+class VvTSTickData;
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class ParserYD :	public IParserApi, public YDListener
 {
@@ -37,7 +37,7 @@ public:
 
 //IQuoteParser 接口
 public:
-	virtual bool init(WTSVariant* config) override;
+	virtual bool init(VvTSVariant* config) override;
 
 	virtual void release() override;
 

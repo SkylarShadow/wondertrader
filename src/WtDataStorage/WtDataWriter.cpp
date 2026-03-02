@@ -1,9 +1,9 @@
 ﻿#include "WtDataWriter.h"
 
-#include "../Includes/WTSSessionInfo.hpp"
-#include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VvTSSessionInfo.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/VvTSDataDef.hpp"
+#include "../Includes/VvTSVariant.hpp"
 #include "../Share/BoostFile.hpp"
 #include "../Share/StrUtil.hpp"
 #include "../Share/IniHelper.hpp"
@@ -19,7 +19,7 @@
 //By Wesley @ 2022.01.05
 #include "../Share/fmtlib.h"
 template<typename... Args>
-inline void pipe_writer_log(IDataWriterSink* sink, WTSLogLevel ll, const char* format, const Args&... args)
+inline void pipe_writer_log(IDataWriterSink* sink, VvTSLogLevel ll, const char* format, const Args&... args)
 {
 	if (sink == NULL)
 		return;
@@ -58,7 +58,7 @@ static const uint32_t HFT_SIZE_STEP = 2500;
 const char CMD_CLEAR_CACHE[] = "CMD_CLEAR_CACHE";
 const char MARKER_FILE[] = "marker.ini";
 
-WtDataWriter::_TaskInfo::_TaskInfo(WTSObject* data, uint64_t dtype, uint32_t flag/* = 0*/)
+WtDataWriter::_TaskInfo::_TaskInfo(VvTSObject* data, uint64_t dtype, uint32_t flag/* = 0*/)
 	: _type(dtype), _flag(flag)
 {
 	_obj = data;
@@ -110,7 +110,7 @@ bool WtDataWriter::isSessionProceeded(const char* sid)
 }
 
 
-bool WtDataWriter::init(WTSVariant* params, IDataWriterSink* sink)
+bool WtDataWriter::init(VvTSVariant* params, IDataWriterSink* sink)
 {
 	IDataWriter::init(params, sink);
 
@@ -220,15 +220,15 @@ void DataManager::preloadRtCaches(const char* exchg)
 	TimeUtils::Ticker ticker;
 	uint32_t cnt = 0;
 	uint32_t codecnt = 0;
-	WTSArray* ayCts = _bd_mgr->getContracts(exchg);
+	VvTSArray* ayCts = _bd_mgr->getContracts(exchg);
 	if (ayCts != NULL && ayCts->size() > 0)
 	{
 		for (auto it = ayCts->begin(); it != ayCts->end(); it++)
 		{
-			WTSContractInfo* ct = (WTSContractInfo*)(*it);
+			VvTSContractInfo* ct = (VvTSContractInfo*)(*it);
 			if (ct == NULL)
 				continue;
-			WTSCommodityInfo* commInfo = _bd_mgr->getCommodity(ct);
+			VvTSCommodityInfo* commInfo = _bd_mgr->getCommodity(ct);
 			if(commInfo == NULL)
 				continue;
 
@@ -359,7 +359,7 @@ void* WtDataWriter::resizeRTBlock(BoostMFPtr& mfPtr, uint32_t nCount)
 	return mfPtr->addr();
 }
 
-bool WtDataWriter::writeTick(WTSTickData* curTick, uint32_t procFlag)
+bool WtDataWriter::writeTick(VvTSTickData* curTick, uint32_t procFlag)
 {
 	if (curTick == NULL)
 		return false;
@@ -372,15 +372,15 @@ bool WtDataWriter::writeTick(WTSTickData* curTick, uint32_t procFlag)
 	return true;
 }
 
-void WtDataWriter::procTick(WTSTickData* curTick, uint32_t procFlag)
+void WtDataWriter::procTick(VvTSTickData* curTick, uint32_t procFlag)
 {
 	do
 	{
-		WTSContractInfo* ct = curTick->getContractInfo();
+		VvTSContractInfo* ct = curTick->getContractInfo();
 		if (ct == NULL)
 			break;
 
-		WTSCommodityInfo* commInfo = ct->getCommInfo();
+		VvTSCommodityInfo* commInfo = ct->getCommInfo();
 
 		//再根据状态过滤
 		if (!_sink->canSessionReceive(commInfo->getSession()))
@@ -399,7 +399,7 @@ void WtDataWriter::procTick(WTSTickData* curTick, uint32_t procFlag)
 
 		_sink->broadcastTick(curTick);
 
-		static wt_hashmap<std::string, uint64_t> _tcnt_map;
+		static vvt_hashmap<std::string, uint64_t> _tcnt_map;
 		uint64_t& cnt = _tcnt_map[curTick->exchg()];
 		cnt++;
 		if (cnt % _log_group_size == 0)
@@ -409,7 +409,7 @@ void WtDataWriter::procTick(WTSTickData* curTick, uint32_t procFlag)
 	} while (false);
 }
 
-bool WtDataWriter::writeOrderQueue(WTSOrdQueData* curOrdQue)
+bool WtDataWriter::writeOrderQueue(VvTSOrdQueData* curOrdQue)
 {
 	if (curOrdQue == NULL || _disable_ordque)
 		return false;
@@ -422,12 +422,12 @@ bool WtDataWriter::writeOrderQueue(WTSOrdQueData* curOrdQue)
 	return true;
 }
 
-void WtDataWriter::procQueue(WTSOrdQueData* curOrdQue)
+void WtDataWriter::procQueue(VvTSOrdQueData* curOrdQue)
 {
 	do
 	{
-		WTSContractInfo* ct = curOrdQue->getContractInfo();
-		WTSCommodityInfo* commInfo = ct->getCommInfo();
+		VvTSContractInfo* ct = curOrdQue->getContractInfo();
+		VvTSCommodityInfo* commInfo = ct->getCommInfo();
 
 		//再根据状态过滤
 		if (!_sink->canSessionReceive(commInfo->getSession()))
@@ -444,16 +444,16 @@ void WtDataWriter::procQueue(WTSOrdQueData* curOrdQue)
 		if (blk->_size >= blk->_capacity)
 		{
 			pBlockPair->_file->sync();
-			pBlockPair->_block = (RTOrdQueBlock*)resizeRTBlock<RTDayBlockHeader, WTSOrdQueStruct>(pBlockPair->_file, blk->_capacity * 2);
+			pBlockPair->_block = (RTOrdQueBlock*)resizeRTBlock<RTDayBlockHeader, VvTSOrdQueStruct>(pBlockPair->_file, blk->_capacity * 2);
 			blk = pBlockPair->_block;
 		}
 
-		memcpy(&blk->_queues[blk->_size], &curOrdQue->getOrdQueStruct(), sizeof(WTSOrdQueStruct));
+		memcpy(&blk->_queues[blk->_size], &curOrdQue->getOrdQueStruct(), sizeof(VvTSOrdQueStruct));
 		blk->_size += 1;
 
 		_sink->broadcastOrdQue(curOrdQue);
 
-		static wt_hashmap<std::string, uint64_t> _tcnt_map;
+		static vvt_hashmap<std::string, uint64_t> _tcnt_map;
 		uint64_t& cnt = _tcnt_map[curOrdQue->exchg()];
 		cnt++;
 		if (cnt % _log_group_size == 0)
@@ -463,7 +463,7 @@ void WtDataWriter::procQueue(WTSOrdQueData* curOrdQue)
 	} while (false);
 }
 
-bool WtDataWriter::writeOrderDetail(WTSOrdDtlData* curOrdDtl)
+bool WtDataWriter::writeOrderDetail(VvTSOrdDtlData* curOrdDtl)
 {
 	if (curOrdDtl == NULL || _disable_orddtl)
 		return false;
@@ -476,12 +476,12 @@ bool WtDataWriter::writeOrderDetail(WTSOrdDtlData* curOrdDtl)
 	return true;
 }
 
-void WtDataWriter::procOrder(WTSOrdDtlData* curOrdDtl)
+void WtDataWriter::procOrder(VvTSOrdDtlData* curOrdDtl)
 {
 	do
 	{
-		WTSContractInfo* ct = curOrdDtl->getContractInfo();
-		WTSCommodityInfo* commInfo = ct->getCommInfo();
+		VvTSContractInfo* ct = curOrdDtl->getContractInfo();
+		VvTSCommodityInfo* commInfo = ct->getCommInfo();
 
 		//再根据状态过滤
 		if (!_sink->canSessionReceive(commInfo->getSession()))
@@ -498,16 +498,16 @@ void WtDataWriter::procOrder(WTSOrdDtlData* curOrdDtl)
 		if (blk->_size >= blk->_capacity)
 		{
 			pBlockPair->_file->sync();
-			pBlockPair->_block = (RTOrdDtlBlock*)resizeRTBlock<RTDayBlockHeader, WTSOrdDtlStruct>(pBlockPair->_file, blk->_capacity * 2);
+			pBlockPair->_block = (RTOrdDtlBlock*)resizeRTBlock<RTDayBlockHeader, VvTSOrdDtlStruct>(pBlockPair->_file, blk->_capacity * 2);
 			blk = pBlockPair->_block;
 		}
 
-		memcpy(&blk->_details[blk->_size], &curOrdDtl->getOrdDtlStruct(), sizeof(WTSOrdDtlStruct));
+		memcpy(&blk->_details[blk->_size], &curOrdDtl->getOrdDtlStruct(), sizeof(VvTSOrdDtlStruct));
 		blk->_size += 1;
 
 		_sink->broadcastOrdDtl(curOrdDtl);
 
-		static wt_hashmap<std::string, uint64_t> _tcnt_map;
+		static vvt_hashmap<std::string, uint64_t> _tcnt_map;
 		uint64_t& cnt = _tcnt_map[curOrdDtl->exchg()];
 		cnt++;
 		if (cnt % _log_group_size == 0)
@@ -517,7 +517,7 @@ void WtDataWriter::procOrder(WTSOrdDtlData* curOrdDtl)
 	} while (false);
 }
 
-bool WtDataWriter::writeTransaction(WTSTransData* curTrans)
+bool WtDataWriter::writeTransaction(VvTSTransData* curTrans)
 {
 	if (curTrans == NULL || _disable_orddtl)
 		return false;
@@ -530,12 +530,12 @@ bool WtDataWriter::writeTransaction(WTSTransData* curTrans)
 	return true;
 }
 
-void WtDataWriter::procTrans(WTSTransData* curTrans)
+void WtDataWriter::procTrans(VvTSTransData* curTrans)
 {
 	do
 	{
-		WTSContractInfo* ct = curTrans->getContractInfo();
-		WTSCommodityInfo* commInfo = ct->getCommInfo();
+		VvTSContractInfo* ct = curTrans->getContractInfo();
+		VvTSCommodityInfo* commInfo = ct->getCommInfo();
 
 		//再根据状态过滤
 		if (!_sink->canSessionReceive(commInfo->getSession()))
@@ -552,16 +552,16 @@ void WtDataWriter::procTrans(WTSTransData* curTrans)
 		if (blk->_size >= blk->_capacity)
 		{
 			pBlockPair->_file->sync();
-			pBlockPair->_block = (RTTransBlock*)resizeRTBlock<RTDayBlockHeader, WTSTransStruct>(pBlockPair->_file, blk->_capacity * 2);
+			pBlockPair->_block = (RTTransBlock*)resizeRTBlock<RTDayBlockHeader, VvTSTransStruct>(pBlockPair->_file, blk->_capacity * 2);
 			blk = pBlockPair->_block;
 		}
 
-		memcpy(&blk->_trans[blk->_size], &curTrans->getTransStruct(), sizeof(WTSTransStruct));
+		memcpy(&blk->_trans[blk->_size], &curTrans->getTransStruct(), sizeof(VvTSTransStruct));
 		blk->_size += 1;
 
 		_sink->broadcastTrans(curTrans);
 
-		static wt_hashmap<std::string, uint64_t> _tcnt_map;
+		static vvt_hashmap<std::string, uint64_t> _tcnt_map;
 		uint64_t& cnt = _tcnt_map[curTrans->exchg()];
 		cnt++;
 		if (cnt % _log_group_size == 0)
@@ -603,10 +603,10 @@ void WtDataWriter::pushTask(const TaskInfo& task)
 					TaskInfo& curTask = tempQueue.front();
 					switch (curTask._type)
 					{
-					case 0: procTick((WTSTickData*)curTask._obj, curTask._flag); break;
-					case 1: procQueue((WTSOrdQueData*)curTask._obj); break;
-					case 2: procOrder((WTSOrdDtlData*)curTask._obj); break;
-					case 3: procTrans((WTSTransData*)curTask._obj); break;
+					case 0: procTick((VvTSTickData*)curTask._obj, curTask._flag); break;
+					case 1: procQueue((VvTSOrdQueData*)curTask._obj); break;
+					case 2: procOrder((VvTSOrdDtlData*)curTask._obj); break;
+					case 3: procTrans((VvTSTransData*)curTask._obj); break;
 					default:
 						break;
 					}
@@ -617,7 +617,7 @@ void WtDataWriter::pushTask(const TaskInfo& task)
 	}
 }
 
-void WtDataWriter::pipeToTicks(WTSContractInfo* ct, WTSTickData* curTick)
+void WtDataWriter::pipeToTicks(VvTSContractInfo* ct, VvTSTickData* curTick)
 {
 	TickBlockPair* pBlockPair = getTickBlock(ct, curTick->tradingdate());
 	if (pBlockPair == NULL)
@@ -630,7 +630,7 @@ void WtDataWriter::pipeToTicks(WTSContractInfo* ct, WTSTickData* curTick)
 	if(blk && blk->_size >= blk->_capacity)
 	{
 		pBlockPair->_file->sync();
-		pBlockPair->_block = (RTTickBlock*)resizeRTBlock<RTDayBlockHeader, WTSTickStruct>(pBlockPair->_file, blk->_capacity * 2);
+		pBlockPair->_block = (RTTickBlock*)resizeRTBlock<RTDayBlockHeader, VvTSTickStruct>(pBlockPair->_file, blk->_capacity * 2);
 		blk = pBlockPair->_block;
 		if(blk) pipe_writer_log(_sink, LL_DEBUG, "RT tick block of {} resized to {}", ct->getFullCode(), blk->_capacity);
 	}
@@ -641,7 +641,7 @@ void WtDataWriter::pipeToTicks(WTSContractInfo* ct, WTSTickData* curTick)
 		return;
 	}
 
-	memcpy(&blk->_ticks[blk->_size], &curTick->getTickStruct(), sizeof(WTSTickStruct));
+	memcpy(&blk->_ticks[blk->_size], &curTick->getTickStruct(), sizeof(VvTSTickStruct));
 	blk->_size += 1;
 
 	if(_save_tick_log && pBlockPair->_fstream)
@@ -661,7 +661,7 @@ void WtDataWriter::pipeToTicks(WTSContractInfo* ct, WTSTickData* curTick)
 	}
 }
 
-WtDataWriter::OrdQueBlockPair* WtDataWriter::getOrdQueBlock(WTSContractInfo* ct, uint32_t curDate, bool bAutoCreate /* = true */)
+WtDataWriter::OrdQueBlockPair* WtDataWriter::getOrdQueBlock(VvTSContractInfo* ct, uint32_t curDate, bool bAutoCreate /* = true */)
 {
 	if (ct == NULL)
 		return NULL;
@@ -691,7 +691,7 @@ WtDataWriter::OrdQueBlockPair* WtDataWriter::getOrdQueBlock(WTSContractInfo* ct,
 
 			pipe_writer_log(_sink, LL_INFO, "Data file {} not exists, initializing...", path.c_str());
 
-			uint64_t uSize = sizeof(RTDayBlockHeader) + sizeof(WTSOrdQueStruct) * HFT_SIZE_STEP;
+			uint64_t uSize = sizeof(RTDayBlockHeader) + sizeof(VvTSOrdQueStruct) * HFT_SIZE_STEP;
 
 			BoostFile bf;
 			bf.create_new_file(path.c_str());
@@ -716,7 +716,7 @@ WtDataWriter::OrdQueBlockPair* WtDataWriter::getOrdQueBlock(WTSContractInfo* ct,
 			pBlock->_block->_size = 0;
 			pBlock->_block->_date = curDate;
 
-			memset(&pBlock->_block->_queues, 0, sizeof(WTSOrdQueStruct)*pBlock->_block->_capacity);
+			memset(&pBlock->_block->_queues, 0, sizeof(VvTSOrdQueStruct)*pBlock->_block->_capacity);
 		}
 
 		if (isNew)
@@ -733,11 +733,11 @@ WtDataWriter::OrdQueBlockPair* WtDataWriter::getOrdQueBlock(WTSContractInfo* ct,
 			//检查缓存文件是否有问题,要自动恢复
 			do
 			{
-				uint64_t uSize = sizeof(RTDayBlockHeader) + sizeof(WTSOrdQueStruct) * pBlock->_block->_capacity;
+				uint64_t uSize = sizeof(RTDayBlockHeader) + sizeof(VvTSOrdQueStruct) * pBlock->_block->_capacity;
 				uint64_t oldSize = pBlock->_file->size();
 				if (oldSize != uSize)
 				{
-					uint32_t oldCnt = (uint32_t)((oldSize - sizeof(RTDayBlockHeader)) / sizeof(WTSOrdQueStruct));
+					uint32_t oldCnt = (uint32_t)((oldSize - sizeof(RTDayBlockHeader)) / sizeof(VvTSOrdQueStruct));
 					//文件大小不匹配,一般是因为capacity改了,但是实际没扩容
 					//这是做一次扩容即可
 					pBlock->_block->_capacity = oldCnt;
@@ -755,7 +755,7 @@ WtDataWriter::OrdQueBlockPair* WtDataWriter::getOrdQueBlock(WTSContractInfo* ct,
 	return pBlock;
 }
 
-WtDataWriter::OrdDtlBlockPair* WtDataWriter::getOrdDtlBlock(WTSContractInfo* ct, uint32_t curDate, bool bAutoCreate /* = true */)
+WtDataWriter::OrdDtlBlockPair* WtDataWriter::getOrdDtlBlock(VvTSContractInfo* ct, uint32_t curDate, bool bAutoCreate /* = true */)
 {
 	if (ct == NULL)
 		return NULL;
@@ -785,7 +785,7 @@ WtDataWriter::OrdDtlBlockPair* WtDataWriter::getOrdDtlBlock(WTSContractInfo* ct,
 
 			pipe_writer_log(_sink, LL_INFO, "Data file {} not exists, initializing...", path.c_str());
 
-			uint64_t uSize = sizeof(RTDayBlockHeader) + sizeof(WTSOrdDtlStruct) * HFT_SIZE_STEP;
+			uint64_t uSize = sizeof(RTDayBlockHeader) + sizeof(VvTSOrdDtlStruct) * HFT_SIZE_STEP;
 
 			BoostFile bf;
 			bf.create_new_file(path.c_str());
@@ -810,7 +810,7 @@ WtDataWriter::OrdDtlBlockPair* WtDataWriter::getOrdDtlBlock(WTSContractInfo* ct,
 			pBlock->_block->_size = 0;
 			pBlock->_block->_date = curDate;
 
-			memset(&pBlock->_block->_details, 0, sizeof(WTSOrdDtlStruct)*pBlock->_block->_capacity);
+			memset(&pBlock->_block->_details, 0, sizeof(VvTSOrdDtlStruct)*pBlock->_block->_capacity);
 		}
 
 		if (isNew)
@@ -827,11 +827,11 @@ WtDataWriter::OrdDtlBlockPair* WtDataWriter::getOrdDtlBlock(WTSContractInfo* ct,
 			//检查缓存文件是否有问题,要自动恢复
 			for (;;)
 			{
-				uint64_t uSize = sizeof(RTDayBlockHeader) + sizeof(WTSOrdDtlStruct) * pBlock->_block->_capacity;
+				uint64_t uSize = sizeof(RTDayBlockHeader) + sizeof(VvTSOrdDtlStruct) * pBlock->_block->_capacity;
 				uint64_t oldSize = pBlock->_file->size();
 				if (oldSize != uSize)
 				{
-					uint32_t oldCnt = (uint32_t)((oldSize - sizeof(RTDayBlockHeader)) / sizeof(WTSOrdDtlStruct));
+					uint32_t oldCnt = (uint32_t)((oldSize - sizeof(RTDayBlockHeader)) / sizeof(VvTSOrdDtlStruct));
 					//文件大小不匹配,一般是因为capacity改了,但是实际没扩容
 					//这是做一次扩容即可
 					pBlock->_block->_capacity = oldCnt;
@@ -850,7 +850,7 @@ WtDataWriter::OrdDtlBlockPair* WtDataWriter::getOrdDtlBlock(WTSContractInfo* ct,
 	return pBlock;
 }
 
-WtDataWriter::TransBlockPair* WtDataWriter::getTransBlock(WTSContractInfo* ct, uint32_t curDate, bool bAutoCreate /* = true */)
+WtDataWriter::TransBlockPair* WtDataWriter::getTransBlock(VvTSContractInfo* ct, uint32_t curDate, bool bAutoCreate /* = true */)
 {
 	if (ct == NULL)
 		return NULL;
@@ -880,7 +880,7 @@ WtDataWriter::TransBlockPair* WtDataWriter::getTransBlock(WTSContractInfo* ct, u
 
 			pipe_writer_log(_sink, LL_INFO, "Data file {} not exists, initializing...", path.c_str());
 
-			uint64_t uSize = sizeof(RTDayBlockHeader) + sizeof(WTSTransStruct) * HFT_SIZE_STEP;
+			uint64_t uSize = sizeof(RTDayBlockHeader) + sizeof(VvTSTransStruct) * HFT_SIZE_STEP;
 
 			BoostFile bf;
 			bf.create_new_file(path.c_str());
@@ -905,7 +905,7 @@ WtDataWriter::TransBlockPair* WtDataWriter::getTransBlock(WTSContractInfo* ct, u
 			pBlock->_block->_size = 0;
 			pBlock->_block->_date = curDate;
 
-			memset(&pBlock->_block->_trans, 0, sizeof(WTSTransStruct)*pBlock->_block->_capacity);
+			memset(&pBlock->_block->_trans, 0, sizeof(VvTSTransStruct)*pBlock->_block->_capacity);
 		}
 
 		if (isNew)
@@ -922,11 +922,11 @@ WtDataWriter::TransBlockPair* WtDataWriter::getTransBlock(WTSContractInfo* ct, u
 			//检查缓存文件是否有问题,要自动恢复
 			for (;;)
 			{
-				uint64_t uSize = sizeof(RTDayBlockHeader) + sizeof(WTSTransStruct) * pBlock->_block->_capacity;
+				uint64_t uSize = sizeof(RTDayBlockHeader) + sizeof(VvTSTransStruct) * pBlock->_block->_capacity;
 				uint64_t oldSize = pBlock->_file->size();
 				if (oldSize != uSize)
 				{
-					uint32_t oldCnt = (uint32_t)((oldSize - sizeof(RTDayBlockHeader)) / sizeof(WTSTransStruct));
+					uint32_t oldCnt = (uint32_t)((oldSize - sizeof(RTDayBlockHeader)) / sizeof(VvTSTransStruct));
 					//文件大小不匹配,一般是因为capacity改了,但是实际没扩容
 					//这是做一次扩容即可
 					pBlock->_block->_capacity = oldCnt;
@@ -945,7 +945,7 @@ WtDataWriter::TransBlockPair* WtDataWriter::getTransBlock(WTSContractInfo* ct, u
 	return pBlock;
 }
 
-WtDataWriter::TickBlockPair* WtDataWriter::getTickBlock(WTSContractInfo* ct, uint32_t curDate, bool bAutoCreate /* = true */)
+WtDataWriter::TickBlockPair* WtDataWriter::getTickBlock(VvTSContractInfo* ct, uint32_t curDate, bool bAutoCreate /* = true */)
 {
 	if (ct == NULL)
 		return NULL;
@@ -984,7 +984,7 @@ WtDataWriter::TickBlockPair* WtDataWriter::getTickBlock(WTSContractInfo* ct, uin
 
 			pipe_writer_log(_sink, LL_INFO, "Data file {} not exists, initializing...", path.c_str());
 			
-			uint64_t uSize = sizeof(RTTickBlock) + sizeof(WTSTickStruct) * HFT_SIZE_STEP;
+			uint64_t uSize = sizeof(RTTickBlock) + sizeof(VvTSTickStruct) * HFT_SIZE_STEP;
 			BoostFile bf;
 			bf.create_new_file(path.c_str());
 			bf.truncate_file((uint32_t)uSize);
@@ -1008,7 +1008,7 @@ WtDataWriter::TickBlockPair* WtDataWriter::getTickBlock(WTSContractInfo* ct, uin
 			pBlock->_block->_size = 0;
 			pBlock->_block->_date = curDate;
 
-			memset(&pBlock->_block->_ticks, 0, sizeof(WTSTickStruct)*pBlock->_block->_capacity);
+			memset(&pBlock->_block->_ticks, 0, sizeof(VvTSTickStruct)*pBlock->_block->_capacity);
 		}
 
 		if(isNew)
@@ -1025,11 +1025,11 @@ WtDataWriter::TickBlockPair* WtDataWriter::getTickBlock(WTSContractInfo* ct, uin
 			//检查缓存文件是否有问题,要自动恢复
 			do
 			{
-				uint64_t uSize = sizeof(RTTickBlock) + sizeof(WTSTickStruct) * pBlock->_block->_capacity;
+				uint64_t uSize = sizeof(RTTickBlock) + sizeof(VvTSTickStruct) * pBlock->_block->_capacity;
 				uint64_t realSz = pBlock->_file->size();
 				if (realSz != uSize)
 				{
-					uint32_t realCap = (uint32_t)((realSz - sizeof(RTTickBlock)) / sizeof(WTSTickStruct));
+					uint32_t realCap = (uint32_t)((realSz - sizeof(RTTickBlock)) / sizeof(VvTSTickStruct));
 					uint32_t markedCap = pBlock->_block->_capacity;
 					pipe_writer_log(_sink, LL_WARN, "Tick cache file of {} on {} repaired, real capiacity:{}, marked capacity:{}",
 						ct->getCode(), curDate, realCap, markedCap);
@@ -1049,7 +1049,7 @@ WtDataWriter::TickBlockPair* WtDataWriter::getTickBlock(WTSContractInfo* ct, uin
 	return pBlock;
 }
 
-void WtDataWriter::pipeToKlines(WTSContractInfo* ct, WTSTickData* curTick)
+void WtDataWriter::pipeToKlines(VvTSContractInfo* ct, VvTSTickData* curTick)
 {
 	bool tickNoTrade = decimal::eq(curTick->turnover(),0);
 
@@ -1060,7 +1060,7 @@ void WtDataWriter::pipeToKlines(WTSContractInfo* ct, WTSTickData* curTick)
 	}
 
 	uint32_t uDate = curTick->actiondate();
-	WTSSessionInfo* sInfo = ct->getCommInfo()->getSessionInfo();
+	VvTSSessionInfo* sInfo = ct->getCommInfo()->getSessionInfo();
 	uint32_t curTime = curTick->actiontime() / 100000;
 
 	uint32_t minutes = sInfo->timeToMinutes(curTime, false);
@@ -1089,11 +1089,11 @@ void WtDataWriter::pipeToKlines(WTSContractInfo* ct, WTSTickData* curTick)
 			if (blk->_size == blk->_capacity)
 			{
 				pBlockPair->_file->sync();
-				pBlockPair->_block = (RTKlineBlock*)resizeRTBlock<RTKlineBlock, WTSBarStruct>(pBlockPair->_file, blk->_capacity * 2);
+				pBlockPair->_block = (RTKlineBlock*)resizeRTBlock<RTKlineBlock, VvTSBarStruct>(pBlockPair->_file, blk->_capacity * 2);
 				blk = pBlockPair->_block;
 			}
 
-			WTSBarStruct* lastBar = NULL;
+			VvTSBarStruct* lastBar = NULL;
 			if (blk->_size > 0)
 			{
 				lastBar = &blk->_bars[blk->_size - 1];
@@ -1115,7 +1115,7 @@ void WtDataWriter::pipeToKlines(WTSContractInfo* ct, WTSTickData* curTick)
 				bNew = true;
 			}
 
-			WTSBarStruct* newBar = NULL;
+			VvTSBarStruct* newBar = NULL;
 			if (bNew)
 			{
 				newBar = &blk->_bars[blk->_size];
@@ -1196,11 +1196,11 @@ void WtDataWriter::pipeToKlines(WTSContractInfo* ct, WTSTickData* curTick)
 			if (blk->_size == blk->_capacity)
 			{
 				pBlockPair->_file->sync();
-				pBlockPair->_block = (RTKlineBlock*)resizeRTBlock<RTKlineBlock, WTSBarStruct>(pBlockPair->_file, blk->_capacity * 2);
+				pBlockPair->_block = (RTKlineBlock*)resizeRTBlock<RTKlineBlock, VvTSBarStruct>(pBlockPair->_file, blk->_capacity * 2);
 				blk = pBlockPair->_block;
 			}
 
-			WTSBarStruct* lastBar = NULL;
+			VvTSBarStruct* lastBar = NULL;
 			if (blk->_size > 0)
 			{
 				lastBar = &blk->_bars[blk->_size - 1];
@@ -1221,7 +1221,7 @@ void WtDataWriter::pipeToKlines(WTSContractInfo* ct, WTSTickData* curTick)
 				bNew = true;
 			}
 
-			WTSBarStruct* newBar = NULL;
+			VvTSBarStruct* newBar = NULL;
 			if (bNew)
 			{
 				newBar = &blk->_bars[blk->_size];
@@ -1304,7 +1304,7 @@ void WtDataWriter::releaseBlock(T* block)
 	block->_lasttime = 0;
 }
 
-WtDataWriter::KBlockPair* WtDataWriter::getKlineBlock(WTSContractInfo* ct, WTSKlinePeriod period, bool bAutoCreate /* = true */)
+WtDataWriter::KBlockPair* WtDataWriter::getKlineBlock(VvTSContractInfo* ct, VvTSKlinePeriod period, bool bAutoCreate /* = true */)
 {
 	if (ct == NULL)
 		return NULL;
@@ -1352,9 +1352,9 @@ WtDataWriter::KBlockPair* WtDataWriter::getKlineBlock(WTSContractInfo* ct, WTSKl
 		if (bAutoCreate)
 			BoostFile::create_directories(path);
 
-		wt_strcpy(s, ct->getCode());
+		vvt_strcpy(s, ct->getCode());
 		s += strlen(ct->getCode());
-		wt_strcpy(s, ".dmb");
+		vvt_strcpy(s, ".dmb");
 		s += 4;
 		s[0] = '\0';
 
@@ -1366,7 +1366,7 @@ WtDataWriter::KBlockPair* WtDataWriter::getKlineBlock(WTSContractInfo* ct, WTSKl
 
 			pipe_writer_log(_sink, LL_INFO, "Data file {} not exists, initializing...", path);
 
-			uint64_t uSize = sizeof(RTKlineBlock) + sizeof(WTSBarStruct) * totalMins;	//预分配按照K线条数分配
+			uint64_t uSize = sizeof(RTKlineBlock) + sizeof(VvTSBarStruct) * totalMins;	//预分配按照K线条数分配
 			BoostFile bf;
 			bf.create_new_file(path);
 			bf.truncate_file((uint32_t)uSize);
@@ -1392,7 +1392,7 @@ WtDataWriter::KBlockPair* WtDataWriter::getKlineBlock(WTSContractInfo* ct, WTSKl
 		//	pBlock->_block->_size = 0;
 		//	pBlock->_block->_date = uDate;
 
-		//	memset(&pBlock->_block->_bars, 0, sizeof(WTSBarStruct)*pBlock->_block->_capacity);
+		//	memset(&pBlock->_block->_bars, 0, sizeof(VvTSBarStruct)*pBlock->_block->_capacity);
 		//}
 
 		if (isNew)
@@ -1411,12 +1411,12 @@ WtDataWriter::KBlockPair* WtDataWriter::getKlineBlock(WTSContractInfo* ct, WTSKl
 	return pBlock;
 }
 
-WTSTickData* WtDataWriter::getCurTick(const char* code, const char* exchg/* = ""*/)
+VvTSTickData* WtDataWriter::getCurTick(const char* code, const char* exchg/* = ""*/)
 {
 	if (strlen(code) == 0)
 		return NULL;
 
-	WTSContractInfo* ct = _bd_mgr->getContract(code, exchg);
+	VvTSContractInfo* ct = _bd_mgr->getContract(code, exchg);
 	if (ct == NULL)
 		return NULL;
 
@@ -1428,10 +1428,10 @@ WTSTickData* WtDataWriter::getCurTick(const char* code, const char* exchg/* = ""
 
 	uint32_t idx = it->second;
 	TickCacheItem& item = _tick_cache_block->_ticks[idx];
-	return WTSTickData::create(item._tick);
+	return VvTSTickData::create(item._tick);
 }
 
-bool WtDataWriter::updateCache(WTSContractInfo* ct, WTSTickData* curTick, uint32_t procFlag)
+bool WtDataWriter::updateCache(VvTSContractInfo* ct, VvTSTickData* curTick, uint32_t procFlag)
 {
 	if (curTick == NULL || _tick_cache_block == NULL)
 	{
@@ -1467,13 +1467,13 @@ bool WtDataWriter::updateCache(WTSContractInfo* ct, WTSTickData* curTick, uint32
 		return false;
 	}
 
-	WTSTickStruct& newTick = curTick->getTickStruct();
+	VvTSTickStruct& newTick = curTick->getTickStruct();
 
 	if (curTick->tradingdate() > item._date)
 	{
 		//新数据交易日大于老数据,则认为是新一天的数据
 		item._date = curTick->tradingdate();
-		memcpy(&item._tick, &newTick, sizeof(WTSTickStruct));
+		memcpy(&item._tick, &newTick, sizeof(VvTSTickStruct));
 		if (procFlag==1)
 		{
 			item._tick.volume = item._tick.total_volume;
@@ -1495,7 +1495,7 @@ bool WtDataWriter::updateCache(WTSContractInfo* ct, WTSTickData* curTick, uint32
 	{
 		//如果缓存里的数据日期大于最新行情的日期
 		//或者缓存里的时间大于等于最新行情的时间,数据就不需要处理
-		WTSSessionInfo* sInfo = ct->getCommInfo()->getSessionInfo();
+		VvTSSessionInfo* sInfo = ct->getCommInfo()->getSessionInfo();
 		uint32_t tdate = sInfo->getOffsetDate(curTick->actiondate(), curTick->actiontime() / 100000);
 		if (tdate > curTick->tradingdate())
 		{
@@ -1521,7 +1521,7 @@ bool WtDataWriter::updateCache(WTSContractInfo* ct, WTSTickData* curTick, uint32
 		//这里就要看需不需要预处理了
 		if(procFlag == 0)
 		{
-			memcpy(&item._tick, &newTick, sizeof(WTSTickStruct));
+			memcpy(&item._tick, &newTick, sizeof(VvTSTickStruct));
 		}
 		else
 		{
@@ -1529,7 +1529,7 @@ bool WtDataWriter::updateCache(WTSContractInfo* ct, WTSTickData* curTick, uint32
 			newTick.turn_over = newTick.total_turnover - item._tick.total_turnover;
 			newTick.diff_interest = newTick.open_interest - item._tick.open_interest;
 
-			memcpy(&item._tick, &newTick, sizeof(WTSTickStruct));
+			memcpy(&item._tick, &newTick, sizeof(VvTSTickStruct));
 		}
 
 		//pipe_writer_log(_sink, LL_DEBUG, "Tick cache data updated {}[{}.{}]", newTick.code, newTick.action_date, newTick.action_time);
@@ -1555,14 +1555,14 @@ void WtDataWriter::transHisData(const char* sid)
 			const char* exchg = ay[0].c_str();
 			const char* pid = ay[1].c_str();
 
-			WTSCommodityInfo* pCommInfo = _bd_mgr->getCommodity(exchg, pid);
+			VvTSCommodityInfo* pCommInfo = _bd_mgr->getCommodity(exchg, pid);
 			if (pCommInfo == NULL)
 				continue;
 
 			const CodeSet& codes = pCommInfo->getCodes();
 			for (auto code : codes)
 			{
-				WTSContractInfo* ct = _bd_mgr->getContract(code.c_str(), exchg);
+				VvTSContractInfo* ct = _bd_mgr->getContract(code.c_str(), exchg);
 				if(ct)
 					_proc_que.push(ct->getFullCode());
 			}
@@ -1667,7 +1667,7 @@ void WtDataWriter::check_loop()
 	}
 }
 
-uint32_t WtDataWriter::dump_bars_via_dumper(WTSContractInfo* ct)
+uint32_t WtDataWriter::dump_bars_via_dumper(VvTSContractInfo* ct)
 {
 	if (ct == NULL || _dumpers.empty())
 		return 0;
@@ -1683,9 +1683,9 @@ uint32_t WtDataWriter::dump_bars_via_dumper(WTSContractInfo* ct)
 		uint32_t idx = it->second;
 
 		const TickCacheItem& tci = _tick_cache_block->_ticks[idx];
-		const WTSTickStruct& ts = tci._tick;
+		const VvTSTickStruct& ts = tci._tick;
 
-		WTSBarStruct bsDay;
+		VvTSBarStruct bsDay;
 		bsDay.open = ts.open;
 		bsDay.high = ts.high;
 		bsDay.low = ts.low;
@@ -1823,10 +1823,10 @@ bool WtDataWriter::proc_block_data(const char* tag, std::string& content, bool i
 		if (isBar)
 		{
 			std::string bufV2;
-			uint32_t barcnt = buffer.size() / sizeof(WTSBarStructOld);
-			bufV2.resize(barcnt * sizeof(WTSBarStruct));
-			WTSBarStruct* newBar = (WTSBarStruct*)bufV2.data();
-			WTSBarStructOld* oldBar = (WTSBarStructOld*)buffer.data();
+			uint32_t barcnt = buffer.size() / sizeof(VvTSBarStructOld);
+			bufV2.resize(barcnt * sizeof(VvTSBarStruct));
+			VvTSBarStruct* newBar = (VvTSBarStruct*)bufV2.data();
+			VvTSBarStructOld* oldBar = (VvTSBarStructOld*)buffer.data();
 			for (uint32_t idx = 0; idx < barcnt; idx++)
 			{
 				newBar[idx] = oldBar[idx];
@@ -1837,11 +1837,11 @@ bool WtDataWriter::proc_block_data(const char* tag, std::string& content, bool i
 		}
 		else
 		{
-			uint32_t tick_cnt = buffer.size() / sizeof(WTSTickStructOld);
+			uint32_t tick_cnt = buffer.size() / sizeof(VvTSTickStructOld);
 			std::string bufv2;
-			bufv2.resize(sizeof(WTSTickStruct)*tick_cnt);
-			WTSTickStruct* newTick = (WTSTickStruct*)bufv2.data();
-			WTSTickStructOld* oldTick = (WTSTickStructOld*)buffer.data();
+			bufv2.resize(sizeof(VvTSTickStruct)*tick_cnt);
+			VvTSTickStruct* newTick = (VvTSTickStruct*)bufv2.data();
+			VvTSTickStructOld* oldTick = (VvTSTickStructOld*)buffer.data();
 			for (uint32_t i = 0; i < tick_cnt; i++)
 			{
 				newTick[i] = oldTick[i];
@@ -1866,7 +1866,7 @@ bool WtDataWriter::proc_block_data(const char* tag, std::string& content, bool i
 	return true;
 }
 
-bool WtDataWriter::dump_day_data(WTSContractInfo* ct, WTSBarStruct* newBar)
+bool WtDataWriter::dump_day_data(VvTSContractInfo* ct, VvTSBarStruct* newBar)
 {
 	std::stringstream ss;
 	ss << _base_dir << "his/day/" << ct->getExchg() << "/";
@@ -1891,7 +1891,7 @@ bool WtDataWriter::dump_day_data(WTSContractInfo* ct, WTSBarStruct* newBar)
 
 			f.write_file(&header, sizeof(header));
 
-			f.write_file(newBar, sizeof(WTSBarStruct));
+			f.write_file(newBar, sizeof(VvTSBarStruct));
 		}
 		else
 		{
@@ -1905,20 +1905,20 @@ bool WtDataWriter::dump_day_data(WTSContractInfo* ct, WTSBarStruct* newBar)
 			//先统一解压出来
 			proc_block_data(filename.c_str(), content, true, false);
 			
-			uint32_t barcnt = content.size() / sizeof(WTSBarStruct);
+			uint32_t barcnt = content.size() / sizeof(VvTSBarStruct);
 			//开始比较K线时间标签,主要为了防止数据重复写
 			if (barcnt != 0)
 			{
-				WTSBarStruct& oldBS = ((WTSBarStruct*)content.data())[barcnt - 1];
+				VvTSBarStruct& oldBS = ((VvTSBarStruct*)content.data())[barcnt - 1];
 
-				if (oldBS.date == newBar->date && memcmp(&oldBS, newBar, sizeof(WTSBarStruct)) != 0)
+				if (oldBS.date == newBar->date && memcmp(&oldBS, newBar, sizeof(VvTSBarStruct)) != 0)
 				{
 					//日期相同且数据不同,则用最新的替换最后一条
 					oldBS = *newBar;
 				}
 				else if (oldBS.date < newBar->date)	//老的K线日期小于新的,则直接追加到后面
 				{
-					content.append((char*)newBar, sizeof(WTSBarStruct));
+					content.append((char*)newBar, sizeof(VvTSBarStruct));
 					barcnt++;
 				}
 			}
@@ -1965,7 +1965,7 @@ bool WtDataWriter::dump_day_data(WTSContractInfo* ct, WTSBarStruct* newBar)
 	}
 }
 
-uint32_t WtDataWriter::dump_bars_to_file(WTSContractInfo* ct)
+uint32_t WtDataWriter::dump_bars_to_file(VvTSContractInfo* ct)
 {
 	if (ct == NULL)
 		return 0;
@@ -1983,9 +1983,9 @@ uint32_t WtDataWriter::dump_bars_to_file(WTSContractInfo* ct)
 			uint32_t idx = it->second;
 
 			const TickCacheItem& tci = _tick_cache_block->_ticks[idx];
-			const WTSTickStruct& ts = tci._tick;
+			const VvTSTickStruct& ts = tci._tick;
 
-			WTSBarStruct bs;
+			VvTSBarStruct bs;
 			bs.date = ts.trading_date;
 			bs.time = 0;
 			bs.open = ts.open;
@@ -2039,7 +2039,7 @@ uint32_t WtDataWriter::dump_bars_to_file(WTSContractInfo* ct)
 				}
 
 				//追加新的数据
-				buffer.append((const char*)kBlkPair->_block->_bars, sizeof(WTSBarStruct)*size);
+				buffer.append((const char*)kBlkPair->_block->_bars, sizeof(VvTSBarStruct)*size);
 
 				std::string cmpData = WTSCmpHelper::compress_data(buffer.data(), buffer.size());
 
@@ -2056,7 +2056,7 @@ uint32_t WtDataWriter::dump_bars_to_file(WTSContractInfo* ct)
 				count += size;
 
 				//最后将缓存清空
-				//memset(kBlkPair->_block->_bars, 0, sizeof(WTSBarStruct)*kBlkPair->_block->_size);
+				//memset(kBlkPair->_block->_bars, 0, sizeof(VvTSBarStruct)*kBlkPair->_block->_size);
 				kBlkPair->_block->_size = 0;
 			}
 			else
@@ -2105,7 +2105,7 @@ uint32_t WtDataWriter::dump_bars_to_file(WTSContractInfo* ct)
 					buffer.swap(content);
 				}
 
-				buffer.append((const char*)kBlkPair->_block->_bars, sizeof(WTSBarStruct)*size);
+				buffer.append((const char*)kBlkPair->_block->_bars, sizeof(VvTSBarStruct)*size);
 
 				std::string cmpData = WTSCmpHelper::compress_data(buffer.data(), buffer.size());
 
@@ -2173,7 +2173,7 @@ void WtDataWriter::proc_loop()
 			{
 				const char* key = it->first.c_str();
 				const StringVector& ay = StrUtil::split(key, ".");
-				WTSContractInfo* ct = _bd_mgr->getContract(ay[1].c_str(), ay[0].c_str());
+				VvTSContractInfo* ct = _bd_mgr->getContract(ay[1].c_str(), ay[0].c_str());
 				if (ct != NULL)
 				{
 					setCodes.insert(key);
@@ -2181,7 +2181,7 @@ void WtDataWriter::proc_loop()
 					uint32_t idx = it->second;
 
 					const TickCacheItem& tci = _tick_cache_block->_ticks[idx];
-					const WTSTickStruct& ts = tci._tick;
+					const VvTSTickStruct& ts = tci._tick;
 					ss_snapshot << ts.trading_date << ","
 						<< ts.exchg << ","
 						<< ts.code << ","
@@ -2229,7 +2229,7 @@ void WtDataWriter::proc_loop()
 				newCache->_version = BLOCK_VERSION_RAW_V2;
 				strcpy(newCache->_blk_flag, BLK_FLAG);
 
-				wt_hashmap<std::string, uint32_t> newIdxMap;
+				vvt_hashmap<std::string, uint32_t> newIdxMap;
 
 				uint32_t newIdx = 0;
 				for (const std::string& key : setCodes)
@@ -2329,7 +2329,7 @@ void WtDataWriter::proc_loop()
 		auto pos = fullcode.find(".");
 		std::string exchg = fullcode.substr(0, pos);
 		std::string code = fullcode.substr(pos + 1);
-		WTSContractInfo* ct = _bd_mgr->getContract(code.c_str(), exchg.c_str());
+		VvTSContractInfo* ct = _bd_mgr->getContract(code.c_str(), exchg.c_str());
 		if (ct == NULL)
 			continue;
 
@@ -2382,7 +2382,7 @@ void WtDataWriter::proc_loop()
 							if (f.create_new_file(filename.c_str()))
 							{
 								//先压缩数据
-								std::string cmp_data = WTSCmpHelper::compress_data(tBlkPair->_block->_ticks, sizeof(WTSTickStruct)*tBlkPair->_block->_size);
+								std::string cmp_data = WTSCmpHelper::compress_data(tBlkPair->_block->_ticks, sizeof(VvTSTickStruct)*tBlkPair->_block->_size);
 
 								BlockHeaderV2 header;
 								strcpy(header._blk_flag, BLK_FLAG);
@@ -2397,7 +2397,7 @@ void WtDataWriter::proc_loop()
 								count += tBlkPair->_block->_size;
 
 								//最后将缓存清空
-								//memset(tBlkPair->_block->_ticks, 0, sizeof(WTSTickStruct)*tBlkPair->_block->_size);
+								//memset(tBlkPair->_block->_ticks, 0, sizeof(VvTSTickStruct)*tBlkPair->_block->_size);
 								tBlkPair->_block->_size = 0;
 							}
 							else
@@ -2449,7 +2449,7 @@ void WtDataWriter::proc_loop()
 						if (f.create_new_file(filename.c_str()))
 						{
 							//先压缩数据
-							std::string cmp_data = WTSCmpHelper::compress_data(tBlkPair->_block->_trans, sizeof(WTSTransStruct)*tBlkPair->_block->_size);
+							std::string cmp_data = WTSCmpHelper::compress_data(tBlkPair->_block->_trans, sizeof(VvTSTransStruct)*tBlkPair->_block->_size);
 
 							BlockHeaderV2 header;
 							strcpy(header._blk_flag, BLK_FLAG);
@@ -2464,7 +2464,7 @@ void WtDataWriter::proc_loop()
 							count += tBlkPair->_block->_size;
 
 							//最后将缓存清空
-							//memset(tBlkPair->_block->_ticks, 0, sizeof(WTSTickStruct)*tBlkPair->_block->_size);
+							//memset(tBlkPair->_block->_ticks, 0, sizeof(VvTSTickStruct)*tBlkPair->_block->_size);
 							tBlkPair->_block->_size = 0;
 						}
 						else
@@ -2515,7 +2515,7 @@ void WtDataWriter::proc_loop()
 						if (f.create_new_file(filename.c_str()))
 						{
 							//先压缩数据
-							std::string cmp_data = WTSCmpHelper::compress_data(tBlkPair->_block->_details, sizeof(WTSOrdDtlStruct)*tBlkPair->_block->_size);
+							std::string cmp_data = WTSCmpHelper::compress_data(tBlkPair->_block->_details, sizeof(VvTSOrdDtlStruct)*tBlkPair->_block->_size);
 
 							BlockHeaderV2 header;
 							strcpy(header._blk_flag, BLK_FLAG);
@@ -2530,7 +2530,7 @@ void WtDataWriter::proc_loop()
 							count += tBlkPair->_block->_size;
 
 							//最后将缓存清空
-							//memset(tBlkPair->_block->_ticks, 0, sizeof(WTSTickStruct)*tBlkPair->_block->_size);
+							//memset(tBlkPair->_block->_ticks, 0, sizeof(VvTSTickStruct)*tBlkPair->_block->_size);
 							tBlkPair->_block->_size = 0;
 						}
 						else
@@ -2581,7 +2581,7 @@ void WtDataWriter::proc_loop()
 						if (f.create_new_file(filename.c_str()))
 						{
 							//先压缩数据
-							std::string cmp_data = WTSCmpHelper::compress_data(tBlkPair->_block->_queues, sizeof(WTSOrdQueStruct)*tBlkPair->_block->_size);
+							std::string cmp_data = WTSCmpHelper::compress_data(tBlkPair->_block->_queues, sizeof(VvTSOrdQueStruct)*tBlkPair->_block->_size);
 
 							BlockHeaderV2 header;
 							strcpy(header._blk_flag, BLK_FLAG);
@@ -2596,7 +2596,7 @@ void WtDataWriter::proc_loop()
 							count += tBlkPair->_block->_size;
 
 							//最后将缓存清空
-							//memset(tBlkPair->_block->_ticks, 0, sizeof(WTSTickStruct)*tBlkPair->_block->_size);
+							//memset(tBlkPair->_block->_ticks, 0, sizeof(VvTSTickStruct)*tBlkPair->_block->_size);
 							tBlkPair->_block->_size = 0;
 						}
 						else

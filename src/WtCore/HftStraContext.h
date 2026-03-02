@@ -11,7 +11,7 @@
 #include "HftStraBaseCtx.h"
 
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class HftStrategy;
 
@@ -31,15 +31,15 @@ public:
 
 	virtual void on_session_end(uint32_t uTDate) override;
 
-	virtual void on_tick(const char* code, WTSTickData* newTick) override;
+	virtual void on_tick(const char* code, VvTSTickData* newTick) override;
 
-	virtual void on_order_queue(const char* stdCode, WTSOrdQueData* newOrdQue) override;
+	virtual void on_order_queue(const char* stdCode, VvTSOrdQueData* newOrdQue) override;
 
-	virtual void on_order_detail(const char* stdCode, WTSOrdDtlData* newOrdDtl) override;
+	virtual void on_order_detail(const char* stdCode, VvTSOrdDtlData* newOrdDtl) override;
 
-	virtual void on_transaction(const char* stdCode, WTSTransData* newTrans) override;
+	virtual void on_transaction(const char* stdCode, VvTSTransData* newTrans) override;
 
-	virtual void on_bar(const char* code, const char* period, uint32_t times, WTSBarStruct* newBar) override;
+	virtual void on_bar(const char* code, const char* period, uint32_t times, VvTSBarStruct* newBar) override;
 
 	virtual void on_trade(uint32_t localid, const char* stdCode, bool isBuy, double vol, double price) override;
 

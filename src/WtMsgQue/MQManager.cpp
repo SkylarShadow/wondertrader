@@ -2,9 +2,9 @@
 
 #include <spdlog/fmt/fmt.h>
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
-WtUInt32 MQManager::create_server(const char* url, bool confirm)
+VvTUInt32 MQManager::create_server(const char* url, bool confirm)
 {
 	MQServerPtr server(new MQServer(this));
 
@@ -17,7 +17,7 @@ WtUInt32 MQManager::create_server(const char* url, bool confirm)
 	return id;
 }
 
-void MQManager::destroy_server(WtUInt32 id)
+void MQManager::destroy_server(VvTUInt32 id)
 {
 	auto it = _servers.find(id);
 	if(it == _servers.end())
@@ -30,7 +30,7 @@ void MQManager::destroy_server(WtUInt32 id)
 	log_server(id, fmt::format("MQServer {} has been destroyed", id).c_str());
 }
 
-void MQManager::publish_message(WtUInt32 id, const char* topic, const void* data, WtUInt32 dataLen)
+void MQManager::publish_message(VvTUInt32 id, const char* topic, const void* data, VvTUInt32 dataLen)
 {
 	auto it = _servers.find(id);
 	if (it == _servers.end())
@@ -43,19 +43,19 @@ void MQManager::publish_message(WtUInt32 id, const char* topic, const void* data
 	server->publish(topic, data, dataLen);
 }
 
-void MQManager::log_server(WtUInt32 id, const char* message)
+void MQManager::log_server(VvTUInt32 id, const char* message)
 {
 	if (_cb_log)
 		_cb_log(id, message, true);
 }
 
-void MQManager::log_client(WtUInt32 id, const char* message)
+void MQManager::log_client(VvTUInt32 id, const char* message)
 {
 	if (_cb_log)
 		_cb_log(id, message, false);
 }
 
-WtUInt32 MQManager::create_client(const char* url, FuncMQCallback cb)
+VvTUInt32 MQManager::create_client(const char* url, FuncMQCallback cb)
 {
 	MQClientPtr client(new MQClient(this));
 	client->init(url, cb);
@@ -66,7 +66,7 @@ WtUInt32 MQManager::create_client(const char* url, FuncMQCallback cb)
 	return id;
 }
 
-void MQManager::destroy_client(WtUInt32 id)
+void MQManager::destroy_client(VvTUInt32 id)
 {
 	auto it = _clients.find(id);
 	if (it == _clients.end())
@@ -79,7 +79,7 @@ void MQManager::destroy_client(WtUInt32 id)
 	log_client(id, fmt::format("MQClient {} has been destroyed", id).c_str());
 }
 
-void MQManager::sub_topic(WtUInt32 id, const char* topic)
+void MQManager::sub_topic(VvTUInt32 id, const char* topic)
 {
 	auto it = _clients.find(id);
 	if (it == _clients.end())
@@ -92,7 +92,7 @@ void MQManager::sub_topic(WtUInt32 id, const char* topic)
 	client->sub_topic(topic);
 }
 
-void MQManager::start_client(WtUInt32 id)
+void MQManager::start_client(VvTUInt32 id)
 {
 	auto it = _clients.find(id);
 	if (it == _clients.end())

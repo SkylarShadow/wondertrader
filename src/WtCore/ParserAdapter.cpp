@@ -15,15 +15,15 @@
 #include "../Share/CodeHelper.hpp"
 #include "../Share/TimeUtils.hpp"
 
-#include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/VvTSDataDef.hpp"
+#include "../Includes/VvTSVariant.hpp"
 #include "../Includes/IBaseDataMgr.h"
 #include "../Includes/IHotMgr.h"
 
 #include "../WTSTools/WTSLogger.h"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 //////////////////////////////////////////////////////////////////////////
 //ParserAdapter
@@ -60,11 +60,11 @@ bool ParserAdapter::initExt(const char* id, IParserApi* api, IParserStub* stub, 
 		if (_parser_api->init(NULL))
 		{
 			ContractSet contractSet;
-			WTSArray* ayContract = _bd_mgr->getContracts();
-			WTSArray::Iterator it = ayContract->begin();
+			VvTSArray* ayContract = _bd_mgr->getContracts();
+			VvTSArray::Iterator it = ayContract->begin();
 			for (; it != ayContract->end(); it++)
 			{
-				WTSContractInfo* contract = STATIC_CONVERT(*it, WTSContractInfo*);
+				VvTSContractInfo* contract = STATIC_CONVERT(*it, VvTSContractInfo*);
 				contractSet.insert(contract->getFullCode());
 			}
 
@@ -82,7 +82,7 @@ bool ParserAdapter::initExt(const char* id, IParserApi* api, IParserStub* stub, 
 	return true;
 }
 
-bool ParserAdapter::init(const char* id, WTSVariant* cfg, IParserStub* stub, IBaseDataMgr* bgMgr, IHotMgr* hotMgr/* = NULL*/)
+bool ParserAdapter::init(const char* id, VvTSVariant* cfg, IParserStub* stub, IBaseDataMgr* bgMgr, IHotMgr* hotMgr/* = NULL*/)
 {
 	if (cfg == NULL)
 		return false;
@@ -191,13 +191,13 @@ bool ParserAdapter::init(const char* id, WTSVariant* cfg, IParserStub* stub, IBa
 						exchg = ay[0];
 						code = ay[2];
 					}
-					WTSContractInfo* contract = _bd_mgr->getContract(code.c_str(), exchg.c_str());
+					VvTSContractInfo* contract = _bd_mgr->getContract(code.c_str(), exchg.c_str());
 					if(contract)
 						contractSet.insert(contract->getFullCode());
 					else
 					{
 						//如果是品种ID，则将该品种下全部合约都加到订阅列表
-						WTSCommodityInfo* commInfo = _bd_mgr->getCommodity(exchg.c_str(), code.c_str());
+						VvTSCommodityInfo* commInfo = _bd_mgr->getCommodity(exchg.c_str(), code.c_str());
 						if(commInfo)
 						{
 							const auto& codes = commInfo->getCodes();
@@ -214,11 +214,11 @@ bool ParserAdapter::init(const char* id, WTSVariant* cfg, IParserStub* stub, IBa
 				ExchgFilter::iterator it = _exchg_filter.begin();
 				for (; it != _exchg_filter.end(); it++)
 				{
-					WTSArray* ayContract =_bd_mgr->getContracts((*it).c_str());
-					WTSArray::Iterator it = ayContract->begin();
+					VvTSArray* ayContract =_bd_mgr->getContracts((*it).c_str());
+					VvTSArray::Iterator it = ayContract->begin();
 					for (; it != ayContract->end(); it++)
 					{
-						WTSContractInfo* contract = STATIC_CONVERT(*it, WTSContractInfo*);
+						VvTSContractInfo* contract = STATIC_CONVERT(*it, VvTSContractInfo*);
 						contractSet.insert(contract->getFullCode());
 					}
 
@@ -227,11 +227,11 @@ bool ParserAdapter::init(const char* id, WTSVariant* cfg, IParserStub* stub, IBa
 			}
 			else
 			{
-				WTSArray* ayContract =_bd_mgr->getContracts();
-				WTSArray::Iterator it = ayContract->begin();
+				VvTSArray* ayContract =_bd_mgr->getContracts();
+				VvTSArray::Iterator it = ayContract->begin();
 				for (; it != ayContract->end(); it++)
 				{
-					WTSContractInfo* contract = STATIC_CONVERT(*it, WTSContractInfo*);
+					VvTSContractInfo* contract = STATIC_CONVERT(*it, VvTSContractInfo*);
 					contractSet.insert(contract->getFullCode());
 				}
 
@@ -281,7 +281,7 @@ bool ParserAdapter::run()
 
 //合理毫秒数时间差
 const int RESONABLE_MILLISECS = 60 * 60 * 1000;
-void ParserAdapter::handleQuote(WTSTickData *quote, uint32_t procFlag)
+void ParserAdapter::handleQuote(VvTSTickData *quote, uint32_t procFlag)
 {
 	if (quote == NULL || _stopped || quote->actiondate() == 0 || quote->tradingdate() == 0)
 		return;
@@ -289,7 +289,7 @@ void ParserAdapter::handleQuote(WTSTickData *quote, uint32_t procFlag)
 	if (!_exchg_filter.empty() && (_exchg_filter.find(quote->exchg()) == _exchg_filter.end()))
 		return;
 
-	WTSContractInfo* cInfo = quote->getContractInfo();
+	VvTSContractInfo* cInfo = quote->getContractInfo();
 	if (cInfo == NULL)
 	{
 		cInfo = _bd_mgr->getContract(quote->code(), quote->exchg());
@@ -299,8 +299,8 @@ void ParserAdapter::handleQuote(WTSTickData *quote, uint32_t procFlag)
 	if (cInfo == NULL)
 		return;
 
-	WTSCommodityInfo* commInfo = cInfo->getCommInfo();
-	WTSSessionInfo* sInfo = commInfo->getSessionInfo();
+	VvTSCommodityInfo* commInfo = cInfo->getCommInfo();
+	VvTSSessionInfo* sInfo = commInfo->getSessionInfo();
 
 	if (_check_time)
 	{
@@ -339,7 +339,7 @@ void ParserAdapter::handleQuote(WTSTickData *quote, uint32_t procFlag)
 	_stub->handle_push_quote(quote);
 }
 
-void ParserAdapter::handleOrderQueue(WTSOrdQueData* ordQueData)
+void ParserAdapter::handleOrderQueue(VvTSOrdQueData* ordQueData)
 {
 	if (_stopped)
 		return;
@@ -350,11 +350,11 @@ void ParserAdapter::handleOrderQueue(WTSOrdQueData* ordQueData)
 	if (ordQueData->actiondate() == 0 || ordQueData->tradingdate() == 0)
 		return;
 
-	WTSContractInfo* cInfo = _bd_mgr->getContract(ordQueData->code(), ordQueData->exchg());
+	VvTSContractInfo* cInfo = _bd_mgr->getContract(ordQueData->code(), ordQueData->exchg());
 	if (cInfo == NULL)
 		return;
 
-	WTSCommodityInfo* commInfo = cInfo->getCommInfo();
+	VvTSCommodityInfo* commInfo = cInfo->getCommInfo();
 	std::string stdCode = CodeHelper::rawFlatCodeToStdCode(cInfo->getCode(), cInfo->getExchg(), commInfo->getProduct());
 	ordQueData->setCode(stdCode.c_str());
 
@@ -362,7 +362,7 @@ void ParserAdapter::handleOrderQueue(WTSOrdQueData* ordQueData)
 		_stub->handle_push_order_queue(ordQueData);
 }
 
-void ParserAdapter::handleOrderDetail(WTSOrdDtlData* ordDtlData)
+void ParserAdapter::handleOrderDetail(VvTSOrdDtlData* ordDtlData)
 {
 	if (_stopped)
 		return;
@@ -373,11 +373,11 @@ void ParserAdapter::handleOrderDetail(WTSOrdDtlData* ordDtlData)
 	if (ordDtlData->actiondate() == 0 || ordDtlData->tradingdate() == 0)
 		return;
 
-	WTSContractInfo* cInfo = _bd_mgr->getContract(ordDtlData->code(), ordDtlData->exchg());
+	VvTSContractInfo* cInfo = _bd_mgr->getContract(ordDtlData->code(), ordDtlData->exchg());
 	if (cInfo == NULL)
 		return;
 
-	WTSCommodityInfo* commInfo = cInfo->getCommInfo();
+	VvTSCommodityInfo* commInfo = cInfo->getCommInfo();
 	std::string stdCode = CodeHelper::rawFlatCodeToStdCode(cInfo->getCode(), cInfo->getExchg(), commInfo->getProduct());
 	ordDtlData->setCode(stdCode.c_str());
 
@@ -385,7 +385,7 @@ void ParserAdapter::handleOrderDetail(WTSOrdDtlData* ordDtlData)
 		_stub->handle_push_order_detail(ordDtlData);
 }
 
-void ParserAdapter::handleTransaction(WTSTransData* transData)
+void ParserAdapter::handleTransaction(VvTSTransData* transData)
 {
 	if (_stopped)
 		return;
@@ -396,11 +396,11 @@ void ParserAdapter::handleTransaction(WTSTransData* transData)
 	if (transData->actiondate() == 0 || transData->tradingdate() == 0)
 		return;
 
-	WTSContractInfo* cInfo = _bd_mgr->getContract(transData->code(), transData->exchg());
+	VvTSContractInfo* cInfo = _bd_mgr->getContract(transData->code(), transData->exchg());
 	if (cInfo == NULL)
 		return;
 
-	WTSCommodityInfo* commInfo = cInfo->getCommInfo();
+	VvTSCommodityInfo* commInfo = cInfo->getCommInfo();
 	std::string stdCode = CodeHelper::rawFlatCodeToStdCode(cInfo->getCode(), cInfo->getExchg(), commInfo->getProduct());
 	transData->setCode(stdCode.c_str());
 
@@ -409,7 +409,7 @@ void ParserAdapter::handleTransaction(WTSTransData* transData)
 }
 
 
-void ParserAdapter::handleParserLog(WTSLogLevel ll, const char* message)
+void ParserAdapter::handleParserLog(VvTSLogLevel ll, const char* message)
 {
 	if (_stopped)
 		return;

@@ -25,11 +25,11 @@
 #include "../WTSTools/WTSHotMgr.h"
 #include "../WTSTools/WTSBaseDataMgr.h"
 
-NS_WTP_BEGIN
-class WTSVariant;
-NS_WTP_END
+NS_VVTP_BEGIN
+class VvTSVariant;
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class WtUftRunner : public ILogHandler
 {
@@ -45,8 +45,8 @@ public:
 	void run(bool bAsync = false);
 
 private:
-	bool initTraders(WTSVariant* cfgTrader);
-	bool initParsers(WTSVariant* cfgParser);
+	bool initTraders(VvTSVariant* cfgTrader);
+	bool initParsers(VvTSVariant* cfgParser);
 	bool initDataMgr();
 	bool initUftStrategies();
 	bool initEvtNotifier();
@@ -55,10 +55,10 @@ private:
 //////////////////////////////////////////////////////////////////////////
 //ILogHandler
 public:
-	virtual void handleLogAppend(WTSLogLevel ll, const char* msg) override;
+	virtual void handleLogAppend(VvTSLogLevel ll, const char* msg) override;
 
 private:
-	WTSVariant*			_config;
+	VvTSVariant*			_config;
 	TraderAdapterMgr	_traders;
 	ParserAdapterMgr	_parsers;
 

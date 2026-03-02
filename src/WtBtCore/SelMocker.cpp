@@ -16,9 +16,9 @@
 #include "../Share/StdUtils.hpp"
 #include "../Share/StrUtil.hpp"
 #include "../Share/decimal.h"
-#include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSSessionInfo.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/VvTSSessionInfo.hpp"
+#include "../Includes/VvTSVariant.hpp"
 
 #include "../WTSTools/WTSLogger.h"
 
@@ -227,7 +227,7 @@ void SelMocker::log_close(const char* stdCode, bool isLong, uint64_t openTime, d
 		<< totalprofit << "," << enterTag << "," << exitTag << "," << openBarNo << "," << closeBarNo << "\n";
 }
 
-bool SelMocker::init_sel_factory(WTSVariant* cfg)
+bool SelMocker::init_sel_factory(VvTSVariant* cfg)
 {
 	if (cfg == NULL)
 		return false;
@@ -251,7 +251,7 @@ bool SelMocker::init_sel_factory(WTSVariant* cfg)
 	_factory._remover = (FuncDeleteSelStraFact)DLLHelper::get_symbol(hInst, "deleteSelStrategyFact");
 	_factory._fact = _factory._creator();
 
-	WTSVariant* cfgStra = cfg->get("strategy");
+	VvTSVariant* cfgStra = cfg->get("strategy");
 	if (cfgStra)
 	{
 		_strategy = _factory._fact->createStrategy(cfgStra->getCString("name"), cfgStra->getCString("id"));
@@ -273,7 +273,7 @@ void SelMocker::handle_init()
 	this->on_init();
 }
 
-void SelMocker::handle_bar_close(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar)
+void SelMocker::handle_bar_close(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar)
 {
 	this->on_bar(stdCode, period, times, newBar);
 }
@@ -309,7 +309,7 @@ void SelMocker::handle_replay_done()
 	this->on_bactest_end();
 }
 
-void SelMocker::handle_tick(const char* stdCode, WTSTickData* newTick, uint32_t pxType)
+void SelMocker::handle_tick(const char* stdCode, VvTSTickData* newTick, uint32_t pxType)
 {
 	double cur_px = newTick->price();
 
@@ -375,7 +375,7 @@ void SelMocker::proc_tick(const char* stdCode, double last_px, double cur_px)
 
 //////////////////////////////////////////////////////////////////////////
 //回调函数
-void SelMocker::on_bar(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar)
+void SelMocker::on_bar(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar)
 {
 	if (newBar == NULL)
 		return;
@@ -414,7 +414,7 @@ void SelMocker::update_dyn_profit(const char* stdCode, double price)
 		}
 		else
 		{
-			WTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
+			VvTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
 			double dynprofit = 0;
 			for (auto pit = pInfo._details.begin(); pit != pInfo._details.end(); pit++)
 			{
@@ -445,19 +445,19 @@ void SelMocker::update_dyn_profit(const char* stdCode, double price)
 	_fund_info._total_dynprofit = total_dynprofit;
 }
 
-void SelMocker::on_tick(const char* stdCode, WTSTickData* newTick, bool bEmitStrategy /* = true */)
+void SelMocker::on_tick(const char* stdCode, VvTSTickData* newTick, bool bEmitStrategy /* = true */)
 {
 	//By Wesley @ 2022.04.19
 	//这个逻辑迁移到handle_tick去了
 }
 
-void SelMocker::on_bar_close(const char* code, const char* period, WTSBarStruct* newBar)
+void SelMocker::on_bar_close(const char* code, const char* period, VvTSBarStruct* newBar)
 {
 	if (_strategy)
 		_strategy->on_bar(this, code, period, newBar);
 }
 
-void SelMocker::on_tick_updated(const char* code, WTSTickData* newTick)
+void SelMocker::on_tick_updated(const char* code, VvTSTickData* newTick)
 {
 	auto it = _tick_subs.find(code);
 	if (it == _tick_subs.end())
@@ -483,7 +483,7 @@ bool SelMocker::on_schedule(uint32_t curDate, uint32_t curTime, uint32_t fireTim
 	TimeUtils::Ticker ticker;
 	on_strategy_schedule(curDate, curTime);
 
-	wt_hashset<std::string> to_clear;
+	vvt_hashset<std::string> to_clear;
 	for(auto& v : _pos_map)
 	{
 		const PosInfo& pInfo = v.second;
@@ -525,7 +525,7 @@ void SelMocker::on_session_begin(uint32_t curTDate)
 
 void SelMocker::enum_position(FuncEnumSelPositionCallBack cb)
 {
-	wt_hashmap<std::string, double> desPos;
+	vvt_hashmap<std::string, double> desPos;
 	for (auto& it : _pos_map)
 	{
 		const char* stdCode = it.first.c_str();
@@ -586,7 +586,7 @@ double SelMocker::stra_get_price(const char* stdCode)
 
 void SelMocker::stra_set_position(const char* stdCode, double qty, const char* userTag /* = "" */)
 {
-	WTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
+	VvTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
 	if (commInfo == NULL)
 	{
 		log_error("Cannot find corresponding commodity info of {}", stdCode);
@@ -651,7 +651,7 @@ void SelMocker::do_set_position(const char* stdCode, double qty, double price /*
 	if (decimal::eq(pInfo._volume, qty))
 		return;
 
-	WTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
+	VvTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
 	if (commInfo == NULL)
 		return;
 
@@ -808,7 +808,7 @@ void SelMocker::do_set_position(const char* stdCode, double qty, double price /*
 	}
 }
 
-WTSKlineSlice* SelMocker::stra_get_bars(const char* stdCode, const char* period, uint32_t count)
+VvTSKlineSlice* SelMocker::stra_get_bars(const char* stdCode, const char* period, uint32_t count)
 {
 	thread_local static char key[64] = { 0 };
 	fmtutil::format_to(key, "{}#{}", stdCode, period);
@@ -821,7 +821,7 @@ WTSKlineSlice* SelMocker::stra_get_bars(const char* stdCode, const char* period,
 	else
 		strcat(key, "1");
 
-	WTSKlineSlice* kline = _replayer->get_kline_slice(stdCode, basePeriod, count, times, false);
+	VvTSKlineSlice* kline = _replayer->get_kline_slice(stdCode, basePeriod, count, times, false);
 
 	KlineTag& tag = _kline_tags[key];
 	tag._closed = false;
@@ -833,7 +833,7 @@ WTSKlineSlice* SelMocker::stra_get_bars(const char* stdCode, const char* period,
 		if(basePeriod[0] == 'd')
 		{
 			lastTime = kline->at(-1)->date;
-			WTSSessionInfo* sInfo = _replayer->get_session_info(stdCode, true);
+			VvTSSessionInfo* sInfo = _replayer->get_session_info(stdCode, true);
 			lastTime *= 1000000000;
 			lastTime += (uint64_t)sInfo->getCloseTime() * 100000;
 		}
@@ -854,12 +854,12 @@ WTSKlineSlice* SelMocker::stra_get_bars(const char* stdCode, const char* period,
 	return kline;
 }
 
-WTSTickSlice* SelMocker::stra_get_ticks(const char* stdCode, uint32_t count)
+VvTSTickSlice* SelMocker::stra_get_ticks(const char* stdCode, uint32_t count)
 {
 	return _replayer->get_tick_slice(stdCode, count);
 }
 
-WTSTickData* SelMocker::stra_get_last_tick(const char* stdCode)
+VvTSTickData* SelMocker::stra_get_last_tick(const char* stdCode)
 {
 	return _replayer->get_last_tick(stdCode);
 }
@@ -876,7 +876,7 @@ void SelMocker::stra_sub_ticks(const char* code)
 	_replayer->sub_tick(_context_id, code);
 }
 
-WTSCommodityInfo* SelMocker::stra_get_comminfo(const char* stdCode)
+VvTSCommodityInfo* SelMocker::stra_get_comminfo(const char* stdCode)
 {
 	return _replayer->get_commodity_info(stdCode);
 }
@@ -886,7 +886,7 @@ std::string SelMocker::stra_get_rawcode(const char* stdCode)
 	return _replayer->get_rawcode(stdCode);
 }
 
-WTSSessionInfo* SelMocker::stra_get_sessinfo(const char* stdCode)
+VvTSSessionInfo* SelMocker::stra_get_sessinfo(const char* stdCode)
 {
 	return _replayer->get_session_info(stdCode, true);
 }

@@ -1,9 +1,9 @@
 ﻿#pragma once
-#include "WTSTypes.h"
+#include "VvTSTypes.h"
 
 #include <map>
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 typedef struct _Contract
 {

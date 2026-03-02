@@ -20,16 +20,16 @@
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/strand.hpp>
 
-#include "../Includes/WTSTypes.h"
+#include "../Includes/VvTSTypes.h"
 #include "../Includes/ITraderApi.h"
-#include "../Includes/WTSCollection.hpp"
+#include "../Includes/VvTSCollection.hpp"
 
 #include "../Share/IniHelper.hpp"
 #include "../Share/StdUtils.hpp"
 #include "../Share/DLLHelper.hpp"
 
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 
 class TraderHTS : public ITraderApi
@@ -52,7 +52,7 @@ public:
 
 private:
 	void doLogin();
-	void InitializeHTS(WTSVariant* params);
+	void InitializeHTS(VvTSVariant* params);
 	void qryGDNo();	//查询股东号
 	//void qryCustInfo();  // 查询客户信息
 	//void qryCustNodeInfo();  // 查询客户节点信息
@@ -73,7 +73,7 @@ private:
 	//////////////////////////////////////////////////////////////////////////
 	//ITraderApi接口
 public:
-	virtual bool init(WTSVariant* params) override;
+	virtual bool init(VvTSVariant* params) override;
 
 	virtual void release() override;
 
@@ -91,9 +91,9 @@ public:
 
 	virtual int logout() override;
 
-	virtual int orderInsert(WTSEntrust* eutrust) override;
+	virtual int orderInsert(VvTSEntrust* eutrust) override;
 
-	virtual int orderAction(WTSEntrustAction* action) override;
+	virtual int orderAction(VvTSEntrustAction* action) override;
 
 	virtual int queryAccount() override;
 
@@ -127,7 +127,7 @@ protected:
 	bool			m_bUseEX;  // 使用EX后缀
 	bool			m_bASync;  // 是否使用异步
 
-	typedef WTSHashMap<std::string> TradeDataMap;
+	typedef VvTSHashMap<std::string> TradeDataMap;
 	TradeDataMap*	m_mapLives;
 	std::unordered_set<std::string>	m_tradeids;
 
@@ -164,7 +164,7 @@ public:
 	~HTSCallMgr();
 
 public:
-	bool init(WTSVariant* params);
+	bool init(VvTSVariant* params);
 	void setCallbackMsgFunc();
 	void setHTSCallPtr(std::string khh, TraderHTS* pTrader);
 

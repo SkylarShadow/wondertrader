@@ -1,14 +1,14 @@
 ﻿#pragma once
 #include "IDataCaster.h"
 #include <stdint.h>
-#include "../Includes/WTSStruct.h"
+#include "../Includes/VvTSStruct.h"
 #include "../Share/BoostMappingFile.hpp"
 
-NS_WTP_BEGIN
-class WTSVariant;
-NS_WTP_END
+NS_VVTP_BEGIN
+class VvTSVariant;
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class ShmCaster : public IDataCaster
 {
@@ -19,10 +19,10 @@ public:
 		uint32_t	_type;	//数据类型， 0-tick,1-委托队列,2-逐笔委托,3-逐笔成交
 		union
 		{
-			WTSTickStruct	_tick;
-			WTSOrdQueStruct _queue;
-			WTSOrdDtlStruct	_order;
-			WTSTransStruct	_trans;
+			VvTSTickStruct	_tick;
+			VvTSOrdQueStruct _queue;
+			VvTSOrdDtlStruct	_order;
+			VvTSTransStruct	_trans;
 		};
 
 		_DataItem() { memset(this, 0, sizeof(_DataItem)); }
@@ -47,12 +47,12 @@ public:
 public:
 	ShmCaster():_queue(NULL), _inited(false){}
 
-	bool	init(WTSVariant* cfg);
+	bool	init(VvTSVariant* cfg);
 
-	virtual void	broadcast(WTSTickData* curTick) override;
-	virtual void	broadcast(WTSOrdQueData* curOrdQue) override;
-	virtual void	broadcast(WTSOrdDtlData* curOrdDtl) override;
-	virtual void	broadcast(WTSTransData* curTrans) override;
+	virtual void	broadcast(VvTSTickData* curTick) override;
+	virtual void	broadcast(VvTSOrdQueData* curOrdQue) override;
+	virtual void	broadcast(VvTSOrdDtlData* curOrdDtl) override;
+	virtual void	broadcast(VvTSTransData* curTrans) override;
 
 private:
 	std::string		_path;

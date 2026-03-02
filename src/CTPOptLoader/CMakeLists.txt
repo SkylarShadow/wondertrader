@@ -19,18 +19,19 @@ INCLUDE_DIRECTORIES(${INCS})
 LINK_DIRECTORIES(${LNKS})
 
 SET(LIBS	
-	boost_filesystem
+	# boost_filesystem #临时过构建
     WTSUtils
-	dl
+	#dl
 )
 
-IF(WIN32)
-LIST(APPEND LIBS iconv)
+IF(WIN32) 
+#LIST(APPEND LIBS iconv) #临时过构建
 ENDIF()
 
 #9. 生成可执行文件
 ADD_LIBRARY(CTPOptLoader SHARED ${SRC})
 IF (MSVC)
+	TARGET_LINK_LIBRARIES(CTPOptLoader ${LIBS}) #临时过构建
 ELSE (GNUCC)
 	TARGET_LINK_LIBRARIES(CTPOptLoader ${LIBS})
 ENDIF ()

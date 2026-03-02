@@ -15,13 +15,13 @@
 #include "../API/XTP2.2.32.2/xtp_trader_api.h"
 
 #include "../Includes/ITraderApi.h"
-#include "../Includes/WTSCollection.hpp"
+#include "../Includes/VvTSCollection.hpp"
 
 #include "../Share/StdUtils.hpp"
 #include "../Share/DLLHelper.hpp"
-#include "../Share/WtKVCache.hpp"
+#include "../Share/VvtKVCache.hpp"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class TraderXTP : public XTP::API::TraderSpi, public ITraderApi
 {
@@ -62,7 +62,7 @@ public:
 public:
 	//////////////////////////////////////////////////////////////////////////
 	//ITraderApi 接口
-	virtual bool init(WTSVariant *params) override;
+	virtual bool init(VvTSVariant *params) override;
 
 	virtual void release() override;
 
@@ -80,9 +80,9 @@ public:
 
 	virtual int logout() override;
 
-	virtual int orderInsert(WTSEntrust* eutrust) override;
+	virtual int orderInsert(VvTSEntrust* eutrust) override;
 
-	virtual int orderAction(WTSEntrustAction* action) override;
+	virtual int orderAction(VvTSEntrustAction* action) override;
 
 	virtual int queryAccount() override;
 
@@ -97,9 +97,9 @@ private:
 	inline uint32_t			genRequestID();
 	void					doLogin();
 
-	inline WTSOrderInfo*	makeOrderInfo(XTPQueryOrderRsp* orderField);
-	inline WTSEntrust*		makeEntrust(XTPOrderInfo *entrustField);
-	inline WTSTradeInfo*	makeTradeInfo(XTPQueryTradeRsp *tradeField);
+	inline VvTSOrderInfo*	makeOrderInfo(XTPQueryOrderRsp* orderField);
+	inline VvTSEntrust*		makeEntrust(XTPOrderInfo *entrustField);
+	inline VvTSTradeInfo*	makeTradeInfo(XTPQueryTradeRsp *tradeField);
 
 	inline bool	extractEntrustID(const char* entrustid, uint32_t &orderRef);
 	inline void	genEntrustID(char* buffer, uint32_t orderRef);
@@ -108,10 +108,10 @@ private:
 	XTP::API::TraderApi*	_api;
 	ITraderSpi*		_sink;
 
-	typedef WTSHashMap<std::string> PositionMap;
+	typedef VvTSHashMap<std::string> PositionMap;
 	PositionMap*			_positions;
-	WTSArray*				_trades;
-	WTSArray*				_orders;
+	VvTSArray*				_trades;
+	VvTSArray*				_orders;
 
 	IBaseDataMgr*			_bd_mgr;
 
@@ -147,8 +147,8 @@ private:
 	XTPCreator		m_funcCreator;
 
 	//委托单标记缓存器
-	WtKVCache		m_eidCache;
+	VvtKVCache		m_eidCache;
 	//订单标记缓存器
-	WtKVCache		m_oidCache;
+	VvtKVCache		m_oidCache;
 };
 

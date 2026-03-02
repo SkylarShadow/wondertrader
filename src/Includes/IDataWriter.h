@@ -9,21 +9,21 @@
  */
 #pragma once
 #include <stdint.h>
-#include "WTSTypes.h"
+#include "VvTSTypes.h"
 #include "FasterDefs.h"
 
-NS_WTP_BEGIN
-class WTSTickData;
-class WTSOrdQueData;
-class WTSOrdDtlData;
-class WTSTransData;
-class WTSVariant;
+NS_VVTP_BEGIN
+class VvTSTickData;
+class VvTSOrdQueData;
+class VvTSOrdDtlData;
+class VvTSTransData;
+class VvTSVariant;
 class IBaseDataMgr;
-struct WTSBarStruct;
-struct WTSTickStruct;
-struct WTSOrdDtlStruct;
-struct WTSOrdQueStruct;
-struct WTSTransStruct;
+struct VvTSBarStruct;
+struct VvTSTickStruct;
+struct VvTSOrdDtlStruct;
+struct VvTSOrdQueStruct;
+struct VvTSTransStruct;
 
 class IDataWriterSink
 {
@@ -33,13 +33,13 @@ public:
 
 	virtual bool canSessionReceive(const char* sid) = 0;
 
-	virtual void broadcastTick(WTSTickData* curTick) = 0;
+	virtual void broadcastTick(VvTSTickData* curTick) = 0;
 
-	virtual void broadcastOrdQue(WTSOrdQueData* curOrdQue) = 0;
+	virtual void broadcastOrdQue(VvTSOrdQueData* curOrdQue) = 0;
 
-	virtual void broadcastOrdDtl(WTSOrdDtlData* curOrdDtl) = 0;
+	virtual void broadcastOrdDtl(VvTSOrdDtlData* curOrdDtl) = 0;
 
-	virtual void broadcastTrans(WTSTransData* curTrans) = 0;
+	virtual void broadcastTrans(VvTSTransData* curTrans) = 0;
 
 	virtual CodeSet* getSessionComms(const char* sid) = 0;
 
@@ -50,21 +50,21 @@ public:
 	*	@ll			日志级别
 	*	@message	日志内容
 	*/
-	virtual void outputLog(WTSLogLevel ll, const char* message) = 0;
+	virtual void outputLog(VvTSLogLevel ll, const char* message) = 0;
 };
 
 class IHisDataDumper
 {
 public:
-	virtual bool dumpHisBars(const char* stdCode, const char* period, WTSBarStruct* bars, uint32_t count) = 0;
-	virtual bool dumpHisTicks(const char* stdCode, uint32_t uDate, WTSTickStruct* ticks, uint32_t count) = 0;
+	virtual bool dumpHisBars(const char* stdCode, const char* period, VvTSBarStruct* bars, uint32_t count) = 0;
+	virtual bool dumpHisTicks(const char* stdCode, uint32_t uDate, VvTSTickStruct* ticks, uint32_t count) = 0;
 
-	virtual bool dumpHisOrdQue(const char* stdCode, uint32_t uDate, WTSOrdQueStruct* items, uint32_t count) { return false; }
-	virtual bool dumpHisOrdDtl(const char* stdCode, uint32_t uDate, WTSOrdDtlStruct* items, uint32_t count) { return false; }
-	virtual bool dumpHisTrans(const char* stdCode, uint32_t uDate, WTSTransStruct* items, uint32_t count) { return false; }
+	virtual bool dumpHisOrdQue(const char* stdCode, uint32_t uDate, VvTSOrdQueStruct* items, uint32_t count) { return false; }
+	virtual bool dumpHisOrdDtl(const char* stdCode, uint32_t uDate, VvTSOrdDtlStruct* items, uint32_t count) { return false; }
+	virtual bool dumpHisTrans(const char* stdCode, uint32_t uDate, VvTSTransStruct* items, uint32_t count) { return false; }
 };
 
-typedef wt_hashmap<std::string, IHisDataDumper*> ExtDumpers;
+typedef vvt_hashmap<std::string, IHisDataDumper*> ExtDumpers;
 
 /*
  *	数据落地接口
@@ -74,35 +74,35 @@ class IDataWriter
 public:
 	IDataWriter():_sink(NULL){}
 
-	virtual bool init(WTSVariant* params, IDataWriterSink* sink) { _sink = sink; return true; }
+	virtual bool init(VvTSVariant* params, IDataWriterSink* sink) { _sink = sink; return true; }
 
 	virtual void release() = 0;
 
 	void	add_ext_dumper(const char* id, IHisDataDumper* dumper) { _dumpers[id] = dumper; }
 
 public:
-	virtual bool writeTick(WTSTickData* curTick, uint32_t procFlag) = 0;
+	virtual bool writeTick(VvTSTickData* curTick, uint32_t procFlag) = 0;
 
-	virtual bool writeOrderQueue(WTSOrdQueData* curOrdQue) { return false; }
+	virtual bool writeOrderQueue(VvTSOrdQueData* curOrdQue) { return false; }
 
-	virtual bool writeOrderDetail(WTSOrdDtlData* curOrdDetail) { return false; }
+	virtual bool writeOrderDetail(VvTSOrdDtlData* curOrdDetail) { return false; }
 
-	virtual bool writeTransaction(WTSTransData* curTrans) { return false; }
+	virtual bool writeTransaction(VvTSTransData* curTrans) { return false; }
 
 	virtual void transHisData(const char* sid) {}
 
 	virtual bool isSessionProceeded(const char* sid) { return true; }
 
-	virtual WTSTickData* getCurTick(const char* code, const char* exchg = "") = 0;
+	virtual VvTSTickData* getCurTick(const char* code, const char* exchg = "") = 0;
 
 protected:
 	ExtDumpers			_dumpers;
 	IDataWriterSink*	_sink;
 };
 
-NS_WTP_END
+NS_VVTP_END
 
 
 //获取IDataWriter的函数指针类型
-typedef wtp::IDataWriter* (*FuncCreateWriter)();
-typedef void(*FuncDeleteWriter)(wtp::IDataWriter* &writer);
+typedef vvtp::IDataWriter* (*FuncCreateWriter)();
+typedef void(*FuncDeleteWriter)(vvtp::IDataWriter* &writer);

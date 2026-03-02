@@ -11,16 +11,16 @@
 #include <string>
 #include <stdint.h>
 
-#include "../Includes/WTSMarcos.h"
+#include "../Includes/VvTSMarcos.h"
 
-NS_WTP_BEGIN
-class WTSVariant;
+NS_VVTP_BEGIN
+class VvTSVariant;
 class ISelStraCtx;
-class WTSTickData;
-struct WTSBarStruct;
-NS_WTP_END
+class VvTSTickData;
+struct VvTSBarStruct;
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class SelStrategy
 {
@@ -42,7 +42,7 @@ public:
 	/*
 	*	初始化
 	*/
-	virtual bool init(WTSVariant* cfg){ return true; }
+	virtual bool init(VvTSVariant* cfg){ return true; }
 
 	virtual const char* id() const { return _id.c_str(); }
 
@@ -69,12 +69,12 @@ public:
 	/*
 	*	tick数据
 	*/
-	virtual void on_tick(ISelStraCtx* ctx, const char* stdCode, WTSTickData* newTick){}
+	virtual void on_tick(ISelStraCtx* ctx, const char* stdCode, VvTSTickData* newTick){}
 
 	/*
 	*	K线闭合
 	*/
-	virtual void on_bar(ISelStraCtx* ctx, const char* stdCode, const char* period, WTSBarStruct* newBar){}
+	virtual void on_bar(ISelStraCtx* ctx, const char* stdCode, const char* period, VvTSBarStruct* newBar){}
 
 protected:
 	std::string _id;

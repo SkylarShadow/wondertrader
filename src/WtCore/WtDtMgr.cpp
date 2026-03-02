@@ -14,8 +14,8 @@
 #include "../Share/StrUtil.hpp"
 #include "../Share/CodeHelper.hpp"
 
-#include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VvTSDataDef.hpp"
+#include "../Includes/VvTSVariant.hpp"
 
 #include "../WTSTools/WTSLogger.h"
 #include "../WTSTools/WTSDataFactory.h"
@@ -47,7 +47,7 @@ WtDtMgr::~WtDtMgr()
 		_rt_tick_map->release();
 }
 
-bool WtDtMgr::initStore(WTSVariant* cfg)
+bool WtDtMgr::initStore(VvTSVariant* cfg)
 {
 	if (cfg == NULL)
 		return false;
@@ -86,7 +86,7 @@ bool WtDtMgr::initStore(WTSVariant* cfg)
 	return true;
 }
 
-bool WtDtMgr::init(WTSVariant* cfg, WtEngine* engine, bool bForceCache /* = false */)
+bool WtDtMgr::init(VvTSVariant* cfg, WtEngine* engine, bool bForceCache /* = false */)
 {
 	_engine = engine;
 
@@ -141,12 +141,12 @@ uint32_t WtDtMgr::get_secs()
 	return _engine->get_secs(); 
 }
 
-void WtDtMgr::reader_log(WTSLogLevel ll, const char* message)
+void WtDtMgr::reader_log(VvTSLogLevel ll, const char* message)
 {
 	WTSLogger::log_raw(ll, message);
 }
 
-void WtDtMgr::on_bar(const char* code, WTSKlinePeriod period, WTSBarStruct* newBar)
+void WtDtMgr::on_bar(const char* code, VvTSKlinePeriod period, VvTSBarStruct* newBar)
 {
 	std::string key_pattern = fmt::format("{}-{}", code, period);
 
@@ -180,7 +180,7 @@ void WtDtMgr::on_bar(const char* code, WTSKlinePeriod period, WTSBarStruct* newB
 	if (_bars_cache == NULL || _bars_cache->size() == 0)
 		return;
 	
-	WTSSessionInfo* sInfo = _engine->get_session_info(code, true);
+	VvTSSessionInfo* sInfo = _engine->get_session_info(code, true);
 
 	for (auto it = _bars_cache->begin(); it != _bars_cache->end(); it++)
 	{
@@ -188,7 +188,7 @@ void WtDtMgr::on_bar(const char* code, WTSKlinePeriod period, WTSBarStruct* newB
 		if(memcmp(key, key_pattern.c_str(), key_pattern.size()) != 0)
 			continue;
 
-		WTSKlineData* kData = (WTSKlineData*)it->second;
+		VvTSKlineData* kData = (VvTSKlineData*)it->second;
 		if(kData->times() != 1)
 		{
 			g_dataFact.updateKlineData(kData, newBar, sInfo, _align_by_section);
@@ -196,7 +196,7 @@ void WtDtMgr::on_bar(const char* code, WTSKlinePeriod period, WTSBarStruct* newB
 			{
 				//如果基础周期K线的时间和自定义周期K线的时间一致, 说明K线关闭了
 				//这里也要触发on_bar事件
-				WTSBarStruct* lastBar = kData->at(-1);
+				VvTSBarStruct* lastBar = kData->at(-1);
 				//_engine->on_bar(code, speriod.c_str(), times, lastBar);
 				//更新完K线以后, 统一通知交易引擎
 				_bar_notifies.emplace_back(NotifyItem(code, speriod, times*kData->times(), lastBar));
@@ -211,7 +211,7 @@ void WtDtMgr::on_bar(const char* code, WTSKlinePeriod period, WTSBarStruct* newB
 	}
 }
 
-void WtDtMgr::handle_push_quote(const char* stdCode, WTSTickData* newTick)
+void WtDtMgr::handle_push_quote(const char* stdCode, VvTSTickData* newTick)
 {
 	if (newTick == NULL)
 		return;
@@ -223,7 +223,7 @@ void WtDtMgr::handle_push_quote(const char* stdCode, WTSTickData* newTick)
 
 	if(_ticks_adjusted != NULL)
 	{
-		WTSHisTickData* tData = (WTSHisTickData*)_ticks_adjusted->get(stdCode);
+		VvTSHisTickData* tData = (VvTSHisTickData*)_ticks_adjusted->get(stdCode);
 		if (tData == NULL)
 			return;
 
@@ -234,12 +234,12 @@ void WtDtMgr::handle_push_quote(const char* stdCode, WTSTickData* newTick)
 	}
 }
 
-WTSTickData* WtDtMgr::grab_last_tick(const char* code)
+VvTSTickData* WtDtMgr::grab_last_tick(const char* code)
 {
 	if (_rt_tick_map == NULL)
 		return NULL;
 
-	WTSTickData* curTick = (WTSTickData*)_rt_tick_map->get(code);
+	VvTSTickData* curTick = (VvTSTickData*)_rt_tick_map->get(code);
 	if (curTick == NULL)
 		return NULL;
 
@@ -269,7 +269,7 @@ uint32_t WtDtMgr::get_adjusting_flag()
 	return flag;
 }
 
-WTSTickSlice* WtDtMgr::get_tick_slice(const char* stdCode, uint32_t count, uint64_t etime /* = 0 */)
+VvTSTickSlice* WtDtMgr::get_tick_slice(const char* stdCode, uint32_t count, uint64_t etime /* = 0 */)
 {
 	if (_reader == NULL)
 		return NULL;
@@ -298,18 +298,18 @@ WTSTickSlice* WtDtMgr::get_tick_slice(const char* stdCode, uint32_t count, uint6
 	{
 		//先读取全部tick数据
 		double factor = _engine->get_exright_factor(stdCode, NULL);
-		WTSTickSlice* slice = _reader->readTickSlice(pureStdCode.c_str(), 999999, etime);
-		std::vector<WTSTickStruct> ayTicks;
+		VvTSTickSlice* slice = _reader->readTickSlice(pureStdCode.c_str(), 999999, etime);
+		std::vector<VvTSTickStruct> ayTicks;
 		ayTicks.resize(slice->size());
 		std::size_t offset = 0;
 		for (std::size_t bIdx = 0; bIdx < slice->get_block_counts(); bIdx++)
 		{
-			memcpy(&ayTicks[0] + offset, slice->get_block_addr(bIdx), slice->get_block_size(bIdx) * sizeof(WTSTickStruct));
+			memcpy(&ayTicks[0] + offset, slice->get_block_addr(bIdx), slice->get_block_size(bIdx) * sizeof(VvTSTickStruct));
 			offset += slice->get_block_size(bIdx);
 		}
 
 		//缓存的数据做一个复权处理
-		for (WTSTickStruct& tick : ayTicks)
+		for (VvTSTickStruct& tick : ayTicks)
 		{
 			tick.price *= factor;
 			tick.open *= factor;
@@ -318,12 +318,12 @@ WTSTickSlice* WtDtMgr::get_tick_slice(const char* stdCode, uint32_t count, uint6
 		}
 
 		//添加到缓存中
-		WTSHisTickData* hisTick = WTSHisTickData::create(stdCode, false, factor);
+		VvTSHisTickData* hisTick = VvTSHisTickData::create(stdCode, false, factor);
 		hisTick->getDataRef().swap(ayTicks);
 		_ticks_adjusted->add(pureStdCode, hisTick, false);
 	}
 
-	WTSHisTickData* hisTick = (WTSHisTickData*)_ticks_adjusted->get(pureStdCode);
+	VvTSHisTickData* hisTick = (VvTSHisTickData*)_ticks_adjusted->get(pureStdCode);
 	uint32_t curDate, curTime, curSecs;
 	if (etime == 0)
 	{
@@ -342,13 +342,13 @@ WTSTickSlice* WtDtMgr::get_tick_slice(const char* stdCode, uint32_t count, uint6
 	}
 
 	//比较时间的对象
-	WTSTickStruct eTick;
+	VvTSTickStruct eTick;
 	eTick.action_date = curDate;
 	eTick.action_time = curTime * 100000 + curSecs;
 
 	auto& ticks = hisTick->getDataRef();
 
-	WTSTickStruct* pTick = std::lower_bound(&ticks.front(), &ticks.back(), eTick, [](const WTSTickStruct& a, const WTSTickStruct& b) {
+	VvTSTickStruct* pTick = std::lower_bound(&ticks.front(), &ticks.back(), eTick, [](const VvTSTickStruct& a, const VvTSTickStruct& b) {
 		if (a.action_date != b.action_date)
 			return a.action_date < b.action_date;
 		else
@@ -366,11 +366,11 @@ WTSTickSlice* WtDtMgr::get_tick_slice(const char* stdCode, uint32_t count, uint6
 
 	uint32_t cnt = min(eIdx + 1, count);
 	uint32_t sIdx = eIdx + 1 - cnt;
-	WTSTickSlice* slice = WTSTickSlice::create(stdCode, &ticks.front() + sIdx, cnt);
+	VvTSTickSlice* slice = VvTSTickSlice::create(stdCode, &ticks.front() + sIdx, cnt);
 	return slice;
 }
 
-WTSOrdQueSlice* WtDtMgr::get_order_queue_slice(const char* stdCode, uint32_t count, uint64_t etime /* = 0 */)
+VvTSOrdQueSlice* WtDtMgr::get_order_queue_slice(const char* stdCode, uint32_t count, uint64_t etime /* = 0 */)
 {
 	if (_reader == NULL)
 		return NULL;
@@ -378,7 +378,7 @@ WTSOrdQueSlice* WtDtMgr::get_order_queue_slice(const char* stdCode, uint32_t cou
 	return _reader->readOrdQueSlice(stdCode, count, etime);
 }
 
-WTSOrdDtlSlice* WtDtMgr::get_order_detail_slice(const char* stdCode, uint32_t count, uint64_t etime /* = 0 */)
+VvTSOrdDtlSlice* WtDtMgr::get_order_detail_slice(const char* stdCode, uint32_t count, uint64_t etime /* = 0 */)
 {
 	if (_reader == NULL)
 		return NULL;
@@ -386,7 +386,7 @@ WTSOrdDtlSlice* WtDtMgr::get_order_detail_slice(const char* stdCode, uint32_t co
 	return _reader->readOrdDtlSlice(stdCode, count, etime);
 }
 
-WTSTransSlice* WtDtMgr::get_transaction_slice(const char* stdCode, uint32_t count, uint64_t etime /* = 0 */)
+VvTSTransSlice* WtDtMgr::get_transaction_slice(const char* stdCode, uint32_t count, uint64_t etime /* = 0 */)
 {
 	if (_reader == NULL)
 		return NULL;
@@ -394,7 +394,7 @@ WTSTransSlice* WtDtMgr::get_transaction_slice(const char* stdCode, uint32_t coun
 	return _reader->readTransSlice(stdCode, count, etime);
 }
 
-WTSKlineSlice* WtDtMgr::get_kline_slice(const char* stdCode, WTSKlinePeriod period, uint32_t times, uint32_t count, uint64_t etime /* = 0 */)
+VvTSKlineSlice* WtDtMgr::get_kline_slice(const char* stdCode, VvTSKlinePeriod period, uint32_t times, uint32_t count, uint64_t etime /* = 0 */)
 {
 	if (_reader == NULL)
 		return NULL;
@@ -411,19 +411,19 @@ WTSKlineSlice* WtDtMgr::get_kline_slice(const char* stdCode, WTSKlinePeriod peri
 	}
 
 	//只有非基础周期的会进到下面的步骤
-	WTSSessionInfo* sInfo = _engine->get_session_info(stdCode, true);
+	VvTSSessionInfo* sInfo = _engine->get_session_info(stdCode, true);
 
 	if (_bars_cache == NULL)
 		_bars_cache = DataCacheMap::create();
 
 	fmtutil::format_to(key, "{}-{}-{}", stdCode, (uint32_t)period, times);
 
-	WTSKlineData* kData = (WTSKlineData*)_bars_cache->get(key);
+	VvTSKlineData* kData = (VvTSKlineData*)_bars_cache->get(key);
 	//如果缓存里的K线条数大于请求的条数, 则直接返回
 	if (kData == NULL || kData->size() < count)
 	{
 		uint32_t realCount = times==1 ? count: (count*times + times);
-		WTSKlineSlice* rawData = _reader->readKlineSlice(stdCode, period, realCount, etime);
+		VvTSKlineSlice* rawData = _reader->readKlineSlice(stdCode, period, realCount, etime);
 		if (rawData != NULL && rawData->size() > 0)
 		{
 			if(times != 1)
@@ -432,13 +432,13 @@ WTSKlineSlice* WtDtMgr::get_kline_slice(const char* stdCode, WTSKlinePeriod peri
 			}
 			else
 			{
-				kData = WTSKlineData::create(stdCode, rawData->size());
+				kData = VvTSKlineData::create(stdCode, rawData->size());
 				kData->setPeriod(period, 1);
 				kData->setClosed(true);
-				WTSBarStruct* pBar = kData->getDataRef().data();
+				VvTSBarStruct* pBar = kData->getDataRef().data();
 				for(uint32_t bIdx = 0; bIdx < rawData->get_block_counts(); bIdx++ )
 				{
-					memcpy(pBar, rawData->get_block_addr(bIdx), sizeof(WTSBarStruct)*rawData->get_block_size(bIdx));
+					memcpy(pBar, rawData->get_block_addr(bIdx), sizeof(VvTSBarStruct)*rawData->get_block_size(bIdx));
 					pBar += rawData->get_block_size(bIdx);
 				}
 			}
@@ -474,7 +474,7 @@ WTSKlineSlice* WtDtMgr::get_kline_slice(const char* stdCode, WTSKlinePeriod peri
 	int32_t sIdx = 0;
 	uint32_t rtCnt = min(closedSz, count);
 	sIdx = closedSz - rtCnt;
-	WTSBarStruct* rtHead = kData->at(sIdx);
-	WTSKlineSlice* slice = WTSKlineSlice::create(stdCode, period, times, rtHead, rtCnt);
+	VvTSBarStruct* rtHead = kData->at(sIdx);
+	VvTSKlineSlice* slice = VvTSKlineSlice::create(stdCode, period, times, rtHead, rtCnt);
 	return slice;
 }

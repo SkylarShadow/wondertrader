@@ -13,13 +13,13 @@
 
 #include "../Share/CodeHelper.hpp"
 #include "../Includes/IDataManager.h"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VvTSVariant.hpp"
 #include "../Includes/IHotMgr.h"
 #include "../Share/decimal.h"
 
 #include "../WTSTools/WTSLogger.h"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 
 WtArbiExecuter::WtArbiExecuter(WtExecuterFactory* factory, const char* name, IDataManager* dataMgr)
@@ -48,7 +48,7 @@ void WtArbiExecuter::setTrader(TraderAdapter* adapter)
 		_channel_ready = _trader->isReady();
 }
 
-bool WtArbiExecuter::init(WTSVariant* params)
+bool WtArbiExecuter::init(VvTSVariant* params)
 {
 	if (params == NULL)
 		return false;
@@ -72,16 +72,16 @@ bool WtArbiExecuter::init(WTSVariant* params)
 	 *	includes: 包含列表，格式如CFFEX.IF
 	 *	excludes: 排除列表，格式如CFFEX.IF
 	 */
-	WTSVariant* cfgClear = params->get("clear");
+	VvTSVariant* cfgClear = params->get("clear");
 	if(cfgClear)
 	{
 		_auto_clear = cfgClear->getBoolean("active");
-		WTSVariant* cfgItem = cfgClear->get("includes");
+		VvTSVariant* cfgItem = cfgClear->get("includes");
 		if(cfgItem)
 		{
-			if (cfgItem->type() == WTSVariant::VT_String)
+			if (cfgItem->type() == VvTSVariant::VT_String)
 				_clear_includes.insert(cfgItem->asCString());
-			else if (cfgItem->type() == WTSVariant::VT_Array)
+			else if (cfgItem->type() == VvTSVariant::VT_Array)
 			{
 				for(uint32_t i = 0; i < cfgItem->size(); i++)
 					_clear_includes.insert(cfgItem->get(i)->asCString());
@@ -91,9 +91,9 @@ bool WtArbiExecuter::init(WTSVariant* params)
 		cfgItem = cfgClear->get("excludes");
 		if (cfgItem)
 		{
-			if (cfgItem->type() == WTSVariant::VT_String)
+			if (cfgItem->type() == VvTSVariant::VT_String)
 				_clear_excludes.insert(cfgItem->asCString());
-			else if (cfgItem->type() == WTSVariant::VT_Array)
+			else if (cfgItem->type() == VvTSVariant::VT_Array)
 			{
 				for (uint32_t i = 0; i < cfgItem->size(); i++)
 					_clear_excludes.insert(cfgItem->get(i)->asCString());
@@ -101,7 +101,7 @@ bool WtArbiExecuter::init(WTSVariant* params)
 		}
 	}
 
-	WTSVariant* cfgGroups = params->get("groups");
+	VvTSVariant* cfgGroups = params->get("groups");
 	if (cfgGroups)
 	{
 		auto names = cfgGroups->memberNames();
@@ -111,10 +111,10 @@ bool WtArbiExecuter::init(WTSVariant* params)
 			if (gpInfo == NULL)
 			{
 				gpInfo.reset(new CodeGroup);
-				wt_strcpy(gpInfo->_name, gpname.c_str(), gpname.size());
+				vvt_strcpy(gpInfo->_name, gpname.c_str(), gpname.size());
 			}
 
-			WTSVariant* cfgGrp = cfgGroups->get(gpname.c_str());
+			VvTSVariant* cfgGrp = cfgGroups->get(gpname.c_str());
 			auto codes = cfgGrp->memberNames();
 			for(const std::string& code : codes)
 			{
@@ -135,7 +135,7 @@ ExecuteUnitPtr WtArbiExecuter::getUnit(const char* stdCode, bool bAutoCreate /* 
 	CodeHelper::CodeInfo codeInfo = CodeHelper::extractStdCode(stdCode, NULL);
 	std::string commID = codeInfo.stdCommID();
 
-	WTSVariant* policy = _config->get("policy");
+	VvTSVariant* policy = _config->get("policy");
 	std::string des = commID;
 	if (!policy->has(commID.c_str()))
 		des = "default";
@@ -150,7 +150,7 @@ ExecuteUnitPtr WtArbiExecuter::getUnit(const char* stdCode, bool bAutoCreate /* 
 
 	if (bAutoCreate)
 	{
-		WTSVariant* cfg = policy->get(des.c_str());
+		VvTSVariant* cfg = policy->get(des.c_str());
 
 		const char* name = cfg->getCString("name");
 		ExecuteUnitPtr unit = _factory->createExeUnit(name);
@@ -175,7 +175,7 @@ ExecuteUnitPtr WtArbiExecuter::getUnit(const char* stdCode, bool bAutoCreate /* 
 //////////////////////////////////////////////////////////////////////////
 //ExecuteContext
 #pragma region Context回调接口
-WTSTickSlice* WtArbiExecuter::getTicks(const char* stdCode, uint32_t count, uint64_t etime /* = 0 */)
+VvTSTickSlice* WtArbiExecuter::getTicks(const char* stdCode, uint32_t count, uint64_t etime /* = 0 */)
 {
 	if (_data_mgr == NULL)
 		return NULL;
@@ -183,7 +183,7 @@ WTSTickSlice* WtArbiExecuter::getTicks(const char* stdCode, uint32_t count, uint
 	return _data_mgr->get_tick_slice(stdCode, count);
 }
 
-WTSTickData* WtArbiExecuter::grabLastTick(const char* stdCode)
+VvTSTickData* WtArbiExecuter::grabLastTick(const char* stdCode)
 {
 	if (_data_mgr == NULL)
 		return NULL;
@@ -255,12 +255,12 @@ void WtArbiExecuter::writeLog(const char* message)
 	WTSLogger::log_dyn_raw("executer", _name.c_str(), LL_INFO, szBuf);
 }
 
-WTSCommodityInfo* WtArbiExecuter::getCommodityInfo(const char* stdCode)
+VvTSCommodityInfo* WtArbiExecuter::getCommodityInfo(const char* stdCode)
 {
 	return _stub->get_comm_info(stdCode);
 }
 
-WTSSessionInfo* WtArbiExecuter::getSessionInfo(const char* stdCode)
+VvTSSessionInfo* WtArbiExecuter::getSessionInfo(const char* stdCode)
 {
 	return _stub->get_sess_info(stdCode);
 }
@@ -303,7 +303,7 @@ void WtArbiExecuter::on_position_changed(const char* stdCode, double diffPos)
 	unit->self()->set_position(stdCode, traderTarget);
 }
 
-void WtArbiExecuter::set_position(const wt_hashmap<std::string, double>& targets)
+void WtArbiExecuter::set_position(const vvt_hashmap<std::string, double>& targets)
 {
 	/*
 	 *	先要把目标头寸进行组合匹配
@@ -441,7 +441,7 @@ void WtArbiExecuter::set_position(const wt_hashmap<std::string, double>& targets
 	}
 }
 
-void WtArbiExecuter::on_tick(const char* stdCode, WTSTickData* newTick)
+void WtArbiExecuter::on_tick(const char* stdCode, VvTSTickData* newTick)
 {
 	ExecuteUnitPtr unit = getUnit(stdCode, false);
 	if (unit == NULL)

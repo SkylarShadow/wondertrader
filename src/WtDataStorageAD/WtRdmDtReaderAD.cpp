@@ -1,21 +1,21 @@
 ﻿#include "WtRdmDtReaderAD.h"
 #include "LMDBKeys.h"
 
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VvTSVariant.hpp"
 #include "../Share/TimeUtils.hpp"
 #include "../Share/CodeHelper.hpp"
 #include "../Share/StdUtils.hpp"
 
-#include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSSessionInfo.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/VvTSSessionInfo.hpp"
 #include "../Includes/IBaseDataMgr.h"
 #include "../Includes/IHotMgr.h"
-#include "../Includes/WTSDataDef.hpp"
+#include "../Includes/VvTSDataDef.hpp"
 
 //By Wesley @ 2022.01.05
 #include "../Share/fmtlib.h"
 template<typename... Args>
-inline void pipe_rdmreader_log(IRdmDtReaderSink* sink, WTSLogLevel ll, const char* format, const Args&... args)
+inline void pipe_rdmreader_log(IRdmDtReaderSink* sink, VvTSLogLevel ll, const char* format, const Args&... args)
 {
 	if (sink == NULL)
 		return;
@@ -54,7 +54,7 @@ WtRdmDtReaderAD::~WtRdmDtReaderAD()
 {
 }
 
-void WtRdmDtReaderAD::init(WTSVariant* cfg, IRdmDtReaderSink* sink)
+void WtRdmDtReaderAD::init(VvTSVariant* cfg, IRdmDtReaderSink* sink)
 {
 	IRdmDtReader::init(cfg, sink);
 
@@ -70,17 +70,17 @@ void WtRdmDtReaderAD::init(WTSVariant* cfg, IRdmDtReaderSink* sink)
 	pipe_rdmreader_log(sink, LL_INFO, "WtRdmDtReaderAD initialized, root data folder is {}", _base_dir);
 }
 
-WTSTickSlice* WtRdmDtReaderAD::readTickSliceByCount(const char* stdCode, uint32_t count, uint64_t etime /* = 0 */)
+VvTSTickSlice* WtRdmDtReaderAD::readTickSliceByCount(const char* stdCode, uint32_t count, uint64_t etime /* = 0 */)
 {
 	//TODO: 以后再来实现吧
 	return NULL;
 }
 
-WTSTickSlice* WtRdmDtReaderAD::readTickSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime /* = 0 */)
+VvTSTickSlice* WtRdmDtReaderAD::readTickSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime /* = 0 */)
 {
 	CodeHelper::CodeInfo cInfo = CodeHelper::extractStdCode(stdCode, _hot_mgr);
-	WTSCommodityInfo* commInfo = _base_data_mgr->getCommodity(cInfo._exchg, cInfo._product);
-	WTSSessionInfo* sInfo = commInfo->getSessionInfo();
+	VvTSCommodityInfo* commInfo = _base_data_mgr->getCommodity(cInfo._exchg, cInfo._product);
+	VvTSSessionInfo* sInfo = commInfo->getSessionInfo();
 	std::string stdPID = StrUtil::printf("%s.%s", cInfo._exchg, cInfo._product);
 
 	uint32_t rDate, rTime, rSecs;
@@ -131,7 +131,7 @@ WTSTickSlice* WtRdmDtReaderAD::readTickSliceByRange(const char* stdCode, uint64_
 
 		if (cnt > 0)
 		{
-			WTSTickStruct& curTs = tickList._ticks.front();
+			VvTSTickStruct& curTs = tickList._ticks.front();
 			tickList._first_tick_time = (uint64_t)curTs.trading_date * 1000000000 + sInfo->offsetTime(curTs.action_time / 100000, true) + curTs.action_time % 100000;
 
 			curTs = tickList._ticks.back();
@@ -150,24 +150,24 @@ WTSTickSlice* WtRdmDtReaderAD::readTickSliceByRange(const char* stdCode, uint64_
 			LMDBHftKey lKey(cInfo._exchg, cInfo._code, beginTDate, lTime * 100000 + lSecs);
 			int cnt = query.get_range(std::string((const char*)&lKey, sizeof(lKey)), std::string((const char*)&rKey, sizeof(rKey)),
 				[this, &tickList](const ValueArray& ayKeys, const ValueArray& ayVals) {
-				std::vector<WTSTickStruct> ayTicks;
+				std::vector<VvTSTickStruct> ayTicks;
 				ayTicks.resize(ayVals.size() + tickList._ticks.size());
 				std::size_t idx = 0;
 				for (const std::string& item : ayVals)
 				{
-					WTSTickStruct* curTick = (WTSTickStruct*)item.data();
+					VvTSTickStruct* curTick = (VvTSTickStruct*)item.data();
 					memcpy(&ayTicks[idx], item.data(), item.size());
 					idx++;
 				}
 
 				//将原来的数据拷贝到后面，再做一个swap即可
-				memcpy(&ayTicks[idx], tickList._ticks.data(), sizeof(WTSTickStruct)*tickList._ticks.size());
+				memcpy(&ayTicks[idx], tickList._ticks.data(), sizeof(VvTSTickStruct)*tickList._ticks.size());
 				tickList._ticks.swap(ayTicks);
 			});
 
 			if(cnt > 0)
 			{
-				const WTSTickStruct& curTs = tickList._ticks.front();
+				const VvTSTickStruct& curTs = tickList._ticks.front();
 				tickList._first_tick_time = (uint64_t)curTs.trading_date * 1000000000 + sInfo->offsetTime(curTs.action_time / 100000, false) + curTs.action_time % 100000;
 
 				pipe_rdmreader_log(_sink, LL_DEBUG, "{} prev ticks of {} loaded to cache", cnt, stdCode);
@@ -184,14 +184,14 @@ WTSTickSlice* WtRdmDtReaderAD::readTickSliceByRange(const char* stdCode, uint64_
 				[this, &tickList](const ValueArray& ayKeys, const ValueArray& ayVals) {
 				for (const std::string& item : ayVals)
 				{
-					WTSTickStruct* curTick = (WTSTickStruct*)item.data();
+					VvTSTickStruct* curTick = (VvTSTickStruct*)item.data();
 					tickList._ticks.emplace_back(*curTick);
 				}
 			});
 
 			if (cnt > 0)
 			{
-				const WTSTickStruct& curTs = tickList._ticks.back();
+				const VvTSTickStruct& curTs = tickList._ticks.back();
 				tickList._last_tick_time = (uint64_t)curTs.trading_date * 1000000000 + sInfo->offsetTime(curTs.action_time / 100000, true) + curTs.action_time % 100000;
 
 				pipe_rdmreader_log(_sink, LL_DEBUG, "{} newer ticks of {} loaded to cache", cnt, stdCode);
@@ -202,7 +202,7 @@ WTSTickSlice* WtRdmDtReaderAD::readTickSliceByRange(const char* stdCode, uint64_
 	//全部读取完成以后，再生成切片
 	{
 		//比较时间的对象
-		WTSTickStruct sTick, eTick;
+		VvTSTickStruct sTick, eTick;
 		sTick.action_date = lDate;
 		sTick.action_time = (uint32_t)(stime % 1000000000);
 		eTick.action_date = rDate;
@@ -210,7 +210,7 @@ WTSTickSlice* WtRdmDtReaderAD::readTickSliceByRange(const char* stdCode, uint64_
 
 		std::size_t cnt = 0;
 
-		WTSTickStruct* pTick = std::lower_bound(&tickList._ticks[0], &tickList._ticks[0] + (tickList._ticks.size() - 1), eTick, [](const WTSTickStruct& a, const WTSTickStruct& b) {
+		VvTSTickStruct* pTick = std::lower_bound(&tickList._ticks[0], &tickList._ticks[0] + (tickList._ticks.size() - 1), eTick, [](const VvTSTickStruct& a, const VvTSTickStruct& b) {
 			if (a.action_date != b.action_date)
 				return a.action_date < b.action_date;
 			else
@@ -232,7 +232,7 @@ WTSTickSlice* WtRdmDtReaderAD::readTickSliceByRange(const char* stdCode, uint64_
 		}
 		else
 		{
-			pTick = std::lower_bound(&tickList._ticks[0], &tickList._ticks[0] + (tickList._ticks.size() - 1), sTick, [](const WTSTickStruct& a, const WTSTickStruct& b) {
+			pTick = std::lower_bound(&tickList._ticks[0], &tickList._ticks[0] + (tickList._ticks.size() - 1), sTick, [](const VvTSTickStruct& a, const VvTSTickStruct& b) {
 				if (a.action_date != b.action_date)
 					return a.action_date < b.action_date;
 				else
@@ -243,27 +243,27 @@ WTSTickSlice* WtRdmDtReaderAD::readTickSliceByRange(const char* stdCode, uint64_
 			cnt = eIdx - sIdx + 1;
 		}
 
-		WTSTickSlice* slice = WTSTickSlice::create(stdCode, pTick, cnt);
+		VvTSTickSlice* slice = VvTSTickSlice::create(stdCode, pTick, cnt);
 		return slice;
 	}
 }
 
-WTSKlineSlice* WtRdmDtReaderAD::readKlineSliceByCount(const char* stdCode, WTSKlinePeriod period, uint32_t count, uint64_t etime /* = 0 */)
+VvTSKlineSlice* WtRdmDtReaderAD::readKlineSliceByCount(const char* stdCode, VvTSKlinePeriod period, uint32_t count, uint64_t etime /* = 0 */)
 {
 	//TODO: 以后再来实现吧
 	return NULL;
 }
 
-WTSTickSlice* WtRdmDtReaderAD::readTickSliceByDate(const char* stdCode, uint32_t uDate )
+VvTSTickSlice* WtRdmDtReaderAD::readTickSliceByDate(const char* stdCode, uint32_t uDate )
 {
 	//TODO: 以后再来实现吧
 	return NULL;
 }
 
-WTSKlineSlice* WtRdmDtReaderAD::readKlineSliceByRange(const char* stdCode, WTSKlinePeriod period, uint64_t stime, uint64_t etime /* = 0 */)
+VvTSKlineSlice* WtRdmDtReaderAD::readKlineSliceByRange(const char* stdCode, VvTSKlinePeriod period, uint64_t stime, uint64_t etime /* = 0 */)
 {
 	CodeHelper::CodeInfo cInfo = CodeHelper::extractStdCode(stdCode, _hot_mgr);
-	WTSCommodityInfo* commInfo = _base_data_mgr->getCommodity(cInfo._exchg, cInfo._product);
+	VvTSCommodityInfo* commInfo = _base_data_mgr->getCommodity(cInfo._exchg, cInfo._product);
 	std::string stdPID = StrUtil::printf("%s.%s", cInfo._exchg, cInfo._product);
 
 	uint32_t rDate, rTime, lDate, lTime;
@@ -336,18 +336,18 @@ WTSKlineSlice* WtRdmDtReaderAD::readKlineSliceByRange(const char* stdCode, WTSKl
 
 	//
 	{
-		WTSBarStruct eBar;
+		VvTSBarStruct eBar;
 		eBar.date = rDate;
 		eBar.time = (rDate - 19900000) * 10000 + rTime;
 
-		WTSBarStruct sBar;
+		VvTSBarStruct sBar;
 		sBar.date = lDate;
 		sBar.time = (lDate - 19900000) * 10000 + lTime;
 
-		WTSBarStruct* pHead = NULL;
+		VvTSBarStruct* pHead = NULL;
 		std::size_t cnt = 0;
 
-		WTSBarStruct* pBar = std::lower_bound(&barsList._bars[0], &barsList._bars[0] + (barsList._bars.size() - 1), eBar, [isDay](const WTSBarStruct& a, const WTSBarStruct& b) {
+		VvTSBarStruct* pBar = std::lower_bound(&barsList._bars[0], &barsList._bars[0] + (barsList._bars.size() - 1), eBar, [isDay](const VvTSBarStruct& a, const VvTSBarStruct& b) {
 			if (isDay)
 				return a.date < b.date;
 			else
@@ -370,7 +370,7 @@ WTSKlineSlice* WtRdmDtReaderAD::readKlineSliceByRange(const char* stdCode, WTSKl
 		}
 		else
 		{
-			pBar = std::lower_bound(&barsList._bars[0], &barsList._bars[0] + (barsList._bars.size() - 1), sBar, [isDay](const WTSBarStruct& a, const WTSBarStruct& b) {
+			pBar = std::lower_bound(&barsList._bars[0], &barsList._bars[0] + (barsList._bars.size() - 1), sBar, [isDay](const VvTSBarStruct& a, const VvTSBarStruct& b) {
 				if (isDay)
 					return a.date < b.date;
 				else
@@ -382,12 +382,12 @@ WTSKlineSlice* WtRdmDtReaderAD::readKlineSliceByRange(const char* stdCode, WTSKl
 			cnt = idx - sIdx + 1;
 		}
 
-		WTSKlineSlice* slice = WTSKlineSlice::create(stdCode, period, 1, pHead, cnt);
+		VvTSKlineSlice* slice = VvTSKlineSlice::create(stdCode, period, 1, pHead, cnt);
 		return slice;
 	}
 }
 
-WtRdmDtReaderAD::WtLMDBPtr WtRdmDtReaderAD::get_k_db(const char* exchg, WTSKlinePeriod period)
+WtRdmDtReaderAD::WtLMDBPtr WtRdmDtReaderAD::get_k_db(const char* exchg, VvTSKlinePeriod period)
 {
 	WtLMDBMap* the_map = NULL;
 	std::string subdir;

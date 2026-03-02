@@ -2,11 +2,11 @@
 #include "WtFilterMgr.h"
 
 #include "../Share/decimal.h"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VvTSVariant.hpp"
 
 #include "../WTSTools/WTSLogger.h"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 //////////////////////////////////////////////////////////////////////////
 #pragma region "WtExecuterMgr"
@@ -19,11 +19,11 @@ void WtExecuterMgr::enum_executer(EnumExecuterCb cb)
 	}
 }
 
-void WtExecuterMgr::set_positions(wt_hashmap<std::string, double> target_pos)
+void WtExecuterMgr::set_positions(vvt_hashmap<std::string, double> target_pos)
 {
 	if(_filter_mgr != NULL)
 	{
-		wt_hashmap<std::string, double> des_port;
+		vvt_hashmap<std::string, double> des_port;
 		for(auto& m : target_pos)
 		{
 			const auto& stdCode = m.first;
@@ -106,7 +106,7 @@ void WtExecuterMgr::handle_pos_change(const char* stdCode, double targetPos, dou
 	}
 }
 
-void WtExecuterMgr::handle_tick(const char* stdCode, WTSTickData* curTick)
+void WtExecuterMgr::handle_tick(const char* stdCode, VvTSTickData* curTick)
 {
 	//for (auto it = _executers.begin(); it != _executers.end(); it++)
 	//{
@@ -206,16 +206,16 @@ void WtExecuterMgr::commit_cached_targets(double scale /* = 1.0 */)
 	_all_cached_targets.clear();
 }
 
-bool WtExecuterMgr::load_router_rules(WTSVariant* config)
+bool WtExecuterMgr::load_router_rules(VvTSVariant* config)
 {
 	if (config == NULL || !config->isArray())
 		return false;
 
 	for(uint32_t i = 0; i < config->size(); i++)
 	{
-		WTSVariant* item = config->get(i);
+		VvTSVariant* item = config->get(i);
 		const char* straName = item->getCString("strategy");
-		WTSVariant* itemExec = item->get("executer");
+		VvTSVariant* itemExec = item->get("executer");
 		if(itemExec->isArray())
 		{
 			uint32_t cnt = itemExec->size();

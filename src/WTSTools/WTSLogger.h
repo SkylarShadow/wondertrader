@@ -8,8 +8,8 @@
  * \brief 日志模块定义
  */
 #pragma once
-#include "../Includes/WTSTypes.h"
-#include "../Includes/WTSCollection.hpp"
+#include "../Includes/VvTSTypes.h"
+#include "../Includes/VvTSCollection.hpp"
 #include "../Share/fmtlib.h"
 
 #include <memory>
@@ -24,12 +24,12 @@
 
 typedef std::shared_ptr<spdlog::logger> SpdLoggerPtr;
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 class ILogHandler;
-class WTSVariant;
-NS_WTP_END
+class VvTSVariant;
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 #define MAX_LOG_BUF_SIZE 2048
 
@@ -43,7 +43,7 @@ private:
 	static void error_imp(SpdLoggerPtr logger, const char* message);
 	static void fatal_imp(SpdLoggerPtr logger, const char* message);
 
-	static void initLogger(const char* catName, WTSVariant* cfgLogger);
+	static void initLogger(const char* catName, VvTSVariant* cfgLogger);
 	static SpdLoggerPtr getLogger(const char* logger, const char* pattern = "");
 
 	static void print_message(const char* buffer);
@@ -52,17 +52,17 @@ public:
 	/*
 	 *	直接输出
 	 */
-	static void log_raw(WTSLogLevel ll, const char* message);
+	static void log_raw(VvTSLogLevel ll, const char* message);
 
 	/*
 	 *	分类输出
 	 */
-	static void log_raw_by_cat(const char* catName, WTSLogLevel ll, const char* message);
+	static void log_raw_by_cat(const char* catName, VvTSLogLevel ll, const char* message);
 
 	/*
 	 *	动态分类输出
 	 */
-	static void log_dyn_raw(const char* patttern, const char* catName, WTSLogLevel ll, const char* message);
+	static void log_dyn_raw(const char* patttern, const char* catName, VvTSLogLevel ll, const char* message);
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -154,7 +154,7 @@ public:
 	}
 
 	template<typename... Args>
-	static void log(WTSLogLevel ll, const char* format, const Args& ...args)
+	static void log(VvTSLogLevel ll, const char* format, const Args& ...args)
 	{
 		if (m_logLevel > ll || m_bStopped)
 			return;
@@ -165,7 +165,7 @@ public:
 	}
 
 	template<typename... Args>
-	static void log_by_cat(const char* catName, WTSLogLevel ll, const char* format, const Args& ...args)
+	static void log_by_cat(const char* catName, VvTSLogLevel ll, const char* format, const Args& ...args)
 	{
 		if (m_logLevel > ll || m_bStopped)
 			return;
@@ -176,7 +176,7 @@ public:
 	}
 
 	template<typename... Args>
-	static void log_by_cat_prefix(const char* catName, WTSLogLevel ll, const char* format, const Args& ...args)
+	static void log_by_cat_prefix(const char* catName, VvTSLogLevel ll, const char* format, const Args& ...args)
 	{
 		if (m_logLevel > ll || m_bStopped)
 			return;
@@ -190,7 +190,7 @@ public:
 	}
 
 	template<typename... Args>
-	static void log_dyn(const char* patttern, const char* catName, WTSLogLevel ll, const char* format, const Args& ...args)
+	static void log_dyn(const char* patttern, const char* catName, VvTSLogLevel ll, const char* format, const Args& ...args)
 	{
 		if (m_logLevel > ll || m_bStopped)
 			return;
@@ -201,7 +201,7 @@ public:
 	}
 
 	template<typename... Args>
-	static void log_dyn_prefix(const char* patttern, const char* catName, WTSLogLevel ll, const char* format, const Args& ...args)
+	static void log_dyn_prefix(const char* patttern, const char* catName, VvTSLogLevel ll, const char* format, const Args& ...args)
 	{
 		if (m_logLevel > ll || m_bStopped)
 			return;
@@ -229,11 +229,11 @@ private:
 	static bool					m_bTpInited;
 	static bool					m_bStopped;
 	static ILogHandler*			m_logHandler;
-	static WTSLogLevel			m_logLevel;
+	static VvTSLogLevel			m_logLevel;
 
 	static SpdLoggerPtr			m_rootLogger;
 
-	typedef WTSHashMap<std::string>	LogPatterns;
+	typedef VvTSHashMap<std::string>	LogPatterns;
 	static LogPatterns*				m_mapPatterns;
 	static std::set<std::string>	m_setDynLoggers;
 

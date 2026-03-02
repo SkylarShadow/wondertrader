@@ -3,7 +3,7 @@
 
 #include "../WtCore/WtHelper.h"
 #include "../WTSTools/WTSLogger.h"
-#include "../Includes/WTSVersion.h"
+#include "../Includes/VvTSVersion.h"
 
 #ifdef _WIN32
 #   ifdef _WIN64
@@ -21,7 +21,7 @@ WtExecRunner& getRunner()
 	return runner;
 }
 
-void init_exec(WtString logCfg, bool isFile /*= true*/)
+void init_exec(VvTString logCfg, bool isFile /*= true*/)
 {
 	static bool inited = false;
 
@@ -33,7 +33,7 @@ void init_exec(WtString logCfg, bool isFile /*= true*/)
 	inited = true;
 }
 
-void config_exec(WtString cfgfile, bool isFile /*= true*/)
+void config_exec(VvTString cfgfile, bool isFile /*= true*/)
 {
 	if (strlen(cfgfile) == 0)
 		getRunner().config("cfgexec.json");
@@ -51,14 +51,14 @@ void release_exec()
 	getRunner().release();
 }
 
-WtString get_version()
+VvTString get_version()
 {
 	static std::string _ver;
 	if (_ver.empty())
 	{
 		_ver = PLATFORM_NAME;
 		_ver += " ";
-		_ver += WT_VERSION;
+		_ver += VVT_VERSION;
 		_ver += " Build@";
 		_ver += __DATE__;
 		_ver += " ";
@@ -67,19 +67,19 @@ WtString get_version()
 	return _ver.c_str();
 }
 
-void write_log(unsigned int level, WtString message, WtString catName)
+void write_log(unsigned int level, VvTString message, VvTString catName)
 {
 	if (strlen(catName) > 0)
 	{
-		WTSLogger::log_raw_by_cat(catName, (WTSLogLevel)level, message);
+		WTSLogger::log_raw_by_cat(catName, (VvTSLogLevel)level, message);
 	}
 	else
 	{
-		WTSLogger::log_raw((WTSLogLevel)level, message);
+		WTSLogger::log_raw((VvTSLogLevel)level, message);
 	}
 }
 
-void set_position(WtString stdCode, double targetPos)
+void set_position(VvTString stdCode, double targetPos)
 {
 	getRunner().setPosition(stdCode, targetPos);
 }

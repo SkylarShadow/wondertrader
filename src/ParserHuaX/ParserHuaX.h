@@ -13,9 +13,9 @@
 #include "../API/HuaX4.03/parserapi/xfastmdapitest/TORATstpXMdApi.h"
 #include <map>
 
-#include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VvTSDataDef.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/VvTSVariant.hpp"
 #include "../Includes/IBaseDataMgr.h"
 
 #include "../Share/TimeUtils.hpp"
@@ -26,11 +26,11 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
-NS_WTP_BEGIN
-class WTSTickData;
-NS_WTP_END
+NS_VVTP_BEGIN
+class VvTSTickData;
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 using namespace TORALEV1API;
 
 typedef CTORATstpXMdSpi HuaXParserSpi;
@@ -55,7 +55,7 @@ public:
 
 //IQuoteParser 接口
 public:
-	virtual bool init(WTSVariant* config) override;
+	virtual bool init(VvTSVariant* config) override;
 
 	virtual void release() override;
 

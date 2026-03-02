@@ -12,7 +12,7 @@
 #include "../Share/StdUtils.hpp"
 #include "../Share/BoostMappingFile.hpp"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 
 typedef std::shared_ptr<BoostMappingFile> BoostMFPtr;
 
@@ -24,13 +24,13 @@ public:
 
 
 public:
-	virtual void init(WTSVariant* cfg, IDataReaderSink* sink, IHisDataLoader* loader = NULL) override;
+	virtual void init(VvTSVariant* cfg, IDataReaderSink* sink, IHisDataLoader* loader = NULL) override;
 
 	virtual void onMinuteEnd(uint32_t uDate, uint32_t uTime, uint32_t endTDate = 0) override;
 
-	virtual WTSTickSlice*	readTickSlice(const char* stdCode, uint32_t count, uint64_t etime = 0) override;
+	virtual VvTSTickSlice*	readTickSlice(const char* stdCode, uint32_t count, uint64_t etime = 0) override;
 
-	virtual WTSKlineSlice*	readKlineSlice(const char* stdCode, WTSKlinePeriod period, uint32_t count, uint64_t etime = 0) override;
+	virtual VvTSKlineSlice*	readKlineSlice(const char* stdCode, VvTSKlinePeriod period, uint32_t count, uint64_t etime = 0) override;
 
 private:
 	std::string		_base_dir;
@@ -42,7 +42,7 @@ private:
 	{
 		StdUniqueMutex	_mtx;
 		std::string		_filename;
-		wt_hashmap<std::string, uint32_t> _idx;
+		vvt_hashmap<std::string, uint32_t> _idx;
 		BoostMFPtr		_file_ptr;
 		RTBarCache*		_cache_block;
 		uint32_t		_last_size;
@@ -60,12 +60,12 @@ private:
 	{
 		std::string		_exchg;
 		std::string		_code;
-		WTSKlinePeriod	_period;
+		VvTSKlinePeriod	_period;
 		//最后一条是否从缓存里读取的，如果是下次更新的时候要从lmdb更新一次，最后一条再按照原有逻辑处理
 		bool			_last_from_cache;
 		uint64_t		_last_req_time;
 
-		boost::circular_buffer<WTSBarStruct>	_bars;
+		boost::circular_buffer<VvTSBarStruct>	_bars;
 
 		_BarsList():_last_from_cache(false),_last_req_time(0){}
 	} BarsList;
@@ -76,15 +76,15 @@ private:
 		std::string		_code;
 		uint64_t		_last_req_time;
 
-		boost::circular_buffer<WTSTickStruct>	_ticks;
+		boost::circular_buffer<VvTSTickStruct>	_ticks;
 
 		_TicksList():_last_req_time(0){}
 	} TicksList;
 
-	typedef wt_hashmap<std::string, BarsList> BarsCache;
+	typedef vvt_hashmap<std::string, BarsList> BarsCache;
 	BarsCache	_bars_cache;
 
-	typedef wt_hashmap<std::string, TicksList> TicksCache;
+	typedef vvt_hashmap<std::string, TicksList> TicksCache;
 	TicksCache	_ticks_cache;
 
 	uint64_t	_last_time;	
@@ -93,16 +93,16 @@ private:
 	/*
 	 *	将历史数据放入缓存
 	 */
-	bool	cacheBarsFromStorage(const std::string& key, const char* stdCode, WTSKlinePeriod period, uint32_t count);
+	bool	cacheBarsFromStorage(const std::string& key, const char* stdCode, VvTSKlinePeriod period, uint32_t count);
 
 	/*
 	 *	从LMDB中更新缓存的数据
 	 */
-	void	update_cache_from_lmdb(BarsList& barsList, const char* exchg, const char* code, WTSKlinePeriod period, uint32_t& lastBarTime);
+	void	update_cache_from_lmdb(BarsList& barsList, const char* exchg, const char* code, VvTSKlinePeriod period, uint32_t& lastBarTime);
 
-	std::string	read_bars_to_buffer(const char* exchg, const char* code, WTSKlinePeriod period);
+	std::string	read_bars_to_buffer(const char* exchg, const char* code, VvTSKlinePeriod period);
 
-	WTSBarStruct* get_rt_cache_bar(const char* exchg, const char* code, WTSKlinePeriod period);
+	VvTSBarStruct* get_rt_cache_bar(const char* exchg, const char* code, VvTSKlinePeriod period);
 
 private:
 	//////////////////////////////////////////////////////////////////////////
@@ -112,7 +112,7 @@ private:
 	 *	Tick数据，每个合约一个数据库，路径如./ticks/CFFEX/IF2101
 	 */
 	typedef std::shared_ptr<WtLMDB> WtLMDBPtr;
-	typedef wt_hashmap<std::string, WtLMDBPtr> WtLMDBMap;
+	typedef vvt_hashmap<std::string, WtLMDBPtr> WtLMDBMap;
 
 	WtLMDBMap	_exchg_m1_dbs;
 	WtLMDBMap	_exchg_m5_dbs;
@@ -121,9 +121,9 @@ private:
 	//用exchg.code作为key，如BINANCE.BTCUSDT
 	WtLMDBMap	_tick_dbs;
 
-	WtLMDBPtr	get_k_db(const char* exchg, WTSKlinePeriod period);
+	WtLMDBPtr	get_k_db(const char* exchg, VvTSKlinePeriod period);
 
 	WtLMDBPtr	get_t_db(const char* exchg, const char* code);
 };
 
-NS_WTP_END
+NS_VVTP_END

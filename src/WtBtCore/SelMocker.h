@@ -14,13 +14,13 @@
 #include "../Includes/FasterDefs.h"
 #include "../Includes/ISelStraCtx.h"
 #include "../Includes/SelStrategyDefs.h"
-#include "../Includes/WTSDataDef.hpp"
+#include "../Includes/VvTSDataDef.hpp"
 #include "../Share/fmtlib.h"
 #include "../Share/DLLHelper.hpp"
 
 class SelStrategy;
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class HisDataReplayer;
 
@@ -68,13 +68,13 @@ private:
 	void	proc_tick(const char* stdCode, double last_px, double cur_px);
 
 public:
-	bool	init_sel_factory(WTSVariant* cfg);
+	bool	init_sel_factory(VvTSVariant* cfg);
 
 public:
 	//////////////////////////////////////////////////////////////////////////
 	//IDataSink
-	virtual void	handle_tick(const char* stdCode, WTSTickData* curTick, uint32_t pxType) override;
-	virtual void	handle_bar_close(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar) override;
+	virtual void	handle_tick(const char* stdCode, VvTSTickData* curTick, uint32_t pxType) override;
+	virtual void	handle_bar_close(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar) override;
 	virtual void	handle_schedule(uint32_t uDate, uint32_t uTime) override;
 
 	virtual void	handle_init() override;
@@ -90,13 +90,13 @@ public:
 	virtual void on_init() override;
 	virtual void on_session_begin(uint32_t curTDate) override;
 	virtual void on_session_end(uint32_t curTDate) override;
-	virtual void on_tick(const char* stdCode, WTSTickData* newTick, bool bEmitStrategy = true) override;
-	virtual void on_bar(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar) override;
+	virtual void on_tick(const char* stdCode, VvTSTickData* newTick, bool bEmitStrategy = true) override;
+	virtual void on_bar(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar) override;
 	virtual bool on_schedule(uint32_t curDate, uint32_t curTime, uint32_t fireTime) override;
 	virtual void enum_position(FuncEnumSelPositionCallBack cb) override;
 
-	virtual void on_tick_updated(const char* stdCode, WTSTickData* newTick) override;
-	virtual void on_bar_close(const char* stdCode, const char* period, WTSBarStruct* newBar) override;
+	virtual void on_tick_updated(const char* stdCode, VvTSTickData* newTick) override;
+	virtual void on_bar_close(const char* stdCode, const char* period, VvTSBarStruct* newBar) override;
 	virtual void on_strategy_schedule(uint32_t curDate, uint32_t curTime) override;
 
 
@@ -129,11 +129,11 @@ public:
 	virtual double stra_get_detail_cost(const char* stdCode, const char* userTag) override;
 	virtual double stra_get_detail_profit(const char* stdCode, const char* userTag, int flag = 0) override;
 
-	virtual WTSCommodityInfo* stra_get_comminfo(const char* stdCode) override;
-	virtual WTSSessionInfo* stra_get_sessinfo(const char* stdCode) override;
-	virtual WTSKlineSlice*	stra_get_bars(const char* stdCode, const char* period, uint32_t count) override;
-	virtual WTSTickSlice*	stra_get_ticks(const char* stdCode, uint32_t count) override;
-	virtual WTSTickData*	stra_get_last_tick(const char* stdCode) override;
+	virtual VvTSCommodityInfo* stra_get_comminfo(const char* stdCode) override;
+	virtual VvTSSessionInfo* stra_get_sessinfo(const char* stdCode) override;
+	virtual VvTSKlineSlice*	stra_get_bars(const char* stdCode, const char* period, uint32_t count) override;
+	virtual VvTSTickSlice*	stra_get_ticks(const char* stdCode, uint32_t count) override;
+	virtual VvTSTickData*	stra_get_last_tick(const char* stdCode) override;
 
 	/*
 	 *	获取分月合约代码
@@ -171,11 +171,11 @@ protected:
 		_KlineTag() :_closed(false), _count(0){}
 
 	} KlineTag;
-	typedef wt_hashmap<std::string, KlineTag> KlineTags;
+	typedef vvt_hashmap<std::string, KlineTag> KlineTags;
 	KlineTags	_kline_tags;
 
 	typedef std::pair<double, uint64_t>	PriceInfo;
-	typedef wt_hashmap<std::string, PriceInfo> PriceMap;
+	typedef vvt_hashmap<std::string, PriceInfo> PriceMap;
 	PriceMap		_price_map;
 
 	typedef struct _DetailInfo
@@ -222,7 +222,7 @@ protected:
 
 		inline double valid() const { return _volume - _frozen; }
 	} PosInfo;
-	typedef wt_hashmap<std::string, PosInfo> PositionMap;
+	typedef vvt_hashmap<std::string, PosInfo> PositionMap;
 	PositionMap		_pos_map;
 
 	typedef struct _SigInfo
@@ -243,7 +243,7 @@ protected:
 			_gentime = 0;
 		}
 	}SigInfo;
-	typedef wt_hashmap<std::string, SigInfo>	SignalMap;
+	typedef vvt_hashmap<std::string, SigInfo>	SignalMap;
 	SignalMap		_sig_map;
 
 	std::stringstream	_trade_logs;
@@ -256,7 +256,7 @@ protected:
 	bool			_is_in_schedule;	//是否在自动调度中
 
 	//用户数据
-	typedef wt_hashmap<std::string, std::string> StringHashMap;
+	typedef vvt_hashmap<std::string, std::string> StringHashMap;
 	StringHashMap	_user_datas;
 	bool			_ud_modified;
 
@@ -301,5 +301,5 @@ protected:
 	uint32_t		_cur_tdate;
 
 	//tick订阅列表
-	wt_hashset<std::string> _tick_subs;
+	vvt_hashset<std::string> _tick_subs;
 };

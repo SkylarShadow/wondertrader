@@ -17,10 +17,10 @@
 namespace rj = rapidjson;
 
 #include "../Share/StrUtil.hpp"
-#include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSSessionInfo.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/VvTSSessionInfo.hpp"
 #include "../Includes/IHotMgr.h"
-#include "../Includes/WTSTradeDef.hpp"
+#include "../Includes/VvTSTradeDef.hpp"
 #include "../Share/decimal.h"
 #include "../Share/CodeHelper.hpp"
 
@@ -435,8 +435,8 @@ void CtaStraBaseCtx::load_data(uint32_t flag /* = 0xFFFFFFFF */)
 					strcpy(condInfo._code, stdCode);
 					strcpy(condInfo._usertag, cItem["usertag"].GetString());
 
-					condInfo._field = (WTSCompareField)cItem["field"].GetUint();
-					condInfo._alg = (WTSCompareType)cItem["alg"].GetUint();
+					condInfo._field = (VvTSCompareField)cItem["field"].GetUint();
+					condInfo._alg = (VvTSCompareType)cItem["alg"].GetUint();
 					condInfo._target = cItem["target"].GetDouble();
 					condInfo._qty = cItem["qty"].GetDouble();
 					condInfo._action = (char)cItem["action"].GetUint();
@@ -646,7 +646,7 @@ void CtaStraBaseCtx::save_data(uint32_t flag /* = 0xFFFFFFFF */)
 
 //////////////////////////////////////////////////////////////////////////
 //回调函数
-void CtaStraBaseCtx::on_bar(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar)
+void CtaStraBaseCtx::on_bar(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar)
 {
 	if (newBar == NULL)
 		return;
@@ -763,7 +763,7 @@ void CtaStraBaseCtx::update_dyn_profit(const char* stdCode, double price)
 		}
 		else
 		{
-			WTSCommodityInfo* commInfo = _engine->get_commodity_info(stdCode);
+			VvTSCommodityInfo* commInfo = _engine->get_commodity_info(stdCode);
 			double dynprofit = 0;
 			for (auto pit = pInfo._details.begin(); pit != pInfo._details.end(); pit++)
 			{
@@ -794,7 +794,7 @@ void CtaStraBaseCtx::update_dyn_profit(const char* stdCode, double price)
 	_fund_info._total_dynprofit = total_dynprofit;
 }
 
-void CtaStraBaseCtx::on_tick(const char* stdCode, WTSTickData* newTick, bool bEmitStrategy /* = true */)
+void CtaStraBaseCtx::on_tick(const char* stdCode, VvTSTickData* newTick, bool bEmitStrategy /* = true */)
 {
 	_price_map[stdCode] = newTick->price();
 
@@ -803,7 +803,7 @@ void CtaStraBaseCtx::on_tick(const char* stdCode, WTSTickData* newTick, bool bEm
 		auto it = _sig_map.find(stdCode);
 		if(it != _sig_map.end())
 		{
-			WTSSessionInfo* sInfo = _engine->get_session_info(stdCode, true);
+			VvTSSessionInfo* sInfo = _engine->get_session_info(stdCode, true);
 			if (sInfo->isInTradingTime(_engine->get_raw_time(), true))
 			{
 				const SigInfo sInfo = it->second;
@@ -969,7 +969,7 @@ bool CtaStraBaseCtx::on_schedule(uint32_t curDate, uint32_t curTime)
 			}
 		}
 
-		WTSSessionInfo* sInfo = _engine->get_session_info(stdCode.c_str(), true);
+		VvTSSessionInfo* sInfo = _engine->get_session_info(stdCode.c_str(), true);
 
 		if (isMainUdt || _kline_tags.empty())
 		{	
@@ -1120,7 +1120,7 @@ CondList& CtaStraBaseCtx::get_cond_entrusts(const char* stdCode)
 //策略接口
 void CtaStraBaseCtx::stra_enter_long(const char* stdCode, double qty, const char* userTag /* = "" */, double limitprice, double stopprice)
 {
-	WTSCommodityInfo* commInfo = _engine->get_commodity_info(stdCode);
+	VvTSCommodityInfo* commInfo = _engine->get_commodity_info(stdCode);
 	if (commInfo == NULL)
 	{
 		log_error("Cannot find corresponding commodity info of {}", stdCode);
@@ -1148,8 +1148,8 @@ void CtaStraBaseCtx::stra_enter_long(const char* stdCode, double qty, const char
 		CondList& condList = get_cond_entrusts(stdCode);
 
 		CondEntrust entrust;
-		wt_strcpy(entrust._code, stdCode);
-		wt_strcpy(entrust._usertag, userTag);
+		vvt_strcpy(entrust._code, stdCode);
+		vvt_strcpy(entrust._usertag, userTag);
 
 		entrust._qty = qty;
 		entrust._field = WCF_NEWPRICE;
@@ -1172,7 +1172,7 @@ void CtaStraBaseCtx::stra_enter_long(const char* stdCode, double qty, const char
 
 void CtaStraBaseCtx::stra_enter_short(const char* stdCode, double qty, const char* userTag /* = "" */, double limitprice, double stopprice)
 {
-	WTSCommodityInfo* commInfo = _engine->get_commodity_info(stdCode);
+	VvTSCommodityInfo* commInfo = _engine->get_commodity_info(stdCode);
 	if (commInfo == NULL)
 	{
 		log_error("Cannot find corresponding commodity info of {}", stdCode);
@@ -1206,8 +1206,8 @@ void CtaStraBaseCtx::stra_enter_short(const char* stdCode, double qty, const cha
 		CondList& condList = get_cond_entrusts(stdCode);
 
 		CondEntrust entrust;
-		wt_strcpy(entrust._code, stdCode);
-		wt_strcpy(entrust._usertag, userTag);
+		vvt_strcpy(entrust._code, stdCode);
+		vvt_strcpy(entrust._usertag, userTag);
 
 		entrust._qty = qty;
 		entrust._field = WCF_NEWPRICE;
@@ -1230,14 +1230,14 @@ void CtaStraBaseCtx::stra_enter_short(const char* stdCode, double qty, const cha
 
 void CtaStraBaseCtx::stra_exit_long(const char* stdCode, double qty, const char* userTag /* = "" */, double limitprice, double stopprice)
 {
-	WTSCommodityInfo* commInfo = _engine->get_commodity_info(stdCode);
+	VvTSCommodityInfo* commInfo = _engine->get_commodity_info(stdCode);
 	if (commInfo == NULL)
 	{
 		log_error("Cannot find corresponding commodity info of {}", stdCode);
 		return;
 	}
 
-	WTSSessionInfo* sInfo = commInfo->getSessionInfo();
+	VvTSSessionInfo* sInfo = commInfo->getSessionInfo();
 	uint32_t offTime = sInfo->offsetTime(_engine->get_min_time(), true);
 	bool isLastBarOfDay = (offTime == sInfo->getCloseTime(true));
 
@@ -1257,8 +1257,8 @@ void CtaStraBaseCtx::stra_exit_long(const char* stdCode, double qty, const char*
 		CondList& condList = get_cond_entrusts(stdCode);
 
 		CondEntrust entrust;
-		wt_strcpy(entrust._code, stdCode);
-		wt_strcpy(entrust._usertag, userTag);
+		vvt_strcpy(entrust._code, stdCode);
+		vvt_strcpy(entrust._usertag, userTag);
 
 		entrust._qty = qty;
 		entrust._field = WCF_NEWPRICE;
@@ -1281,7 +1281,7 @@ void CtaStraBaseCtx::stra_exit_long(const char* stdCode, double qty, const char*
 
 void CtaStraBaseCtx::stra_exit_short(const char* stdCode, double qty, const char* userTag /* = "" */, double limitprice, double stopprice)
 {
-	WTSCommodityInfo* commInfo = _engine->get_commodity_info(stdCode);
+	VvTSCommodityInfo* commInfo = _engine->get_commodity_info(stdCode);
 	if (commInfo == NULL)
 	{
 		log_error("Cannot find corresponding commodity info of {}", stdCode);
@@ -1309,8 +1309,8 @@ void CtaStraBaseCtx::stra_exit_short(const char* stdCode, double qty, const char
 		CondList& condList = get_cond_entrusts(stdCode);
 
 		CondEntrust entrust;
-		wt_strcpy(entrust._code, stdCode);
-		wt_strcpy(entrust._usertag, userTag);
+		vvt_strcpy(entrust._code, stdCode);
+		vvt_strcpy(entrust._usertag, userTag);
 
 		entrust._qty = qty;
 		entrust._field = WCF_NEWPRICE;
@@ -1372,8 +1372,8 @@ void CtaStraBaseCtx::stra_set_position(const char* stdCode, double qty, const ch
 		bool isBuy = decimal::gt(qty, curVol);
 
 		CondEntrust entrust;
-		wt_strcpy(entrust._code, stdCode);
-		wt_strcpy(entrust._usertag, userTag);
+		vvt_strcpy(entrust._code, stdCode);
+		vvt_strcpy(entrust._usertag, userTag);
 
 		entrust._qty = qty;
 		entrust._field = WCF_NEWPRICE;
@@ -1422,7 +1422,7 @@ void CtaStraBaseCtx::do_set_position(const char* stdCode, double qty, const char
 
 	double diff = qty - pInfo._volume;
 
-	WTSCommodityInfo* commInfo = _engine->get_commodity_info(stdCode);
+	VvTSCommodityInfo* commInfo = _engine->get_commodity_info(stdCode);
 	if (commInfo == NULL)
 		return;
 
@@ -1460,7 +1460,7 @@ void CtaStraBaseCtx::do_set_position(const char* stdCode, double qty, const char
 		dInfo._opentime = curTm;
 		dInfo._opentdate = curTDate;
 		dInfo._open_barno = _last_barno;
-		wt_strcpy(dInfo._opentag, userTag);
+		vvt_strcpy(dInfo._opentag, userTag);
 		pInfo._details.emplace_back(dInfo);
 		pInfo._last_entertime = curTm;
 
@@ -1555,7 +1555,7 @@ void CtaStraBaseCtx::do_set_position(const char* stdCode, double qty, const char
 			dInfo._opentime = curTm;
 			dInfo._opentdate = curTDate;
 			dInfo._open_barno = _last_barno;
-			wt_strcpy(dInfo._opentag, userTag);
+			vvt_strcpy(dInfo._opentag, userTag);
 			pInfo._details.emplace_back(dInfo);
 			pInfo._last_entertime = curTm;
 
@@ -1576,7 +1576,7 @@ void CtaStraBaseCtx::do_set_position(const char* stdCode, double qty, const char
 	}
 }
 
-WTSKlineSlice* CtaStraBaseCtx::stra_get_bars(const char* stdCode, const char* period, uint32_t count, bool isMain /* = false */)
+VvTSKlineSlice* CtaStraBaseCtx::stra_get_bars(const char* stdCode, const char* period, uint32_t count, bool isMain /* = false */)
 {
 	thread_local static char key[64] = { 0 };
 	fmtutil::format_to(key, "{}#{}", stdCode, period);
@@ -1607,7 +1607,7 @@ WTSKlineSlice* CtaStraBaseCtx::stra_get_bars(const char* stdCode, const char* pe
 	if (strlen(period) > 1)
 		times = strtoul(period + 1, NULL, 10);
 
-	WTSKlineSlice* kline = _engine->get_kline_slice(_context_id, stdCode, basePeriod, count, times);
+	VvTSKlineSlice* kline = _engine->get_kline_slice(_context_id, stdCode, basePeriod, count, times);
 	if(kline)
 	{
 		//如果K线获取不到,说明也不会有闭合事件发生,所以不更新本地标记
@@ -1647,16 +1647,16 @@ WTSKlineSlice* CtaStraBaseCtx::stra_get_bars(const char* stdCode, const char* pe
 	return kline;
 }
 
-WTSTickSlice* CtaStraBaseCtx::stra_get_ticks(const char* stdCode, uint32_t count)
+VvTSTickSlice* CtaStraBaseCtx::stra_get_ticks(const char* stdCode, uint32_t count)
 {
-	WTSTickSlice* ret = _engine->get_tick_slice(_context_id, stdCode, count);
+	VvTSTickSlice* ret = _engine->get_tick_slice(_context_id, stdCode, count);
 	if (ret)
 		_engine->sub_tick(id(), stdCode);
 
 	return ret;
 }
 
-WTSTickData* CtaStraBaseCtx::stra_get_last_tick(const char* stdCode)
+VvTSTickData* CtaStraBaseCtx::stra_get_last_tick(const char* stdCode)
 {
 	return _engine->get_last_tick(_context_id, stdCode);
 }
@@ -1683,7 +1683,7 @@ void CtaStraBaseCtx::stra_sub_bar_events(const char* stdCode, const char* period
 	tag._notify = true;
 }
 
-WTSCommodityInfo* CtaStraBaseCtx::stra_get_comminfo(const char* stdCode)
+VvTSCommodityInfo* CtaStraBaseCtx::stra_get_comminfo(const char* stdCode)
 {
 	return _engine->get_commodity_info(stdCode);
 }

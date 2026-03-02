@@ -21,13 +21,13 @@ public:
 
 	virtual const char* getFactName() override;
 
-	virtual bool init(WTSVariant* cfg) override;
+	virtual bool init(VvTSVariant* cfg) override;
 
 	virtual void on_init(IUftStraCtx* ctx) override;
 
-	virtual void on_tick(IUftStraCtx* ctx, const char* code, WTSTickData* newTick) override;
+	virtual void on_tick(IUftStraCtx* ctx, const char* code, VvTSTickData* newTick) override;
 
-	virtual void on_bar(IUftStraCtx* ctx, const char* code, const char* period, uint32_t times, WTSBarStruct* newBar) override;
+	virtual void on_bar(IUftStraCtx* ctx, const char* code, const char* period, uint32_t times, VvTSBarStruct* newBar) override;
 
 	virtual void on_trade(IUftStraCtx* ctx, uint32_t localid, const char* stdCode, bool isLong, uint32_t offset, double qty, double price) override;
 
@@ -44,7 +44,7 @@ public:
 	virtual void on_params_updated() override;
 
 private:
-	WTSTickData*	_last_tick;
+	VvTSTickData*	_last_tick;
 	IUftStraCtx*	_ctx;
 	std::string		_code;
 	uint32_t		_secs;

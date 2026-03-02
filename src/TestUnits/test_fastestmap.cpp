@@ -3,7 +3,7 @@
 #include "../Share/TimeUtils.hpp"
 #include "../Share/fmtlib.h"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 /*
  *	By Wesley @ 2023.08.16
@@ -14,7 +14,7 @@ USING_NS_WTP;
 TEST(test_fastestmap, test_perform)
 {
 	fastest_hashmap<std::string, std::string> a;
-	wt_hashmap<std::string, std::string> b;
+	vvt_hashmap<std::string, std::string> b;
 
 	uint32_t times = 300000;
 

@@ -1,20 +1,20 @@
 ﻿#include "WtDataReaderAD.h"
 #include "LMDBKeys.h"
 
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VvTSVariant.hpp"
 #include "../Share/TimeUtils.hpp"
 #include "../Share/CodeHelper.hpp"
 #include "../Share/StdUtils.hpp"
 
-#include "../Includes/WTSContractInfo.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
 #include "../Includes/IBaseDataMgr.h"
 #include "../Includes/IHotMgr.h"
-#include "../Includes/WTSDataDef.hpp"
+#include "../Includes/VvTSDataDef.hpp"
 
 //By Wesley @ 2022.01.05
 #include "../Share/fmtlib.h"
 template<typename... Args>
-inline void pipe_reader_log(IDataReaderSink* sink, WTSLogLevel ll, const char* format, const Args&... args)
+inline void pipe_reader_log(IDataReaderSink* sink, VvTSLogLevel ll, const char* format, const Args&... args)
 {
 	if (sink == NULL)
 		return;
@@ -54,7 +54,7 @@ WtDataReaderAD::~WtDataReaderAD()
 {
 }
 
-void WtDataReaderAD::init(WTSVariant* cfg, IDataReaderSink* sink, IHisDataLoader* loader /* = NULL */)
+void WtDataReaderAD::init(VvTSVariant* cfg, IDataReaderSink* sink, IHisDataLoader* loader /* = NULL */)
 {
 	IDataReader::init(cfg, sink, loader);
 
@@ -74,10 +74,10 @@ void WtDataReaderAD::init(WTSVariant* cfg, IDataReaderSink* sink, IHisDataLoader
 	pipe_reader_log(sink, LL_INFO, "WtDataReaderAD initialized, root data folder is {}", _base_dir);
 }
 
-WTSTickSlice* WtDataReaderAD::readTickSlice(const char* stdCode, uint32_t count, uint64_t etime /* = 0 */)
+VvTSTickSlice* WtDataReaderAD::readTickSlice(const char* stdCode, uint32_t count, uint64_t etime /* = 0 */)
 {
 	CodeHelper::CodeInfo cInfo = CodeHelper::extractStdCode(stdCode, _hot_mgr);
-	WTSCommodityInfo* commInfo = _base_data_mgr->getCommodity(cInfo._exchg, cInfo._product);
+	VvTSCommodityInfo* commInfo = _base_data_mgr->getCommodity(cInfo._exchg, cInfo._product);
 	std::string stdPID = StrUtil::printf("%s.%s", cInfo._exchg, cInfo._product);
 
 	uint32_t curDate, curTime, curSecs;
@@ -152,7 +152,7 @@ WTSTickSlice* WtDataReaderAD::readTickSlice(const char* stdCode, uint32_t count,
 			std::string((const char*)&rKey, sizeof(rKey)), [this, &tickList](const ValueArray& ayKeys, const ValueArray& ayVals) {
 			for(const std::string& item : ayVals)
 			{
-				WTSTickStruct* curTick = (WTSTickStruct*)item.data();
+				VvTSTickStruct* curTick = (VvTSTickStruct*)item.data();
 				tickList._ticks.push_back(*curTick);
 			}
 		});
@@ -188,21 +188,21 @@ WTSTickSlice* WtDataReaderAD::readTickSlice(const char* stdCode, uint32_t count,
 	if(cnt_2 >= count)
 	{
 		//如果array_two条数足够，则直接返回数据块
-		return WTSTickSlice::create(stdCode, &tickList._ticks[ayTwo.second - count], count);
+		return VvTSTickSlice::create(stdCode, &tickList._ticks[ayTwo.second - count], count);
 	}
 	else
 	{
 		//如果array_two条数不够，需要再从array_one提取
 		auto ayOne = tickList._ticks.array_one();
 		auto diff = count - cnt_2;
-		auto ret = WTSTickSlice::create(stdCode, &tickList._ticks[ayOne.second - diff], diff);
+		auto ret = VvTSTickSlice::create(stdCode, &tickList._ticks[ayOne.second - diff], diff);
 		if(cnt_2 > 0)
 			ret->appendBlock(ayTwo.first, cnt_2);
 		return ret;
 	}
 }
 
-std::string WtDataReaderAD::read_bars_to_buffer(const char* exchg, const char* code, WTSKlinePeriod period)
+std::string WtDataReaderAD::read_bars_to_buffer(const char* exchg, const char* code, VvTSKlinePeriod period)
 {
 	//直接从LMDB读取
 	WtLMDBPtr db = get_k_db(exchg, period);
@@ -218,16 +218,16 @@ std::string WtDataReaderAD::read_bars_to_buffer(const char* exchg, const char* c
 		if (ayVals.empty())
 			return;
 
-		buffer.resize(sizeof(WTSBarStruct)*ayVals.size());
-		memcpy((void*)buffer.data(), ayVals.data(), sizeof(WTSBarStruct)*ayVals.size());
+		buffer.resize(sizeof(VvTSBarStruct)*ayVals.size());
+		memcpy((void*)buffer.data(), ayVals.data(), sizeof(VvTSBarStruct)*ayVals.size());
 	});
 	return std::move(buffer);
 }
 
-bool WtDataReaderAD::cacheBarsFromStorage(const std::string& key, const char* stdCode, WTSKlinePeriod period, uint32_t count)
+bool WtDataReaderAD::cacheBarsFromStorage(const std::string& key, const char* stdCode, VvTSKlinePeriod period, uint32_t count)
 {
 	CodeHelper::CodeInfo cInfo = CodeHelper::extractStdCode(stdCode, _hot_mgr);
-	WTSCommodityInfo* commInfo = _base_data_mgr->getCommodity(cInfo._exchg, cInfo._product);
+	VvTSCommodityInfo* commInfo = _base_data_mgr->getCommodity(cInfo._exchg, cInfo._product);
 	std::string stdPID = StrUtil::printf("%s.%s", cInfo._exchg, cInfo._product);
 
 	BarsList& barList = _bars_cache[key];
@@ -255,7 +255,7 @@ bool WtDataReaderAD::cacheBarsFromStorage(const std::string& key, const char* st
 			if(memcmp(ayKeys[i].data(), (void*)&lKey, sizeof(lKey)) < 0)
 				continue;
 
-			barList._bars.push_back(*(WTSBarStruct*)ayVals[i].data());
+			barList._bars.push_back(*(VvTSBarStruct*)ayVals[i].data());
 		}
 	});
 
@@ -263,7 +263,7 @@ bool WtDataReaderAD::cacheBarsFromStorage(const std::string& key, const char* st
 	return true;
 }
 
-void WtDataReaderAD::update_cache_from_lmdb(BarsList& barsList, const char* exchg, const char* code, WTSKlinePeriod period, uint32_t& lastBarTime)
+void WtDataReaderAD::update_cache_from_lmdb(BarsList& barsList, const char* exchg, const char* code, VvTSKlinePeriod period, uint32_t& lastBarTime)
 {
 	bool isDay = (period == KP_DAY);
 	WtLMDBPtr db = get_k_db(exchg, period);
@@ -280,12 +280,12 @@ void WtDataReaderAD::update_cache_from_lmdb(BarsList& barsList, const char* exch
 			const std::string& key = ayKeys[idx];
 			LMDBBarKey* barKey = (LMDBBarKey*)key.data();
 			printf("%u\r\n", reverseEndian(barKey->_bartime));
-			WTSBarStruct* curBar = (WTSBarStruct*)item.data();
+			VvTSBarStruct* curBar = (VvTSBarStruct*)item.data();
 			uint64_t curBarTime = isDay ? curBar->date : curBar->time;
 			if (curBarTime == lastBarTime)
 			{
 				if (barsList._last_from_cache)
-					memcpy(&barsList._bars.back(), curBar, sizeof(WTSBarStruct));
+					memcpy(&barsList._bars.back(), curBar, sizeof(VvTSBarStruct));
 			}
 			else
 			{
@@ -300,7 +300,7 @@ void WtDataReaderAD::update_cache_from_lmdb(BarsList& barsList, const char* exch
 		PERIOD_NAME[period], exchg, code, isDay?barsList._bars.back().date:barsList._bars.back().time);
 }
 
-WTSBarStruct* WtDataReaderAD::get_rt_cache_bar(const char* exchg, const char* code, WTSKlinePeriod period)
+VvTSBarStruct* WtDataReaderAD::get_rt_cache_bar(const char* exchg, const char* code, VvTSKlinePeriod period)
 {
 	RTBarCacheWrapper* wrapper = NULL;
 	if (period == KP_DAY)
@@ -363,10 +363,10 @@ WTSBarStruct* WtDataReaderAD::get_rt_cache_bar(const char* exchg, const char* co
 	return NULL;
 }
 
-WTSKlineSlice* WtDataReaderAD::readKlineSlice(const char* stdCode, WTSKlinePeriod period, uint32_t count, uint64_t etime /* = 0 */)
+VvTSKlineSlice* WtDataReaderAD::readKlineSlice(const char* stdCode, VvTSKlinePeriod period, uint32_t count, uint64_t etime /* = 0 */)
 {
 	CodeHelper::CodeInfo cInfo = CodeHelper::extractStdCode(stdCode, _hot_mgr);
-	WTSCommodityInfo* commInfo = _base_data_mgr->getCommodity(cInfo._exchg, cInfo._product);
+	VvTSCommodityInfo* commInfo = _base_data_mgr->getCommodity(cInfo._exchg, cInfo._product);
 	std::string stdPID = StrUtil::printf("%s.%s", cInfo._exchg, cInfo._product);
 
 	uint32_t curDate, curTime, curSecs;
@@ -425,7 +425,7 @@ WTSKlineSlice* WtDataReaderAD::readKlineSlice(const char* stdCode, WTSKlinePerio
 	if(barsList._last_req_time < etime)
 	{
 		//上次请求的时间，小于当前请求的时间，则要检查最后一条K线
-		WTSBarStruct& lastBar = barsList._bars.back();
+		VvTSBarStruct& lastBar = barsList._bars.back();
 		uint32_t lastBarTime = isDay ? lastBar.date : (uint32_t)lastBar.time;
 		if(lastBarTime < etime)
 		{
@@ -441,7 +441,7 @@ WTSKlineSlice* WtDataReaderAD::readKlineSlice(const char* stdCode, WTSKlinePerio
 		//则从缓存中读取
 		if(lastBarTime < etime)
 		{
-			WTSBarStruct* rtBar = get_rt_cache_bar(cInfo._exchg, curCode.c_str(), period);
+			VvTSBarStruct* rtBar = get_rt_cache_bar(cInfo._exchg, curCode.c_str(), period);
 			if(rtBar != NULL)
 			{
 				uint64_t cacheBarTime = isDay ? rtBar->date : rtBar->time;
@@ -474,14 +474,14 @@ WTSKlineSlice* WtDataReaderAD::readKlineSlice(const char* stdCode, WTSKlinePerio
 	if (cnt_2 >= count)
 	{
 		//如果array_two条数足够，则直接返回数据块
-		return WTSKlineSlice::create(stdCode, period, 1, &barsList._bars[ayTwo.second - count], count);
+		return VvTSKlineSlice::create(stdCode, period, 1, &barsList._bars[ayTwo.second - count], count);
 	}
 	else
 	{
 		//如果array_two条数不够，需要再从array_one提取
 		auto ayOne = barsList._bars.array_one();
 		auto diff = count - cnt_2;
-		auto ret = WTSKlineSlice::create(stdCode, period, 1, &barsList._bars[ayOne.second - diff], diff);
+		auto ret = VvTSKlineSlice::create(stdCode, period, 1, &barsList._bars[ayOne.second - diff], diff);
 		if (cnt_2 > 0)
 			ret->appendBlock(ayTwo.first, cnt_2);
 		return ret;
@@ -512,7 +512,7 @@ void WtDataReaderAD::onMinuteEnd(uint32_t uDate, uint32_t uTime, uint32_t endTDa
 			update_cache_from_lmdb(barsList, barsList._exchg.c_str(), cInfo._code, barsList._period, lastBarTime);
 			if(lastBarTime < endBarTime)
 			{
-				WTSBarStruct* rtBar = get_rt_cache_bar(cInfo._exchg, cInfo._code, barsList._period);
+				VvTSBarStruct* rtBar = get_rt_cache_bar(cInfo._exchg, cInfo._code, barsList._period);
 				if(rtBar->time > lastBarTime && rtBar->time <=endBarTime)
 				{
 					barsList._bars.push_back(*rtBar);
@@ -530,7 +530,7 @@ void WtDataReaderAD::onMinuteEnd(uint32_t uDate, uint32_t uTime, uint32_t endTDa
 			update_cache_from_lmdb(barsList, barsList._exchg.c_str(), cInfo._code, barsList._period, lastBarTime);
 			if (lastBarTime < endBarTime)
 			{
-				WTSBarStruct* rtBar = get_rt_cache_bar(cInfo._exchg, cInfo._code, barsList._period);
+				VvTSBarStruct* rtBar = get_rt_cache_bar(cInfo._exchg, cInfo._code, barsList._period);
 				if (rtBar->date > lastBarTime && rtBar->date <= endBarTime)
 				{
 					barsList._bars.push_back(*rtBar);
@@ -549,7 +549,7 @@ void WtDataReaderAD::onMinuteEnd(uint32_t uDate, uint32_t uTime, uint32_t endTDa
 	_last_time = nowTime;
 }
 
-WtDataReaderAD::WtLMDBPtr WtDataReaderAD::get_k_db(const char* exchg, WTSKlinePeriod period)
+WtDataReaderAD::WtLMDBPtr WtDataReaderAD::get_k_db(const char* exchg, VvTSKlinePeriod period)
 {
 	WtLMDBMap* the_map = NULL;
 	std::string subdir;

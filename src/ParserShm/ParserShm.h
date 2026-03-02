@@ -10,13 +10,13 @@
 #pragma once
 #include "../Includes/IParserApi.h"
 #include "../Share/StdUtils.hpp"
-#include "../Includes/WTSStruct.h"
+#include "../Includes/VvTSStruct.h"
 #include "../Share/BoostMappingFile.hpp"
 
 #include <boost/asio.hpp>
 #include <boost/asio/io_service.hpp>
 
-USING_NS_WTP;
+USING_NS_VVTP;
 using namespace boost::asio;
 
 class ParserShm : public IParserApi
@@ -31,10 +31,10 @@ public:
 		uint32_t	_type;	//数据类型， 0-tick,1-委托队列,2-逐笔委托,3-逐笔成交
 		union
 		{
-			WTSTickStruct	_tick;
-			WTSOrdQueStruct _queue;
-			WTSOrdDtlStruct	_order;
-			WTSTransStruct	_trans;
+			VvTSTickStruct	_tick;
+			VvTSOrdQueStruct _queue;
+			VvTSOrdDtlStruct	_order;
+			VvTSTransStruct	_trans;
 		};
 
 		_DataItem() { memset(this, 0, sizeof(_DataItem)); }
@@ -57,7 +57,7 @@ public:
 #pragma pack(pop)
 
 public:
-	virtual bool init(WTSVariant* config) override;
+	virtual bool init(VvTSVariant* config) override;
 
 	virtual void release() override;
 

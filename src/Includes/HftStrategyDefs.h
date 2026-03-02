@@ -11,19 +11,19 @@
 #include <string>
 #include <stdint.h>
 
-#include "../Includes/WTSMarcos.h"
+#include "../Includes/VvTSMarcos.h"
 
-NS_WTP_BEGIN
-class WTSVariant;
+NS_VVTP_BEGIN
+class VvTSVariant;
 class IHftStraCtx;
-class WTSTickData;
-class WTSOrdDtlData;
-class WTSOrdQueData;
-class WTSTransData;
-struct WTSBarStruct;
-NS_WTP_END
+class VvTSTickData;
+class VvTSOrdDtlData;
+class VvTSOrdQueData;
+class VvTSTransData;
+struct VvTSBarStruct;
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class HftStrategy
 {
@@ -45,7 +45,7 @@ public:
 	/*
 	 *	初始化
 	 */
-	virtual bool init(WTSVariant* cfg){ return true; }
+	virtual bool init(VvTSVariant* cfg){ return true; }
 
 	virtual const char* id() const { return _id.c_str(); }
 
@@ -69,27 +69,27 @@ public:
 	/*
 	 *	tick回调
 	 */
-	virtual void on_tick(IHftStraCtx* ctx, const char* code, WTSTickData* newTick) {}
+	virtual void on_tick(IHftStraCtx* ctx, const char* code, VvTSTickData* newTick) {}
 
 	/*
 	 *	委托队列回调
 	 */
-	virtual void on_order_queue(IHftStraCtx* ctx, const char* code, WTSOrdQueData* newOrdQue) {}
+	virtual void on_order_queue(IHftStraCtx* ctx, const char* code, VvTSOrdQueData* newOrdQue) {}
 
 	/*
 	 *	委托明细回调
 	 */
-	virtual void on_order_detail (IHftStraCtx* ctx, const char* code, WTSOrdDtlData* newOrdDtl) {}
+	virtual void on_order_detail (IHftStraCtx* ctx, const char* code, VvTSOrdDtlData* newOrdDtl) {}
 
 	/*
 	 *	逐笔成交回调
 	 */
-	virtual void on_transaction(IHftStraCtx* ctx, const char* code, WTSTransData* newTrans) {}
+	virtual void on_transaction(IHftStraCtx* ctx, const char* code, VvTSTransData* newTrans) {}
 
 	/*
 	 *	K线闭合回调
 	 */
-	virtual void on_bar(IHftStraCtx* ctx, const char* code, const char* period, uint32_t times, WTSBarStruct* newBar) {}
+	virtual void on_bar(IHftStraCtx* ctx, const char* code, const char* period, uint32_t times, VvTSBarStruct* newBar) {}
 
 	/*
 	 *	成交回报

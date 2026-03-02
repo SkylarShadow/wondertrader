@@ -19,7 +19,7 @@
 #include "WTSLogger.h"
 #include "../WTSUtils/WTSCfgLoader.h"
 #include "../Includes/ILogHandler.h"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VvTSVariant.hpp"
 #include "../Share/StdUtils.hpp"
 #include "../Share/StrUtil.hpp"
 #include "../Share/TimeUtils.hpp"
@@ -35,7 +35,7 @@
 const char* DYN_PATTERN = "dyn_pattern";
 
 ILogHandler*		WTSLogger::m_logHandler	= NULL;
-WTSLogLevel			WTSLogger::m_logLevel	= LL_NONE;
+VvTSLogLevel			WTSLogger::m_logLevel	= LL_NONE;
 bool				WTSLogger::m_bStopped = false;
 bool				WTSLogger::m_bInited = false;
 bool				WTSLogger::m_bTpInited = false;
@@ -46,23 +46,23 @@ std::set<std::string>	WTSLogger::m_setDynLoggers;
 
 inline spdlog::level::level_enum str_to_level( const char* slvl)
 {
-	if(wt_stricmp(slvl, "debug") == 0)
+	if(vvt_stricmp(slvl, "debug") == 0)
 	{
 		return spdlog::level::debug;
 	}
-	else if (wt_stricmp(slvl, "info") == 0)
+	else if (vvt_stricmp(slvl, "info") == 0)
 	{
 		return spdlog::level::info;
 	}
-	else if (wt_stricmp(slvl, "warn") == 0)
+	else if (vvt_stricmp(slvl, "warn") == 0)
 	{
 		return spdlog::level::warn;
 	}
-	else if (wt_stricmp(slvl, "error") == 0)
+	else if (vvt_stricmp(slvl, "error") == 0)
 	{
 		return spdlog::level::err;
 	}
-	else if (wt_stricmp(slvl, "fatal") == 0)
+	else if (vvt_stricmp(slvl, "fatal") == 0)
 	{
 		return spdlog::level::critical;
 	}
@@ -72,25 +72,25 @@ inline spdlog::level::level_enum str_to_level( const char* slvl)
 	}
 }
 
-inline WTSLogLevel str_to_ll(const char* slvl)
+inline VvTSLogLevel str_to_ll(const char* slvl)
 {
-	if (wt_stricmp(slvl, "debug") == 0)
+	if (vvt_stricmp(slvl, "debug") == 0)
 	{
 		return LL_DEBUG;
 	}
-	else if (wt_stricmp(slvl, "info") == 0)
+	else if (vvt_stricmp(slvl, "info") == 0)
 	{
 		return LL_INFO;
 	}
-	else if (wt_stricmp(slvl, "warn") == 0)
+	else if (vvt_stricmp(slvl, "warn") == 0)
 	{
 		return LL_WARN;
 	}
-	else if (wt_stricmp(slvl, "error") == 0)
+	else if (vvt_stricmp(slvl, "error") == 0)
 	{
 		return LL_ERROR;
 	}
-	else if (wt_stricmp(slvl, "fatal") == 0)
+	else if (vvt_stricmp(slvl, "fatal") == 0)
 	{
 		return LL_FATAL;
 	}
@@ -132,16 +132,16 @@ void WTSLogger::print_message(const char* buffer)
 	fmt::print("\r\n");
 }
 
-void WTSLogger::initLogger(const char* catName, WTSVariant* cfgLogger)
+void WTSLogger::initLogger(const char* catName, VvTSVariant* cfgLogger)
 {
 	bool bAsync = cfgLogger->getBoolean("async");
 	const char* level = cfgLogger->getCString("level");
 
-	WTSVariant* cfgSinks = cfgLogger->get("sinks");
+	VvTSVariant* cfgSinks = cfgLogger->get("sinks");
 	std::vector<spdlog::sink_ptr> sinks;
 	for (uint32_t idx = 0; idx < cfgSinks->size(); idx++)
 	{
-		WTSVariant* cfgSink = cfgSinks->get(idx);
+		VvTSVariant* cfgSink = cfgSinks->get(idx);
 		const char* type = cfgSink->getCString("type");
 		if (strcmp(type, "daily_file_sink") == 0)
 		{
@@ -208,20 +208,20 @@ void WTSLogger::init(const char* propFile /* = "logcfg.json" */, bool isFile /* 
 	if (isFile && !StdFile::exists(propFile))
 		return;
 
-	WTSVariant* cfg = isFile ? WTSCfgLoader::load_from_file(propFile) : WTSCfgLoader::load_from_content(propFile, false);
+	VvTSVariant* cfg = isFile ? WTSCfgLoader::load_from_file(propFile) : WTSCfgLoader::load_from_content(propFile, false);
 	if (cfg == NULL)
 		return;
 
 	auto keys = cfg->memberNames();
 	for (std::string& key : keys)
 	{
-		WTSVariant* cfgItem = cfg->get(key.c_str());
+		VvTSVariant* cfgItem = cfg->get(key.c_str());
 		if (key == DYN_PATTERN)
 		{
 			auto pkeys = cfgItem->memberNames();
 			for(std::string& pkey : pkeys)
 			{
-				WTSVariant* cfgPattern = cfgItem->get(pkey.c_str());
+				VvTSVariant* cfgPattern = cfgItem->get(pkey.c_str());
 				if (m_mapPatterns == NULL)
 					m_mapPatterns = LogPatterns::create();
 
@@ -319,7 +319,7 @@ void WTSLogger::fatal_imp(SpdLoggerPtr logger, const char* message)
 		m_logHandler->handleLogAppend(LL_FATAL, message);
 }
 
-void WTSLogger::log_raw(WTSLogLevel ll, const char* message)
+void WTSLogger::log_raw(VvTSLogLevel ll, const char* message)
 {
 	if (m_logLevel > ll || m_bStopped)
 		return;
@@ -352,7 +352,7 @@ void WTSLogger::log_raw(WTSLogLevel ll, const char* message)
 	}
 }
 
-void WTSLogger::log_raw_by_cat(const char* catName, WTSLogLevel ll, const char* message)
+void WTSLogger::log_raw_by_cat(const char* catName, VvTSLogLevel ll, const char* message)
 {
 	if (m_logLevel > ll || m_bStopped)
 		return;
@@ -394,7 +394,7 @@ void WTSLogger::log_raw_by_cat(const char* catName, WTSLogLevel ll, const char* 
 	}	
 }
 
-void WTSLogger::log_dyn_raw(const char* patttern, const char* catName, WTSLogLevel ll, const char* message)
+void WTSLogger::log_dyn_raw(const char* patttern, const char* catName, VvTSLogLevel ll, const char* message)
 {
 	if (m_logLevel > ll || m_bStopped)
 		return;
@@ -443,7 +443,7 @@ SpdLoggerPtr WTSLogger::getLogger(const char* logger, const char* pattern /* = "
 		if (m_mapPatterns == NULL)
 			return SpdLoggerPtr();
 
-		WTSVariant* cfg = (WTSVariant*)m_mapPatterns->get(pattern);
+		VvTSVariant* cfg = (VvTSVariant*)m_mapPatterns->get(pattern);
 		if (cfg == NULL)
 			return SpdLoggerPtr();
 

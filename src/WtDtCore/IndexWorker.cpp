@@ -2,9 +2,9 @@
 #include "IndexFactory.h"
 
 #include "../Includes/IBaseDataMgr.h"
-#include "../Includes/WTSVariant.hpp"
-#include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSDataDef.hpp"
+#include "../Includes/VvTSVariant.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/VvTSDataDef.hpp"
 
 #include "../Share/CodeHelper.hpp"
 #include "../Share/decimal.h"
@@ -19,7 +19,7 @@ const char* WEIGHT_ALGS[] =
 	"DynamicVolume"
 };
 
-bool IndexWorker::init(WTSVariant* config)
+bool IndexWorker::init(VvTSVariant* config)
 {
 	if (config == NULL)
 		return false;
@@ -49,8 +49,8 @@ bool IndexWorker::init(WTSVariant* config)
 	//权重算法
 	_weight_alg = config->getUInt32("weight_alg");
 
-	WTSVariant* cfgComms = config->get("commodities");
-	WTSVariant* cfgCodes = config->get("codes");
+	VvTSVariant* cfgComms = config->get("commodities");
+	VvTSVariant* cfgCodes = config->get("codes");
 	if (cfgComms != NULL && cfgComms->size() > 0)
 	{
 		IBaseDataMgr* bdMgr = _factor->get_bd_mgr();
@@ -58,7 +58,7 @@ bool IndexWorker::init(WTSVariant* config)
 		std::size_t cnt = cfgComms->size();
 		for (std::size_t i = 0; i < cnt; i++)
 		{
-			WTSVariant* cfgItem = cfgComms->get(i);
+			VvTSVariant* cfgItem = cfgComms->get(i);
 			std::string fullPid;
 			double weight = 1.0;
 
@@ -76,7 +76,7 @@ bool IndexWorker::init(WTSVariant* config)
 			}
 
 			//通过品种代码找到对应的合约列表，并订阅
-			WTSCommodityInfo* commInfo = bdMgr->getCommodity(fullPid.c_str());
+			VvTSCommodityInfo* commInfo = bdMgr->getCommodity(fullPid.c_str());
 			if (commInfo == NULL)
 				continue;
 
@@ -88,10 +88,10 @@ bool IndexWorker::init(WTSVariant* config)
 				wFactor._weight = weight;
 
 				//订阅的时候读取最后的快照，作为基础数据
-				WTSTickData* lastTick = _factor->sub_ticks(fullCode.c_str());
+				VvTSTickData* lastTick = _factor->sub_ticks(fullCode.c_str());
 				if (lastTick)
 				{
-					memcpy(&wFactor._tick, &lastTick->getTickStruct(), sizeof(WTSTickStruct));
+					memcpy(&wFactor._tick, &lastTick->getTickStruct(), sizeof(VvTSTickStruct));
 					lastTick->release();
 				}
 
@@ -107,7 +107,7 @@ bool IndexWorker::init(WTSVariant* config)
 		std::size_t cnt = cfgCodes->size();
 		for (std::size_t i = 0; i < cnt; i++)
 		{
-			WTSVariant* cfgItem = cfgCodes->get(i);
+			VvTSVariant* cfgItem = cfgCodes->get(i);
 			std::string fullCode;
 			double weight = 1.0;
 
@@ -149,7 +149,7 @@ bool IndexWorker::init(WTSVariant* config)
 				
 			}
 
-			WTSContractInfo* cInfo = _factor->get_bd_mgr()->getContract(code.c_str(), exchg.c_str());
+			VvTSContractInfo* cInfo = _factor->get_bd_mgr()->getContract(code.c_str(), exchg.c_str());
 			if(cInfo == NULL)
 			{
 				WTSLogger::error("Consist {} of block index {}.{} not exists", fullCode, _exchg, _code);
@@ -160,10 +160,10 @@ bool IndexWorker::init(WTSVariant* config)
 			wFactor._weight = weight;
 
 			//订阅的时候读取最后的快照，作为基础数据
-			WTSTickData* lastTick = _factor->sub_ticks(fullCode.c_str());
+			VvTSTickData* lastTick = _factor->sub_ticks(fullCode.c_str());
 			if (lastTick)
 			{
-				memcpy(&wFactor._tick, &lastTick->getTickStruct(), sizeof(WTSTickStruct));
+				memcpy(&wFactor._tick, &lastTick->getTickStruct(), sizeof(VvTSTickStruct));
 				lastTick->release();
 			}
 
@@ -176,7 +176,7 @@ bool IndexWorker::init(WTSVariant* config)
 	return true;
 }
 
-void IndexWorker::handle_quote(WTSTickData* newTick)
+void IndexWorker::handle_quote(VvTSTickData* newTick)
 {
 	const char* fullCode = newTick->getContractInfo()->getFullCode();
 
@@ -187,7 +187,7 @@ void IndexWorker::handle_quote(WTSTickData* newTick)
 			return;
 
 		WeightFactor& wFactor = (WeightFactor&)it->second;
-		memcpy(&wFactor._tick, &newTick->getTickStruct(), sizeof(WTSTickStruct));
+		memcpy(&wFactor._tick, &newTick->getTickStruct(), sizeof(VvTSTickStruct));
 	}
 
 	//如果使用time，那么当第一个成分合约的行情进来以后，会去更新指数重算时间
@@ -331,7 +331,7 @@ void IndexWorker::generate_tick()
 		_cache.total_turnover = total_amt;
 	}
 
-	WTSTickData *newTick = WTSTickData::create(_cache);
+	VvTSTickData *newTick = VvTSTickData::create(_cache);
 	newTick->setContractInfo(_cInfo);
 	_factor->push_tick(newTick);
 	WTSLogger::debug("{}.{} - {}.{} - {}", _cache.exchg, _cache.code, _cache.action_date, _cache.action_time, _cache.price);

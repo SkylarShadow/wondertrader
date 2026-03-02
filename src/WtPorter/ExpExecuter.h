@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "../WtCore/IExecCommand.h"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class ExpExecuter : public IExecCommand
 {
@@ -11,7 +11,7 @@ public:
 	void	init();
 
 
-	virtual void set_position(const wt_hashmap<std::string, double>& targets) override;
+	virtual void set_position(const vvt_hashmap<std::string, double>& targets) override;
 
 
 	virtual void on_position_changed(const char* stdCode, double targetPos) override;

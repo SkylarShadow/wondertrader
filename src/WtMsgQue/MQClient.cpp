@@ -21,7 +21,7 @@
 #include <nanomsg/pubsub.h>
 
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 #pragma warning(disable:4200)
 

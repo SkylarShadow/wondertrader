@@ -11,12 +11,12 @@
 #include "TraderHTS.h"
 #include "../API/HTS5.2.43.0/include/scopeguard.hpp"
 
-#include "../Includes/WTSError.hpp"
-#include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSSessionInfo.hpp"
-#include "../Includes/WTSTradeDef.hpp"
-#include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VvTSError.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/VvTSSessionInfo.hpp"
+#include "../Includes/VvTSTradeDef.hpp"
+#include "../Includes/VvTSDataDef.hpp"
+#include "../Includes/VvTSVariant.hpp"
 #include "../Share/StdUtils.hpp"
 #include "../Share/TimeUtils.hpp"
 #include "../Includes/IBaseDataMgr.h"
@@ -42,7 +42,7 @@ std::map<std::string, TraderHTS*> itpdkCallMap;
 std::unique_ptr<HTSCallMgr> g_callback_mgr;
 
 template<typename... Args>
-inline void write_log(ITraderSpi* sink, WTSLogLevel ll, const char* format, const Args&... args)
+inline void write_log(ITraderSpi* sink, VvTSLogLevel ll, const char* format, const Args&... args)
 {
 	if (sink == NULL)
 		return;
@@ -143,7 +143,7 @@ inline const char* exchgO2I(const char* exchg)
 	return "";
 }
 
-WTSOrderState wrapOrderState(int state)
+VvTSOrderState wrapOrderState(int state)
 {
 	switch (state)
 	{
@@ -231,7 +231,7 @@ TraderHTS::~TraderHTS()
 
 }
 
-void TraderHTS::InitializeHTS(WTSVariant* params)
+void TraderHTS::InitializeHTS(VvTSVariant* params)
 {
 	SECITPDK_SetLogPath("./");            //日志目录
 	SECITPDK_SetProfilePath("./");           //配置文件目录
@@ -245,7 +245,7 @@ void TraderHTS::InitializeHTS(WTSVariant* params)
 	}
 }
 
-bool TraderHTS::init(WTSVariant* params)
+bool TraderHTS::init(VvTSVariant* params)
 {
 	m_strUser = params->getCString("user");
 	m_strPass = params->getCString("pass");
@@ -267,7 +267,7 @@ bool TraderHTS::init(WTSVariant* params)
 	temp = params->getCString("szFundAcct");
 	strncpy(sSzZjzh, temp.c_str(), sizeof(sShGdh));
 
-	WTSVariant* param = params->get("ddmodule");
+	VvTSVariant* param = params->get("ddmodule");
 	if (param != NULL)
 	{
 		m_strModule = getBinDir() + param->asCString();
@@ -321,7 +321,7 @@ void TraderHTS::reconnect()
 {
 	//if (m_traderSink)
 	//{
-	//	m_traderSink->handleEvent(WTE_Connect, -1);
+	//	m_traderSink->handleEvent(VvTE_Connect, -1);
 	//	m_traderSink->handleTraderLog(LL_ERROR, "[TraderHTS]通讯连接失败");
 	//}
 
@@ -336,7 +336,7 @@ void TraderHTS::reconnect()
 
 	//registerSpi(this);						// 注册事件
 
-	if (m_traderSink) m_traderSink->handleEvent(WTE_Connect, 0);
+	if (m_traderSink) m_traderSink->handleEvent(VvTE_Connect, 0);
 }
 
 void TraderHTS::connect()
@@ -442,20 +442,20 @@ void TraderHTS::OnRtnOrder(const char* pMsg)
 	//确认推送
 	//std::cout << "Accept push report message: " << " code: " << code << "  exchg: " << "  wth: " << document["WTH"].GetInt64() << "  kfsbdbh: "  << document["KFSBDBH"].GetInt64() << "  wtjg: " << document["WTJG"].GetDouble() << "  wjsl: " << document["WTSL"].GetDouble() << std::endl;
 
-	WTSContractInfo* contract = m_bdMgr->getContract(code.c_str(), exchg.c_str());
+	VvTSContractInfo* contract = m_bdMgr->getContract(code.c_str(), exchg.c_str());
 
 	if (contract != NULL)
 	{
-		WTSOrderInfo* ordInfo = NULL;
+		VvTSOrderInfo* ordInfo = NULL;
 		if (!isCancel)
 		{
 			char buf[256] = { 0 };
 			strncpy(buf, std::to_string(document["WTH"].GetInt64()).c_str(), sizeof(buf));  /// 这里使用KFSBDBH， 如果有问题则改为WTH
-			ordInfo = (WTSOrderInfo*)m_mapLives->grab(buf);
+			ordInfo = (VvTSOrderInfo*)m_mapLives->grab(buf);
 
 			if (ordInfo == NULL)
 			{
-				ordInfo = WTSOrderInfo::create();
+				ordInfo = VvTSOrderInfo::create();
 				ordInfo->setPrice(document["WTJG"].GetDouble());
 				ordInfo->setVolume(document["WTSL"].GetDouble());
 				ordInfo->setDirection(WDT_LONG);
@@ -527,7 +527,7 @@ void TraderHTS::OnRtnOrder(const char* pMsg)
 		{
 			char buf[256] = { 0 };
 			strncpy(buf, std::to_string(document["CXWTH"].GetInt64()).c_str(), sizeof(buf));  // 需要使用撤销委托号
-			ordInfo = (WTSOrderInfo*)m_mapLives->grab(buf);
+			ordInfo = (VvTSOrderInfo*)m_mapLives->grab(buf);
 			if (ordInfo == NULL)
 				return;
 
@@ -576,18 +576,18 @@ void TraderHTS::OnRtnTrade(const char* pMsg)
 	if (!decimal::eq(document["CDSL"].GetDouble(), 0.0))
 		return;
 
-	WTSContractInfo* contract = m_bdMgr->getContract(code.c_str(), exchg.c_str());
+	VvTSContractInfo* contract = m_bdMgr->getContract(code.c_str(), exchg.c_str());
 
 	if (contract != NULL)
 	{
 		std::string orderid = std::to_string(document["WTH"].GetInt64());   // 这里使用委托号作为orderid
 
-		WTSCommodityInfo* commInfo = contract->getCommInfo();
-		WTSTradeInfo *trdInfo = WTSTradeInfo::create(code.c_str(), exchg.c_str());
+		VvTSCommodityInfo* commInfo = contract->getCommInfo();
+		VvTSTradeInfo *trdInfo = VvTSTradeInfo::create(code.c_str(), exchg.c_str());
 		trdInfo->setPrice(document["CJJG"].GetDouble());
 		trdInfo->setVolume(document["CJSL"].GetDouble());
 
-		WTSOrderInfo* ordInfo = (WTSOrderInfo*)m_mapLives->get(orderid);
+		VvTSOrderInfo* ordInfo = (VvTSOrderInfo*)m_mapLives->get(orderid);
 		if (ordInfo)
 		{
 			ordInfo->setVolTraded(ordInfo->getVolTraded() + trdInfo->getVolume());
@@ -614,7 +614,7 @@ void TraderHTS::OnRtnTrade(const char* pMsg)
 		trdInfo->setDirection(WDT_LONG);
 		trdInfo->setOffsetType(document["JYLB"].GetInt() == 1 ? WOT_OPEN : WOT_CLOSE);
 		trdInfo->setRefOrder(orderid.c_str());
-		trdInfo->setTradeType(WTT_Common);
+		trdInfo->setTradeType(VvTT_Common);
 
 		trdInfo->setAmount(document["CJJE"].GetDouble());
 
@@ -805,7 +805,7 @@ int TraderHTS::logout()
 	return 0;
 }
 
-int TraderHTS::orderInsert(WTSEntrust* entrust)
+int TraderHTS::orderInsert(VvTSEntrust* entrust)
 {
 	if (m_wrapperState != WS_ALLREADY)
 	{
@@ -862,7 +862,7 @@ int TraderHTS::orderInsert(WTSEntrust* entrust)
 				std::string msg = SECITPDK_GetLastError();
 				write_log(m_traderSink, LL_ERROR, "[TraderHTS]委托指令发送失败: {}({})", msg.c_str(), nRet);
 
-				WTSError* err = WTSError::create(WEC_ORDERINSERT, msg.c_str());
+				VvTSError* err = VvTSError::create(WEC_ORDERINSERT, msg.c_str());
 				m_traderSink->onRspEntrust(entrust, err);
 			}
 			else
@@ -870,7 +870,7 @@ int TraderHTS::orderInsert(WTSEntrust* entrust)
 				m_traderSink->onRspEntrust(entrust, NULL);
 
 				//这里手动发一笔回报，不然会有问题的
-				WTSOrderInfo* ordInfo = WTSOrderInfo::create(entrust);
+				VvTSOrderInfo* ordInfo = VvTSOrderInfo::create(entrust);
 				ordInfo->setOrderState(WOS_NotTraded_NotQueuing);
 				ordInfo->setVolTraded(0);
 				ordInfo->setVolLeft(ordInfo->getVolume());
@@ -899,7 +899,7 @@ int TraderHTS::orderInsert(WTSEntrust* entrust)
 	return 0;
 }
 
-int TraderHTS::orderAction(WTSEntrustAction* action)
+int TraderHTS::orderAction(VvTSEntrustAction* action)
 {
 	if (m_wrapperState != WS_ALLREADY)
 		return -1;
@@ -942,7 +942,7 @@ int TraderHTS::orderAction(WTSEntrustAction* action)
 			string msg = SECITPDK_GetLastError();          //下单失败，获取错误信息
 			write_log(m_traderSink, LL_ERROR, "[TraderHTS]撤单指令发送失败: {}({})", msg.c_str(), nRet);
 
-			WTSError* err = WTSError::create(WEC_ORDERCANCEL, msg.c_str());
+			VvTSError* err = VvTSError::create(WEC_ORDERCANCEL, msg.c_str());
 			m_traderSink->onTraderError(err);
 		}
 		else
@@ -984,14 +984,14 @@ int TraderHTS::queryAccount()
 		}
 		else  // 查询成功
 		{
-			WTSArray* ayFunds = WTSArray::create();
+			VvTSArray* ayFunds = VvTSArray::create();
 
 			for (auto& itr : argFund)
 			{
 				//printf("AccountId:%s;  FundAvl:%f;  TotalAsset:%f;  MarketValue:%f;  CurrentBalance:%f;  UnclearProfit:%f;  DiluteUnclearProfit:%f;  UncomeBalance:%f\n",
 					//itr.AccountId, itr.FundAvl, itr.TotalAsset, itr.MarketValue, itr.CurrentBalance, itr.UnclearProfit, itr.DiluteUnclearProfit, itr.UncomeBalance);
 
-				WTSAccountInfo* fundInfo = WTSAccountInfo::create();
+				VvTSAccountInfo* fundInfo = VvTSAccountInfo::create();
 				fundInfo->setAvailable(itr.FundAvl);   /// 可用资金
 				fundInfo->setBalance(itr.CurrentBalance);  /// 当日余额
 				fundInfo->setDynProfit(itr.UnclearProfit);  ///浮动盈亏
@@ -1070,7 +1070,7 @@ int TraderHTS::queryPositions()
 				tmp += 200;
 			}
 
-			WTSArray* ayPositions = WTSArray::create();
+			VvTSArray* ayPositions = VvTSArray::create();
 
 			write_log(m_traderSink, LL_INFO, "[TraderHTS]用户持仓查询成功，返回结果：{}", nRet);
 
@@ -1082,11 +1082,11 @@ int TraderHTS::queryPositions()
 
 				//std::cout << "query positions: " << " code: " << code << " exchange: " << exchg << " dynamic profit: " << itr.UnclearProfit << " qty: " << (long)itr.CurrentQty << " brow index: " << (long)itr.BrowIndex << std::endl;
 				
-				WTSContractInfo* contract = m_bdMgr->getContract(code, exchg);
+				VvTSContractInfo* contract = m_bdMgr->getContract(code, exchg);
 				if (contract)
 				{
-					WTSCommodityInfo* commInfo = contract->getCommInfo();
-					WTSPositionItem* pInfo = WTSPositionItem::create(code, commInfo->getCurrency(), exchg);
+					VvTSCommodityInfo* commInfo = contract->getCommInfo();
+					VvTSPositionItem* pInfo = VvTSPositionItem::create(code, commInfo->getCurrency(), exchg);
 					pInfo->setDirection(WDT_LONG);
 
 					double prevol = itr.PreQty;	//昨天的持仓，今天是不会变的
@@ -1179,7 +1179,7 @@ int TraderHTS::queryOrders()
 				tmp += nRows;
 			}
 
-			WTSArray* ayOrds = WTSArray::create();
+			VvTSArray* ayOrds = VvTSArray::create();
 
 			for (auto& itr : argTotalOrders)
 			{
@@ -1189,11 +1189,11 @@ int TraderHTS::queryOrders()
 				const char* exchg = exchgO2I(itr.Market);
 				const char* code = itr.StockCode;
 
-				WTSContractInfo* contract = m_bdMgr->getContract(code, exchg);
+				VvTSContractInfo* contract = m_bdMgr->getContract(code, exchg);
 				if (contract)
 				{
-					WTSCommodityInfo* commInfo = contract->getCommInfo();
-					WTSOrderInfo* ordInfo = WTSOrderInfo::create();
+					VvTSCommodityInfo* commInfo = contract->getCommInfo();
+					VvTSOrderInfo* ordInfo = VvTSOrderInfo::create();
 					ordInfo->setCode(code);
 					ordInfo->setExchange(exchg);
 
@@ -1321,7 +1321,7 @@ int TraderHTS::queryTrades()
 				tmp += 200;
 			}
 
-			WTSArray* ayTrds = WTSArray::create();
+			VvTSArray* ayTrds = VvTSArray::create();
 
 			int index = 0;
 			for (auto& itr : argTotalTrades)
@@ -1332,11 +1332,11 @@ int TraderHTS::queryTrades()
 				const char* exchg = exchgO2I(itr.Market);
 				const char* code = itr.StockCode;
 
-				WTSContractInfo* contract = m_bdMgr->getContract(code, exchg);
+				VvTSContractInfo* contract = m_bdMgr->getContract(code, exchg);
 				if (contract)
 				{
-					WTSCommodityInfo* commInfo = contract->getCommInfo();
-					WTSTradeInfo *trdInfo = WTSTradeInfo::create(code, exchg);
+					VvTSCommodityInfo* commInfo = contract->getCommInfo();
+					VvTSTradeInfo *trdInfo = VvTSTradeInfo::create(code, exchg);
 					trdInfo->setPrice(itr.MatchPrice);
 					trdInfo->setVolume(itr.MatchQty);
 					trdInfo->setTradeID(itr.MatchSerialNo);  // 这里使用成交编号
@@ -1348,7 +1348,7 @@ int TraderHTS::queryTrades()
 					trdInfo->setDirection(WDT_LONG);
 					trdInfo->setOffsetType(itr.EntrustType == 1 ? WOT_OPEN : WOT_CLOSE);
 					trdInfo->setRefOrder(std::to_string(itr.KFSBDBH).c_str());  // 这里使用开发商编号
-					trdInfo->setTradeType(WTT_Common);
+					trdInfo->setTradeType(VvTT_Common);
 
 					trdInfo->setAmount(itr.MatchAmt);
 
@@ -1417,7 +1417,7 @@ HTSCallMgr::~HTSCallMgr()
 
 }
 
-bool HTSCallMgr::init(WTSVariant* params)
+bool HTSCallMgr::init(VvTSVariant* params)
 {
 	if (params)
 	{

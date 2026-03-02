@@ -1,21 +1,21 @@
 ﻿#pragma once
-#include "../Includes/WTSMarcos.h"
-#include "../Includes/WTSStruct.h"
+#include "../Includes/VvTSMarcos.h"
+#include "../Includes/VvTSStruct.h"
 #include "../Includes/FasterDefs.h"
 
 #include "../Share/StdUtils.hpp"
 #include "../Share/StdUtils.hpp"
 #include "../Share/SpinMutex.hpp"
 
-NS_WTP_BEGIN
-class WTSVariant;
-class WTSTickData;
+NS_VVTP_BEGIN
+class VvTSVariant;
+class VvTSTickData;
 class IHotMgr;
 class IBaseDataMgr;
-class WTSContractInfo;
-NS_WTP_END
+class VvTSContractInfo;
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class IndexFactory;
 
@@ -25,8 +25,8 @@ public:
 	IndexWorker(IndexFactory* factor):_factor(factor), _stopped(false), _process(false) {}
 
 public:
-	bool	init(WTSVariant* config);
-	void	handle_quote(WTSTickData* newTick);
+	bool	init(VvTSVariant* config);
+	void	handle_quote(VvTSTickData* newTick);
 
 private:
 	void	generate_tick();
@@ -39,20 +39,20 @@ protected:
 	uint32_t		_timeout;
 	uint64_t		_recalc_time;
 	double			_stand_scale;
-	WTSTickStruct	_cache;
-	WTSContractInfo*	_cInfo;
+	VvTSTickStruct	_cache;
+	VvTSContractInfo*	_cInfo;
 
 	typedef struct _WeightFactor
 	{
 		double			_weight;
-		WTSTickStruct	_tick;
+		VvTSTickStruct	_tick;
 		_WeightFactor()
 		{
 			memset(this, 0, sizeof(_WeightFactor));
 		}
 	}WeightFactor;
 	SpinMutex	_mtx_data;
-	wt_hashmap<std::string, WeightFactor>	_weight_scales;
+	vvt_hashmap<std::string, WeightFactor>	_weight_scales;
 	uint32_t	_weight_alg;
 
 	StdThreadPtr	_thrd_trigger;

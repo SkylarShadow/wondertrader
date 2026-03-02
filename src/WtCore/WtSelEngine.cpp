@@ -9,9 +9,9 @@
 #include "../Includes/IBaseDataMgr.h"
 #include "../Includes/IHotMgr.h"
 #include "../Share/StrUtil.hpp"
-#include "../Includes/WTSVariant.hpp"
-#include "../Includes/WTSSessionInfo.hpp"
-#include "../Includes/WTSContractInfo.hpp"
+#include "../Includes/VvTSVariant.hpp"
+#include "../Includes/VvTSSessionInfo.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
 #include "../Share/CodeHelper.hpp"
 #include "../Share/decimal.h"
 
@@ -21,7 +21,7 @@ namespace rj = rapidjson;
 
 #include <atomic>
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 inline uint32_t makeTaskId()
 {
@@ -61,13 +61,13 @@ void WtSelEngine::on_init()
 		_evt_listener->on_initialize_event();
 }
 
-void WtSelEngine::handle_push_quote(WTSTickData* curTick)
+void WtSelEngine::handle_push_quote(VvTSTickData* curTick)
 {
 	if (_tm_ticker)
 		_tm_ticker->on_tick(curTick);
 }
 
-void WtSelEngine::on_bar(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar)
+void WtSelEngine::on_bar(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar)
 {
 	thread_local static char key[64] = { 0 };
 	fmtutil::format_to(key, "{}-{}-{}", stdCode, period, times);
@@ -87,7 +87,7 @@ void WtSelEngine::on_bar(const char* stdCode, const char* period, uint32_t times
 	WTSLogger::info("KBar [{}] @ {} closed", key, period[0] == 'd' ? newBar->date : newBar->time);
 }
 
-void WtSelEngine::on_tick(const char* stdCode, WTSTickData* curTick)
+void WtSelEngine::on_tick(const char* stdCode, VvTSTickData* curTick)
 {
 	WtEngine::on_tick(stdCode, curTick);
 
@@ -156,8 +156,8 @@ void WtSelEngine::on_tick(const char* stdCode, WTSTickData* curTick)
 						}
 						else //(opt == 2)
 						{
-							WTSTickData* newTick = WTSTickData::create(curTick->getTickStruct());
-							WTSTickStruct& newTS = newTick->getTickStruct();
+							VvTSTickData* newTick = VvTSTickData::create(curTick->getTickStruct());
+							VvTSTickStruct& newTS = newTick->getTickStruct();
 							newTick->setContractInfo(curTick->getContractInfo());
 
 							//这里做一个复权因子的处理
@@ -240,7 +240,7 @@ void WtSelEngine::on_minute_end(uint32_t curDate, uint32_t curTime)
 		}
 		uint32_t preWD = TimeUtils::getWeekDay(preTDate);
 
-		WTSSessionInfo* sInfo = get_session_info(tInfo->_session, false);
+		VvTSSessionInfo* sInfo = get_session_info(tInfo->_session, false);
 
 		bool bIgnore = true;
 		switch (tInfo->_period)
@@ -321,7 +321,7 @@ void WtSelEngine::on_minute_end(uint32_t curDate, uint32_t curTime)
 
 void WtSelEngine::run()
 {
-	WTSVariant* cfgProd = _cfg->get("product");
+	VvTSVariant* cfgProd = _cfg->get("product");
 	_tm_ticker = new WtSelRtTicker(this);
 	_tm_ticker->init(_data_mgr->reader(), cfgProd->getCString("session"));
 
@@ -362,7 +362,7 @@ void WtSelEngine::run()
 	_tm_ticker->run();
 }
 
-void WtSelEngine::init(WTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHotMgr* hotMgr, EventNotifier* notifier /* = NULL */)
+void WtSelEngine::init(VvTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHotMgr* hotMgr, EventNotifier* notifier /* = NULL */)
 {
 	WtEngine::init(cfg, bdMgr, dataMgr, hotMgr, notifier);
 
@@ -383,9 +383,9 @@ void WtSelEngine::addContext(SelContextPtr ctx, uint32_t date, uint32_t time, Ta
 	}
 
 	TaskInfoPtr tInfo(new TaskInfo);
-	wt_strcpy(tInfo->_name, ctx->name());
-	wt_strcpy(tInfo->_trdtpl, trdtpl);
-	wt_strcpy(tInfo->_session, sessionID);
+	vvt_strcpy(tInfo->_name, ctx->name());
+	vvt_strcpy(tInfo->_trdtpl, trdtpl);
+	vvt_strcpy(tInfo->_session, sessionID);
 	tInfo->_day = date;
 	tInfo->_time = time;
 	tInfo->_period = period;
@@ -462,16 +462,16 @@ void WtSelEngine::handle_pos_change(const char* straName, const char* stdCode, d
 		_exec_mgr.handle_pos_change(realCode.c_str(), targetPos, diffQty, execid.c_str());
 }
 
-WTSCommodityInfo* WtSelEngine::get_comm_info(const char* stdCode)
+VvTSCommodityInfo* WtSelEngine::get_comm_info(const char* stdCode)
 {
 	CodeHelper::CodeInfo codeInfo = CodeHelper::extractStdCode(stdCode, _hot_mgr);
 	return _base_data_mgr->getCommodity(codeInfo._exchg, codeInfo._product);
 }
 
-WTSSessionInfo* WtSelEngine::get_sess_info(const char* stdCode)
+VvTSSessionInfo* WtSelEngine::get_sess_info(const char* stdCode)
 {
 	CodeHelper::CodeInfo codeInfo = CodeHelper::extractStdCode(stdCode, _hot_mgr);
-	WTSCommodityInfo* cInfo = _base_data_mgr->getCommodity(codeInfo._exchg, codeInfo._product);
+	VvTSCommodityInfo* cInfo = _base_data_mgr->getCommodity(codeInfo._exchg, codeInfo._product);
 	if (cInfo == NULL)
 		return NULL;
 

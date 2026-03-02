@@ -26,21 +26,21 @@
 #include "../Share/SpinMutex.hpp"
 
 
-NS_WTP_BEGIN
-class WTSSessionInfo;
-class WTSCommodityInfo;
-class WTSContractInfo;
+NS_VVTP_BEGIN
+class VvTSSessionInfo;
+class VvTSCommodityInfo;
+class VvTSContractInfo;
 
 class IBaseDataMgr;
 class IHotMgr;
 
-class WTSVariant;
+class VvTSVariant;
 
-class WTSTickData;
-struct WTSBarStruct;
-class WTSTickSlice;
-class WTSKlineSlice;
-class WTSPortFundInfo;
+class VvTSTickData;
+struct VvTSBarStruct;
+class VvTSTickSlice;
+class VvTSKlineSlice;
+class VvTSPortFundInfo;
 
 class WtDtMgr;
 class TraderAdapterMgr;
@@ -52,7 +52,7 @@ typedef std::function<void()>	TaskItem;
 class WtRiskMonWrapper
 {
 public:
-	WtRiskMonWrapper(WtRiskMonitor* mon, IRiskMonitorFact* fact) :_mon(mon), _fact(fact){}
+	WtRiskMonWrapper(VvtRiskMonitor* mon, IRiskMonitorFact* fact) :_mon(mon), _fact(fact){}
 	~WtRiskMonWrapper()
 	{
 		if (_mon)
@@ -61,11 +61,11 @@ public:
 		}
 	}
 
-	WtRiskMonitor* self(){ return _mon; }
+	VvtRiskMonitor* self(){ return _mon; }
 
 
 private:
-	WtRiskMonitor*		_mon;
+	VvtRiskMonitor*		_mon;
 	IRiskMonitorFact*	_fact;
 };
 typedef std::shared_ptr<WtRiskMonWrapper>	WtRiskMonPtr;
@@ -78,7 +78,7 @@ public:
 	virtual void on_session_event(uint32_t uDate, bool isBegin = true) {}
 };
 
-class WtEngine : public WtPortContext, public IParserStub
+class WtEngine : public VvtPortContext, public IParserStub
 {
 public:
 	WtEngine();
@@ -97,14 +97,14 @@ public:
 
 	inline IBaseDataMgr*		get_basedata_mgr(){ return _base_data_mgr; }
 	inline IHotMgr*				get_hot_mgr() { return _hot_mgr; }
-	WTSSessionInfo*		get_session_info(const char* sid, bool isCode = false);
-	WTSCommodityInfo*	get_commodity_info(const char* stdCode);
-	WTSContractInfo*	get_contract_info(const char* stdCode);
+	VvTSSessionInfo*		get_session_info(const char* sid, bool isCode = false);
+	VvTSCommodityInfo*	get_commodity_info(const char* stdCode);
+	VvTSContractInfo*	get_contract_info(const char* stdCode);
 	std::string			get_rawcode(const char* stdCode);
 
-	WTSTickData*	get_last_tick(uint32_t sid, const char* stdCode);
-	WTSTickSlice*	get_tick_slice(uint32_t sid, const char* stdCode, uint32_t count);
-	WTSKlineSlice*	get_kline_slice(uint32_t sid, const char* stdCode, const char* period, uint32_t count, uint32_t times = 1, uint64_t etime = 0);
+	VvTSTickData*	get_last_tick(uint32_t sid, const char* stdCode);
+	VvTSTickSlice*	get_tick_slice(uint32_t sid, const char* stdCode, uint32_t count);
+	VvTSKlineSlice*	get_kline_slice(uint32_t sid, const char* stdCode, const char* period, uint32_t count, uint32_t times = 1, uint64_t etime = 0);
 
 	void sub_tick(uint32_t sid, const char* code);
 
@@ -117,7 +117,7 @@ public:
 	 *	@stdCode	合约代码
 	 *	@commInfo	品种信息
 	 */
-	double get_exright_factor(const char* stdCode, WTSCommodityInfo* commInfo = NULL);
+	double get_exright_factor(const char* stdCode, VvTSCommodityInfo* commInfo = NULL);
 
 	uint32_t get_adjusting_flag();
 
@@ -134,8 +134,8 @@ public:
 	}
 
 	//////////////////////////////////////////////////////////////////////////
-	//WtPortContext接口
-	virtual WTSPortFundInfo* getFundInfo() override;
+	//VvtPortContext接口
+	virtual VvTSPortFundInfo* getFundInfo() override;
 
 	virtual void setVolScale(double scale) override;
 
@@ -150,16 +150,16 @@ public:
 
 	//////////////////////////////////////////////////////////////////////////
 	/// IParserStub接口
-	virtual void handle_push_quote(WTSTickData* newTick) override;
+	virtual void handle_push_quote(VvTSTickData* newTick) override;
 
 public:
-	virtual void init(WTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHotMgr* hotMgr, EventNotifier* notifier);
+	virtual void init(VvTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHotMgr* hotMgr, EventNotifier* notifier);
 
 	virtual void run() = 0;
 
-	virtual void on_tick(const char* stdCode, WTSTickData* curTick);
+	virtual void on_tick(const char* stdCode, VvTSTickData* curTick);
 
-	virtual void on_bar(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar) = 0;
+	virtual void on_bar(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar) = 0;
 
 	virtual void on_init(){}
 	virtual void on_session_begin();
@@ -183,7 +183,7 @@ protected:
 
 	void		update_fund_dynprofit();
 
-	bool		init_riskmon(WTSVariant* cfg);
+	bool		init_riskmon(VvTSVariant* cfg);
 
 private:
 	void		init_outputs();
@@ -208,14 +208,14 @@ protected:
 	//By Wesley @ 2022.02.07
 	//tick数据订阅项，first是contextid，second是订阅选项，0-原始订阅，1-前复权，2-后复权
 	typedef std::pair<uint32_t, uint32_t> SubOpt;
-	typedef wt_hashmap<uint32_t, SubOpt> SubList;
-	typedef wt_hashmap<std::string, SubList>	StraSubMap;
+	typedef vvt_hashmap<uint32_t, SubOpt> SubList;
+	typedef vvt_hashmap<std::string, SubList>	StraSubMap;
 	StraSubMap		_tick_sub_map;	//tick数据订阅表
 	StraSubMap		_bar_sub_map;	//K线数据订阅表
 
 	//By Wesley @ 2022.02.07 
 	//这个好像没有用到，不需要了
-	//wt_hashset<std::string>		_ticksubed_raw_codes;	//tick订阅表（真实代码模式）
+	//vvt_hashset<std::string>		_ticksubed_raw_codes;	//tick订阅表（真实代码模式）
 	
 
 	//////////////////////////////////////////////////////////////////////////
@@ -231,7 +231,7 @@ protected:
 			_gentime = 0;
 		}
 	}SigInfo;
-	typedef wt_hashmap<std::string, SigInfo>	SignalMap;
+	typedef vvt_hashmap<std::string, SigInfo>	SignalMap;
 	SignalMap		_sig_map;
 
 	//////////////////////////////////////////////////////////////////////////
@@ -253,11 +253,11 @@ protected:
 			memset(this, 0, sizeof(_FeeItem));
 		}
 	} FeeItem;
-	typedef wt_hashmap<std::string, FeeItem>	FeeMap;
+	typedef vvt_hashmap<std::string, FeeItem>	FeeMap;
 	FeeMap		_fee_map;
 	
 
-	WTSPortFundInfo*	_port_fund;
+	VvTSPortFundInfo*	_port_fund;
 
 	//////////////////////////////////////////////////////////////////////////
 	//持仓数据
@@ -293,12 +293,12 @@ protected:
 		}
 	} PosInfo;
 	typedef std::shared_ptr<PosInfo> PosInfoPtr;
-	typedef wt_hashmap<std::string, PosInfoPtr> PositionMap;
+	typedef vvt_hashmap<std::string, PosInfoPtr> PositionMap;
 	PositionMap		_pos_map;
 
 	//////////////////////////////////////////////////////////////////////////
 	//
-	typedef wt_hashmap<std::string, double> PriceMap;
+	typedef vvt_hashmap<std::string, double> PriceMap;
 	PriceMap		_price_map;
 
 	//后台任务线程, 把风控和资金, 持仓更新都放到这个线程里去
@@ -327,9 +327,9 @@ protected:
 	BoostFilePtr	_trade_logs;
 	BoostFilePtr	_close_logs;
 
-	wt_hashmap<std::string, double>	_factors_cache;
+	vvt_hashmap<std::string, double>	_factors_cache;
 
 	//用于标记是否可以推送tickle
 	bool			_ready;
 };
-NS_WTP_END
+NS_VVTP_END

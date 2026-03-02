@@ -19,12 +19,12 @@
 #include "../Includes/IBaseDataMgr.h"
 #include "../Includes/IHotMgr.h"
 
-#include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSSessionInfo.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/VvTSSessionInfo.hpp"
+#include "../Includes/VvTSVariant.hpp"
 
-#include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSRiskDef.hpp"
+#include "../Includes/VvTSDataDef.hpp"
+#include "../Includes/VvTSRiskDef.hpp"
 
 #include "../WTSTools/WTSLogger.h"
 #include "../WTSUtils/WTSCfgLoader.h"
@@ -34,7 +34,7 @@
 namespace rj = rapidjson;
 
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 WtEngine::WtEngine()
 	: _port_fund(NULL)
@@ -77,13 +77,13 @@ void WtEngine::set_trading_date(uint32_t curTDate)
 	WtHelper::setTDate(curTDate);
 }
 
-WTSCommodityInfo* WtEngine::get_commodity_info(const char* stdCode)
+VvTSCommodityInfo* WtEngine::get_commodity_info(const char* stdCode)
 {
 	CodeHelper::CodeInfo codeInfo = CodeHelper::extractStdCode(stdCode, _hot_mgr);
 	return _base_data_mgr->getCommodity(codeInfo._exchg, codeInfo._product);
 }
 
-WTSContractInfo* WtEngine::get_contract_info(const char* stdCode)
+VvTSContractInfo* WtEngine::get_contract_info(const char* stdCode)
 {
 	CodeHelper::CodeInfo cInfo = CodeHelper::extractStdCode(stdCode, _hot_mgr);
 	return _base_data_mgr->getContract(cInfo._code, cInfo._exchg);
@@ -101,20 +101,20 @@ std::string WtEngine::get_rawcode(const char* stdCode)
 	return "";
 }
 
-WTSSessionInfo* WtEngine::get_session_info(const char* sid, bool isCode /* = false */)
+VvTSSessionInfo* WtEngine::get_session_info(const char* sid, bool isCode /* = false */)
 {
 	if (!isCode)
 		return _base_data_mgr->getSession(sid);
 
 	CodeHelper::CodeInfo codeInfo = CodeHelper::extractStdCode(sid, _hot_mgr);
-	WTSCommodityInfo* cInfo = _base_data_mgr->getCommodity(codeInfo._exchg, codeInfo._product);
+	VvTSCommodityInfo* cInfo = _base_data_mgr->getCommodity(codeInfo._exchg, codeInfo._product);
 	if (cInfo == NULL)
 		return NULL;
 
 	return _base_data_mgr->getSession(cInfo->getSession());
 }
 
-void WtEngine::on_tick(const char* stdCode, WTSTickData* curTick)
+void WtEngine::on_tick(const char* stdCode, VvTSTickData* curTick)
 {
 	_price_map[stdCode] = curTick->price();
 
@@ -124,7 +124,7 @@ void WtEngine::on_tick(const char* stdCode, WTSTickData* curTick)
 		auto it = _sig_map.find(stdCode);
 		if (it != _sig_map.end())
 		{
-			WTSSessionInfo* sInfo = get_session_info(stdCode, true);
+			VvTSSessionInfo* sInfo = get_session_info(stdCode, true);
 
 			if (sInfo->isInTradingTime(_cur_raw_time, true))
 			{
@@ -161,7 +161,7 @@ void WtEngine::on_tick(const char* stdCode, WTSTickData* curTick)
 		}
 		else
 		{
-			WTSCommodityInfo* commInfo = get_commodity_info(code.c_str());
+			VvTSCommodityInfo* commInfo = get_commodity_info(code.c_str());
 			double dynprofit = 0;
 			for (auto pit = pInfo->_details.begin(); pit != pInfo->_details.end(); pit++)
 			{
@@ -181,7 +181,7 @@ void WtEngine::on_tick(const char* stdCode, WTSTickData* curTick)
 
 void WtEngine::update_fund_dynprofit()
 {
-	WTSFundStruct& fundInfo = _port_fund->fundInfo();
+	VvTSFundStruct& fundInfo = _port_fund->fundInfo();
 	if (fundInfo._last_date == _cur_tdate)
 	{
 		//上次结算日期等于当前交易日,说明已经结算,不再更新了
@@ -235,8 +235,8 @@ void WtEngine::update_fund_dynprofit()
 void WtEngine::writeRiskLog(const char* message)
 {
 	static thread_local char szBuf[2048] = { 0 };
-	auto len = wt_strcpy(szBuf, "[RiskControl] ");
-	wt_strcpy(szBuf + len, message);
+	auto len = vvt_strcpy(szBuf, "[RiskControl] ");
+	vvt_strcpy(szBuf + len, message);
 	WTSLogger::log_raw_by_cat("risk", LL_INFO, szBuf);
 }
 
@@ -270,7 +270,7 @@ void WtEngine::setVolScale(double scale)
 	save_datas();
 }
 
-WTSPortFundInfo* WtEngine::getFundInfo()
+VvTSPortFundInfo* WtEngine::getFundInfo()
 {
 	update_fund_dynprofit();
 	save_datas();
@@ -278,7 +278,7 @@ WTSPortFundInfo* WtEngine::getFundInfo()
 	return _port_fund;
 }
 
-void WtEngine::init(WTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHotMgr* hotMgr, EventNotifier* notifier)
+void WtEngine::init(VvTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHotMgr* hotMgr, EventNotifier* notifier)
 {
 	_base_data_mgr = bdMgr;
 	_data_mgr = dataMgr;
@@ -297,7 +297,7 @@ void WtEngine::init(WTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHot
 
 	init_outputs();
 
-	WTSVariant* cfgRisk = cfg->get("riskmon");
+	VvTSVariant* cfgRisk = cfg->get("riskmon");
 	if(cfgRisk)
 	{
 		init_riskmon(cfgRisk);
@@ -314,7 +314,7 @@ void WtEngine::init(WTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHot
 void WtEngine::on_session_end()
 {
 	//资金结算
-	WTSFundStruct& fundInfo = _port_fund->fundInfo();
+	VvTSFundStruct& fundInfo = _port_fund->fundInfo();
 	if (fundInfo._last_date < _cur_tdate)
 	{
 		std::string filename = WtHelper::getPortifolioDir();
@@ -367,7 +367,7 @@ void WtEngine::save_datas()
 
 	if (_port_fund != NULL)
 	{//保存资金数据
-		const WTSFundStruct& fundInfo = _port_fund->fundInfo();
+		const VvTSFundStruct& fundInfo = _port_fund->fundInfo();
 		rj::Value jFund(rj::kObjectType);
 		jFund.AddMember("predynbal", fundInfo._predynbal, allocator);
 		jFund.AddMember("balance", fundInfo._balance, allocator);
@@ -468,7 +468,7 @@ void WtEngine::save_datas()
 
 void WtEngine::load_datas()
 {
-	_port_fund = WTSPortFundInfo::create();
+	_port_fund = VvTSPortFundInfo::create();
 
 	std::string filename = WtHelper::getPortifolioDir();
 	filename += "datas.json";
@@ -494,7 +494,7 @@ void WtEngine::load_datas()
 		const rj::Value& jFund = root["fund"];
 		if (!jFund.IsNull() && jFund.IsObject())
 		{
-			WTSFundStruct& fundInfo = _port_fund->fundInfo();
+			VvTSFundStruct& fundInfo = _port_fund->fundInfo();
 			fundInfo._predynbal = jFund["predynbal"].GetDouble();
 			fundInfo._balance = jFund["balance"].GetDouble();
 			fundInfo._prebalance = jFund["prebalance"].GetDouble();
@@ -567,7 +567,7 @@ void WtEngine::load_datas()
 			}
 		}
 
-		WTSFundStruct& fundInfo = _port_fund->fundInfo();
+		VvTSFundStruct& fundInfo = _port_fund->fundInfo();
 		fundInfo._dynprofit = total_dynprofit;
 
 		WTSLogger::debug("{} position info of portfolio loaded", _pos_map.size());
@@ -585,20 +585,20 @@ void WtEngine::load_datas()
 	}
 }
 
-WTSTickSlice* WtEngine::get_tick_slice(uint32_t sid, const char* code, uint32_t count)
+VvTSTickSlice* WtEngine::get_tick_slice(uint32_t sid, const char* code, uint32_t count)
 {
 	return _data_mgr->get_tick_slice(code, count);
 }
 
-WTSTickData* WtEngine::get_last_tick(uint32_t sid, const char* stdCode)
+VvTSTickData* WtEngine::get_last_tick(uint32_t sid, const char* stdCode)
 {
 	return _data_mgr->grab_last_tick(stdCode);
 }
 
-WTSKlineSlice* WtEngine::get_kline_slice(uint32_t sid, const char* stdCode, const char* period, uint32_t count, uint32_t times /* = 1 */, uint64_t etime /* = 0 */)
+VvTSKlineSlice* WtEngine::get_kline_slice(uint32_t sid, const char* stdCode, const char* period, uint32_t count, uint32_t times /* = 1 */, uint64_t etime /* = 0 */)
 {
 	CodeHelper::CodeInfo codeInfo = CodeHelper::extractStdCode(stdCode, _hot_mgr);
-	WTSCommodityInfo* cInfo = _base_data_mgr->getCommodity(codeInfo._exchg, codeInfo._product);
+	VvTSCommodityInfo* cInfo = _base_data_mgr->getCommodity(codeInfo._exchg, codeInfo._product);
 	if (cInfo == NULL)
 		return NULL;
 
@@ -608,7 +608,7 @@ WTSKlineSlice* WtEngine::get_kline_slice(uint32_t sid, const char* stdCode, cons
 	SubList& sids = _bar_sub_map[key];
 	sids[sid] = std::make_pair(sid, 0);
 
-	WTSKlinePeriod kp;
+	VvTSKlinePeriod kp;
 	if (period[0] == 'm')
 	{
 		if (times % 5 == 0)
@@ -628,20 +628,20 @@ WTSKlineSlice* WtEngine::get_kline_slice(uint32_t sid, const char* stdCode, cons
 }
 
 
-void WtEngine::handle_push_quote(WTSTickData* curTick)
+void WtEngine::handle_push_quote(VvTSTickData* curTick)
 {
 	std::string stdCode = curTick->code();
 	_data_mgr->handle_push_quote(stdCode.c_str(), curTick);
 	on_tick(stdCode.c_str(), curTick);
 
 	double price = curTick->price();
-	WTSContractInfo* cInfo = curTick->getContractInfo();
+	VvTSContractInfo* cInfo = curTick->getContractInfo();
 
 	//if(hotFlag == 1)
 	if(!cInfo->isFlat())
 	{
 		const char* hotCode = cInfo->getHotCode();
-		WTSTickData* hotTick = WTSTickData::create(curTick->getTickStruct());
+		VvTSTickData* hotTick = VvTSTickData::create(curTick->getTickStruct());
 		hotTick->setCode(hotCode);
 		hotTick->setContractInfo(curTick->getContractInfo());
 
@@ -653,7 +653,7 @@ void WtEngine::handle_push_quote(WTSTickData* curTick)
 	//else if (hotFlag == 2)
 	//{
 	//	std::string scndCode = CodeHelper::stdCodeToStd2ndCode(stdCode.c_str());
-	//	WTSTickData* scndTick = WTSTickData::create(curTick->getTickStruct());
+	//	VvTSTickData* scndTick = VvTSTickData::create(curTick->getTickStruct());
 	//	scndTick->setCode(scndCode.c_str());
 	//	scndTick->setContractInfo(curTick->getContractInfo());
 
@@ -677,11 +677,11 @@ double WtEngine::get_cur_price(const char* stdCode)
 	{
 		//找不到的时候，先读取未复权的tick数据
 		std::string fCode = bAdjusted ? std::string(stdCode, len - 1) : stdCode;
-		WTSTickData* lastTick = _data_mgr->grab_last_tick(fCode.c_str());
+		VvTSTickData* lastTick = _data_mgr->grab_last_tick(fCode.c_str());
 		if (lastTick == NULL)
 			return 0.0;
 
-		WTSContractInfo* cInfo = lastTick->getContractInfo();
+		VvTSContractInfo* cInfo = lastTick->getContractInfo();
 
 		double ret = lastTick->price();
 		lastTick->release();
@@ -712,11 +712,11 @@ double WtEngine::get_day_price(const char* stdCode, int flag /* = 0 */)
 
 	//找不到的时候，先读取未复权的tick数据
 	std::string fCode = bAdjusted ? std::string(stdCode, len - 1) : stdCode;
-	WTSTickData* lastTick = _data_mgr->grab_last_tick(fCode.c_str());
+	VvTSTickData* lastTick = _data_mgr->grab_last_tick(fCode.c_str());
 	if (lastTick == NULL)
 		return 0.0;
 
-	WTSCommodityInfo* commInfo = get_commodity_info(fCode.c_str());
+	VvTSCommodityInfo* commInfo = get_commodity_info(fCode.c_str());
 
 	double ret = 0.0;
 	switch (flag)
@@ -743,7 +743,7 @@ double WtEngine::get_day_price(const char* stdCode, int flag /* = 0 */)
 	return ret;
 }
 
-double WtEngine::get_exright_factor(const char* stdCode, WTSCommodityInfo* commInfo /* = NULL */)
+double WtEngine::get_exright_factor(const char* stdCode, VvTSCommodityInfo* commInfo /* = NULL */)
 {
 	if (commInfo == NULL)
 		commInfo = get_commodity_info(stdCode);
@@ -846,7 +846,7 @@ void WtEngine::load_fees(const char* filename)
 		return;
 	}
 
-	WTSVariant* cfg = WTSCfgLoader::load_from_file(filename);
+	VvTSVariant* cfg = WTSCfgLoader::load_from_file(filename);
 	if (cfg == NULL)
 	{
 		WTSLogger::error("Fee templates file {} loading failed", filename);
@@ -856,9 +856,9 @@ void WtEngine::load_fees(const char* filename)
 	auto keys = cfg->memberNames();
 	for (const std::string& fullPid : keys)
 	{
-		WTSVariant* cfgItem = cfg->get(fullPid.c_str());
+		VvTSVariant* cfgItem = cfg->get(fullPid.c_str());
 		const StringVector& ay = StrUtil::split(fullPid, ".");
-		WTSCommodityInfo* commInfo = _base_data_mgr->getCommodity(ay[0].c_str(), ay[1].c_str());
+		VvTSCommodityInfo* commInfo = _base_data_mgr->getCommodity(ay[0].c_str(), ay[1].c_str());
 		if (commInfo == NULL)
 			continue;
 
@@ -883,7 +883,7 @@ double WtEngine::calc_fee(const char* stdCode, double price, double qty, uint32_
 	}
 
 	double ret = 0.0;
-	WTSCommodityInfo* commInfo = _base_data_mgr->getCommodity(stdPID);
+	VvTSCommodityInfo* commInfo = _base_data_mgr->getCommodity(stdPID);
 	const FeeItem& fItem = it->second;
 	if(fItem._by_volume)
 	{
@@ -968,9 +968,9 @@ void WtEngine::do_set_position(const char* stdCode, double qty, double curPx /* 
 	double diff = qty - pInfo->_volume;
 
 	CodeHelper::CodeInfo codeInfo = CodeHelper::extractStdCode(stdCode, _hot_mgr);
-	WTSCommodityInfo* commInfo = _base_data_mgr->getCommodity(codeInfo._exchg, codeInfo._product);
+	VvTSCommodityInfo* commInfo = _base_data_mgr->getCommodity(codeInfo._exchg, codeInfo._product);
 
-	WTSFundStruct& fundInfo = _port_fund->fundInfo();
+	VvTSFundStruct& fundInfo = _port_fund->fundInfo();
 
 	if (decimal::gt(pInfo->_volume*diff, 0))//当前持仓和目标仓位方向一致, 增加一条明细, 增加数量即可
 	{
@@ -1117,7 +1117,7 @@ void WtEngine::task_loop()
 	}
 }
 
-bool WtEngine::init_riskmon(WTSVariant* cfg)
+bool WtEngine::init_riskmon(VvTSVariant* cfg)
 {
 	if (cfg == NULL)
 		return false;

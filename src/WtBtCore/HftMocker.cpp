@@ -14,8 +14,8 @@
 
 #include <boost/filesystem.hpp>
 
-#include "../Includes/WTSVariant.hpp"
-#include "../Includes/WTSContractInfo.hpp"
+#include "../Includes/VvTSVariant.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
 #include "../Share/decimal.h"
 #include "../Share/TimeUtils.hpp"
 #include "../Share/StrUtil.hpp"
@@ -210,7 +210,7 @@ void HftMocker::postTask(Task task)
 	//}
 }
 
-bool HftMocker::init_hft_factory(WTSVariant* cfg)
+bool HftMocker::init_hft_factory(VvTSVariant* cfg)
 {
 	if (cfg == NULL)
 		return false;
@@ -240,7 +240,7 @@ bool HftMocker::init_hft_factory(WTSVariant* cfg)
 	_factory._remover = (FuncDeleteHftStraFact)DLLHelper::get_symbol(hInst, "deleteStrategyFact");
 	_factory._fact = _factory._creator();
 
-	WTSVariant* cfgStra = cfg->get("strategy");
+	VvTSVariant* cfgStra = cfg->get("strategy");
 	if(cfgStra)
 	{
 		_strategy = _factory._fact->createStrategy(cfgStra->getCString("name"), cfgStra->getCString("id"));
@@ -250,27 +250,27 @@ bool HftMocker::init_hft_factory(WTSVariant* cfg)
 	return true;
 }
 
-void HftMocker::handle_tick(const char* stdCode, WTSTickData* curTick, uint32_t pxType)
+void HftMocker::handle_tick(const char* stdCode, VvTSTickData* curTick, uint32_t pxType)
 {
 	on_tick(stdCode, curTick);
 }
 
-void HftMocker::handle_order_detail(const char* stdCode, WTSOrdDtlData* curOrdDtl)
+void HftMocker::handle_order_detail(const char* stdCode, VvTSOrdDtlData* curOrdDtl)
 {
 	on_order_detail(stdCode, curOrdDtl);
 }
 
-void HftMocker::handle_order_queue(const char* stdCode, WTSOrdQueData* curOrdQue)
+void HftMocker::handle_order_queue(const char* stdCode, VvTSOrdQueData* curOrdQue)
 {
 	on_order_queue(stdCode, curOrdQue);
 }
 
-void HftMocker::handle_transaction(const char* stdCode, WTSTransData* curTrans)
+void HftMocker::handle_transaction(const char* stdCode, VvTSTransData* curTrans)
 {
 	on_transaction(stdCode, curTrans);
 }
 
-void HftMocker::handle_bar_close(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar)
+void HftMocker::handle_bar_close(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar)
 {
 	on_bar(stdCode, period, times, newBar);
 }
@@ -303,7 +303,7 @@ void HftMocker::handle_replay_done()
 	this->on_bactest_end();
 }
 
-void HftMocker::on_bar(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar)
+void HftMocker::on_bar(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar)
 {
 	if (_strategy)
 		_strategy->on_bar(this, stdCode, period, times, newBar);
@@ -340,7 +340,7 @@ void HftMocker::step_tick()
 	}
 }
 
-void HftMocker::on_tick(const char* stdCode, WTSTickData* newTick)
+void HftMocker::on_tick(const char* stdCode, VvTSTickData* newTick)
 {
 	_price_map[stdCode] = newTick->price();
 	{
@@ -428,7 +428,7 @@ void HftMocker::on_tick(const char* stdCode, WTSTickData* newTick)
 	}
 }
 
-void HftMocker::on_tick_updated(const char* stdCode, WTSTickData* newTick)
+void HftMocker::on_tick_updated(const char* stdCode, VvTSTickData* newTick)
 {
 	auto it = _tick_subs.find(stdCode);
 	if (it == _tick_subs.end())
@@ -438,34 +438,34 @@ void HftMocker::on_tick_updated(const char* stdCode, WTSTickData* newTick)
 		_strategy->on_tick(this, stdCode, newTick);
 }
 
-void HftMocker::on_order_queue(const char* stdCode, WTSOrdQueData* newOrdQue)
+void HftMocker::on_order_queue(const char* stdCode, VvTSOrdQueData* newOrdQue)
 {
 	on_ordque_updated(stdCode, newOrdQue);
 }
 
-void HftMocker::on_ordque_updated(const char* stdCode, WTSOrdQueData* newOrdQue)
+void HftMocker::on_ordque_updated(const char* stdCode, VvTSOrdQueData* newOrdQue)
 {
 	if (_strategy)
 		_strategy->on_order_queue(this, stdCode, newOrdQue);
 }
 
-void HftMocker::on_order_detail(const char* stdCode, WTSOrdDtlData* newOrdDtl)
+void HftMocker::on_order_detail(const char* stdCode, VvTSOrdDtlData* newOrdDtl)
 {
 	on_orddtl_updated(stdCode, newOrdDtl);
 }
 
-void HftMocker::on_orddtl_updated(const char* stdCode, WTSOrdDtlData* newOrdDtl)
+void HftMocker::on_orddtl_updated(const char* stdCode, VvTSOrdDtlData* newOrdDtl)
 {
 	if (_strategy)
 		_strategy->on_order_detail(this, stdCode, newOrdDtl);
 }
 
-void HftMocker::on_transaction(const char* stdCode, WTSTransData* newTrans)
+void HftMocker::on_transaction(const char* stdCode, VvTSTransData* newTrans)
 {
 	on_trans_updated(stdCode, newTrans);
 }
 
-void HftMocker::on_trans_updated(const char* stdCode, WTSTransData* newTrans)
+void HftMocker::on_trans_updated(const char* stdCode, VvTSTransData* newTrans)
 {
 	if (_strategy)
 		_strategy->on_transaction(this, stdCode, newTrans);
@@ -595,7 +595,7 @@ OrderIDs HftMocker::stra_cancel(const char* stdCode, bool isBuy, double qty /* =
 
 OrderIDs HftMocker::stra_buy(const char* stdCode, double price, double qty, const char* userTag, int flag /* = 0 */, bool bForceClose /* = false */)
 {
-	WTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
+	VvTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
 	if (commInfo == NULL)
 	{
 		log_error("Cannot find corresponding commodity info of {}", stdCode);
@@ -661,7 +661,7 @@ void HftMocker::on_channel_ready()
 		_strategy->on_channel_ready(this);
 }
 
-void HftMocker::update_dyn_profit(const char* stdCode, WTSTickData* newTick)
+void HftMocker::update_dyn_profit(const char* stdCode, VvTSTickData* newTick)
 {
 	auto it = _pos_map.find(stdCode);
 	if (it != _pos_map.end())
@@ -676,7 +676,7 @@ void HftMocker::update_dyn_profit(const char* stdCode, WTSTickData* newTick)
 			bool isLong = decimal::gt(pInfo._volume, 0);
 			double price = isLong ? newTick->bidprice(0) : newTick->askprice(0);
 
-			WTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
+			VvTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
 			double dynprofit = 0;
 			for (auto pit = pInfo._details.begin(); pit != pInfo._details.end(); pit++)
 			{
@@ -718,7 +718,7 @@ bool HftMocker::procOrder(uint32_t localid)
 		ordInfo->_proced_after_placed = true;
 	}
 
-	WTSTickData* curTick = stra_get_last_tick(ordInfo->_code);
+	VvTSTickData* curTick = stra_get_last_tick(ordInfo->_code);
 	if (curTick == NULL)
 		return false;
 
@@ -784,7 +784,7 @@ bool HftMocker::procOrder(uint32_t localid)
 
 OrderIDs HftMocker::stra_sell(const char* stdCode, double price, double qty, const char* userTag, int flag /* = 0 */, bool bForceClose /* = false */)
 {
-	WTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
+	VvTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
 	if (commInfo == NULL)
 	{
 		log_error("Cannot find corresponding commodity info of %s", stdCode);
@@ -834,7 +834,7 @@ OrderIDs HftMocker::stra_sell(const char* stdCode, double price, double qty, con
 	return ids;
 }
 
-WTSCommodityInfo* HftMocker::stra_get_comminfo(const char* stdCode)
+VvTSCommodityInfo* HftMocker::stra_get_comminfo(const char* stdCode)
 {
 	return _replayer->get_commodity_info(stdCode);
 }
@@ -844,7 +844,7 @@ std::string HftMocker::stra_get_rawcode(const char* stdCode)
 	return _replayer->get_rawcode(stdCode);
 }
 
-WTSKlineSlice* HftMocker::stra_get_bars(const char* stdCode, const char* period, uint32_t count)
+VvTSKlineSlice* HftMocker::stra_get_bars(const char* stdCode, const char* period, uint32_t count)
 {
 	thread_local static char basePeriod[2] = { 0 };
 	basePeriod[0] = period[0];
@@ -855,34 +855,34 @@ WTSKlineSlice* HftMocker::stra_get_bars(const char* stdCode, const char* period,
 	return _replayer->get_kline_slice(stdCode, basePeriod, count, times);
 }
 
-WTSTickSlice* HftMocker::stra_get_ticks(const char* stdCode, uint32_t count)
+VvTSTickSlice* HftMocker::stra_get_ticks(const char* stdCode, uint32_t count)
 {
 	return _replayer->get_tick_slice(stdCode, count);
 }
 
-WTSOrdQueSlice* HftMocker::stra_get_order_queue(const char* stdCode, uint32_t count)
+VvTSOrdQueSlice* HftMocker::stra_get_order_queue(const char* stdCode, uint32_t count)
 {
 	return _replayer->get_order_queue_slice(stdCode, count);
 }
 
-WTSOrdDtlSlice* HftMocker::stra_get_order_detail(const char* stdCode, uint32_t count)
+VvTSOrdDtlSlice* HftMocker::stra_get_order_detail(const char* stdCode, uint32_t count)
 {
 	return _replayer->get_order_detail_slice(stdCode, count);
 }
 
-WTSTransSlice* HftMocker::stra_get_transaction(const char* stdCode, uint32_t count)
+VvTSTransSlice* HftMocker::stra_get_transaction(const char* stdCode, uint32_t count)
 {
 	return _replayer->get_transaction_slice(stdCode, count);
 }
 
-WTSTickData* HftMocker::stra_get_last_tick(const char* stdCode)
+VvTSTickData* HftMocker::stra_get_last_tick(const char* stdCode)
 {
 	if (_ticks != NULL)
 	{
 		auto it = _ticks->find(stdCode);
 		if (it != _ticks->end())
 		{
-			WTSTickData* lastTick = (WTSTickData*)it->second;
+			VvTSTickData* lastTick = (VvTSTickData*)it->second;
 			if (lastTick)
 				lastTick->retain();
 			return lastTick;
@@ -1100,7 +1100,7 @@ void HftMocker::do_set_position(const char* stdCode, double qty, double price /*
 
 	log_debug("[{:04d}.{:05d}] {} position updated: {} -> {}", _replayer->get_min_time(), _replayer->get_secs(), stdCode, pInfo._volume, qty);
 
-	WTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
+	VvTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
 	if (commInfo == NULL)
 		return;
 

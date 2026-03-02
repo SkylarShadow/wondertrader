@@ -10,18 +10,18 @@
 #pragma once
 
 #include <stdint.h>
-#include "../Includes/WTSTypes.h"
+#include "../Includes/VvTSTypes.h"
 
-NS_WTP_BEGIN
-struct WTSBarStruct;
-struct WTSTickStruct;
-NS_WTP_END
+NS_VVTP_BEGIN
+struct VvTSBarStruct;
+struct VvTSTickStruct;
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
-typedef void(PORTER_FLAG *FuncGetBarsCallback)(WTSBarStruct* bar, WtUInt32 count, bool isLast);
-typedef void(PORTER_FLAG *FuncGetTicksCallback)(WTSTickStruct* tick, WtUInt32 count, bool isLast);
-typedef void(PORTER_FLAG *FuncCountDataCallback)(WtUInt32 dataCnt);
-typedef void(PORTER_FLAG *FuncOnTickCallback)(const char* stdCode, WTSTickStruct* tick);
-typedef void(PORTER_FLAG *FuncOnBarCallback)(const char* stdCode, const char* period, WTSBarStruct* bar);
+typedef void(PORTER_FLAG *FuncGetBarsCallback)(VvTSBarStruct* bar, VvTUInt32 count, bool isLast);
+typedef void(PORTER_FLAG *FuncGetTicksCallback)(VvTSTickStruct* tick, VvTUInt32 count, bool isLast);
+typedef void(PORTER_FLAG *FuncCountDataCallback)(VvTUInt32 dataCnt);
+typedef void(PORTER_FLAG *FuncOnTickCallback)(const char* stdCode, VvTSTickStruct* tick);
+typedef void(PORTER_FLAG *FuncOnBarCallback)(const char* stdCode, const char* period, VvTSBarStruct* bar);
 

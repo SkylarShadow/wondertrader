@@ -22,17 +22,17 @@
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/strand.hpp>
 
-#include "../Includes/WTSTypes.h"
+#include "../Includes/VvTSTypes.h"
 #include "../Includes/ITraderApi.h"
 #include "../Share/StdUtils.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VvTSVariant.hpp"
 
 //Femas v3.02
 #include "../API/Femas3.02/USTPFtdcTraderApi.h"
 
 #include "../Share/DLLHelper.hpp"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 typedef std::unordered_map<std::string, std::string>	StringMap;
 
@@ -65,7 +65,7 @@ private:
 //////////////////////////////////////////////////////////////////////////
 //ITraderApi接口
 public:
-	virtual bool init(WTSVariant* params);
+	virtual bool init(VvTSVariant* params);
 
 	virtual void release();
 
@@ -86,9 +86,9 @@ public:
 
 	virtual int logout();
 
-	virtual int orderInsert(WTSEntrust* eutrust);
+	virtual int orderInsert(VvTSEntrust* eutrust);
 
-	virtual int orderAction(WTSEntrustAction* action);
+	virtual int orderAction(VvTSEntrustAction* action);
 
 	virtual int queryAccount();
 
@@ -155,26 +155,26 @@ public:
 protected:
 	bool IsErrorRspInfo(CUstpFtdcRspInfoField *pRspInfo);
 
-	int wrapPriceType(WTSPriceType priceType, bool isCFFEX = false);
-	int wrapDirectionType(WTSDirectionType dirType, WTSOffsetType offType);
-	int wrapOffsetType(WTSOffsetType offType);
-	int	wrapTimeCondition(WTSTimeCondition timeCond);
-	int wrapActionFlag(WTSActionFlag actionFlag);
+	int wrapPriceType(VvTSPriceType priceType, bool isCFFEX = false);
+	int wrapDirectionType(VvTSDirectionType dirType, VvTSOffsetType offType);
+	int wrapOffsetType(VvTSOffsetType offType);
+	int	wrapTimeCondition(VvTSTimeCondition timeCond);
+	int wrapActionFlag(VvTSActionFlag actionFlag);
 
 	const char* wrapExchg(const char* exchg);
 
 
-	WTSPriceType		wrapPriceType(TUstpFtdcPriceType priceType);
-	WTSDirectionType	wrapDirectionType(TUstpFtdcDirectionType dirType, TUstpFtdcOffsetFlagType offType);
-	WTSDirectionType	wrapPosDirection(TUstpFtdcDirectionType dirType);
-	WTSOffsetType		wrapOffsetType(TUstpFtdcOffsetFlagType offType);
-	WTSTimeCondition	wrapTimeCondition(TUstpFtdcTimeConditionType timeCond);
-	WTSOrderState		wrapOrderState(TUstpFtdcOrderStatusType orderState);
+	VvTSPriceType		wrapPriceType(TUstpFtdcPriceType priceType);
+	VvTSDirectionType	wrapDirectionType(TUstpFtdcDirectionType dirType, TUstpFtdcOffsetFlagType offType);
+	VvTSDirectionType	wrapPosDirection(TUstpFtdcDirectionType dirType);
+	VvTSOffsetType		wrapOffsetType(TUstpFtdcOffsetFlagType offType);
+	VvTSTimeCondition	wrapTimeCondition(TUstpFtdcTimeConditionType timeCond);
+	VvTSOrderState		wrapOrderState(TUstpFtdcOrderStatusType orderState);
 	
-	WTSOrderInfo*	makeOrderInfo(CUstpFtdcOrderField* orderField);
-	WTSEntrust*		makeEntrust(CUstpFtdcInputOrderField *entrustField);
-	WTSError*		makeError(CUstpFtdcRspInfoField* rspInfo);
-	WTSTradeInfo*	makeTradeRecord(CUstpFtdcTradeField *tradeField);
+	VvTSOrderInfo*	makeOrderInfo(CUstpFtdcOrderField* orderField);
+	VvTSEntrust*		makeEntrust(CUstpFtdcInputOrderField *entrustField);
+	VvTSError*		makeError(CUstpFtdcRspInfoField* rspInfo);
+	VvTSTradeInfo*	makeTradeRecord(CUstpFtdcTradeField *tradeField);
 
 
 	uint32_t		genRequestID();
@@ -216,10 +216,10 @@ protected:
 
 	StringMap					m_mapOrderTag;
 
-	WTSArray*					m_ayPosition;
-	WTSArray*					m_ayTrades;
-	WTSArray*					m_ayOrders;
-	WTSArray*					m_ayPosDetail;
+	VvTSArray*					m_ayPosition;
+	VvTSArray*					m_ayTrades;
+	VvTSArray*					m_ayOrders;
+	VvTSArray*					m_ayPosDetail;
 	
 	IBaseDataMgr*				m_bdMgr;
 

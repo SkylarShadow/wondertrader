@@ -14,7 +14,7 @@
 #include "../WTSTools/WTSLogger.h"
 
 #include "../Share/ModuleHelper.hpp"
-#include "../Includes/WTSVersion.h"
+#include "../Includes/VvTSVersion.h"
 
 #ifdef _WIN32
 #ifdef _WIN64
@@ -50,7 +50,7 @@ WtDtRunner& getRunner()
 	return runner;
 }
 
-void initialize(WtString cfgFile, WtString logCfg, bool bCfgFile, bool bLogCfgFile)
+void initialize(VvTString cfgFile, VvTString logCfg, bool bCfgFile, bool bLogCfgFile)
 {
 #ifdef _MSC_VER
 	CMiniDumper::Enable(getModuleName(), true, WtHelper::get_cwd());
@@ -70,7 +70,7 @@ const char* get_version()
 	{
 		_ver = PLATFORM_NAME;
 		_ver += " ";
-		_ver += WT_VERSION;
+		_ver += VVT_VERSION;
 		_ver += " Build@";
 		_ver += __DATE__;
 		_ver += " ";
@@ -83,11 +83,11 @@ void write_log(unsigned int level, const char* message, const char* catName)
 {
 	if (strlen(catName) > 0)
 	{
-		WTSLogger::log_raw_by_cat(catName, (WTSLogLevel)level, message);
+		WTSLogger::log_raw_by_cat(catName, (VvTSLogLevel)level, message);
 	}
 	else
 	{
-		WTSLogger::log_raw((WTSLogLevel)level, message);
+		WTSLogger::log_raw((VvTSLogLevel)level, message);
 	}
 }
 
@@ -98,7 +98,7 @@ bool create_ext_parser(const char* id)
 	return getRunner().createExtParser(id);
 }
 
-void parser_push_quote(const char* id, WTSTickStruct* curTick, WtUInt32 uProcFlag)
+void parser_push_quote(const char* id, VvTSTickStruct* curTick, VvTUInt32 uProcFlag)
 {
 	getRunner().on_ext_parser_quote(id, curTick, uProcFlag);
 }

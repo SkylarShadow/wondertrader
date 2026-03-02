@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include <string.h>
-#include "WTSMarcos.h"
+#include "VvTSMarcos.h"
 #include "../FasterLibs/tsl/robin_map.h"
 #include "../FasterLibs/tsl/robin_set.h"
 
@@ -24,7 +24,7 @@
   * https://martin.ankerl.com/2022/08/27/hashmap-bench-01/#benchmark-results-table
   */
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 
 struct string_hash
 {
@@ -82,35 +82,35 @@ typedef fastest_hashset<std::string> CodeSet;
 //下面使用unordered_dense
 
 template<class Key, class T, class Hash = std::hash<Key>>
-class wt_hashmap : public ankerl::unordered_dense::map<Key, T, Hash>
+class vvt_hashmap : public ankerl::unordered_dense::map<Key, T, Hash>
 {
 public:
 	typedef ankerl::unordered_dense::map<Key, T, Hash>	Container;
-	wt_hashmap() :Container() {}
+	vvt_hashmap() :Container() {}
 };
 
 template<class T>
-class wt_hashmap<std::string, T, string_hash> : public ankerl::unordered_dense::map<std::string, T, string_hash>
+class vvt_hashmap<std::string, T, string_hash> : public ankerl::unordered_dense::map<std::string, T, string_hash>
 {
 public:
 	typedef ankerl::unordered_dense::map<std::string, T, string_hash>	Container;
-	wt_hashmap() :Container() {}
+	vvt_hashmap() :Container() {}
 };
 
 template<class Key, class Hash = std::hash<Key>>
-class wt_hashset : public ankerl::unordered_dense::set<Key, Hash>
+class vvt_hashset : public ankerl::unordered_dense::set<Key, Hash>
 {
 public:
 	typedef ankerl::unordered_dense::set<Key, Hash>	Container;
-	wt_hashset() :Container() {}
+	vvt_hashset() :Container() {}
 };
 
 template<>
-class wt_hashset<std::string, string_hash> : public ankerl::unordered_dense::set<std::string, string_hash>
+class vvt_hashset<std::string, string_hash> : public ankerl::unordered_dense::set<std::string, string_hash>
 {
 public:
 	typedef ankerl::unordered_dense::set<std::string, string_hash>	Container;
-	wt_hashset() :Container() {}
+	vvt_hashset() :Container() {}
 };
 
-NS_WTP_END
+NS_VVTP_END

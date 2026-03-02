@@ -17,7 +17,7 @@
 
 #include "../WTSTools/WTSLogger.h"
 
-#include "../Includes/WTSVersion.h"
+#include "../Includes/VvTSVersion.h"
 
 
 #ifdef _WIN32
@@ -66,12 +66,12 @@ void register_ext_data_loader(FuncLoadFnlBars fnlBarLoader, FuncLoadRawBars rawB
 	getRunner().registerExtDataLoader(fnlBarLoader, rawBarLoader, fctLoader, tickLoader, bAutoTrans);
 }
 
-void feed_raw_bars(WTSBarStruct* bars, WtUInt32 count)
+void feed_raw_bars(VvTSBarStruct* bars, VvTUInt32 count)
 {
 	getRunner().feedRawBars(bars, count);
 }
 
-void feed_raw_ticks(WTSTickStruct* ticks, WtUInt32 count)
+void feed_raw_ticks(VvTSTickStruct* ticks, VvTUInt32 count)
 {
 	getRunner().feedRawTicks(ticks, count);
 }
@@ -101,7 +101,7 @@ void config_backtest(const char* cfgfile, bool isFile)
 		getRunner().config(cfgfile, isFile);
 }
 
-void set_time_range(WtUInt64 stime, WtUInt64 etime)
+void set_time_range(VvTUInt64 stime, VvTUInt64 etime)
 {
 	getRunner().set_time_range(stime, etime);
 }
@@ -126,7 +126,7 @@ void release_backtest()
 	getRunner().release();
 }
 
-WtString get_raw_stdcode(const char* stdCode)
+VvTString get_raw_stdcode(const char* stdCode)
 {
 	return getRunner().get_raw_stdcode(stdCode);
 }
@@ -138,7 +138,7 @@ const char* get_version()
 	{
 		_ver = PLATFORM_NAME;
 		_ver += " ";
-		_ver += WT_VERSION;
+		_ver += VVT_VERSION;
 		_ver += " Build@";
 		_ver += __DATE__;
 		_ver += " ";
@@ -152,15 +152,15 @@ void clear_cache()
 	getRunner().clear_cache();
 }
 
-void write_log(WtUInt32 level, const char* message, const char* catName)
+void write_log(VvTUInt32 level, const char* message, const char* catName)
 {
 	if (strlen(catName) > 0)
 	{
-		WTSLogger::log_raw_by_cat(catName, (WTSLogLevel)level, message);
+		WTSLogger::log_raw_by_cat(catName, (VvTSLogLevel)level, message);
 	}
 	else
 	{
-		WTSLogger::log_raw((WTSLogLevel)level, message);
+		WTSLogger::log_raw((VvTSLogLevel)level, message);
 	}
 }
 
@@ -174,7 +174,7 @@ CtxHandler init_hft_mocker(const char* name, bool hook/* = false*/)
 	return getRunner().initHftMocker(name, hook);
 }
 
-CtxHandler init_sel_mocker(const char* name, WtUInt32 date, WtUInt32 time, const char* period, const char* trdtpl/* = "CHINA"*/, const char* session/* = "TRADING"*/, int slippage/* = 0*/, bool bRatioSlp/* = false*/)
+CtxHandler init_sel_mocker(const char* name, VvTUInt32 date, VvTUInt32 time, const char* period, const char* trdtpl/* = "CHINA"*/, const char* session/* = "TRADING"*/, int slippage/* = 0*/, bool bRatioSlp/* = false*/)
 {
 	return getRunner().initSelMocker(name, date, time, period, trdtpl, session, slippage, bRatioSlp);
 }
@@ -216,17 +216,17 @@ void cta_exit_short(CtxHandler cHandle, const char* stdCode, double qty, const c
 	ctx->stra_exit_short(stdCode, qty, userTag, limitprice, stopprice);
 }
 
-WtUInt32 cta_get_bars(CtxHandler cHandle, const char* stdCode, const char* period, WtUInt32 barCnt, bool isMain, FuncGetBarsCallback cb)
+VvTUInt32 cta_get_bars(CtxHandler cHandle, const char* stdCode, const char* period, VvTUInt32 barCnt, bool isMain, FuncGetBarsCallback cb)
 {
 	CtaMocker* ctx = getRunner().cta_mocker();
 	if (ctx == NULL)
 		return 0;
 	try
 	{
-		WTSKlineSlice* kData = ctx->stra_get_bars(stdCode, period, barCnt, isMain);
+		VvTSKlineSlice* kData = ctx->stra_get_bars(stdCode, period, barCnt, isMain);
 		if (kData)
 		{
-			WtUInt32 reaCnt = (WtUInt32)kData->size();
+			VvTUInt32 reaCnt = (VvTUInt32)kData->size();
 
 			for (uint32_t i = 0; i < kData->get_block_counts(); i++)
 				cb(cHandle, stdCode, period, kData->get_block_addr(i), kData->get_block_size(i), i == kData->get_block_counts()-1);
@@ -245,19 +245,19 @@ WtUInt32 cta_get_bars(CtxHandler cHandle, const char* stdCode, const char* perio
 	}
 }
 
-WtUInt32	cta_get_ticks(CtxHandler cHandle, const char* stdCode, WtUInt32 tickCnt, FuncGetTicksCallback cb)
+VvTUInt32	cta_get_ticks(CtxHandler cHandle, const char* stdCode, VvTUInt32 tickCnt, FuncGetTicksCallback cb)
 {
 	CtaMocker* ctx = getRunner().cta_mocker();
 	if (ctx == NULL)
 		return 0;
 	try
 	{
-		WTSTickSlice* tData = ctx->stra_get_ticks(stdCode, tickCnt);
+		VvTSTickSlice* tData = ctx->stra_get_ticks(stdCode, tickCnt);
 		if (tData)
 		{
-			uint32_t thisCnt = min(tickCnt, (WtUInt32)tData->size());
+			uint32_t thisCnt = min(tickCnt, (VvTUInt32)tData->size());
 			if (thisCnt != 0)
-				cb(cHandle, stdCode, (WTSTickStruct*)tData->at(0), thisCnt, true);
+				cb(cHandle, stdCode, (VvTSTickStruct*)tData->at(0), thisCnt, true);
 			else
 				cb(cHandle, stdCode, NULL, 0, true);
 
@@ -284,7 +284,7 @@ double cta_get_position_profit(CtxHandler cHandle, const char* stdCode)
 	return ctx->stra_get_position_profit(stdCode);
 }
 
-WtUInt64 cta_get_detail_entertime(CtxHandler cHandle, const char* stdCode, const char* openTag)
+VvTUInt64 cta_get_detail_entertime(CtxHandler cHandle, const char* stdCode, const char* openTag)
 {
 	CtaMocker* ctx = getRunner().cta_mocker();
 	if (ctx == NULL)
@@ -363,7 +363,7 @@ void cta_set_position(CtxHandler cHandle, const char* stdCode, double qty, const
 	ctx->stra_set_position(stdCode, qty, userTag, limitprice, stopprice);
 }
 
-WtUInt64 cta_get_first_entertime(CtxHandler cHandle, const char* stdCode)
+VvTUInt64 cta_get_first_entertime(CtxHandler cHandle, const char* stdCode)
 {
 	CtaMocker* ctx = getRunner().cta_mocker();
 	if (ctx == NULL)
@@ -372,7 +372,7 @@ WtUInt64 cta_get_first_entertime(CtxHandler cHandle, const char* stdCode)
 	return ctx->stra_get_first_entertime(stdCode);
 }
 
-WtUInt64 cta_get_last_entertime(CtxHandler cHandle, const char* stdCode)
+VvTUInt64 cta_get_last_entertime(CtxHandler cHandle, const char* stdCode)
 {
 	CtaMocker* ctx = getRunner().cta_mocker();
 	if (ctx == NULL)
@@ -381,7 +381,7 @@ WtUInt64 cta_get_last_entertime(CtxHandler cHandle, const char* stdCode)
 	return ctx->stra_get_last_entertime(stdCode);
 }
 
-WtUInt64 cta_get_last_exittime(CtxHandler cHandle, const char* stdCode)
+VvTUInt64 cta_get_last_exittime(CtxHandler cHandle, const char* stdCode)
 {
 	CtaMocker* ctx = getRunner().cta_mocker();
 	if (ctx == NULL)
@@ -399,7 +399,7 @@ double cta_get_last_enterprice(CtxHandler cHandle, const char* stdCode)
 	return ctx->stra_get_last_enterprice(stdCode);
 }
 
-WtString cta_get_last_entertag(CtxHandler cHandle, const char* stdCode)
+VvTString cta_get_last_entertag(CtxHandler cHandle, const char* stdCode)
 {
 	CtaMocker* ctx = getRunner().cta_mocker();
 	if (ctx == NULL)
@@ -418,22 +418,22 @@ double cta_get_day_price(const char* stdCode, int flag)
 	return getRunner().replayer().get_day_price(stdCode, flag);
 }
 
-WtUInt32 cta_get_tdate()
+VvTUInt32 cta_get_tdate()
 {
 	return getRunner().replayer().get_trading_date();
 }
 
-WtUInt32 cta_get_date()
+VvTUInt32 cta_get_date()
 {
 	return getRunner().replayer().get_date();
 }
 
-WtUInt32 cta_get_time()
+VvTUInt32 cta_get_time()
 {
 	return getRunner().replayer().get_min_time();
 }
 
-void cta_log_text(CtxHandler cHandle, WtUInt32 level, const char* message)
+void cta_log_text(CtxHandler cHandle, VvTUInt32 level, const char* message)
 {
 	CtaMocker* ctx = getRunner().cta_mocker();
 	if (ctx == NULL)
@@ -467,7 +467,7 @@ void cta_save_userdata(CtxHandler cHandle, const char* key, const char* val)
 	ctx->stra_save_user_data(key, val);
 }
 
-WtString cta_load_userdata(CtxHandler cHandle, const char* key, const char* defVal)
+VvTString cta_load_userdata(CtxHandler cHandle, const char* key, const char* defVal)
 {
 	CtaMocker* ctx = getRunner().cta_mocker();
 	if (ctx == NULL)
@@ -525,7 +525,7 @@ void cta_add_chart_mark(CtxHandler cHandle, double price, const char* icon, cons
 	ctx->add_chart_mark(price, icon, tag);
 }
 
-void cta_register_index(CtxHandler cHandle, const char* idxName, WtUInt32 indexType)
+void cta_register_index(CtxHandler cHandle, const char* idxName, VvTUInt32 indexType)
 {
 	CtaMocker* ctx = getRunner().cta_mocker();
 	if (ctx == NULL)
@@ -534,7 +534,7 @@ void cta_register_index(CtxHandler cHandle, const char* idxName, WtUInt32 indexT
 	ctx->register_index(idxName, indexType);
 }
 
-bool cta_register_index_line(CtxHandler cHandle, const char* idxName, const char* lineName, WtUInt32 lineType)
+bool cta_register_index_line(CtxHandler cHandle, const char* idxName, const char* lineName, VvTUInt32 lineType)
 {
 	CtaMocker* ctx = getRunner().cta_mocker();
 	if (ctx == NULL)
@@ -572,7 +572,7 @@ void sel_save_userdata(CtxHandler cHandle, const char* key, const char* val)
 	ctx->stra_save_user_data(key, val);
 }
 
-WtString sel_load_userdata(CtxHandler cHandle, const char* key, const char* defVal)
+VvTString sel_load_userdata(CtxHandler cHandle, const char* key, const char* defVal)
 {
 	SelMocker* ctx = getRunner().sel_mocker();
 	if (ctx == NULL)
@@ -581,7 +581,7 @@ WtString sel_load_userdata(CtxHandler cHandle, const char* key, const char* defV
 	return ctx->stra_load_user_data(key, defVal);
 }
 
-void sel_log_text(CtxHandler cHandle, WtUInt32 level, const char* message)
+void sel_log_text(CtxHandler cHandle, VvTUInt32 level, const char* message)
 {
 	SelMocker* ctx = getRunner().sel_mocker();
 	if (ctx == NULL)
@@ -611,12 +611,12 @@ double sel_get_price(const char* stdCode)
 	return getRunner().replayer().get_cur_price(stdCode);
 }
 
-WtUInt32 sel_get_date()
+VvTUInt32 sel_get_date()
 {
 	return getRunner().replayer().get_date();
 }
 
-WtUInt32 sel_get_time()
+VvTUInt32 sel_get_time()
 {
 	return getRunner().replayer().get_min_time();
 }
@@ -646,17 +646,17 @@ double sel_get_position(CtxHandler cHandle, const char* stdCode, bool bOnlyValid
 	return ctx->stra_get_position(stdCode, bOnlyValid, openTag);
 }
 
-WtUInt32 sel_get_bars(CtxHandler cHandle, const char* stdCode, const char* period, WtUInt32 barCnt, FuncGetBarsCallback cb)
+VvTUInt32 sel_get_bars(CtxHandler cHandle, const char* stdCode, const char* period, VvTUInt32 barCnt, FuncGetBarsCallback cb)
 {
 	SelMocker* ctx = getRunner().sel_mocker();
 	if (ctx == NULL)
 		return 0;
 	try
 	{
-		WTSKlineSlice* kData = ctx->stra_get_bars(stdCode, period, barCnt);
+		VvTSKlineSlice* kData = ctx->stra_get_bars(stdCode, period, barCnt);
 		if (kData)
 		{
-			WtUInt32 reaCnt = (WtUInt32)kData->size();
+			VvTUInt32 reaCnt = (VvTUInt32)kData->size();
 
 			for (uint32_t i = 0; i < kData->get_block_counts(); i++)
 				cb(cHandle, stdCode, period, kData->get_block_addr(i), kData->get_block_size(i), i == kData->get_block_counts() - 1);
@@ -685,19 +685,19 @@ void sel_set_position(CtxHandler cHandle, const char* stdCode, double qty, const
 	ctx->stra_set_position(stdCode, qty, userTag);
 }
 
-WtUInt32	sel_get_ticks(CtxHandler cHandle, const char* stdCode, WtUInt32 tickCnt, FuncGetTicksCallback cb)
+VvTUInt32	sel_get_ticks(CtxHandler cHandle, const char* stdCode, VvTUInt32 tickCnt, FuncGetTicksCallback cb)
 {
 	SelMocker* ctx = getRunner().sel_mocker();
 	if (ctx == NULL)
 		return 0;
 	try
 	{
-		WTSTickSlice* tData = ctx->stra_get_ticks(stdCode, tickCnt);
+		VvTSTickSlice* tData = ctx->stra_get_ticks(stdCode, tickCnt);
 		if (tData)
 		{
-			uint32_t thisCnt = min(tickCnt, (WtUInt32)tData->size());
+			uint32_t thisCnt = min(tickCnt, (VvTUInt32)tData->size());
 			if (thisCnt != 0)
-				cb(cHandle, stdCode, (WTSTickStruct*)tData->at(0), thisCnt, true);
+				cb(cHandle, stdCode, (VvTSTickStruct*)tData->at(0), thisCnt, true);
 			else
 				cb(cHandle, stdCode, NULL, 0, true);
 			tData->release();
@@ -728,7 +728,7 @@ double sel_get_day_price(const char* stdCode, int flag)
 	return getRunner().replayer().get_day_price(stdCode, flag);
 }
 
-WtUInt32 sel_get_tdate()
+VvTUInt32 sel_get_tdate()
 {
 	return getRunner().replayer().get_trading_date();
 }
@@ -751,7 +751,7 @@ double sel_get_position_profit(CtxHandler cHandle, const char* stdCode)
 	return ctx->stra_get_position_profit(stdCode);
 }
 
-WtUInt64 sel_get_detail_entertime(CtxHandler cHandle, const char* stdCode, const char* openTag)
+VvTUInt64 sel_get_detail_entertime(CtxHandler cHandle, const char* stdCode, const char* openTag)
 {
 	SelMocker* ctx = getRunner().sel_mocker();
 	if (ctx == NULL)
@@ -787,7 +787,7 @@ double sel_get_position_avgpx(CtxHandler cHandle, const char* stdCode)
 	return ctx->stra_get_position_avgpx(stdCode);
 }
 
-WtUInt64 sel_get_first_entertime(CtxHandler cHandle, const char* stdCode)
+VvTUInt64 sel_get_first_entertime(CtxHandler cHandle, const char* stdCode)
 {
 	SelMocker* ctx = getRunner().sel_mocker();
 	if (ctx == NULL)
@@ -796,7 +796,7 @@ WtUInt64 sel_get_first_entertime(CtxHandler cHandle, const char* stdCode)
 	return ctx->stra_get_first_entertime(stdCode);
 }
 
-WtUInt64 sel_get_last_entertime(CtxHandler cHandle, const char* stdCode)
+VvTUInt64 sel_get_last_entertime(CtxHandler cHandle, const char* stdCode)
 {
 	SelMocker* ctx = getRunner().sel_mocker();
 	if (ctx == NULL)
@@ -805,7 +805,7 @@ WtUInt64 sel_get_last_entertime(CtxHandler cHandle, const char* stdCode)
 	return ctx->stra_get_last_entertime(stdCode);
 }
 
-WtUInt64 sel_get_last_exittime(CtxHandler cHandle, const char* stdCode)
+VvTUInt64 sel_get_last_exittime(CtxHandler cHandle, const char* stdCode)
 {
 	SelMocker* ctx = getRunner().sel_mocker();
 	if (ctx == NULL)
@@ -823,7 +823,7 @@ double sel_get_last_enterprice(CtxHandler cHandle, const char* stdCode)
 	return ctx->stra_get_last_enterprice(stdCode);
 }
 
-WtString sel_get_last_entertag(CtxHandler cHandle, const char* stdCode)
+VvTString sel_get_last_entertag(CtxHandler cHandle, const char* stdCode)
 {
 	SelMocker* ctx = getRunner().sel_mocker();
 	if (ctx == NULL)
@@ -877,22 +877,22 @@ double hft_get_price(const char* stdCode)
 	return getRunner().replayer().get_cur_price(stdCode);
 }
 
-WtUInt32 hft_get_date()
+VvTUInt32 hft_get_date()
 {
 	return getRunner().replayer().get_date();
 }
 
-WtUInt32 hft_get_time()
+VvTUInt32 hft_get_time()
 {
 	return getRunner().replayer().get_raw_time();
 }
 
-WtUInt32 hft_get_secs()
+VvTUInt32 hft_get_secs()
 {
 	return getRunner().replayer().get_secs();
 }
 
-WtUInt32 hft_get_bars(CtxHandler cHandle, const char* stdCode, const char* period, WtUInt32 barCnt, FuncGetBarsCallback cb)
+VvTUInt32 hft_get_bars(CtxHandler cHandle, const char* stdCode, const char* period, VvTUInt32 barCnt, FuncGetBarsCallback cb)
 {
 	HftMocker* mocker = getRunner().hft_mocker();
 	if (mocker == NULL)
@@ -900,10 +900,10 @@ WtUInt32 hft_get_bars(CtxHandler cHandle, const char* stdCode, const char* perio
 
 	try
 	{
-		WTSKlineSlice* kData = mocker->stra_get_bars(stdCode, period, barCnt);
+		VvTSKlineSlice* kData = mocker->stra_get_bars(stdCode, period, barCnt);
 		if (kData)
 		{
-			WtUInt32 reaCnt = (WtUInt32)kData->size();
+			VvTUInt32 reaCnt = (VvTUInt32)kData->size();
 
 			for (uint32_t i = 0; i < kData->get_block_counts(); i++)
 				cb(cHandle, stdCode, period, kData->get_block_addr(i), kData->get_block_size(i), i == kData->get_block_counts() - 1);
@@ -922,19 +922,19 @@ WtUInt32 hft_get_bars(CtxHandler cHandle, const char* stdCode, const char* perio
 	}
 }
 
-WtUInt32 hft_get_ticks(CtxHandler cHandle, const char* stdCode, WtUInt32 tickCnt, FuncGetTicksCallback cb)
+VvTUInt32 hft_get_ticks(CtxHandler cHandle, const char* stdCode, VvTUInt32 tickCnt, FuncGetTicksCallback cb)
 {
 	HftMocker* mocker = getRunner().hft_mocker();
 	if (mocker == NULL)
 		return 0;
 	try
 	{
-		WTSTickSlice* tData = mocker->stra_get_ticks(stdCode, tickCnt);
+		VvTSTickSlice* tData = mocker->stra_get_ticks(stdCode, tickCnt);
 		if (tData)
 		{
-			uint32_t thisCnt = min(tickCnt, (WtUInt32)tData->size());
+			uint32_t thisCnt = min(tickCnt, (VvTUInt32)tData->size());
 			if(thisCnt != 0)
-				cb(cHandle, stdCode, (WTSTickStruct*)tData->at(0), thisCnt, true);
+				cb(cHandle, stdCode, (VvTSTickStruct*)tData->at(0), thisCnt, true);
 			else
 				cb(cHandle, stdCode, NULL, 0, true);
 			tData->release();
@@ -951,18 +951,18 @@ WtUInt32 hft_get_ticks(CtxHandler cHandle, const char* stdCode, WtUInt32 tickCnt
 	}
 }
 
-WtUInt32 hft_get_ordque(CtxHandler cHandle, const char* stdCode, WtUInt32 itemCnt, FuncGetOrdQueCallback cb)
+VvTUInt32 hft_get_ordque(CtxHandler cHandle, const char* stdCode, VvTUInt32 itemCnt, FuncGetOrdQueCallback cb)
 {
 	HftMocker* mocker = getRunner().hft_mocker();
 	if (mocker == NULL)
 		return 0;
 	try
 	{
-		WTSOrdQueSlice* dataSlice = mocker->stra_get_order_queue(stdCode, itemCnt);
+		VvTSOrdQueSlice* dataSlice = mocker->stra_get_order_queue(stdCode, itemCnt);
 		if (dataSlice)
 		{
-			uint32_t thisCnt = min(itemCnt, (WtUInt32)dataSlice->size());
-			cb(cHandle, stdCode, (WTSOrdQueStruct*)dataSlice->at(0), thisCnt, true);
+			uint32_t thisCnt = min(itemCnt, (VvTUInt32)dataSlice->size());
+			cb(cHandle, stdCode, (VvTSOrdQueStruct*)dataSlice->at(0), thisCnt, true);
 			dataSlice->release();
 			return thisCnt;
 		}
@@ -977,18 +977,18 @@ WtUInt32 hft_get_ordque(CtxHandler cHandle, const char* stdCode, WtUInt32 itemCn
 	}
 }
 
-WtUInt32 hft_get_orddtl(CtxHandler cHandle, const char* stdCode, WtUInt32 itemCnt, FuncGetOrdDtlCallback cb)
+VvTUInt32 hft_get_orddtl(CtxHandler cHandle, const char* stdCode, VvTUInt32 itemCnt, FuncGetOrdDtlCallback cb)
 {
 	HftMocker* mocker = getRunner().hft_mocker();
 	if (mocker == NULL)
 		return 0;
 	try
 	{
-		WTSOrdDtlSlice* dataSlice = mocker->stra_get_order_detail(stdCode, itemCnt);
+		VvTSOrdDtlSlice* dataSlice = mocker->stra_get_order_detail(stdCode, itemCnt);
 		if (dataSlice)
 		{
-			uint32_t thisCnt = min(itemCnt, (WtUInt32)dataSlice->size());
-			cb(cHandle, stdCode, (WTSOrdDtlStruct*)dataSlice->at(0), thisCnt, true);
+			uint32_t thisCnt = min(itemCnt, (VvTUInt32)dataSlice->size());
+			cb(cHandle, stdCode, (VvTSOrdDtlStruct*)dataSlice->at(0), thisCnt, true);
 			dataSlice->release();
 			return thisCnt;
 		}
@@ -1003,18 +1003,18 @@ WtUInt32 hft_get_orddtl(CtxHandler cHandle, const char* stdCode, WtUInt32 itemCn
 	}
 }
 
-WtUInt32 hft_get_trans(CtxHandler cHandle, const char* stdCode, WtUInt32 itemCnt, FuncGetTransCallback cb)
+VvTUInt32 hft_get_trans(CtxHandler cHandle, const char* stdCode, VvTUInt32 itemCnt, FuncGetTransCallback cb)
 {
 	HftMocker* mocker = getRunner().hft_mocker();
 	if (mocker == NULL)
 		return 0;
 	try
 	{
-		WTSTransSlice* dataSlice = mocker->stra_get_transaction(stdCode, itemCnt);
+		VvTSTransSlice* dataSlice = mocker->stra_get_transaction(stdCode, itemCnt);
 		if (dataSlice)
 		{
-			uint32_t thisCnt = min(itemCnt, (WtUInt32)dataSlice->size());
-			cb(cHandle, stdCode, (WTSTransStruct*)dataSlice->at(0), thisCnt, true);
+			uint32_t thisCnt = min(itemCnt, (VvTUInt32)dataSlice->size());
+			cb(cHandle, stdCode, (VvTSTransStruct*)dataSlice->at(0), thisCnt, true);
 			dataSlice->release();
 			return thisCnt;
 		}
@@ -1029,7 +1029,7 @@ WtUInt32 hft_get_trans(CtxHandler cHandle, const char* stdCode, WtUInt32 itemCnt
 	}
 }
 
-void hft_log_text(CtxHandler cHandle, WtUInt32 level, const char* message)
+void hft_log_text(CtxHandler cHandle, VvTUInt32 level, const char* message)
 {
 	HftMocker* ctx = getRunner().hft_mocker();
 	if (ctx == NULL)
@@ -1090,7 +1090,7 @@ void hft_sub_transaction(CtxHandler cHandle, const char* stdCode)
 	mocker->stra_sub_transactions(stdCode);
 }
 
-bool hft_cancel(CtxHandler cHandle, WtUInt32 localid)
+bool hft_cancel(CtxHandler cHandle, VvTUInt32 localid)
 {
 	HftMocker* mocker = getRunner().hft_mocker();
 	if (mocker == NULL)
@@ -1099,7 +1099,7 @@ bool hft_cancel(CtxHandler cHandle, WtUInt32 localid)
 	return mocker->stra_cancel(localid);
 }
 
-WtString hft_cancel_all(CtxHandler cHandle, const char* stdCode, bool isBuy)
+VvTString hft_cancel_all(CtxHandler cHandle, const char* stdCode, bool isBuy)
 {
 	HftMocker* mocker = getRunner().hft_mocker();
 	if (mocker == NULL)
@@ -1109,7 +1109,7 @@ WtString hft_cancel_all(CtxHandler cHandle, const char* stdCode, bool isBuy)
 
 	std::stringstream ss;
 	OrderIDs ids = mocker->stra_cancel(stdCode, isBuy, DBL_MAX);
-	for (WtUInt32 localid : ids)
+	for (VvTUInt32 localid : ids)
 	{
 		ss << localid << ",";
 	}
@@ -1120,7 +1120,7 @@ WtString hft_cancel_all(CtxHandler cHandle, const char* stdCode, bool isBuy)
 	return ret.c_str();
 }
 
-WtString hft_buy(CtxHandler cHandle, const char* stdCode, double price, double qty, const char* userTag, int flag)
+VvTString hft_buy(CtxHandler cHandle, const char* stdCode, double price, double qty, const char* userTag, int flag)
 {
 	HftMocker* mocker = getRunner().hft_mocker();
 	if (mocker == NULL)
@@ -1130,7 +1130,7 @@ WtString hft_buy(CtxHandler cHandle, const char* stdCode, double price, double q
 
 	std::stringstream ss;
 	OrderIDs ids = mocker->stra_buy(stdCode, price, qty, userTag, flag);
-	for (WtUInt32 localid : ids)
+	for (VvTUInt32 localid : ids)
 	{
 		ss << localid << ",";
 	}
@@ -1140,7 +1140,7 @@ WtString hft_buy(CtxHandler cHandle, const char* stdCode, double price, double q
 	return ret.c_str();
 }
 
-WtString hft_sell(CtxHandler cHandle, const char* stdCode, double price, double qty, const char* userTag, int flag)
+VvTString hft_sell(CtxHandler cHandle, const char* stdCode, double price, double qty, const char* userTag, int flag)
 {
 	HftMocker* mocker = getRunner().hft_mocker();
 	if (mocker == NULL)
@@ -1150,7 +1150,7 @@ WtString hft_sell(CtxHandler cHandle, const char* stdCode, double price, double 
 
 	std::stringstream ss;
 	OrderIDs ids = mocker->stra_sell(stdCode, price, qty, userTag, flag);
-	for (WtUInt32 localid : ids)
+	for (VvTUInt32 localid : ids)
 	{
 		ss << localid << ",";
 	}
@@ -1169,7 +1169,7 @@ void hft_save_userdata(CtxHandler cHandle, const char* key, const char* val)
 	mocker->stra_save_user_data(key, val);
 }
 
-WtString hft_load_userdata(CtxHandler cHandle, const char* key, const char* defVal)
+VvTString hft_load_userdata(CtxHandler cHandle, const char* key, const char* defVal)
 {
 	HftMocker* mocker = getRunner().hft_mocker();
 	if (mocker == NULL)

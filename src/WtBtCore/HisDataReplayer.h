@@ -14,40 +14,40 @@
 #include "../WtDataStorage/DataDefine.h"
 
 #include "../Includes/FasterDefs.h"
-#include "../Includes/WTSMarcos.h"
-#include "../Includes/WTSTypes.h"
+#include "../Includes/VvTSMarcos.h"
+#include "../Includes/VvTSTypes.h"
 
 #include "../WTSTools/WTSHotMgr.h"
 #include "../WTSTools/WTSBaseDataMgr.h"
 
-NS_WTP_BEGIN
-class WTSTickData;
-class WTSVariant;
-class WTSKlineSlice;
-class WTSTickSlice;
-class WTSOrdDtlSlice;
-class WTSOrdQueSlice;
-class WTSTransSlice;
-class WTSSessionInfo;
-class WTSCommodityInfo;
+NS_VVTP_BEGIN
+class VvTSTickData;
+class VvTSVariant;
+class VvTSKlineSlice;
+class VvTSTickSlice;
+class VvTSOrdDtlSlice;
+class VvTSOrdQueSlice;
+class VvTSTransSlice;
+class VvTSSessionInfo;
+class VvTSCommodityInfo;
 
-class WTSOrdDtlData;
-class WTSOrdQueData;
-class WTSTransData;
+class VvTSOrdDtlData;
+class VvTSOrdQueData;
+class VvTSTransData;
 
 class EventNotifier;
-NS_WTP_END
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class IDataSink
 {
 public:
-	virtual void	handle_tick(const char* stdCode, WTSTickData* curTick, uint32_t pxType) = 0;
-	virtual void	handle_order_queue(const char* stdCode, WTSOrdQueData* curOrdQue) {};
-	virtual void	handle_order_detail(const char* stdCode, WTSOrdDtlData* curOrdDtl) {};
-	virtual void	handle_transaction(const char* stdCode, WTSTransData* curTrans) {};
-	virtual void	handle_bar_close(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar) = 0;
+	virtual void	handle_tick(const char* stdCode, VvTSTickData* curTick, uint32_t pxType) = 0;
+	virtual void	handle_order_queue(const char* stdCode, VvTSOrdQueData* curOrdQue) {};
+	virtual void	handle_order_detail(const char* stdCode, VvTSOrdDtlData* curOrdDtl) {};
+	virtual void	handle_transaction(const char* stdCode, VvTSTransData* curTrans) {};
+	virtual void	handle_bar_close(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar) = 0;
 	virtual void	handle_schedule(uint32_t uDate, uint32_t uTime) = 0;
 
 	virtual void	handle_init() = 0;
@@ -64,7 +64,7 @@ public:
  *	@bars	K线数据
  *	@count	K线条数
  */
-typedef void(*FuncReadBars)(void* obj, WTSBarStruct* firstBar, uint32_t count);
+typedef void(*FuncReadBars)(void* obj, VvTSBarStruct* firstBar, uint32_t count);
 
 /*
  *	加载复权因子回调
@@ -79,28 +79,28 @@ typedef void(*FuncReadFactors)(void* obj, const char* stdCode, uint32_t* dates, 
  *	@firstItem	数据
  *	@count		条数
  */
-typedef void(*FuncReadTicks)(void* obj, WTSTickStruct* firstItem, uint32_t count);
+typedef void(*FuncReadTicks)(void* obj, VvTSTickStruct* firstItem, uint32_t count);
 
 /*
  *	加载委托明细数据回调
  *	@firstItem	数据
  *	@count		条数
  */
-typedef void(*FuncReadOrdDtl)(void* obj, WTSOrdDtlStruct* firstItem, uint32_t count);
+typedef void(*FuncReadOrdDtl)(void* obj, VvTSOrdDtlStruct* firstItem, uint32_t count);
 
 /*
  *	加载委托队列数据回调
  *	@firstItem	数据
  *	@count		条数
  */
-typedef void(*FuncReadOrdQue)(void* obj, WTSOrdQueStruct* firstItem, uint32_t count);
+typedef void(*FuncReadOrdQue)(void* obj, VvTSOrdQueStruct* firstItem, uint32_t count);
 
 /*
  *	加载逐笔成交数据回调
  *	@firstItem	数据
  *	@count		条数
  */
-typedef void(*FuncReadTrans)(void* obj, WTSTransStruct* firstItem, uint32_t count);
+typedef void(*FuncReadTrans)(void* obj, VvTSTransStruct* firstItem, uint32_t count);
 
 class IBtDataLoader
 {
@@ -115,7 +115,7 @@ public:
 	 *	@period	K线周期
 	 *	@cb		回调函数
 	 */
-	virtual bool loadFinalHisBars(void* obj, const char* stdCode, WTSKlinePeriod period, FuncReadBars cb) = 0;
+	virtual bool loadFinalHisBars(void* obj, const char* stdCode, VvTSKlinePeriod period, FuncReadBars cb) = 0;
 
 	/*
 	 *	加载原始历史K线数据
@@ -125,7 +125,7 @@ public:
 	 *	@period	K线周期
 	 *	@cb		回调函数
 	 */
-	virtual bool loadRawHisBars(void* obj, const char* stdCode, WTSKlinePeriod period, FuncReadBars cb) = 0;
+	virtual bool loadRawHisBars(void* obj, const char* stdCode, VvTSKlinePeriod period, FuncReadBars cb) = 0;
 
 	/*
 	 *	加载全部除权因子
@@ -173,16 +173,16 @@ private:
 		HftDataList() :_cursor(UINT_MAX), _count(0), _date(0){}
 	};
 
-	typedef wt_hashmap<std::string, HftDataList<WTSTickStruct>>		TickCache;
-	typedef wt_hashmap<std::string, HftDataList<WTSOrdDtlStruct>>	OrdDtlCache;
-	typedef wt_hashmap<std::string, HftDataList<WTSOrdQueStruct>>	OrdQueCache;
-	typedef wt_hashmap<std::string, HftDataList<WTSTransStruct>>	TransCache;
+	typedef vvt_hashmap<std::string, HftDataList<VvTSTickStruct>>		TickCache;
+	typedef vvt_hashmap<std::string, HftDataList<VvTSOrdDtlStruct>>	OrdDtlCache;
+	typedef vvt_hashmap<std::string, HftDataList<VvTSOrdQueStruct>>	OrdQueCache;
+	typedef vvt_hashmap<std::string, HftDataList<VvTSTransStruct>>	TransCache;
 
 
 	typedef struct _BarsList
 	{
 		std::string		_code;
-		WTSKlinePeriod	_period;
+		VvTSKlinePeriod	_period;
 		/*
 		 * By Wesley @ 2022.03.21
 		 * 游标，用于标记下一条数据的位置，或者说已经回放过的条数
@@ -192,7 +192,7 @@ private:
 		uint32_t		_count;
 		uint32_t		_times;
 
-		std::vector<WTSBarStruct>	_bars;
+		std::vector<VvTSBarStruct>	_bars;
 		double			_factor;	//最后一条复权因子
 
 		uint32_t		_untouch_days;	//未用到的天数
@@ -204,7 +204,7 @@ private:
 
 		inline std::size_t size()
 		{
-			return sizeof(WTSBarStruct)*_bars.size();
+			return sizeof(VvTSBarStruct)*_bars.size();
 		}
 
 		_BarsList() :_cursor(UINT_MAX), _count(0), _times(1), _factor(1), _untouch_days(0){}
@@ -221,7 +221,7 @@ private:
 	 *	智能指针指向的地址都是不会变的
 	 */
 	typedef std::shared_ptr<BarsList> BarsListPtr;
-	typedef wt_hashmap<std::string, BarsListPtr>	BarsCache;
+	typedef vvt_hashmap<std::string, BarsListPtr>	BarsCache;
 
 	typedef enum tagTaskPeriodType
 	{
@@ -260,12 +260,12 @@ private:
 	/*
 	 *	从自定义数据文件缓存历史数据
 	 */
-	bool		cacheRawBarsFromBin(const std::string& key, const char* stdCode, WTSKlinePeriod period, bool bForBars = true);
+	bool		cacheRawBarsFromBin(const std::string& key, const char* stdCode, VvTSKlinePeriod period, bool bForBars = true);
 
 	/*
 	 *	从csv文件缓存历史数据
 	 */
-	bool		cacheRawBarsFromCSV(const std::string& key, const char* stdCode, WTSKlinePeriod period, bool bSubbed = true);
+	bool		cacheRawBarsFromCSV(const std::string& key, const char* stdCode, VvTSKlinePeriod period, bool bSubbed = true);
 
 	/*
 	 *	从自定义数据文件缓存历史tick数据
@@ -295,7 +295,7 @@ private:
 	/*
 	 *	从外部加载器缓存历史数据
 	 */
-	bool		cacheFinalBarsFromLoader(const std::string& key, const char* stdCode, WTSKlinePeriod period, bool bSubbed = true);
+	bool		cacheFinalBarsFromLoader(const std::string& key, const char* stdCode, VvTSKlinePeriod period, bool bSubbed = true);
 
 	/*
 	 *	从外部加载器缓存历史tick数据
@@ -305,12 +305,12 @@ private:
 	/*
 	 *	缓存整合的期货合约历史K线（针对.HOT//2ND）
 	 */
-	bool		cacheIntegratedFutBarsFromBin(void* codeInfo, const std::string& key, const char* stdCode, WTSKlinePeriod period, bool bSubbed = true);
+	bool		cacheIntegratedFutBarsFromBin(void* codeInfo, const std::string& key, const char* stdCode, VvTSKlinePeriod period, bool bSubbed = true);
 
 	/*
 	 *	缓存复权股票K线数据
 	 */
-	bool		cacheAdjustedStkBarsFromBin(void* codeInfo, const std::string& key, const char* stdCode, WTSKlinePeriod period, bool bSubbed = true);
+	bool		cacheAdjustedStkBarsFromBin(void* codeInfo, const std::string& key, const char* stdCode, VvTSKlinePeriod period, bool bSubbed = true);
 
 	void		onMinuteEnd(uint32_t uDate, uint32_t uTime, uint32_t endTDate = 0, bool tickSimulated = true);
 
@@ -348,8 +348,8 @@ private:
 	void		reset();
 
 
-	void		dump_btstate(const char* stdCode, WTSKlinePeriod period, uint32_t times, uint64_t stime, uint64_t etime, double progress, int64_t elapse);
-	void		notify_state(const char* stdCode, WTSKlinePeriod period, uint32_t times, uint64_t stime, uint64_t etime, double progress);
+	void		dump_btstate(const char* stdCode, VvTSKlinePeriod period, uint32_t times, uint64_t stime, uint64_t etime, double progress, int64_t elapse);
+	void		notify_state(const char* stdCode, VvTSKlinePeriod period, uint32_t times, uint64_t stime, uint64_t etime, double progress);
 
 	uint32_t	locate_barindex(const std::string& key, uint64_t curTime, bool bUpperBound = false);
 
@@ -377,7 +377,7 @@ private:
 	void	check_cache_days();
 
 public:
-	bool init(WTSVariant* cfg, EventNotifier* notifier = NULL, IBtDataLoader* dataLoader = NULL);
+	bool init(VvTSVariant* cfg, EventNotifier* notifier = NULL, IBtDataLoader* dataLoader = NULL);
 
 	bool prepare();
 
@@ -417,17 +417,17 @@ public:
 	 */
 	void register_task(uint32_t taskid, uint32_t date, uint32_t time, const char* period, const char* trdtpl = "CHINA", const char* session = "TRADING");
 
-	WTSKlineSlice* get_kline_slice(const char* stdCode, const char* period, uint32_t count, uint32_t times = 1, bool isMain = false);
+	VvTSKlineSlice* get_kline_slice(const char* stdCode, const char* period, uint32_t count, uint32_t times = 1, bool isMain = false);
 
-	WTSTickSlice* get_tick_slice(const char* stdCode, uint32_t count, uint64_t etime = 0);
+	VvTSTickSlice* get_tick_slice(const char* stdCode, uint32_t count, uint64_t etime = 0);
 
-	WTSOrdDtlSlice* get_order_detail_slice(const char* stdCode, uint32_t count, uint64_t etime = 0);
+	VvTSOrdDtlSlice* get_order_detail_slice(const char* stdCode, uint32_t count, uint64_t etime = 0);
 
-	WTSOrdQueSlice* get_order_queue_slice(const char* stdCode, uint32_t count, uint64_t etime = 0);
+	VvTSOrdQueSlice* get_order_queue_slice(const char* stdCode, uint32_t count, uint64_t etime = 0);
 
-	WTSTransSlice* get_transaction_slice(const char* stdCode, uint32_t count, uint64_t etime = 0);
+	VvTSTransSlice* get_transaction_slice(const char* stdCode, uint32_t count, uint64_t etime = 0);
 
-	WTSTickData* get_last_tick(const char* stdCode);
+	VvTSTickData* get_last_tick(const char* stdCode);
 
 	uint32_t get_date() const{ return _cur_date; }
 	uint32_t get_min_time() const{ return _cur_time; }
@@ -436,8 +436,8 @@ public:
 	uint32_t get_trading_date() const{ return _cur_tdate; }
 
 	double calc_fee(const char* stdCode, double price, double qty, uint32_t offset);
-	WTSSessionInfo*		get_session_info(const char* sid, bool isCode = false);
-	WTSCommodityInfo*	get_commodity_info(const char* stdCode);
+	VvTSSessionInfo*		get_session_info(const char* sid, bool isCode = false);
+	VvTSCommodityInfo*	get_commodity_info(const char* stdCode);
 	double get_cur_price(const char* stdCode);
 	double get_day_price(const char* stdCode, int flag = 0);
 
@@ -471,8 +471,8 @@ private:
 
 	BarsCache		_bars_cache;	//K线缓存
 	BarsCache		_unbars_cache;	//未订阅的K线缓存
-	wt_hashset<std::string> _codes_in_subbed;
-	wt_hashset<std::string> _codes_in_unsubbed;
+	vvt_hashset<std::string> _codes_in_subbed;
+	vvt_hashset<std::string> _codes_in_unsubbed;
 
 	TaskInfoPtr		_task;
 
@@ -489,12 +489,12 @@ private:
 	 *	默认为false，主要是针对涨跌停的行情，也适用于不活跃的合约
 	 */
 	bool			_nosim_if_notrade;
-	std::map<std::string, WTSTickStruct>	_day_cache;	//每日Tick缓存,当tick回放未开放时,会用到该缓存
+	std::map<std::string, VvTSTickStruct>	_day_cache;	//每日Tick缓存,当tick回放未开放时,会用到该缓存
 	std::map<std::string, std::string>		_ticker_keys;
 
 	//By Wesley @ 2022.06.01
 	//这个主要是针对不订阅而直接指定合约下单的场景
-	wt_hashset<std::string>		_unsubbed_in_need;	//未订阅但需要的K线
+	vvt_hashset<std::string>		_unsubbed_in_need;	//未订阅但需要的K线
 
 	//By Wesley @ 2022.08.15
 	//复权标记，采用位运算表示，1|2|4,1表示成交量复权，2表示成交额复权，4表示总持复权，其他待定
@@ -534,12 +534,12 @@ private:
 			memset(this, 0, sizeof(_FeeItem));
 		}
 	} FeeItem;
-	typedef wt_hashmap<std::string, FeeItem>	FeeMap;
+	typedef vvt_hashmap<std::string, FeeItem>	FeeMap;
 	FeeMap		_fee_map;
 
 	//////////////////////////////////////////////////////////////////////////
 	//
-	typedef wt_hashmap<std::string, double> PriceMap;
+	typedef vvt_hashmap<std::string, double> PriceMap;
 	PriceMap		_price_map;
 
 	//////////////////////////////////////////////////////////////////////////
@@ -547,8 +547,8 @@ private:
 	//By Wesley @ 2022.02.07
 	//tick数据订阅项，first是contextid，second是订阅选项，0-原始订阅，1-前复权，2-后复权
 	typedef std::pair<uint32_t, uint32_t> SubOpt;
-	typedef wt_hashmap<uint32_t, SubOpt> SubList;
-	typedef wt_hashmap<std::string, SubList>	StraSubMap;
+	typedef vvt_hashmap<uint32_t, SubOpt> SubList;
+	typedef vvt_hashmap<std::string, SubList>	StraSubMap;
 	StraSubMap		_tick_sub_map;		//tick数据订阅表
 	StraSubMap		_ordque_sub_map;	//orderqueue数据订阅表
 	StraSubMap		_orddtl_sub_map;	//orderdetail数据订阅表
@@ -561,7 +561,7 @@ private:
 		double		_factor;
 	} AdjFactor;
 	typedef std::vector<AdjFactor> AdjFactorList;
-	typedef wt_hashmap<std::string, AdjFactorList>	AdjFactorMap;
+	typedef vvt_hashmap<std::string, AdjFactorList>	AdjFactorMap;
 	AdjFactorMap	_adj_factors;
 
 	const AdjFactorList& getAdjFactors(const char* code, const char* exchg, const char* pid);

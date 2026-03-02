@@ -23,9 +23,9 @@
 
 #include <boost/asio.hpp>
 
-NS_WTP_BEGIN
-class WTSVariant;
-NS_WTP_END
+NS_VVTP_BEGIN
+class VvTSVariant;
+NS_VVTP_END
 
 class WtDtRunner
 {
@@ -52,7 +52,7 @@ public:
 	void parser_subscribe(const char* id, const char* code);
 	void parser_unsubscribe(const char* id, const char* code);
 
-	void on_ext_parser_quote(const char* id, WTSTickStruct* curTick, uint32_t uProcFlag);
+	void on_ext_parser_quote(const char* id, VvTSTickStruct* curTick, uint32_t uProcFlag);
 
 //////////////////////////////////////////////////////////////////////////
 //扩展Dumper
@@ -63,19 +63,19 @@ public:
 
 	void registerExtHftDataDumper(FuncDumpOrdQue ordQueDumper, FuncDumpOrdDtl ordDtlDumper, FuncDumpTrans transDumper);
 
-	bool dumpHisBars(const char* id, const char* stdCode, const char* period, WTSBarStruct* bars, uint32_t count);
+	bool dumpHisBars(const char* id, const char* stdCode, const char* period, VvTSBarStruct* bars, uint32_t count);
 
-	bool dumpHisTicks(const char* id, const char* stdCode, uint32_t uDate, WTSTickStruct* ticks, uint32_t count);
+	bool dumpHisTicks(const char* id, const char* stdCode, uint32_t uDate, VvTSTickStruct* ticks, uint32_t count);
 
-	bool dumpHisOrdQue(const char* id, const char* stdCode, uint32_t uDate, WTSOrdQueStruct* item, uint32_t count);
+	bool dumpHisOrdQue(const char* id, const char* stdCode, uint32_t uDate, VvTSOrdQueStruct* item, uint32_t count);
 
-	bool dumpHisOrdDtl(const char* id, const char* stdCode, uint32_t uDate, WTSOrdDtlStruct* items, uint32_t count);
+	bool dumpHisOrdDtl(const char* id, const char* stdCode, uint32_t uDate, VvTSOrdDtlStruct* items, uint32_t count);
 
-	bool dumpHisTrans(const char* id, const char* stdCode, uint32_t uDate, WTSTransStruct* items, uint32_t count);
+	bool dumpHisTrans(const char* id, const char* stdCode, uint32_t uDate, VvTSTransStruct* items, uint32_t count);
 
 private:
-	void initDataMgr(WTSVariant* config, bool bAlldayMode = false);
-	void initParsers(WTSVariant* cfg);
+	void initDataMgr(VvTSVariant* config, bool bAlldayMode = false);
+	void initParsers(VvTSVariant* cfg);
 
 private:
 

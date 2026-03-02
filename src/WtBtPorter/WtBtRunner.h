@@ -11,16 +11,16 @@
 #include "PorterDefs.h"
 #include "../WtBtCore/EventNotifier.h"
 #include "../WtBtCore/HisDataReplayer.h"
-#include "../Includes/WTSMarcos.h"
+#include "../Includes/VvTSMarcos.h"
 
 
-NS_WTP_BEGIN
-class WTSTickData;
-struct WTSBarStruct;
-class WTSVariant;
-NS_WTP_END
+NS_VVTP_BEGIN
+class VvTSTickData;
+struct VvTSBarStruct;
+class VvTSVariant;
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 typedef enum tagEngineType
 {
@@ -43,9 +43,9 @@ public:
 
 	//////////////////////////////////////////////////////////////////////////
 	//IBtDataLoader
-	virtual bool loadFinalHisBars(void* obj, const char* stdCode, WTSKlinePeriod period, FuncReadBars cb) override;
+	virtual bool loadFinalHisBars(void* obj, const char* stdCode, VvTSKlinePeriod period, FuncReadBars cb) override;
 
-	virtual bool loadRawHisBars(void* obj, const char* stdCode, WTSKlinePeriod period, FuncReadBars cb) override;
+	virtual bool loadRawHisBars(void* obj, const char* stdCode, VvTSKlinePeriod period, FuncReadBars cb) override;
 
 	virtual bool loadAllAdjFactors(void* obj, FuncReadFactors cb) override;
 
@@ -58,8 +58,8 @@ public:
 		return _loader_auto_trans;
 	}
 
-	void feedRawBars(WTSBarStruct* bars, uint32_t count);
-	void feedRawTicks(WTSTickStruct* ticks, uint32_t count);
+	void feedRawBars(VvTSBarStruct* bars, uint32_t count);
+	void feedRawTicks(VvTSTickStruct* ticks, uint32_t count);
 	void feedAdjFactors(const char* stdCode, uint32_t* dates, double* factors, uint32_t count);
 
 public:
@@ -90,24 +90,24 @@ public:
 	uint32_t	initSelMocker(const char* name, uint32_t date, uint32_t time, const char* period, 
 		const char* trdtpl = "CHINA", const char* session = "TRADING", int32_t slippage = 0, bool isRatioSlp = false);
 
-	bool	initEvtNotifier(WTSVariant* cfg);
+	bool	initEvtNotifier(VvTSVariant* cfg);
 
 	void	ctx_on_init(uint32_t id, EngineType eType);
 	void	ctx_on_session_event(uint32_t id, uint32_t curTDate, bool isBegin = true, EngineType eType = ET_CTA);
-	void	ctx_on_tick(uint32_t id, const char* stdCode, WTSTickData* newTick, EngineType eType);
+	void	ctx_on_tick(uint32_t id, const char* stdCode, VvTSTickData* newTick, EngineType eType);
 	void	ctx_on_calc(uint32_t id, uint32_t uDate, uint32_t uTime, EngineType eType);
 	void	ctx_on_calc_done(uint32_t id, uint32_t uDate, uint32_t uTime, EngineType eType);
-	void	ctx_on_bar(uint32_t id, const char* stdCode, const char* period, WTSBarStruct* newBar, EngineType eType);
+	void	ctx_on_bar(uint32_t id, const char* stdCode, const char* period, VvTSBarStruct* newBar, EngineType eType);
 	void	ctx_on_cond_triggered(uint32_t id, const char* stdCode, double target, double price, const char* usertag, EngineType eType = ET_CTA);
 
-	void	hft_on_order_queue(uint32_t id, const char* stdCode, WTSOrdQueData* newOrdQue);
-	void	hft_on_order_detail(uint32_t id, const char* stdCode, WTSOrdDtlData* newOrdDtl);
-	void	hft_on_transaction(uint32_t id, const char* stdCode, WTSTransData* newTranns);
+	void	hft_on_order_queue(uint32_t id, const char* stdCode, VvTSOrdQueData* newOrdQue);
+	void	hft_on_order_detail(uint32_t id, const char* stdCode, VvTSOrdDtlData* newOrdDtl);
+	void	hft_on_transaction(uint32_t id, const char* stdCode, VvTSTransData* newTranns);
 
 	void	hft_on_channel_ready(uint32_t cHandle, const char* trader);
-	void	hft_on_order(uint32_t cHandle, WtUInt32 localid, const char* stdCode, bool isBuy, double totalQty, double leftQty, double price, bool isCanceled, const char* userTag);
-	void	hft_on_trade(uint32_t cHandle, WtUInt32 localid, const char* stdCode, bool isBuy, double vol, double price, const char* userTag);
-	void	hft_on_entrust(uint32_t cHandle, WtUInt32 localid, const char* stdCode, bool bSuccess, const char* message, const char* userTag);
+	void	hft_on_order(uint32_t cHandle, VvTUInt32 localid, const char* stdCode, bool isBuy, double totalQty, double leftQty, double price, bool isCanceled, const char* userTag);
+	void	hft_on_trade(uint32_t cHandle, VvTUInt32 localid, const char* stdCode, bool isBuy, double vol, double price, const char* userTag);
+	void	hft_on_entrust(uint32_t cHandle, VvTUInt32 localid, const char* stdCode, bool bSuccess, const char* message, const char* userTag);
 
 	void	init(const char* logProfile = "", bool isFile = true, const char* outDir = "./outputs_bt");
 	void	config(const char* cfgFile, bool isFile = true);
@@ -115,7 +115,7 @@ public:
 	void	release();
 	void	stop();
 
-	void	set_time_range(WtUInt64 stime, WtUInt64 etime);
+	void	set_time_range(VvTUInt64 stime, VvTUInt64 etime);
 
 	void	enable_tick(bool bEnabled = true);
 
@@ -212,6 +212,6 @@ private:
 	FuncReadTicks	_feeder_ticks;
 	FuncReadFactors	_feeder_fcts;
 	StdUniqueMutex	_feed_mtx;
-	WTSVariant* _cfg;
+	VvTSVariant* _cfg;
 };
 

@@ -10,7 +10,7 @@
 #pragma once
 #include "../Includes/ICtaStraCtx.h"
 #include "../Includes/FasterDefs.h"
-#include "../Includes/WTSDataDef.hpp"
+#include "../Includes/VvTSDataDef.hpp"
 
 #include "../Share/BoostFile.hpp"
 #include "../Share/fmtlib.h"
@@ -20,7 +20,7 @@
 
 class CtaStrategy;
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 
 class WtCtaEngine;
 
@@ -32,8 +32,8 @@ const char COND_ACTION_SP = 4;	//直接设置仓位
 
 typedef struct _CondEntrust
 {
-	WTSCompareField _field;
-	WTSCompareType	_alg;
+	VvTSCompareField _field;
+	VvTSCompareType	_alg;
 	double			_target;
 
 	double			_qty;
@@ -52,7 +52,7 @@ typedef struct _CondEntrust
 } CondEntrust;
 
 typedef std::vector<CondEntrust>	CondList;
-typedef wt_hashmap<std::string, CondList>	CondEntrustMap;
+typedef vvt_hashmap<std::string, CondList>	CondEntrustMap;
 
 
 class CtaStraBaseCtx : public ICtaStraCtx
@@ -112,8 +112,8 @@ public:
 	virtual void on_init() override;
 	virtual void on_session_begin(uint32_t uTDate) override;
 	virtual void on_session_end(uint32_t uTDate) override;
-	virtual void on_tick(const char* stdCode, WTSTickData* newTick, bool bEmitStrategy = true) override;
-	virtual void on_bar(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar) override;
+	virtual void on_tick(const char* stdCode, VvTSTickData* newTick, bool bEmitStrategy = true) override;
+	virtual void on_bar(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar) override;
 	virtual bool on_schedule(uint32_t curDate, uint32_t curTime) override;
 
 	virtual void enum_position(FuncEnumCtaPosCallBack cb, bool bForExecute = false) override;
@@ -152,10 +152,10 @@ public:
 	virtual double stra_get_detail_cost(const char* stdCode, const char* userTag) override;
 	virtual double stra_get_detail_profit(const char* stdCode, const char* userTag, int flag = 0) override;
 
-	virtual WTSCommodityInfo* stra_get_comminfo(const char* stdCode) override;
-	virtual WTSKlineSlice*	stra_get_bars(const char* stdCode, const char* period, uint32_t count, bool isMain = false) override;
-	virtual WTSTickSlice*	stra_get_ticks(const char* stdCode, uint32_t count) override;
-	virtual WTSTickData*	stra_get_last_tick(const char* stdCode) override;
+	virtual VvTSCommodityInfo* stra_get_comminfo(const char* stdCode) override;
+	virtual VvTSKlineSlice*	stra_get_bars(const char* stdCode, const char* period, uint32_t count, bool isMain = false) override;
+	virtual VvTSTickSlice*	stra_get_ticks(const char* stdCode, uint32_t count) override;
+	virtual VvTSTickData*	stra_get_last_tick(const char* stdCode) override;
 
 	/*
 	 *	获取分月合约代码
@@ -231,10 +231,10 @@ protected:
 		_KlineTag() :_closed(false), _notify(false){}
 
 	} KlineTag;
-	typedef wt_hashmap<std::string, KlineTag> KlineTags;
+	typedef vvt_hashmap<std::string, KlineTag> KlineTags;
 	KlineTags	_kline_tags;
 
-	typedef wt_hashmap<std::string, double> PriceMap;
+	typedef vvt_hashmap<std::string, double> PriceMap;
 	PriceMap		_price_map;
 
 	typedef struct _DetailInfo
@@ -283,7 +283,7 @@ protected:
 			_frozen_date = 0;
 		}
 	} PosInfo;
-	typedef wt_hashmap<std::string, PosInfo> PositionMap;
+	typedef vvt_hashmap<std::string, PosInfo> PositionMap;
 	PositionMap		_pos_map;
 
 	typedef struct _SigInfo
@@ -304,7 +304,7 @@ protected:
 			_triggered = false;
 		}
 	}SigInfo;
-	typedef wt_hashmap<std::string, SigInfo>	SignalMap;
+	typedef vvt_hashmap<std::string, SigInfo>	SignalMap;
 	SignalMap		_sig_map;
 
 	BoostFilePtr	_trade_logs;
@@ -323,7 +323,7 @@ protected:
 	bool			_is_in_schedule;	//是否在自动调度中
 
 	//用户数据
-	typedef wt_hashmap<std::string, std::string> StringHashMap;
+	typedef vvt_hashmap<std::string, std::string> StringHashMap;
 	StringHashMap	_user_datas;
 	bool			_ud_modified;
 
@@ -342,8 +342,8 @@ protected:
 	StraFundInfo		_fund_info;
 
 	//tick订阅列表
-	wt_hashset<std::string> _tick_subs;
-	wt_hashset<std::string> _barevt_subs;
+	vvt_hashset<std::string> _tick_subs;
+	vvt_hashset<std::string> _barevt_subs;
 
 	//////////////////////////////////////////////////////////////////////////
 	//图表相关
@@ -360,15 +360,15 @@ protected:
 	{
 		std::string	_name;
 		uint32_t	_indexType;
-		wt_hashmap<std::string, ChartLine> _lines;
-		wt_hashmap<std::string, double> _base_lines;
+		vvt_hashmap<std::string, ChartLine> _lines;
+		vvt_hashmap<std::string, double> _base_lines;
 	} ChartIndex;
 
-	wt_hashmap<std::string, ChartIndex>	_chart_indice;
+	vvt_hashmap<std::string, ChartIndex>	_chart_indice;
 
 private:
 	SpinMutex		_mutex;
 };
 
 
-NS_WTP_END
+NS_VVTP_END

@@ -14,8 +14,8 @@
 
 #include <boost/filesystem.hpp>
 
-#include "../Includes/WTSVariant.hpp"
-#include "../Includes/WTSContractInfo.hpp"
+#include "../Includes/VvTSVariant.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
 #include "../Share/decimal.h"
 #include "../Share/TimeUtils.hpp"
 #include "../Share/StrUtil.hpp"
@@ -125,7 +125,7 @@ void UftMocker::postTask(Task task)
 	//}
 }
 
-bool UftMocker::init_uft_factory(WTSVariant* cfg)
+bool UftMocker::init_uft_factory(VvTSVariant* cfg)
 {
 	if (cfg == NULL)
 		return false;
@@ -155,7 +155,7 @@ bool UftMocker::init_uft_factory(WTSVariant* cfg)
 	_factory._remover = (FuncDeleteUftStraFact)DLLHelper::get_symbol(hInst, "deleteStrategyFact");
 	_factory._fact = _factory._creator();
 
-	WTSVariant* cfgStra = cfg->get("strategy");
+	VvTSVariant* cfgStra = cfg->get("strategy");
 	if(cfgStra)
 	{
 		_strategy = _factory._fact->createStrategy(cfgStra->getCString("name"), "uft");
@@ -164,27 +164,27 @@ bool UftMocker::init_uft_factory(WTSVariant* cfg)
 	return true;
 }
 
-void UftMocker::handle_tick(const char* stdCode, WTSTickData* curTick, uint32_t pxType)
+void UftMocker::handle_tick(const char* stdCode, VvTSTickData* curTick, uint32_t pxType)
 {
 	on_tick(stdCode, curTick);
 }
 
-void UftMocker::handle_order_detail(const char* stdCode, WTSOrdDtlData* curOrdDtl)
+void UftMocker::handle_order_detail(const char* stdCode, VvTSOrdDtlData* curOrdDtl)
 {
 	on_order_detail(stdCode, curOrdDtl);
 }
 
-void UftMocker::handle_order_queue(const char* stdCode, WTSOrdQueData* curOrdQue)
+void UftMocker::handle_order_queue(const char* stdCode, VvTSOrdQueData* curOrdQue)
 {
 	on_order_queue(stdCode, curOrdQue);
 }
 
-void UftMocker::handle_transaction(const char* stdCode, WTSTransData* curTrans)
+void UftMocker::handle_transaction(const char* stdCode, VvTSTransData* curTrans)
 {
 	on_transaction(stdCode, curTrans);
 }
 
-void UftMocker::handle_bar_close(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar)
+void UftMocker::handle_bar_close(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar)
 {
 	on_bar(stdCode, period, times, newBar);
 }
@@ -217,13 +217,13 @@ void UftMocker::handle_replay_done()
 	this->on_bactest_end();
 }
 
-void UftMocker::on_bar(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar)
+void UftMocker::on_bar(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar)
 {
 	if (_strategy)
 		_strategy->on_bar(this, stdCode, period, times, newBar);
 }
 
-void UftMocker::on_tick(const char* stdCode, WTSTickData* newTick)
+void UftMocker::on_tick(const char* stdCode, VvTSTickData* newTick)
 {
 	_price_map[stdCode] = newTick->price();
 	{
@@ -290,7 +290,7 @@ void UftMocker::on_tick(const char* stdCode, WTSTickData* newTick)
 	}
 }
 
-void UftMocker::on_tick_updated(const char* stdCode, WTSTickData* newTick)
+void UftMocker::on_tick_updated(const char* stdCode, VvTSTickData* newTick)
 {
 	auto it = _tick_subs.find(stdCode);
 	if (it == _tick_subs.end())
@@ -300,34 +300,34 @@ void UftMocker::on_tick_updated(const char* stdCode, WTSTickData* newTick)
 		_strategy->on_tick(this, stdCode, newTick);
 }
 
-void UftMocker::on_order_queue(const char* stdCode, WTSOrdQueData* newOrdQue)
+void UftMocker::on_order_queue(const char* stdCode, VvTSOrdQueData* newOrdQue)
 {
 	on_ordque_updated(stdCode, newOrdQue);
 }
 
-void UftMocker::on_ordque_updated(const char* stdCode, WTSOrdQueData* newOrdQue)
+void UftMocker::on_ordque_updated(const char* stdCode, VvTSOrdQueData* newOrdQue)
 {
 	if (_strategy)
 		_strategy->on_order_queue(this, stdCode, newOrdQue);
 }
 
-void UftMocker::on_order_detail(const char* stdCode, WTSOrdDtlData* newOrdDtl)
+void UftMocker::on_order_detail(const char* stdCode, VvTSOrdDtlData* newOrdDtl)
 {
 	on_orddtl_updated(stdCode, newOrdDtl);
 }
 
-void UftMocker::on_orddtl_updated(const char* stdCode, WTSOrdDtlData* newOrdDtl)
+void UftMocker::on_orddtl_updated(const char* stdCode, VvTSOrdDtlData* newOrdDtl)
 {
 	if (_strategy)
 		_strategy->on_order_detail(this, stdCode, newOrdDtl);
 }
 
-void UftMocker::on_transaction(const char* stdCode, WTSTransData* newTrans)
+void UftMocker::on_transaction(const char* stdCode, VvTSTransData* newTrans)
 {
 	on_trans_updated(stdCode, newTrans);
 }
 
-void UftMocker::on_trans_updated(const char* stdCode, WTSTransData* newTrans)
+void UftMocker::on_trans_updated(const char* stdCode, VvTSTransData* newTrans)
 {
 	if (_strategy)
 		_strategy->on_transaction(this, stdCode, newTrans);
@@ -422,7 +422,7 @@ bool UftMocker::stra_cancel(uint32_t localid)
 		{
 			PosInfo& pInfo = _pos_map[ordInfo._code];
 			PosItem& pItem = ordInfo._isLong ? pInfo._long : pInfo._short;
-			WTSCommodityInfo* commInfo = _replayer->get_commodity_info(ordInfo._code);
+			VvTSCommodityInfo* commInfo = _replayer->get_commodity_info(ordInfo._code);
 			if(commInfo->getCoverMode() == CM_CoverToday)
 			{
 				if (ordInfo._offset == 2)
@@ -466,7 +466,7 @@ OrderIDs UftMocker::stra_cancel_all(const char* stdCode)
 
 OrderIDs UftMocker::stra_buy(const char* stdCode, double price, double qty, int flag /* = 0 */)
 {
-	WTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
+	VvTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
 	if (commInfo == NULL)
 	{
 		log_error("Cannot find corresponding commodity info of {}", stdCode);
@@ -528,7 +528,7 @@ OrderIDs UftMocker::stra_buy(const char* stdCode, double price, double qty, int 
 
 OrderIDs UftMocker::stra_sell(const char* stdCode, double price, double qty, int flag /* = 0 */)
 {
-	WTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
+	VvTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
 	if (commInfo == NULL)
 	{
 		log_error("Cannot find corresponding commodity info of {}", stdCode);
@@ -591,7 +591,7 @@ OrderIDs UftMocker::stra_sell(const char* stdCode, double price, double qty, int
 
 uint32_t UftMocker::stra_enter_long(const char* stdCode, double price, double qty, int flag /* = 0 */)
 {
-	WTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
+	VvTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
 	if (commInfo == NULL)
 	{
 		log_error("Cannot find corresponding commodity info of {}", stdCode);
@@ -632,7 +632,7 @@ uint32_t UftMocker::stra_enter_long(const char* stdCode, double price, double qt
 
 uint32_t UftMocker::stra_enter_short(const char* stdCode, double price, double qty, int flag /* = 0 */)
 {
-	WTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
+	VvTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
 	if (commInfo == NULL)
 	{
 		log_error("Cannot find corresponding commodity info of {}", stdCode);
@@ -675,7 +675,7 @@ uint32_t UftMocker::stra_exit_long(const char* stdCode, double price, double qty
 {
 	PosInfo& pInfo = _pos_map[stdCode];
 	PosItem& pItem = pInfo._long;
-	WTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
+	VvTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
 	uint32_t offset = 1;
 	if(commInfo->getCoverMode() != CM_CoverToday)
 	{
@@ -736,7 +736,7 @@ uint32_t UftMocker::stra_exit_short(const char* stdCode, double price, double qt
 {
 	PosInfo& pInfo = _pos_map[stdCode];
 	PosItem& pItem = pInfo._short;
-	WTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
+	VvTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
 	uint32_t offset = 1;
 	if (commInfo->getCoverMode() != CM_CoverToday)
 	{
@@ -820,12 +820,12 @@ void UftMocker::on_channel_ready()
 		_strategy->on_channel_ready(this);
 }
 
-void UftMocker::update_dyn_profit(const char* stdCode, WTSTickData* newTick)
+void UftMocker::update_dyn_profit(const char* stdCode, VvTSTickData* newTick)
 {
 	auto it = _pos_map.find(stdCode);
 	if (it != _pos_map.end())
 	{
-		WTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
+		VvTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
 		PosInfo& pInfo = (PosInfo&)it->second;
 		{
 			bool isLong = true;
@@ -901,7 +901,7 @@ bool UftMocker::procOrder(uint32_t localid)
 		on_order(localid, ordInfo._code, ordInfo._isLong, ordInfo._offset, ordInfo._total, ordInfo._left, ordInfo._price, false);
 	}
 
-	WTSTickData* curTick = stra_get_last_tick(ordInfo._code);
+	VvTSTickData* curTick = stra_get_last_tick(ordInfo._code);
 	if (curTick == NULL)
 		return false;
 
@@ -960,12 +960,12 @@ bool UftMocker::procOrder(uint32_t localid)
 	return false;
 }
 
-WTSCommodityInfo* UftMocker::stra_get_comminfo(const char* stdCode)
+VvTSCommodityInfo* UftMocker::stra_get_comminfo(const char* stdCode)
 {
 	return _replayer->get_commodity_info(stdCode);
 }
 
-WTSKlineSlice* UftMocker::stra_get_bars(const char* stdCode, const char* period, uint32_t count)
+VvTSKlineSlice* UftMocker::stra_get_bars(const char* stdCode, const char* period, uint32_t count)
 {
 	thread_local static char basePeriod[2] = { 0 };
 	basePeriod[0] = period[0];
@@ -976,27 +976,27 @@ WTSKlineSlice* UftMocker::stra_get_bars(const char* stdCode, const char* period,
 	return _replayer->get_kline_slice(stdCode, basePeriod, count, times);
 }
 
-WTSTickSlice* UftMocker::stra_get_ticks(const char* stdCode, uint32_t count)
+VvTSTickSlice* UftMocker::stra_get_ticks(const char* stdCode, uint32_t count)
 {
 	return _replayer->get_tick_slice(stdCode, count);
 }
 
-WTSOrdQueSlice* UftMocker::stra_get_order_queue(const char* stdCode, uint32_t count)
+VvTSOrdQueSlice* UftMocker::stra_get_order_queue(const char* stdCode, uint32_t count)
 {
 	return _replayer->get_order_queue_slice(stdCode, count);
 }
 
-WTSOrdDtlSlice* UftMocker::stra_get_order_detail(const char* stdCode, uint32_t count)
+VvTSOrdDtlSlice* UftMocker::stra_get_order_detail(const char* stdCode, uint32_t count)
 {
 	return _replayer->get_order_detail_slice(stdCode, count);
 }
 
-WTSTransSlice* UftMocker::stra_get_transaction(const char* stdCode, uint32_t count)
+VvTSTransSlice* UftMocker::stra_get_transaction(const char* stdCode, uint32_t count)
 {
 	return _replayer->get_transaction_slice(stdCode, count);
 }
 
-WTSTickData* UftMocker::stra_get_last_tick(const char* stdCode)
+VvTSTickData* UftMocker::stra_get_last_tick(const char* stdCode)
 {
 	return _replayer->get_last_tick(stdCode);
 }
@@ -1158,7 +1158,7 @@ void UftMocker::update_position(const char* stdCode, bool isLong, uint32_t offse
 	uint64_t curTm = (uint64_t)_replayer->get_date() * 1000000000 + (uint64_t)_replayer->get_min_time()*100000 + _replayer->get_secs();
 	uint32_t curTDate = _replayer->get_trading_date();
 
-	WTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
+	VvTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
 	if (commInfo == NULL)
 		return;
 

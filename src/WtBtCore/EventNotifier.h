@@ -11,8 +11,8 @@
 
 #include <queue>
 
-#include "../Includes/WTSMarcos.h"
-#include "../Includes/WTSObject.hpp"
+#include "../Includes/VvTSMarcos.h"
+#include "../Includes/VvTSObject.hpp"
 #include "../Share/StdUtils.hpp"
 
 typedef unsigned long(*FuncCreateMQServer)(const char*, bool);
@@ -23,8 +23,8 @@ typedef void(*FuncLogCallback)(unsigned long, const char*, bool);
 typedef void(*FuncRegCallbacks)(FuncLogCallback);
 
 
-NS_WTP_BEGIN
-class WTSVariant;
+NS_VVTP_BEGIN
+class VvTSVariant;
 
 class EventNotifier
 {
@@ -33,7 +33,7 @@ public:
 	~EventNotifier();
 
 public:
-	bool	init(WTSVariant* cfg);
+	bool	init(VvTSVariant* cfg);
 	void	notifyEvent(const char* evtType);
 	void	notifyData(const char* topic, void* data , uint32_t dataLen);
 	void	notifyFund(const char* topic, uint32_t uDate, double total_profit, double dynprofit, double dynbalance, double total_fee);
@@ -48,4 +48,4 @@ private:
 	FuncRegCallbacks	_register;
 };
 
-NS_WTP_END
+NS_VVTP_END

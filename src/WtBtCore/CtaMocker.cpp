@@ -14,9 +14,9 @@
 #include <exception>
 #include <boost/filesystem.hpp>
 
-#include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSSessionInfo.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/VvTSSessionInfo.hpp"
+#include "../Includes/VvTSVariant.hpp"
 #include "../Share/CodeHelper.hpp"
 #include "../Share/decimal.h"
 #include "../Share/StrUtil.hpp"
@@ -410,7 +410,7 @@ void CtaMocker::log_close(const char* stdCode, bool isLong, uint64_t openTime, d
 		<< totalprofit << "," << enterTag << "," << exitTag << "," << openBarNo << "," << closeBarNo << "\n";
 }
 
-bool CtaMocker::init_cta_factory(WTSVariant* cfg)
+bool CtaMocker::init_cta_factory(VvTSVariant* cfg)
 {
 	if (cfg == NULL)
 		return false;
@@ -434,7 +434,7 @@ bool CtaMocker::init_cta_factory(WTSVariant* cfg)
 	_factory._remover = (FuncDeleteStraFact)DLLHelper::get_symbol(hInst, "deleteStrategyFact");
 	_factory._fact = _factory._creator();
 
-	WTSVariant* cfgStra = cfg->get("strategy");
+	VvTSVariant* cfgStra = cfg->get("strategy");
 	if (cfgStra)
 	{
 		_strategy = _factory._fact->createStrategy(cfgStra->getCString("name"), cfgStra->getCString("id"));
@@ -602,8 +602,8 @@ void CtaMocker::load_incremental_data(const char* incremental_backtest_base)
 					const rj::Value& conditionItemStkCondEntry = itr->value[i];
 					CondEntrust condEntrust;
 					strcpy(condEntrust._usertag, conditionItemStkCondEntry["usertag"].GetString());
-					condEntrust._field = (WTSCompareField)conditionItemStkCondEntry["field"].GetInt();
-					condEntrust._alg = (WTSCompareType)conditionItemStkCondEntry["alg"].GetInt();
+					condEntrust._field = (VvTSCompareField)conditionItemStkCondEntry["field"].GetInt();
+					condEntrust._alg = (VvTSCompareType)conditionItemStkCondEntry["alg"].GetInt();
 					condEntrust._target = conditionItemStkCondEntry["target"].GetDouble();
 					condEntrust._qty = conditionItemStkCondEntry["qty"].GetDouble();
 					condEntrust._action = (char)conditionItemStkCondEntry["action"].GetUint();
@@ -626,7 +626,7 @@ void CtaMocker::handle_init()
 	this->on_init();
 }
 
-void CtaMocker::handle_bar_close(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar)
+void CtaMocker::handle_bar_close(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar)
 {
 	this->on_bar(stdCode, period, times, newBar);
 }
@@ -893,7 +893,7 @@ void CtaMocker::proc_tick(const char* stdCode, double last_px, double cur_px)
 }
 
 
-void CtaMocker::handle_tick(const char* stdCode, WTSTickData* newTick, uint32_t pxType /* = 0 */)
+void CtaMocker::handle_tick(const char* stdCode, VvTSTickData* newTick, uint32_t pxType /* = 0 */)
 {
 	double cur_px = newTick->price();
 
@@ -940,7 +940,7 @@ void CtaMocker::handle_tick(const char* stdCode, WTSTickData* newTick, uint32_t 
 
 //////////////////////////////////////////////////////////////////////////
 //回调函数
-void CtaMocker::on_bar(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar)
+void CtaMocker::on_bar(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar)
 {
 	if (newBar == NULL)
 		return;
@@ -980,7 +980,7 @@ void CtaMocker::update_dyn_profit(const char* stdCode, double price)
 		}
 		else
 		{
-			WTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
+			VvTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
 			double dynprofit = 0;
 			for (auto pit = pInfo._details.begin(); pit != pInfo._details.end(); pit++)
 			{
@@ -1011,18 +1011,18 @@ void CtaMocker::update_dyn_profit(const char* stdCode, double price)
 	_fund_info._total_dynprofit = total_dynprofit;
 }
 
-void CtaMocker::on_tick(const char* stdCode, WTSTickData* newTick, bool bEmitStrategy /* = true */)
+void CtaMocker::on_tick(const char* stdCode, VvTSTickData* newTick, bool bEmitStrategy /* = true */)
 {
 	//这个逻辑全部迁移到handle_tick里去了
 }
 
-void CtaMocker::on_bar_close(const char* code, const char* period, WTSBarStruct* newBar)
+void CtaMocker::on_bar_close(const char* code, const char* period, VvTSBarStruct* newBar)
 {
 	if (_strategy)
 		_strategy->on_bar(this, code, period, newBar);
 }
 
-void CtaMocker::on_tick_updated(const char* code, WTSTickData* newTick)
+void CtaMocker::on_tick_updated(const char* code, VvTSTickData* newTick)
 {
 	auto it = _tick_subs.find(code);
 	if (it == _tick_subs.end())
@@ -1122,7 +1122,7 @@ bool CtaMocker::on_schedule(uint32_t curDate, uint32_t curTime)
 			}
 		}
 
-		WTSSessionInfo* sInfo = _replayer->get_session_info(stdCode, true);
+		VvTSSessionInfo* sInfo = _replayer->get_session_info(stdCode, true);
 
 		if (isMainUdt || _kline_tags.empty())
 		{
@@ -1238,7 +1238,7 @@ void CtaMocker::on_session_begin(uint32_t curTDate)
 
 void CtaMocker::enum_position(FuncEnumCtaPosCallBack cb, bool bForExecute)
 {
-	wt_hashmap<std::string, double> desPos;
+	vvt_hashmap<std::string, double> desPos;
 	for (auto& it : _pos_map)
 	{
 		const char* stdCode = it.first.c_str();
@@ -1302,7 +1302,7 @@ CondList& CtaMocker::get_cond_entrusts(const char* stdCode)
 //策略接口
 void CtaMocker::stra_enter_long(const char* stdCode, double qty, const char* userTag /* = "" */, double limitprice, double stopprice)
 {
-	WTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
+	VvTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
 	if(commInfo == NULL)
 	{
 		log_error("Cannot find corresponding commodity info of {}", stdCode);
@@ -1347,7 +1347,7 @@ void CtaMocker::stra_enter_long(const char* stdCode, double qty, const char* use
 
 void CtaMocker::stra_enter_short(const char* stdCode, double qty, const char* userTag /* = "" */, double limitprice, double stopprice)
 {
-	WTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
+	VvTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
 	if (commInfo == NULL)
 	{
 		log_error("Cannot find corresponding commodity info of {}", stdCode);
@@ -1399,14 +1399,14 @@ void CtaMocker::stra_enter_short(const char* stdCode, double qty, const char* us
 
 void CtaMocker::stra_exit_long(const char* stdCode, double qty, const char* userTag /* = "" */, double limitprice, double stopprice)
 {
-	WTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
+	VvTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
 	if (commInfo == NULL)
 	{
 		log_error("Cannot find corresponding commodity info of {}", stdCode);
 		return;
 	}
 
-	WTSSessionInfo* sInfo = commInfo->getSessionInfo();
+	VvTSSessionInfo* sInfo = commInfo->getSessionInfo();
 	uint32_t offTime = sInfo->offsetTime(_replayer->get_min_time(), true);
 	bool isLastBarOfDay = (offTime == sInfo->getCloseTime(true));
 
@@ -1450,7 +1450,7 @@ void CtaMocker::stra_exit_long(const char* stdCode, double qty, const char* user
 
 void CtaMocker::stra_exit_short(const char* stdCode, double qty, const char* userTag /* = "" */, double limitprice, double stopprice)
 {
-	WTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
+	VvTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
 	if (commInfo == NULL)
 	{
 		log_error("Cannot find corresponding commodity info of {}", stdCode);
@@ -1517,7 +1517,7 @@ double CtaMocker::stra_get_day_price(const char* stdCode, int flag /* = 0 */)
 
 void CtaMocker::stra_set_position(const char* stdCode, double qty, const char* userTag /* = "" */, double limitprice /* = 0.0 */, double stopprice /* = 0.0 */)
 {
-	WTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
+	VvTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
 	if (commInfo == NULL)
 	{
 		log_error("Cannot find corresponding commodity info of {}", stdCode);
@@ -1611,7 +1611,7 @@ void CtaMocker::do_set_position(const char* stdCode, double qty, double price /*
 	if (decimal::eq(pInfo._volume, qty))
 		return;
 
-	WTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
+	VvTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
 	if (commInfo == NULL)
 		return;
 
@@ -1768,7 +1768,7 @@ void CtaMocker::do_set_position(const char* stdCode, double qty, double price /*
 	}
 }
 
-WTSKlineSlice* CtaMocker::stra_get_bars(const char* stdCode, const char* period, uint32_t count, bool isMain /* = false */)
+VvTSKlineSlice* CtaMocker::stra_get_bars(const char* stdCode, const char* period, uint32_t count, bool isMain /* = false */)
 {
 	thread_local static char key[64] = { 0 };
 	fmtutil::format_to(key, "{}#{}", stdCode, period);
@@ -1798,7 +1798,7 @@ WTSKlineSlice* CtaMocker::stra_get_bars(const char* stdCode, const char* period,
 		_main_period = period;
 	}
 
-	WTSKlineSlice* kline = _replayer->get_kline_slice(stdCode, basePeriod, count, times, isMain);
+	VvTSKlineSlice* kline = _replayer->get_kline_slice(stdCode, basePeriod, count, times, isMain);
 
 	KlineTag& tag = _kline_tags[key];
 	tag._closed = false;
@@ -1807,7 +1807,7 @@ WTSKlineSlice* CtaMocker::stra_get_bars(const char* stdCode, const char* period,
 	{
 		//double lastClose = kline->close(-1);
 		CodeHelper::CodeInfo cInfo = CodeHelper::extractStdCode(stdCode, _replayer->get_hot_mgr());
-		WTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
+		VvTSCommodityInfo* commInfo = _replayer->get_commodity_info(stdCode);
 		std::string realCode = stdCode;
 		if(cInfo.isExright())
 			realCode = realCode.substr(0, realCode.size()-1);
@@ -1817,17 +1817,17 @@ WTSKlineSlice* CtaMocker::stra_get_bars(const char* stdCode, const char* period,
 	return kline;
 }
 
-WTSTickSlice* CtaMocker::stra_get_ticks(const char* stdCode, uint32_t count)
+VvTSTickSlice* CtaMocker::stra_get_ticks(const char* stdCode, uint32_t count)
 {
 	return _replayer->get_tick_slice(stdCode, count);
 }
 
-WTSTickData* CtaMocker::stra_get_last_tick(const char* stdCode)
+VvTSTickData* CtaMocker::stra_get_last_tick(const char* stdCode)
 {
 	auto it = _ticks.find(stdCode);
 	if (it != _ticks.end())
 	{
-		WTSTickData* lastTick = WTSTickData::create((WTSTickStruct&)it->second);
+		VvTSTickData* lastTick = VvTSTickData::create((VvTSTickStruct&)it->second);
 		return lastTick;
 	}
 
@@ -1855,7 +1855,7 @@ void CtaMocker::stra_sub_bar_events(const char* stdCode, const char* period)
 	tag._notify = true;
 }
 
-WTSCommodityInfo* CtaMocker::stra_get_comminfo(const char* stdCode)
+VvTSCommodityInfo* CtaMocker::stra_get_comminfo(const char* stdCode)
 {
 	return _replayer->get_commodity_info(stdCode);
 }

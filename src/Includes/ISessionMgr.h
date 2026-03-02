@@ -9,10 +9,10 @@
  */
 #pragma once
 
-#include "WTSMarcos.h"
+#include "VvTSMarcos.h"
 
-NS_WTP_BEGIN
-class WTSSessionInfo;
+NS_VVTP_BEGIN
+class VvTSSessionInfo;
 
 /*
  *	时间模板管理器接口
@@ -27,6 +27,6 @@ public:
 	 *
 	 *	返回值	时间模板指针,不存在则为NULL
 	 */
-	virtual WTSSessionInfo* getSession(const char* code, const char* exchg = "")	= 0;
+	virtual VvTSSessionInfo* getSession(const char* code, const char* exchg = "")	= 0;
 };
-NS_WTP_END
+NS_VVTP_END

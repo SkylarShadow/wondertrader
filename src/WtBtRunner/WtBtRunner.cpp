@@ -19,7 +19,7 @@
 #include "../WTSUtils/SignalHook.hpp"
 
 #include "../WTSUtils/WTSCfgLoader.h"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VvTSVariant.hpp"
 #include "../Share/StdUtils.hpp"
 #include "../Share/cppcli.hpp"
 
@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
 		return 0;
 	}
 
-	WTSVariant* cfg = WTSCfgLoader::load_from_file(filename.c_str());
+	VvTSVariant* cfg = WTSCfgLoader::load_from_file(filename.c_str());
 	if (cfg == NULL)
 	{
 		WTSLogger::info("Loading configuration file {} failed", filename);
@@ -77,7 +77,7 @@ int main(int argc, char* argv[])
 	HisDataReplayer replayer;
 	replayer.init(cfg->get("replayer"));
 
-	WTSVariant* cfgEnv = cfg->get("env");
+	VvTSVariant* cfgEnv = cfg->get("env");
 	const char* mode = cfgEnv->getCString("mocker");
 	int32_t slippage = cfgEnv->getInt32("slippage");
 	if (strcmp(mode, "cta") == 0)

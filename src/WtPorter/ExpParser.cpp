@@ -3,7 +3,7 @@
 
 extern WtRtRunner& getRunner();
 
-bool ExpParser::init(WTSVariant* config)
+bool ExpParser::init(VvTSVariant* config)
 {
 	getRunner().parser_init(_id.c_str());
 	return true;

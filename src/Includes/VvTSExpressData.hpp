@@ -1,0 +1,385 @@
+﻿/*!
+ * \file VvTSExpressData.hpp
+ * \project	WonderTrader
+ *
+ * \author Wesley
+ * \date 2020/03/30
+ * 
+ * \brief Wt指标数据定义文件
+ */
+#pragma once
+#include <stdint.h>
+#include "VvTSDataDef.hpp"
+#include "VvTSMarcos.h"
+
+#ifdef _MSC_VER
+#include <WTypes.h>
+#else
+typedef unsigned long	COLORREF;
+typedef unsigned char	BYTE;
+typedef unsigned short	WORD;
+typedef unsigned long	DWORD;
+#define RGB(r,g,b)	((COLORREF)(((BYTE)(r)|((WORD)((BYTE)(g))<<8))|(((DWORD)(BYTE)(b))<<16)))
+#endif
+
+NS_VVTP_BEGIN
+
+//////////////////////////////////////////////////////////////////////////
+//线型类,指标用到
+class VvTSLineInfo : public VvTSObject
+{
+public:
+	static VvTSLineInfo* create(COLORREF clr, int width = 1, int style = 0)
+	{
+		VvTSLineInfo* pRet = new VvTSLineInfo();
+		pRet->_line_color = clr;
+		pRet->_line_width = width;
+		pRet->_line_style = style;
+		return pRet;
+	}
+
+	COLORREF color() const{return _line_color;}
+	int width() const{return _line_width;}
+	int style() const{return _line_style;}
+
+protected:
+	VvTSLineInfo()
+	:_line_color(RGB(255,255,255))
+	,_line_width(1)
+	,_line_style(0){}
+
+protected:
+	COLORREF	_line_color;
+	int			_line_width;
+	int			_line_style;
+};
+
+
+//////////////////////////////////////////////////////////////////////////
+//指标参数类
+class VvTSExpressParams : public VvTSObject
+{
+public:
+	static	VvTSExpressParams* create()
+	{
+		VvTSExpressParams* pRet = new VvTSExpressParams;
+
+		return pRet;
+	}
+
+	void	addParam(int param)
+	{
+		m_vecParams.emplace_back(param);
+	}
+
+	void	setParam(uint32_t idx, int param)
+	{
+		if(idx >= m_vecParams.size())
+			return;
+
+		m_vecParams[idx] = param;
+	}
+
+	int		getParam(uint32_t idx) const
+	{
+		if(idx >= m_vecParams.size())
+			return INVALID_INT32;
+
+		return m_vecParams[idx];
+	}
+
+	uint32_t	getParamCount() const{return m_vecParams.size();}
+
+	int&	operator[](uint32_t idx){return m_vecParams[idx];}
+
+protected:
+	vector<int>		m_vecParams;
+};
+
+//////////////////////////////////////////////////////////////////////////
+//指标线类
+class VvTSExpressLine : public VvTSValueArray
+{
+public:
+	static VvTSExpressLine*	create(uint32_t size, VvTSExpressLineType lineType = WELT_Polyline, uint32_t decimal = 0, uint32_t uStyle = ELS_LINE_VISIBLE|ELS_TITLE_VISIBLE)
+	{
+		VvTSExpressLine* pRet = new VvTSExpressLine;
+		pRet->m_uDecimal = decimal;
+		pRet->m_uStyle = uStyle;
+		pRet->m_lineType = lineType;
+		pRet->resize(size);
+
+		return pRet;
+	}
+
+	VvTSExpressLine(): m_ayLineInfo(NULL){}
+
+	virtual void release()
+	{
+		if(isSingleRefs() && m_ayLineInfo)
+		{
+			m_ayLineInfo->release();
+		}
+
+		VvTSObject::release();
+	}
+
+	virtual void retain()
+	{
+		VvTSObject::retain();
+	}
+
+	/*
+	 *	读取数值数组的格式化字符串
+	 */
+	const char* getFormat()
+	{
+		if(m_strFormat.empty())
+		{
+			char format[12] = {0};
+			sprintf(format, "%%.%df", m_uDecimal);
+			m_strFormat = format;
+		}
+
+		return m_strFormat.c_str();
+	}
+
+	/*
+	 *	读取数据的小数点位数
+	 */
+	uint32_t	getDecimal(){return m_uDecimal;}
+
+	void		addLineInfo(VvTSLineInfo* lineInfo)
+	{
+		if(m_ayLineInfo == NULL)
+		{
+			m_ayLineInfo = VvTSArray::create();
+		}
+		m_ayLineInfo->append(lineInfo, true);
+	}
+
+	VvTSLineInfo*	getLineInfo(uint32_t idx = 0)
+	{
+		if(m_ayLineInfo == NULL || m_ayLineInfo->size()==0 || idx >= m_ayLineInfo->size())
+			return NULL;
+
+		return STATIC_CONVERT(m_ayLineInfo->at(idx), VvTSLineInfo*);
+	}
+
+	void		clearLineInfo()
+	{
+		if(m_ayLineInfo)
+			m_ayLineInfo->clear();
+	}
+
+	void		setLineTag(const char* tag){m_strLineTag = tag;}
+	const char*	getLineTag(){return m_strLineTag.c_str();}
+
+	bool		isStyle(uint32_t uStyle) const{ return (m_uStyle & uStyle) == uStyle; }
+
+	void		setLineType(VvTSExpressLineType lineType){m_lineType = lineType;}
+	VvTSExpressLineType getLineType() const{return m_lineType;}
+
+protected:
+	VvTSArray*		m_ayLineInfo;
+	std::string		m_strLineTag;
+	uint32_t		m_uStyle;
+
+	uint32_t		m_uDecimal;
+	std::string		m_strFormat;
+	VvTSExpressLineType	m_lineType;
+};
+typedef vector<VvTSExpressLine*>	VvTSVecExpLines;
+
+
+//////////////////////////////////////////////////////////////////////////
+//指标类
+class VvTSExpressData : public VvTSObject
+{
+public:
+	static VvTSExpressData*	create(const char* title, VvTSExpressType eType = WET_Unique)
+	{
+		VvTSExpressData* pRet = new VvTSExpressData;
+		pRet->setTitle(title);
+		pRet->setType(eType);
+		return pRet;
+	}
+
+protected:
+	VvTSExpressData() :m_ayExpLines(NULL), m_dDevide(1.0), m_dBaseLine(0.0), m_bBaseLine(false){}
+
+	virtual ~VvTSExpressData()
+	{
+		
+	}
+
+public:
+	virtual void release()
+	{
+		if (isSingleRefs() && m_ayExpLines)
+			m_ayExpLines->release();
+
+		VvTSObject::release();
+	}
+
+	void		setTitle(const char* title){m_strExpTitle = title;}
+	const char* getTitle() const{return m_strExpTitle.c_str();}
+
+	void		setType(VvTSExpressType eType){m_expType = eType;}
+	VvTSExpressType	getType() const{return m_expType;}
+
+	void		setBaseLine(bool bEnable = true, double dBaseLine = 0.0)
+	{
+		m_bBaseLine = bEnable;
+		m_dBaseLine = dBaseLine;
+	}
+
+	bool		hasBaseLine() const{ return m_bBaseLine; }
+	double		getBaseLine() const{ return m_dBaseLine; }
+
+	uint32_t	addExpLine(VvTSExpressLine* line)
+	{
+		if(NULL == line)
+			return INVALID_UINT32;
+
+		if(NULL == m_ayExpLines)
+			m_ayExpLines = VvTSArray::create();
+
+		m_ayExpLines->append(line, false);
+
+		return m_ayExpLines->size() - 1;
+	}
+
+
+	VvTSExpressLine*	getExpLine(uint32_t idx)
+	{
+		if(NULL == m_ayExpLines || idx >= m_ayExpLines->size())
+			return NULL;
+
+		return STATIC_CONVERT(m_ayExpLines->at(idx), VvTSExpressLine*);
+	}
+
+	uint32_t	getLineCount(){return (NULL == m_ayExpLines)?0:m_ayExpLines->size();}
+
+	bool		crossOver(uint32_t idx0, uint32_t idx1)
+	{
+		if(NULL == m_ayExpLines)
+			return false;
+
+		if(idx0 >= m_ayExpLines->size() || idx1 >= m_ayExpLines->size())
+			return false;
+
+		VvTSExpressLine* line0 = STATIC_CONVERT(m_ayExpLines->at(idx0),VvTSExpressLine*);
+		VvTSExpressLine* line1 = STATIC_CONVERT(m_ayExpLines->at(idx1),VvTSExpressLine*);
+
+		if(line0->size() < 2 || line1->size() < 2)
+			return false;
+
+		double preValue0 = line0->at(line0->size()-2);
+		double curValue0 = line0->at(line0->size()-1);
+
+		double preValue1 = line1->at(line1->size()-2);
+		double curValue1 = line1->at(line1->size()-1);
+
+		if(preValue0 <= preValue1 && curValue0 > curValue1)
+			return true;
+
+		return false;
+	}
+
+	bool		crossUnder(uint32_t idx0, uint32_t idx1)
+	{
+		if(NULL == m_ayExpLines)
+			return false;
+
+		if(idx0 >= m_ayExpLines->size() || idx1 >= m_ayExpLines->size())
+			return false;
+
+		VvTSExpressLine* line0 = STATIC_CONVERT(m_ayExpLines->at(idx0),VvTSExpressLine*);
+		VvTSExpressLine* line1 = STATIC_CONVERT(m_ayExpLines->at(idx1),VvTSExpressLine*);
+
+		if(line0->size() < 2 || line1->size() < 2)
+			return false;
+
+		double preValue0 = line0->at(line0->size()-2);
+		double curValue0 = line0->at(line0->size()-1);
+
+		double preValue1 = line1->at(line1->size()-2);
+		double curValue1 = line1->at(line1->size()-1);
+
+		if(preValue0 >= preValue1 && curValue0 < curValue1)
+			return true;
+
+		return false;
+	}
+
+	double		maxvalue(int32_t head, int32_t tail) const
+	{
+		double ret = INVALID_DOUBLE;
+		VvTSArray::ConstIterator it = m_ayExpLines->begin();
+		for(; it != m_ayExpLines->end(); it++)
+		{
+			VvTSExpressLine* line = STATIC_CONVERT(*it, VvTSExpressLine*);
+			bool bAbs = (line->getLineType() == WELT_VolStick || line->getLineType() == WELT_AStickLine);
+			double v = line->maxvalue(head, tail, bAbs);
+			if(v == INVALID_DOUBLE)
+				continue;
+			if(ret == INVALID_DOUBLE)
+				ret = v;
+			else
+				ret = max(ret, v);
+		}
+
+		return ret;
+	}
+
+	double		minvalue(int32_t head, int32_t tail) const
+	{
+		double ret = INVALID_DOUBLE;
+		VvTSArray::ConstIterator it = m_ayExpLines->begin();
+		for(; it != m_ayExpLines->end(); it++)
+		{
+			VvTSExpressLine* line = STATIC_CONVERT(*it, VvTSExpressLine*);
+			bool bAbs = (line->getLineType() == WELT_VolStick || line->getLineType() == WELT_AStickLine);
+			if(bAbs)//原因是成交量柱,是以0开始绘制的
+				return 0;
+			double v = line->minvalue(head, tail, bAbs);
+			if (v == INVALID_DOUBLE)
+				continue;
+			if(ret == INVALID_DOUBLE)
+				ret = v;
+			else
+				ret = min(ret, v);
+		}
+
+		return ret;
+	}
+
+	uint32_t	size() const
+	{
+		if(NULL == m_ayExpLines || m_ayExpLines->size()==0)
+			return 0;
+
+		return STATIC_CONVERT(m_ayExpLines->at(0), VvTSExpressLine*)->size();
+	}
+
+	uint32_t	getPrecision() const { return m_uPrec; }
+	void setPrecision(uint32_t prec){ m_uPrec = prec; }
+
+	void		setDevide(double dvd){m_dDevide = dvd;}
+	double		getDevide() const{return m_dDevide;}
+
+protected:
+	VvTSArray*		m_ayExpLines;
+	std::string		m_strExpTitle;
+	VvTSExpressType	m_expType;
+	uint32_t		m_uPrec;
+	double			m_dDevide;
+
+	bool			m_bHasTitle;
+
+	bool			m_bBaseLine;
+	double			m_dBaseLine;
+};
+
+NS_VVTP_END

@@ -1,7 +1,7 @@
 ﻿#pragma once
-#include "../Includes/WTSStruct.h"
+#include "../Includes/VvTSStruct.h"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 #pragma pack(push, 1)
 
@@ -83,7 +83,7 @@ typedef struct _RTDayBlockHeader : RTBlockHeader
 //实时K线数据块
 typedef struct _RTKlineBlock : _RTDayBlockHeader
 {
-	WTSBarStruct	_bars[0];
+	VvTSBarStruct	_bars[0];
 } RTKlineBlock;
 
 //tick数据数据块
@@ -92,31 +92,31 @@ typedef struct _RTKlineBlock : _RTDayBlockHeader
 //切换程序一定要在盘后进行！！！
 typedef struct _RTTickBlock : RTDayBlockHeader
 {
-	WTSTickStruct	_ticks[0];
+	VvTSTickStruct	_ticks[0];
 } RTTickBlock;
 
 //逐笔成交数据块
 typedef struct _RTTransBlock : RTDayBlockHeader
 {
-	WTSTransStruct	_trans[0];
+	VvTSTransStruct	_trans[0];
 } RTTransBlock;
 
 //逐笔委托数据块
 typedef struct _RTOrdDtlBlock : RTDayBlockHeader
 {
-	WTSOrdDtlStruct	_details[0];
+	VvTSOrdDtlStruct	_details[0];
 } RTOrdDtlBlock;
 
 //委托队列数据块
 typedef struct _RTOrdQueBlock : RTDayBlockHeader
 {
-	WTSOrdQueStruct	_queues[0];
+	VvTSOrdQueStruct	_queues[0];
 } RTOrdQueBlock;
 
 typedef struct _TickCacheItem
 {
 	uint32_t		_date;
-	WTSTickStruct	_tick;
+	VvTSTickStruct	_tick;
 } TickCacheItem;
 
 //实时tick缓存
@@ -129,7 +129,7 @@ typedef struct _RTTickCache : RTBlockHeader
 //历史Tick数据
 typedef struct _HisTickBlock : BlockHeader
 {
-	WTSTickStruct	_ticks[0];
+	VvTSTickStruct	_ticks[0];
 } HisTickBlock;
 
 //历史Tick数据V2
@@ -140,7 +140,7 @@ typedef struct _HisTickBlockV2 : BlockHeaderV2
 
 typedef struct _HisTransBlock : BlockHeader
 {
-	WTSTransStruct	_items[0];
+	VvTSTransStruct	_items[0];
 } HisTransBlock;
 
 typedef struct _HisTransBlockV2 : BlockHeaderV2
@@ -150,7 +150,7 @@ typedef struct _HisTransBlockV2 : BlockHeaderV2
 
 typedef struct _HisOrdDtlBlock : BlockHeader
 {
-	WTSOrdDtlStruct	_items[0];
+	VvTSOrdDtlStruct	_items[0];
 } HisOrdDtlBlock;
 
 typedef struct _HisOrdDtlBlockV2 : BlockHeaderV2
@@ -160,7 +160,7 @@ typedef struct _HisOrdDtlBlockV2 : BlockHeaderV2
 
 typedef struct _HisOrdQueBlock : BlockHeader
 {
-	WTSOrdQueStruct	_items[0];
+	VvTSOrdQueStruct	_items[0];
 } HisOrdQueBlock;
 
 typedef struct _HisOrdQueBlockV2 : BlockHeaderV2
@@ -171,7 +171,7 @@ typedef struct _HisOrdQueBlockV2 : BlockHeaderV2
 //历史K线数据
 typedef struct _HisKlineBlock : BlockHeader
 {
-	WTSBarStruct	_bars[0];
+	VvTSBarStruct	_bars[0];
 } HisKlineBlock;
 
 //历史K线数据V2
@@ -183,7 +183,7 @@ typedef struct _HisKlineBlockV2 : BlockHeaderV2
 //历史K线数据
 typedef struct _HisKlineBlockOld : BlockHeader
 {
-	WTSBarStructOld	_bars[0];
+	VvTSBarStructOld	_bars[0];
 } HisKlineBlockOld;
 
 #pragma pack(pop)

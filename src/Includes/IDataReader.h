@@ -10,18 +10,18 @@
 #pragma once
 #include <stdint.h>
 
-#include "../Includes/WTSMarcos.h"
-#include "../Includes/WTSTypes.h"
+#include "../Includes/VvTSMarcos.h"
+#include "../Includes/VvTSTypes.h"
 
-NS_WTP_BEGIN
-class WTSKlineData;
-class WTSKlineSlice;
-class WTSTickSlice;
-class WTSOrdQueSlice;
-class WTSOrdDtlSlice;
-class WTSTransSlice;
-struct WTSBarStruct;
-class WTSVariant;
+NS_VVTP_BEGIN
+class VvTSKlineData;
+class VvTSKlineSlice;
+class VvTSTickSlice;
+class VvTSOrdQueSlice;
+class VvTSOrdDtlSlice;
+class VvTSTransSlice;
+struct VvTSBarStruct;
+class VvTSVariant;
 class IBaseDataMgr;
 class IHotMgr;
 
@@ -39,7 +39,7 @@ public:
 	 *	@param period	K线周期
 	 *	@param newBar	闭合的K线结构指针
 	 */
-	virtual void on_bar(const char* stdCode, WTSKlinePeriod period, WTSBarStruct* newBar) = 0;
+	virtual void on_bar(const char* stdCode, VvTSKlinePeriod period, VvTSBarStruct* newBar) = 0;
 
 	/*
 	 *	@brief	所有缓存的K线全部更新的事件回调
@@ -77,7 +77,7 @@ public:
 	/*
 	 *	@brief	输出数据读取模块的日志
 	 */
-	virtual void		reader_log(WTSLogLevel ll, const char* message) = 0;
+	virtual void		reader_log(VvTSLogLevel ll, const char* message) = 0;
 };
 
 
@@ -89,7 +89,7 @@ public:
  *	@count	K线条数
  *	@factor	复权因子，最新的复权因子，如果是后复权，则factor不为1.0，如果是前复权，则factor必须为1.0
  */
-typedef void(*FuncReadBars)(void* obj, WTSBarStruct* bars, uint32_t count);
+typedef void(*FuncReadBars)(void* obj, VvTSBarStruct* bars, uint32_t count);
 
 /*
  *	加载复权因子回调
@@ -116,7 +116,7 @@ public:
 	 *	@period	K线周期
 	 *	@cb		回调函数
 	 */
-	virtual bool loadFinalHisBars(void* obj, const char* stdCode, WTSKlinePeriod period, FuncReadBars cb) = 0;
+	virtual bool loadFinalHisBars(void* obj, const char* stdCode, VvTSKlinePeriod period, FuncReadBars cb) = 0;
 
 	/*
 	 *	加载原始历史K线数据
@@ -127,7 +127,7 @@ public:
 	 *	@period	K线周期
 	 *	@cb		回调函数
 	 */
-	virtual bool loadRawHisBars(void* obj, const char* stdCode, WTSKlinePeriod period, FuncReadBars cb) = 0;
+	virtual bool loadRawHisBars(void* obj, const char* stdCode, VvTSKlinePeriod period, FuncReadBars cb) = 0;
 
 	/*
 	 *	加载全部除权因子
@@ -158,7 +158,7 @@ public:
 	 *	@param cfg	模块配置项
 	 *	@param sink	模块回调接口
 	 */
-	virtual void init(WTSVariant* cfg, IDataReaderSink* sink, IHisDataLoader* loader = NULL) { _sink = sink; _loader = loader; }
+	virtual void init(VvTSVariant* cfg, IDataReaderSink* sink, IHisDataLoader* loader = NULL) { _sink = sink; _loader = loader; }
 
 	/*
 	 *	@brief	分钟线闭合事件处理接口
@@ -177,7 +177,7 @@ public:
 	 *	@param count	要读取的tick条数
 	 *	@param etime	结束时间,精确到毫秒,格式如yyyyMMddhhmmssmmm,如果要读取到最后一条,etime为0,默认为0
 	 */
-	virtual WTSTickSlice*	readTickSlice(const char* stdCode, uint32_t count, uint64_t etime = 0) = 0;
+	virtual VvTSTickSlice*	readTickSlice(const char* stdCode, uint32_t count, uint64_t etime = 0) = 0;
 
 	/*
 	 *	@brief	读取逐笔委托数据切片
@@ -187,7 +187,7 @@ public:
 	 *	@param count	要读取的tick条数
 	 *	@param etime	结束时间,精确到毫秒,格式如yyyyMMddhhmmssmmm,如果要读取到最后一条,etime为0,默认为0
 	 */
-	virtual WTSOrdDtlSlice*	readOrdDtlSlice(const char* stdCode, uint32_t count, uint64_t etime = 0) { return NULL; }
+	virtual VvTSOrdDtlSlice*	readOrdDtlSlice(const char* stdCode, uint32_t count, uint64_t etime = 0) { return NULL; }
 	/*
 	 *	@brief	读取委托队列数据切片
 	 *	@details 切片不会复制数据,只把缓存中的数据指针传递出来,所以叫做切片
@@ -196,7 +196,7 @@ public:
 	 *	@param count	要读取的tick条数
 	 *	@param etime	结束时间,精确到毫秒,格式如yyyyMMddhhmmssmmm,如果要读取到最后一条,etime为0,默认为0
 	 */
-	virtual WTSOrdQueSlice*	readOrdQueSlice(const char* stdCode, uint32_t count, uint64_t etime = 0) { return NULL; }
+	virtual VvTSOrdQueSlice*	readOrdQueSlice(const char* stdCode, uint32_t count, uint64_t etime = 0) { return NULL; }
 
 	/*
 	 *	@brief	读取逐笔成交数据切片
@@ -206,7 +206,7 @@ public:
 	 *	@param count	要读取的tick条数
 	 *	@param etime	结束时间,精确到毫秒,格式如yyyyMMddhhmmssmmm,如果要读取到最后一条,etime为0,默认为0
 	 */
-	virtual WTSTransSlice*	readTransSlice(const char* stdCode, uint32_t count, uint64_t etime = 0) { return NULL; }
+	virtual VvTSTransSlice*	readTransSlice(const char* stdCode, uint32_t count, uint64_t etime = 0) { return NULL; }
 
 	/*
 	 *	@brief 读取K线序列,并返回一个存储容器类
@@ -217,7 +217,7 @@ public:
 	 *	@param	count	要读取的K线条数
 	 *	@param	etime	结束时间,格式yyyyMMddhhmm
 	 */
-	virtual WTSKlineSlice*	readKlineSlice(const char* stdCode, WTSKlinePeriod period, uint32_t count, uint64_t etime = 0) = 0;
+	virtual VvTSKlineSlice*	readKlineSlice(const char* stdCode, VvTSKlinePeriod period, uint32_t count, uint64_t etime = 0) = 0;
 
 	/*
 	 *	@brief 获取个股指定日期的复权因子
@@ -243,4 +243,4 @@ typedef IDataReader* (*FuncCreateDataReader)();
 //删除数据存储对象
 typedef void(*FuncDeleteDataReader)(IDataReader* store);
 
-NS_WTP_END
+NS_VVTP_END

@@ -6,8 +6,8 @@
 #include "../WtDtCore/WtHelper.h"
 #include "../WtDtCore/IndexFactory.h"
 
-#include "../Includes/WTSSessionInfo.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VvTSSessionInfo.hpp"
+#include "../Includes/VvTSVariant.hpp"
 
 #include "../WTSTools/WTSHotMgr.h"
 #include "../WTSTools/WTSBaseDataMgr.h"
@@ -61,17 +61,17 @@ const char* getBinDir()
 }
 
 
-void initDataMgr(WTSVariant* config, bool bAlldayMode = false)
+void initDataMgr(VvTSVariant* config, bool bAlldayMode = false)
 {
 	//如果是全天模式，则不传递状态机给DataManager
 	g_dataMgr.init(config, &g_baseDataMgr, bAlldayMode ? NULL : &g_stateMon);
 }
 
-void initParsers(WTSVariant* cfg)
+void initParsers(VvTSVariant* cfg)
 {
 	for (uint32_t idx = 0; idx < cfg->size(); idx++)
 	{
-		WTSVariant* cfgItem = cfg->get(idx);
+		VvTSVariant* cfgItem = cfg->get(idx);
 		if (!cfgItem->getBoolean("active"))
 			continue;
 
@@ -97,7 +97,7 @@ void initialize(const std::string& filename)
 {
 	WtHelper::set_module_dir(getBinDir());
 
-	WTSVariant* config = WTSCfgLoader::load_from_file(filename.c_str());
+	VvTSVariant* config = WTSCfgLoader::load_from_file(filename.c_str());
 	if(config == NULL)
 	{
 		WTSLogger::error("Loading config file {} failed", filename);
@@ -105,21 +105,21 @@ void initialize(const std::string& filename)
 	}
 
 	//加载市场信息
-	WTSVariant* cfgBF = config->get("basefiles");
+	VvTSVariant* cfgBF = config->get("basefiles");
 	if (cfgBF->get("session"))
 	{
 		g_baseDataMgr.loadSessions(cfgBF->getCString("session"));
 		WTSLogger::info("Trading sessions loaded");
 	}
 
-	WTSVariant* cfgItem = cfgBF->get("commodity");
+	VvTSVariant* cfgItem = cfgBF->get("commodity");
 	if (cfgItem)
 	{
-		if (cfgItem->type() == WTSVariant::VT_String)
+		if (cfgItem->type() == VvTSVariant::VT_String)
 		{
 			g_baseDataMgr.loadCommodities(cfgItem->asCString());
 		}
-		else if (cfgItem->type() == WTSVariant::VT_Array)
+		else if (cfgItem->type() == VvTSVariant::VT_Array)
 		{
 			for (uint32_t i = 0; i < cfgItem->size(); i++)
 			{
@@ -131,11 +131,11 @@ void initialize(const std::string& filename)
 	cfgItem = cfgBF->get("contract");
 	if (cfgItem)
 	{
-		if (cfgItem->type() == WTSVariant::VT_String)
+		if (cfgItem->type() == VvTSVariant::VT_String)
 		{
 			g_baseDataMgr.loadContracts(cfgItem->asCString());
 		}
-		else if (cfgItem->type() == WTSVariant::VT_Array)
+		else if (cfgItem->type() == VvTSVariant::VT_Array)
 		{
 			for (uint32_t i = 0; i < cfgItem->size(); i++)
 			{
@@ -203,7 +203,7 @@ void initialize(const std::string& filename)
 		//如果存在指数模块要，配置指数
 		const char* filename = config->getCString("index");
 		WTSLogger::info("Reading index config from {}...", filename);
-		WTSVariant* var = WTSCfgLoader::load_from_file(filename);
+		VvTSVariant* var = WTSCfgLoader::load_from_file(filename);
 		if (var)
 		{
 			g_idxFactory.init(var, &g_hotMgr, &g_baseDataMgr, &g_dataMgr);
@@ -215,16 +215,16 @@ void initialize(const std::string& filename)
 		}		
 	}
 
-	WTSVariant* cfgParser = config->get("parsers");
+	VvTSVariant* cfgParser = config->get("parsers");
 	if (cfgParser)
 	{
-		if (cfgParser->type() == WTSVariant::VT_String)
+		if (cfgParser->type() == VvTSVariant::VT_String)
 		{
 			const char* filename = cfgParser->asCString();
 			if (StdFile::exists(filename))
 			{
 				WTSLogger::info("Reading parser config from {}...", filename);
-				WTSVariant* var = WTSCfgLoader::load_from_file(filename);
+				VvTSVariant* var = WTSCfgLoader::load_from_file(filename);
 				if (var)
 				{
 					initParsers(var->get("parsers"));
@@ -240,7 +240,7 @@ void initialize(const std::string& filename)
 				WTSLogger::error("Parser configuration {} not exists", filename);
 			}
 		}
-		else if (cfgParser->type() == WTSVariant::VT_Array)
+		else if (cfgParser->type() == VvTSVariant::VT_Array)
 		{
 			initParsers(cfgParser);
 		}

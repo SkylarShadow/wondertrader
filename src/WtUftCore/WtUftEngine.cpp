@@ -19,13 +19,13 @@
 #include "../Share/StrUtil.hpp"
 #include "../Share/TimeUtils.hpp"
 
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VvTSVariant.hpp"
 #include "../Includes/IBaseDataMgr.h"
-#include "../Includes/WTSContractInfo.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
 
 #include "../WTSTools/WTSLogger.h"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 WtUftEngine::WtUftEngine()
 	: _cfg(NULL)
@@ -76,61 +76,61 @@ void WtUftEngine::set_trading_date(uint32_t curTDate)
 	WtHelper::setTDate(curTDate);
 }
 
-WTSCommodityInfo* WtUftEngine::get_commodity_info(const char* stdCode)
+VvTSCommodityInfo* WtUftEngine::get_commodity_info(const char* stdCode)
 {
 	const StringVector& ay = StrUtil::split(stdCode, ".");
-	WTSContractInfo* cInfo = _base_data_mgr->getContract(ay[1].c_str(), ay[0].c_str());
+	VvTSContractInfo* cInfo = _base_data_mgr->getContract(ay[1].c_str(), ay[0].c_str());
 	if (cInfo == NULL)
 		return NULL;
 
 	return cInfo->getCommInfo();
 }
 
-WTSContractInfo* WtUftEngine::get_contract_info(const char* stdCode)
+VvTSContractInfo* WtUftEngine::get_contract_info(const char* stdCode)
 {
 	const StringVector& ay = StrUtil::split(stdCode, ".");
 	return _base_data_mgr->getContract(ay[1].c_str(), ay[0].c_str());
 }
 
-WTSSessionInfo* WtUftEngine::get_session_info(const char* sid, bool isCode /* = false */)
+VvTSSessionInfo* WtUftEngine::get_session_info(const char* sid, bool isCode /* = false */)
 {
 	if (!isCode)
 		return _base_data_mgr->getSession(sid);
 
 	const StringVector& ay = StrUtil::split(sid, ".");
-	WTSContractInfo* cInfo = _base_data_mgr->getContract(ay[1].c_str(), ay[0].c_str());
+	VvTSContractInfo* cInfo = _base_data_mgr->getContract(ay[1].c_str(), ay[0].c_str());
 	if (cInfo == NULL)
 		return NULL;
 
-	WTSCommodityInfo* commInfo = cInfo->getCommInfo();
+	VvTSCommodityInfo* commInfo = cInfo->getCommInfo();
 	return commInfo->getSessionInfo();
 }
 
-WTSTickSlice* WtUftEngine::get_tick_slice(uint32_t sid, const char* code, uint32_t count)
+VvTSTickSlice* WtUftEngine::get_tick_slice(uint32_t sid, const char* code, uint32_t count)
 {
 	return NULL;
 	return _data_mgr->get_tick_slice(code, count);
 }
 
-WTSTickData* WtUftEngine::get_last_tick(uint32_t sid, const char* stdCode)
+VvTSTickData* WtUftEngine::get_last_tick(uint32_t sid, const char* stdCode)
 {
 	return _data_mgr->grab_last_tick(stdCode);
 }
 
-WTSKlineSlice* WtUftEngine::get_kline_slice(uint32_t sid, const char* stdCode, const char* period, uint32_t count, uint32_t times /* = 1 */, uint64_t etime /* = 0 */)
+VvTSKlineSlice* WtUftEngine::get_kline_slice(uint32_t sid, const char* stdCode, const char* period, uint32_t count, uint32_t times /* = 1 */, uint64_t etime /* = 0 */)
 {
 	return NULL;
-	WTSCommodityInfo* cInfo = _base_data_mgr->getCommodity(stdCode);
+	VvTSCommodityInfo* cInfo = _base_data_mgr->getCommodity(stdCode);
 	if (cInfo == NULL)
 		return NULL;
 
-	WTSSessionInfo* sInfo = cInfo->getSessionInfo();
+	VvTSSessionInfo* sInfo = cInfo->getSessionInfo();
 
 	std::string key = fmt::format("{}-{}-{}", stdCode, period, times);
 	SubList& sids = _bar_sub_map[key];
 	sids.insert(sid);
 
-	WTSKlinePeriod kp;
+	VvTSKlinePeriod kp;
 	if (strcmp(period, "m") == 0)
 	{
 		if (times % 5 == 0)
@@ -157,7 +157,7 @@ void WtUftEngine::sub_tick(uint32_t sid, const char* stdCode)
 
 double WtUftEngine::get_cur_price(const char* stdCode)
 {
-	WTSTickData* lastTick = _data_mgr->grab_last_tick(stdCode);
+	VvTSTickData* lastTick = _data_mgr->grab_last_tick(stdCode);
 	if (lastTick == NULL)
 		return 0.0;
 
@@ -179,7 +179,7 @@ void WtUftEngine::notify_params_update(const char* name)
 	}
 }
 
-void WtUftEngine::init(WTSVariant* cfg, IBaseDataMgr* bdMgr, WtUftDtMgr* dataMgr, EventNotifier* notifier)
+void WtUftEngine::init(VvTSVariant* cfg, IBaseDataMgr* bdMgr, WtUftDtMgr* dataMgr, EventNotifier* notifier)
 {
 	_base_data_mgr = bdMgr;
 	_data_mgr = dataMgr;
@@ -200,7 +200,7 @@ void WtUftEngine::run()
 	_tm_ticker = new WtUftRtTicker(this);
 	if(_cfg && _cfg->has("product"))
 	{
-		WTSVariant* cfgProd = _cfg->get("product");
+		VvTSVariant* cfgProd = _cfg->get("product");
 		_tm_ticker->init(cfgProd->getCString("session"));
 	}
 	else
@@ -211,13 +211,13 @@ void WtUftEngine::run()
 	_tm_ticker->run();
 }
 
-void WtUftEngine::handle_push_quote(WTSTickData* newTick)
+void WtUftEngine::handle_push_quote(VvTSTickData* newTick)
 {
 	if (_tm_ticker)
 		_tm_ticker->on_tick(newTick);
 }
 
-void WtUftEngine::handle_push_order_detail(WTSOrdDtlData* curOrdDtl)
+void WtUftEngine::handle_push_order_detail(VvTSOrdDtlData* curOrdDtl)
 {
 	const char* stdCode = curOrdDtl->code();
 	auto sit = _orddtl_sub_map.find(stdCode);
@@ -240,7 +240,7 @@ void WtUftEngine::handle_push_order_detail(WTSOrdDtlData* curOrdDtl)
 	}
 }
 
-void WtUftEngine::handle_push_order_queue(WTSOrdQueData* curOrdQue)
+void WtUftEngine::handle_push_order_queue(VvTSOrdQueData* curOrdQue)
 {
 	const char* stdCode = curOrdQue->code();
 	auto sit = _ordque_sub_map.find(stdCode);
@@ -263,7 +263,7 @@ void WtUftEngine::handle_push_order_queue(WTSOrdQueData* curOrdQue)
 	}
 }
 
-void WtUftEngine::handle_push_transaction(WTSTransData* curTrans)
+void WtUftEngine::handle_push_transaction(VvTSTransData* curTrans)
 {
 	const char* stdCode = curTrans->code();
 	auto sit = _trans_sub_map.find(stdCode);
@@ -326,7 +326,7 @@ void WtUftEngine::on_session_end()
 	WTSLogger::info("Trading day {} ended", _cur_tdate);
 }
 
-void WtUftEngine::on_tick(const char* stdCode, WTSTickData* curTick)
+void WtUftEngine::on_tick(const char* stdCode, VvTSTickData* curTick)
 {
 	if(_data_mgr)
 		_data_mgr->handle_push_quote(stdCode, curTick);
@@ -351,7 +351,7 @@ void WtUftEngine::on_tick(const char* stdCode, WTSTickData* curTick)
 	}
 }
 
-void WtUftEngine::on_bar(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar)
+void WtUftEngine::on_bar(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar)
 {
 	std::string key = fmt::format("{}-{}-{}", stdCode, period, times);
 	const SubList& sids = _bar_sub_map[key];
@@ -387,17 +387,17 @@ UftContextPtr WtUftEngine::getContext(uint32_t id)
 	return it->second;
 }
 
-WTSOrdQueSlice* WtUftEngine::get_order_queue_slice(uint32_t sid, const char* code, uint32_t count)
+VvTSOrdQueSlice* WtUftEngine::get_order_queue_slice(uint32_t sid, const char* code, uint32_t count)
 {
 	return _data_mgr->get_order_queue_slice(code, count);
 }
 
-WTSOrdDtlSlice* WtUftEngine::get_order_detail_slice(uint32_t sid, const char* code, uint32_t count)
+VvTSOrdDtlSlice* WtUftEngine::get_order_detail_slice(uint32_t sid, const char* code, uint32_t count)
 {
 	return _data_mgr->get_order_detail_slice(code, count);
 }
 
-WTSTransSlice* WtUftEngine::get_transaction_slice(uint32_t sid, const char* code, uint32_t count)
+VvTSTransSlice* WtUftEngine::get_transaction_slice(uint32_t sid, const char* code, uint32_t count)
 {
 	return _data_mgr->get_transaction_slice(code, count);
 }

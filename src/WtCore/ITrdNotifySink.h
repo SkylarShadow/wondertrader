@@ -9,9 +9,9 @@
  */
 #pragma once
 #include <stdint.h>
-#include "../Includes/WTSMarcos.h"
+#include "../Includes/VvTSMarcos.h"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 
 class ITrdNotifySink
 {
@@ -52,4 +52,4 @@ public:
 	virtual void on_account(const char* currency, double prebalance, double balance, double dynbalance, double avaliable, double closeprofit, double dynprofit, double margin, double fee, double deposit, double withdraw){}
 };
 
-NS_WTP_END
+NS_VVTP_END

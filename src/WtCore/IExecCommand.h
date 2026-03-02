@@ -2,18 +2,18 @@
 #include "../Includes/FasterDefs.h"
 #include <stdint.h>
 
-NS_WTP_BEGIN
-class WTSCommodityInfo;
-class WTSSessionInfo;
+NS_VVTP_BEGIN
+class VvTSCommodityInfo;
+class VvTSSessionInfo;
 class IHotMgr;
-class WTSTickData;
+class VvTSTickData;
 
 class IExecuterStub
 {
 public:
 	virtual uint64_t get_real_time() = 0;
-	virtual WTSCommodityInfo* get_comm_info(const char* stdCode) = 0;
-	virtual WTSSessionInfo* get_sess_info(const char* stdCode) = 0;
+	virtual VvTSCommodityInfo* get_comm_info(const char* stdCode) = 0;
+	virtual VvTSSessionInfo* get_sess_info(const char* stdCode) = 0;
 	virtual IHotMgr* get_hot_mon() = 0;
 	virtual uint32_t get_trading_day() = 0;
 };
@@ -25,7 +25,7 @@ public:
 	/*
 	 *	设置目标仓位
 	 */
-	virtual void set_position(const wt_hashmap<std::string, double>& targets) {}
+	virtual void set_position(const vvt_hashmap<std::string, double>& targets) {}
 
 	/*
 	 *	合约仓位变动
@@ -35,7 +35,7 @@ public:
 	/*
 	 *	实时行情回调
 	 */
-	virtual void on_tick(const char* stdCode, WTSTickData* newTick) {}
+	virtual void on_tick(const char* stdCode, VvTSTickData* newTick) {}
 
 
 	inline void setStub(IExecuterStub* stub) { _stub = stub; }
@@ -48,4 +48,4 @@ protected:
 	IExecuterStub*	_stub;
 	std::string		_name;
 };
-NS_WTP_END
+NS_VVTP_END

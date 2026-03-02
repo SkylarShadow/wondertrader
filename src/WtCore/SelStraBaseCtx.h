@@ -10,12 +10,12 @@
 #pragma once
 #include "../Includes/FasterDefs.h"
 #include "../Includes/ISelStraCtx.h"
-#include "../Includes/WTSDataDef.hpp"
+#include "../Includes/VvTSDataDef.hpp"
 
 #include "../Share/BoostFile.hpp"
 #include "../Share/fmtlib.h"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 
 class WtSelEngine;
 
@@ -73,8 +73,8 @@ public:
 	virtual void on_init() override;
 	virtual void on_session_begin(uint32_t uTDate) override;
 	virtual void on_session_end(uint32_t uTDate) override;
-	virtual void on_tick(const char* stdCode, WTSTickData* newTick, bool bEmitStrategy = true) override;
-	virtual void on_bar(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar) override;
+	virtual void on_tick(const char* stdCode, VvTSTickData* newTick, bool bEmitStrategy = true) override;
+	virtual void on_bar(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar) override;
 	virtual bool on_schedule(uint32_t curDate, uint32_t curTime, uint32_t fireTime) override;
 
 	virtual void enum_position(FuncEnumSelPositionCallBack cb) override;
@@ -110,11 +110,11 @@ public:
 	virtual double stra_get_detail_cost(const char* stdCode, const char* userTag) override;
 	virtual double stra_get_detail_profit(const char* stdCode, const char* userTag, int flag = 0) override;
 
-	virtual WTSCommodityInfo* stra_get_comminfo(const char* stdCode) override;
-	virtual WTSSessionInfo* stra_get_sessinfo(const char* stdCode) override;
-	virtual WTSKlineSlice*	stra_get_bars(const char* stdCode, const char* period, uint32_t count) override;
-	virtual WTSTickSlice*	stra_get_ticks(const char* stdCode, uint32_t count) override;
-	virtual WTSTickData*	stra_get_last_tick(const char* stdCode) override;
+	virtual VvTSCommodityInfo* stra_get_comminfo(const char* stdCode) override;
+	virtual VvTSSessionInfo* stra_get_sessinfo(const char* stdCode) override;
+	virtual VvTSKlineSlice*	stra_get_bars(const char* stdCode, const char* period, uint32_t count) override;
+	virtual VvTSTickSlice*	stra_get_ticks(const char* stdCode, uint32_t count) override;
+	virtual VvTSTickData*	stra_get_last_tick(const char* stdCode) override;
 
 	/*
 	 *	获取分月合约代码
@@ -150,10 +150,10 @@ protected:
 		_KlineTag() :_closed(false){}
 
 	} KlineTag;
-	typedef wt_hashmap<std::string, KlineTag> KlineTags;
+	typedef vvt_hashmap<std::string, KlineTag> KlineTags;
 	KlineTags	_kline_tags;
 
-	typedef wt_hashmap<std::string, double> PriceMap;
+	typedef vvt_hashmap<std::string, double> PriceMap;
 	PriceMap		_price_map;
 
 	typedef struct _DetailInfo
@@ -201,7 +201,7 @@ protected:
 			_frozen_date = 0;
 		}
 	} PosInfo;
-	typedef wt_hashmap<std::string, PosInfo> PositionMap;
+	typedef vvt_hashmap<std::string, PosInfo> PositionMap;
 	PositionMap		_pos_map;
 
 	typedef struct _SigInfo
@@ -220,7 +220,7 @@ protected:
 			_gentime = 0;
 		}
 	}SigInfo;
-	typedef wt_hashmap<std::string, SigInfo>	SignalMap;
+	typedef vvt_hashmap<std::string, SigInfo>	SignalMap;
 	SignalMap		_sig_map;
 
 	BoostFilePtr	_trade_logs;
@@ -233,7 +233,7 @@ protected:
 	bool			_is_in_schedule;	//是否在自动调度中
 
 	//用户数据
-	typedef wt_hashmap<std::string, std::string> StringHashMap;
+	typedef vvt_hashmap<std::string, std::string> StringHashMap;
 	StringHashMap	_user_datas;
 	bool			_ud_modified;
 
@@ -252,8 +252,8 @@ protected:
 	StraFundInfo		_fund_info;
 
 	//tick订阅列表
-	wt_hashset<std::string> _tick_subs;
+	vvt_hashset<std::string> _tick_subs;
 };
 
 
-NS_WTP_END
+NS_VVTP_END

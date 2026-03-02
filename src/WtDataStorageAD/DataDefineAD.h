@@ -1,7 +1,7 @@
 ﻿#pragma once
-#include "../Includes/WTSStruct.h"
+#include "../Includes/VvTSStruct.h"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 #pragma pack(push, 1)
 
@@ -34,7 +34,7 @@ typedef struct _RTBlockHeader : BlockHeader
 typedef struct _TickCacheItem
 {
 	uint32_t		_date;
-	WTSTickStruct	_tick;
+	VvTSTickStruct	_tick;
 } TickCacheItem;
 
 //实时tick缓存
@@ -47,7 +47,7 @@ typedef struct _BarCacheItem
 {
 	char			_exchg[16];
 	char			_code[32];
-	WTSBarStruct	_bar;
+	VvTSBarStruct	_bar;
 } BarCacheItem;
 
 //实时K线缓存

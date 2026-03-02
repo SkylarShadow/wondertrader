@@ -1,13 +1,13 @@
 ﻿#include "WtBtDtReader.h"
 
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VvTSVariant.hpp"
 #include "../Share/StrUtil.hpp"
 #include "../WTSUtils/WTSCmpHelper.hpp"
 
 //By Wesley @ 2022.01.05
 #include "../Share/fmtlib.h"
 template<typename... Args>
-inline void pipe_btreader_log(IBtDtReaderSink* sink, WTSLogLevel ll, const char* format, const Args&... args)
+inline void pipe_btreader_log(IBtDtReaderSink* sink, VvTSLogLevel ll, const char* format, const Args&... args)
 {
 	if (sink == NULL)
 		return;
@@ -51,7 +51,7 @@ WtBtDtReader::~WtBtDtReader()
 
 }
 
-void WtBtDtReader::init(WTSVariant* cfg, IBtDtReaderSink* sink)
+void WtBtDtReader::init(VvTSVariant* cfg, IBtDtReaderSink* sink)
 {
 	_sink = sink;
 
@@ -64,7 +64,7 @@ void WtBtDtReader::init(WTSVariant* cfg, IBtDtReaderSink* sink)
 	pipe_btreader_log(_sink, LL_INFO, "WtBtDtReader initialized, root data dir is {}", _base_dir);
 }
 
-bool WtBtDtReader::read_raw_bars(const char* exchg, const char* code, WTSKlinePeriod period, std::string& buffer)
+bool WtBtDtReader::read_raw_bars(const char* exchg, const char* code, VvTSKlinePeriod period, std::string& buffer)
 {
 	std::stringstream ss;
 	ss << _base_dir << "his/" << PERIOD_NAME[period] << "/" << exchg << "/" << code << ".dsb";

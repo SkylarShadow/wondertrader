@@ -135,40 +135,40 @@
     <ClInclude Include="..\Includes\ITraderApi.h">
       <Filter>Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="..\Includes\WTSMarcos.h">
+    <ClInclude Include="..\Includes\VvTSMarcos.h">
       <Filter>BaseDefs</Filter>
     </ClInclude>
-    <ClInclude Include="..\Includes\WTSTypes.h">
+    <ClInclude Include="..\Includes\VvTSTypes.h">
       <Filter>BaseDefs</Filter>
     </ClInclude>
-    <ClInclude Include="..\Includes\WTSCollection.hpp">
+    <ClInclude Include="..\Includes\VvTSCollection.hpp">
       <Filter>Objects</Filter>
     </ClInclude>
-    <ClInclude Include="..\Includes\WTSContractInfo.hpp">
+    <ClInclude Include="..\Includes\VvTSContractInfo.hpp">
       <Filter>Objects</Filter>
     </ClInclude>
-    <ClInclude Include="..\Includes\WTSDataDef.hpp">
+    <ClInclude Include="..\Includes\VvTSDataDef.hpp">
       <Filter>Objects</Filter>
     </ClInclude>
-    <ClInclude Include="..\Includes\WTSError.hpp">
+    <ClInclude Include="..\Includes\VvTSError.hpp">
       <Filter>Objects</Filter>
     </ClInclude>
-    <ClInclude Include="..\Includes\WTSObject.hpp">
+    <ClInclude Include="..\Includes\VvTSObject.hpp">
       <Filter>Objects</Filter>
     </ClInclude>
-    <ClInclude Include="..\Includes\WTSRiskDef.hpp">
+    <ClInclude Include="..\Includes\VvTSRiskDef.hpp">
       <Filter>Objects</Filter>
     </ClInclude>
-    <ClInclude Include="..\Includes\WTSSessionInfo.hpp">
+    <ClInclude Include="..\Includes\VvTSSessionInfo.hpp">
       <Filter>Objects</Filter>
     </ClInclude>
-    <ClInclude Include="..\Includes\WTSStruct.h">
+    <ClInclude Include="..\Includes\VvTSStruct.h">
       <Filter>Objects</Filter>
     </ClInclude>
-    <ClInclude Include="..\Includes\WTSTradeDef.hpp">
+    <ClInclude Include="..\Includes\VvTSTradeDef.hpp">
       <Filter>Objects</Filter>
     </ClInclude>
-    <ClInclude Include="..\Includes\WTSVariant.hpp">
+    <ClInclude Include="..\Includes\VvTSVariant.hpp">
       <Filter>Objects</Filter>
     </ClInclude>
     <ClInclude Include="..\Includes\IDataManager.h">
@@ -177,7 +177,7 @@
     <ClInclude Include="..\Includes\IDataReader.h">
       <Filter>Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="..\Includes\WTSVersion.h">
+    <ClInclude Include="..\Includes\VvTSRiskDef.hpp">
       <Filter>BaseDefs</Filter>
     </ClInclude>
     <ClInclude Include="..\FasterLibs\tsl\robin_growth_policy.h">
@@ -228,13 +228,13 @@
     <ClInclude Include="ObjectPool.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="WtKVCache.hpp">
+    <ClInclude Include="VvtKVCache.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="SpinMutex.hpp">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\Includes\WTSSwitchItem.hpp">
+    <ClInclude Include="..\Includes\VvTSSwitchItem.hpp">
       <Filter>Objects</Filter>
     </ClInclude>
     <ClInclude Include="..\Includes\LoaderDef.hpp">

@@ -2,10 +2,10 @@
 
 #include "../Includes/ISelStraCtx.h"
 
-#include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSSessionInfo.hpp"
-#include "../Includes/WTSVariant.hpp"
-#include "../Includes/WTSDataDef.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/VvTSSessionInfo.hpp"
+#include "../Includes/VvTSVariant.hpp"
+#include "../Includes/VvTSDataDef.hpp"
 #include "../Share/decimal.h"
 #include "../Share/StrUtil.hpp"
 #include "../Share/fmtlib.h"
@@ -32,7 +32,7 @@ const char* WtStraDtSel::getFactName()
 	return FACT_NAME;
 }
 
-bool WtStraDtSel::init(WTSVariant* cfg)
+bool WtStraDtSel::init(VvTSVariant* cfg)
 {
 	if (cfg == NULL)
 		return false;
@@ -67,14 +67,14 @@ void WtStraDtSel::on_schedule(ISelStraCtx* ctx, uint32_t uDate, uint32_t uTime)
 {
 	for (auto& curCode : _codes)
 	{
-		WTSSessionInfo* sInfo = ctx->stra_get_sessinfo(curCode.c_str());
+		VvTSSessionInfo* sInfo = ctx->stra_get_sessinfo(curCode.c_str());
 		if(!sInfo->isInTradingTime(uTime))
 			continue;
 
 		std::string code = curCode;
 		if (_isstk)
 			code += "-";
-		WTSKlineSlice *kline = ctx->stra_get_bars(code.c_str(), _period.c_str(), _count);
+		VvTSKlineSlice *kline = ctx->stra_get_bars(code.c_str(), _period.c_str(), _count);
 		if (kline == NULL)
 		{
 			//这里可以输出一些日志
@@ -97,7 +97,7 @@ void WtStraDtSel::on_schedule(ISelStraCtx* ctx, uint32_t uDate, uint32_t uTime)
 		double hh = kline->maxprice(-days, -2);
 		double ll = kline->minprice(-days, -2);
 
-		WTSValueArray* closes = kline->extractData(KFT_CLOSE);
+		VvTSValueArray* closes = kline->extractData(KFT_CLOSE);
 		double hc = closes->maxvalue(-days, -2);
 		double lc = closes->minvalue(-days, -2);
 		double curPx = closes->at(-1);
@@ -110,7 +110,7 @@ void WtStraDtSel::on_schedule(ISelStraCtx* ctx, uint32_t uDate, uint32_t uTime)
 		double upper_bound = openPx + _k1 * (std::max(hh - lc, hc - ll));
 		double lower_bound = openPx - _k2 * std::max(hh - lc, hc - ll);
 
-		WTSCommodityInfo* commInfo = ctx->stra_get_comminfo(curCode.c_str());
+		VvTSCommodityInfo* commInfo = ctx->stra_get_comminfo(curCode.c_str());
 
 		double curPos = ctx->stra_get_position(curCode.c_str()) / trdUnit;
 		if (decimal::eq(curPos, 0))
@@ -154,11 +154,11 @@ void WtStraDtSel::on_schedule(ISelStraCtx* ctx, uint32_t uDate, uint32_t uTime)
 	}
 }
 
-void WtStraDtSel::on_tick(ISelStraCtx* ctx, const char* stdCode, WTSTickData* newTick)
+void WtStraDtSel::on_tick(ISelStraCtx* ctx, const char* stdCode, VvTSTickData* newTick)
 {
 }
 
-void WtStraDtSel::on_bar(ISelStraCtx* ctx, const char* stdCode, const char* period, WTSBarStruct* newBar)
+void WtStraDtSel::on_bar(ISelStraCtx* ctx, const char* stdCode, const char* period, VvTSBarStruct* newBar)
 {
 
 }

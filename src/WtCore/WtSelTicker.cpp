@@ -12,15 +12,15 @@
 #include "../Includes/IDataReader.h"
 
 #include "../Share/TimeUtils.hpp"
-#include "../Includes/WTSSessionInfo.hpp"
-#include "../Includes/WTSContractInfo.hpp"
+#include "../Includes/VvTSSessionInfo.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
 #include "../Includes/IBaseDataMgr.h"
 #include "../Includes/IHotMgr.h"
 #include "../Share/CodeHelper.hpp"
 
 #include "../WTSTools/WTSLogger.h"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 
 WtSelRtTicker::WtSelRtTicker(WtSelEngine* engine)
@@ -47,17 +47,17 @@ void WtSelRtTicker::init(IDataReader* store, const char* sessionID)
 	TimeUtils::getDateTime(_date, _time);
 }
 
-void WtSelRtTicker::trigger_price(WTSTickData* curTick, uint32_t hotFlag /* = 0 */)
+void WtSelRtTicker::trigger_price(VvTSTickData* curTick, uint32_t hotFlag /* = 0 */)
 {
 	if (_engine)
 	{
 		std::string stdCode = curTick->code();
 		_engine->on_tick(stdCode.c_str(), curTick);
 
-		WTSContractInfo* cInfo = curTick->getContractInfo();
+		VvTSContractInfo* cInfo = curTick->getContractInfo();
 		if (!cInfo->isFlat())
 		{
-			WTSTickData* hotTick = WTSTickData::create(curTick->getTickStruct());
+			VvTSTickData* hotTick = VvTSTickData::create(curTick->getTickStruct());
 			const char* hotCode = cInfo->getHotCode();
 			hotTick->setCode(hotCode);
 			_engine->on_tick(hotCode, hotTick);
@@ -66,7 +66,7 @@ void WtSelRtTicker::trigger_price(WTSTickData* curTick, uint32_t hotFlag /* = 0 
 	}
 }
 
-void WtSelRtTicker::on_tick(WTSTickData* curTick, uint32_t hotFlag /* = 0 */)
+void WtSelRtTicker::on_tick(VvTSTickData* curTick, uint32_t hotFlag /* = 0 */)
 {
 	if (_thrd == NULL)
 	{

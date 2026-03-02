@@ -12,7 +12,7 @@
 #include "TraderAdapter.h"
 #include "WtHelper.h"
 
-#include "../Includes/WTSContractInfo.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
 #include "../Includes/IBaseDataMgr.h"
 
 #include "../Share/CodeHelper.hpp"
@@ -25,7 +25,7 @@
 #include <rapidjson/prettywriter.h>
 namespace rj = rapidjson;
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 inline uint32_t makeHftCtxId()
 {
@@ -135,7 +135,7 @@ void HftStraBaseCtx::on_init()
 	load_userdata();
 }
 
-void HftStraBaseCtx::on_tick(const char* stdCode, WTSTickData* newTick)
+void HftStraBaseCtx::on_tick(const char* stdCode, VvTSTickData* newTick)
 {
 	if (_ud_modified)
 	{
@@ -144,7 +144,7 @@ void HftStraBaseCtx::on_tick(const char* stdCode, WTSTickData* newTick)
 	}
 }
 
-void HftStraBaseCtx::on_order_queue(const char* stdCode, WTSOrdQueData* newOrdQue)
+void HftStraBaseCtx::on_order_queue(const char* stdCode, VvTSOrdQueData* newOrdQue)
 {
 	if (_ud_modified)
 	{
@@ -153,7 +153,7 @@ void HftStraBaseCtx::on_order_queue(const char* stdCode, WTSOrdQueData* newOrdQu
 	}
 }
 
-void HftStraBaseCtx::on_order_detail(const char* stdCode, WTSOrdDtlData* newOrdDtl)
+void HftStraBaseCtx::on_order_detail(const char* stdCode, VvTSOrdDtlData* newOrdDtl)
 {
 	if (_ud_modified)
 	{
@@ -162,7 +162,7 @@ void HftStraBaseCtx::on_order_detail(const char* stdCode, WTSOrdDtlData* newOrdD
 	}
 }
 
-void HftStraBaseCtx::on_transaction(const char* stdCode, WTSTransData* newTrans)
+void HftStraBaseCtx::on_transaction(const char* stdCode, VvTSTransData* newTrans)
 {
 	if (_ud_modified)
 	{
@@ -171,7 +171,7 @@ void HftStraBaseCtx::on_transaction(const char* stdCode, WTSTransData* newTrans)
 	}
 }
 
-void HftStraBaseCtx::on_bar(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar)
+void HftStraBaseCtx::on_bar(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar)
 {
 	if (_ud_modified)
 	{
@@ -216,7 +216,7 @@ OrderIDs HftStraBaseCtx::stra_buy(const char* stdCode, double price, double qty,
 		std::string code = _engine->get_hot_mgr()->getCustomRawCode(cInfo._ruletag, cInfo.stdCommID(), _engine->get_trading_date());
 		std::string realCode = CodeHelper::rawMonthCodeToStdCode(code.c_str(), cInfo._exchg);
 
-		WTSContractInfo* ct = _engine->get_basedata_mgr()->getContract(code.c_str(), cInfo._exchg);
+		VvTSContractInfo* ct = _engine->get_basedata_mgr()->getContract(code.c_str(), cInfo._exchg);
 
 		_code_map[realCode] = stdCode;
 
@@ -234,7 +234,7 @@ OrderIDs HftStraBaseCtx::stra_buy(const char* stdCode, double price, double qty,
 	}
 	else
 	{
-		WTSContractInfo* ct = _engine->get_basedata_mgr()->getContract(cInfo._code, cInfo._exchg);
+		VvTSContractInfo* ct = _engine->get_basedata_mgr()->getContract(cInfo._code, cInfo._exchg);
 		if (ct == NULL)
 		{
 			log_error("Cannot find corresponding contract info of {}", stdCode);
@@ -257,7 +257,7 @@ OrderIDs HftStraBaseCtx::stra_buy(const char* stdCode, double price, double qty,
 OrderIDs HftStraBaseCtx::stra_sell(const char* stdCode, double price, double qty, const char* userTag, int flag /* = 0 */, bool bForceClose /* = false */)
 {
 	CodeHelper::CodeInfo cInfo = CodeHelper::extractStdCode(stdCode, _engine->get_hot_mgr());
-	WTSCommodityInfo* commInfo = _engine->get_basedata_mgr()->getCommodity(cInfo._exchg, cInfo._product);
+	VvTSCommodityInfo* commInfo = _engine->get_basedata_mgr()->getCommodity(cInfo._exchg, cInfo._product);
 
 	//如果不能做空，则要看可用持仓
 	if (!commInfo->canShort())
@@ -280,7 +280,7 @@ OrderIDs HftStraBaseCtx::stra_sell(const char* stdCode, double price, double qty
 		std::string code = _engine->get_hot_mgr()->getCustomRawCode(cInfo._ruletag, cInfo.stdCommID(), _engine->get_trading_date());
 		std::string realCode = CodeHelper::rawMonthCodeToStdCode(code.c_str(), cInfo._exchg);
 
-		WTSContractInfo* ct = _engine->get_basedata_mgr()->getContract(code.c_str(), cInfo._exchg);
+		VvTSContractInfo* ct = _engine->get_basedata_mgr()->getContract(code.c_str(), cInfo._exchg);
 
 		_code_map[realCode] = stdCode;
 
@@ -297,7 +297,7 @@ OrderIDs HftStraBaseCtx::stra_sell(const char* stdCode, double price, double qty
 	}
 	else
 	{
-		WTSContractInfo* ct = _engine->get_basedata_mgr()->getContract(cInfo._code, cInfo._exchg);
+		VvTSContractInfo* ct = _engine->get_basedata_mgr()->getContract(cInfo._code, cInfo._exchg);
 		if (ct == NULL)
 		{
 			log_error("Cannot find corresponding contract info of {}", stdCode);
@@ -408,7 +408,7 @@ uint32_t HftStraBaseCtx::stra_exit_short(const char* stdCode, double price, doub
 	return _trader->closeShort(realCode.c_str(), price, qty, isToday, flag);
 }
 
-WTSCommodityInfo* HftStraBaseCtx::stra_get_comminfo(const char* stdCode)
+VvTSCommodityInfo* HftStraBaseCtx::stra_get_comminfo(const char* stdCode)
 {
 	return _engine->get_commodity_info(stdCode);
 }
@@ -418,7 +418,7 @@ std::string HftStraBaseCtx::stra_get_rawcode(const char* stdCode)
 	return _engine->get_rawcode(stdCode);
 }
 
-WTSKlineSlice* HftStraBaseCtx::stra_get_bars(const char* stdCode, const char* period, uint32_t count)
+VvTSKlineSlice* HftStraBaseCtx::stra_get_bars(const char* stdCode, const char* period, uint32_t count)
 {
 	thread_local static char basePeriod[2] = { 0 };
 	basePeriod[0] = period[0];
@@ -426,7 +426,7 @@ WTSKlineSlice* HftStraBaseCtx::stra_get_bars(const char* stdCode, const char* pe
 	if (strlen(period) > 1)
 		times = strtoul(period + 1, NULL, 10);
 
-	WTSKlineSlice* ret = _engine->get_kline_slice(_context_id, stdCode, basePeriod, count, times);
+	VvTSKlineSlice* ret = _engine->get_kline_slice(_context_id, stdCode, basePeriod, count, times);
 
 	if (ret)
 		_engine->sub_tick(id(), stdCode);
@@ -434,27 +434,27 @@ WTSKlineSlice* HftStraBaseCtx::stra_get_bars(const char* stdCode, const char* pe
 	return ret;
 }
 
-WTSTickSlice* HftStraBaseCtx::stra_get_ticks(const char* stdCode, uint32_t count)
+VvTSTickSlice* HftStraBaseCtx::stra_get_ticks(const char* stdCode, uint32_t count)
 {
-	WTSTickSlice* ticks = _engine->get_tick_slice(_context_id, stdCode, count);
+	VvTSTickSlice* ticks = _engine->get_tick_slice(_context_id, stdCode, count);
 
 	if (ticks)
 		_engine->sub_tick(id(), stdCode);
 	return ticks;
 }
 
-WTSOrdDtlSlice* HftStraBaseCtx::stra_get_order_detail(const char* stdCode, uint32_t count)
+VvTSOrdDtlSlice* HftStraBaseCtx::stra_get_order_detail(const char* stdCode, uint32_t count)
 {
-	WTSOrdDtlSlice* ret = _engine->get_order_detail_slice(_context_id, stdCode, count);
+	VvTSOrdDtlSlice* ret = _engine->get_order_detail_slice(_context_id, stdCode, count);
 
 	if (ret)
 		_engine->sub_order_detail(id(), stdCode);
 	return ret;
 }
 
-WTSOrdQueSlice* HftStraBaseCtx::stra_get_order_queue(const char* stdCode, uint32_t count)
+VvTSOrdQueSlice* HftStraBaseCtx::stra_get_order_queue(const char* stdCode, uint32_t count)
 {
-	WTSOrdQueSlice* ret = _engine->get_order_queue_slice(_context_id, stdCode, count);
+	VvTSOrdQueSlice* ret = _engine->get_order_queue_slice(_context_id, stdCode, count);
 
 	if (ret)
 		_engine->sub_order_queue(id(), stdCode);
@@ -462,9 +462,9 @@ WTSOrdQueSlice* HftStraBaseCtx::stra_get_order_queue(const char* stdCode, uint32
 }
 
 
-WTSTransSlice* HftStraBaseCtx::stra_get_transaction(const char* stdCode, uint32_t count)
+VvTSTransSlice* HftStraBaseCtx::stra_get_transaction(const char* stdCode, uint32_t count)
 {
-	WTSTransSlice* ret = _engine->get_transaction_slice(_context_id, stdCode, count);
+	VvTSTransSlice* ret = _engine->get_transaction_slice(_context_id, stdCode, count);
 
 	if (ret)
 		_engine->sub_transaction(id(), stdCode);
@@ -472,7 +472,7 @@ WTSTransSlice* HftStraBaseCtx::stra_get_transaction(const char* stdCode, uint32_
 }
 
 
-WTSTickData* HftStraBaseCtx::stra_get_last_tick(const char* stdCode)
+VvTSTickData* HftStraBaseCtx::stra_get_last_tick(const char* stdCode)
 {
 	return _engine->get_last_tick(_context_id, stdCode);
 }
@@ -792,7 +792,7 @@ void HftStraBaseCtx::do_set_position(const char* stdCode, double qty, double pri
 
 	log_info("Target position updated: {} -> {}", pInfo._volume, qty);
 
-	WTSCommodityInfo* commInfo = _engine->get_commodity_info(stdCode);
+	VvTSCommodityInfo* commInfo = _engine->get_commodity_info(stdCode);
 
 	//成交价
 	double trdPx = curPx;
@@ -814,7 +814,7 @@ void HftStraBaseCtx::do_set_position(const char* stdCode, double qty, double pri
 		dInfo._volume = abs(diff);
 		dInfo._opentime = curTm;
 		dInfo._opentdate = curTDate;
-		wt_strcpy(dInfo._usertag, userTag);
+		vvt_strcpy(dInfo._usertag, userTag);
 		pInfo._details.emplace_back(dInfo);
 
 		double fee = commInfo->calcFee(trdPx, abs(diff), 0);
@@ -886,7 +886,7 @@ void HftStraBaseCtx::do_set_position(const char* stdCode, double qty, double pri
 			dInfo._volume = abs(left);
 			dInfo._opentime = curTm;
 			dInfo._opentdate = curTDate;
-			wt_strcpy(dInfo._usertag, userTag);
+			vvt_strcpy(dInfo._usertag, userTag);
 			pInfo._details.emplace_back(dInfo);
 
 			//这里还需要写一笔成交记录
@@ -898,7 +898,7 @@ void HftStraBaseCtx::do_set_position(const char* stdCode, double qty, double pri
 	}
 }
 
-void HftStraBaseCtx::update_dyn_profit(const char* stdCode, WTSTickData* newTick)
+void HftStraBaseCtx::update_dyn_profit(const char* stdCode, VvTSTickData* newTick)
 {
 	auto it = _pos_map.find(stdCode);
 	if (it != _pos_map.end())
@@ -913,7 +913,7 @@ void HftStraBaseCtx::update_dyn_profit(const char* stdCode, WTSTickData* newTick
 			bool isLong = decimal::gt(pInfo._volume, 0);
 			double price = isLong ? newTick->bidprice(0) : newTick->askprice(0);
 
-			WTSCommodityInfo* commInfo = _engine->get_commodity_info(stdCode);
+			VvTSCommodityInfo* commInfo = _engine->get_commodity_info(stdCode);
 			double dynprofit = 0;
 			for (auto pit = pInfo._details.begin(); pit != pInfo._details.end(); pit++)
 			{

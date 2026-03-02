@@ -16,11 +16,11 @@
 
 #include "../Includes/ITraderApi.h"
 
-NS_WTP_BEGIN
-class WTSVariant;
+NS_VVTP_BEGIN
+class VvTSVariant;
 class ActionPolicyMgr;
-class WTSContractInfo;
-class WTSCommodityInfo;
+class VvTSContractInfo;
+class VvTSCommodityInfo;
 class WtExecuter;
 class EventNotifier;
 
@@ -35,7 +35,7 @@ public:
 	~TraderAdapter();
 
 public:
-	bool init(const char* id, WTSVariant* params, IBaseDataMgr* bdMgr);
+	bool init(const char* id, VvTSVariant* params, IBaseDataMgr* bdMgr);
 
 	void release();
 
@@ -51,33 +51,33 @@ public:
 public:
 	//////////////////////////////////////////////////////////////////////////
 	//ITraderSpi½Ó¿Ú
-	virtual void handleEvent(WTSTraderEvent e, int32_t ec) override;
+	virtual void handleEvent(VvTSTraderEvent e, int32_t ec) override;
 
 	virtual void onLoginResult(bool bSucc, const char* msg, uint32_t tradingdate) override;
 
 	virtual void onLogout() override;
 
-	virtual void onRspAccount(WTSArray* ayAccounts) override;
+	virtual void onRspAccount(VvTSArray* ayAccounts) override;
 
-	virtual void onRspPosition(const WTSArray* ayPositions) override;
+	virtual void onRspPosition(const VvTSArray* ayPositions) override;
 
-	virtual void onRspTrades(const WTSArray* ayTrades) override;
+	virtual void onRspTrades(const VvTSArray* ayTrades) override;
 
-	virtual void onRspOrders(const WTSArray* ayOrders) override;
+	virtual void onRspOrders(const VvTSArray* ayOrders) override;
 
-	virtual void onPushTrade(WTSTradeInfo* tradeRecord) override;
+	virtual void onPushTrade(VvTSTradeInfo* tradeRecord) override;
 
-	virtual void onPushOrder(WTSOrderInfo* orderInfo) override;
+	virtual void onPushOrder(VvTSOrderInfo* orderInfo) override;
 
-	virtual void onTraderError(WTSError* err, void* pData = NULL) override;
+	virtual void onTraderError(VvTSError* err, void* pData = NULL) override;
 
 	virtual IBaseDataMgr* getBaseDataMgr() override;
 
-	virtual void handleTraderLog(WTSLogLevel ll, const char* message) override;
+	virtual void handleTraderLog(VvTSLogLevel ll, const char* message) override;
 
 private:
 	TraderAdapterMgr*	_mgr;
-	WTSVariant*			_cfg;
+	VvTSVariant*			_cfg;
 	std::string			_id;
 
 	ITraderApi*			_trader_api;
@@ -123,4 +123,4 @@ private:
 	std::atomic<uint32_t>	_live_cnt;
 };
 
-NS_WTP_END
+NS_VVTP_END

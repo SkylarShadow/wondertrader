@@ -13,12 +13,12 @@
 
 #include "TraderDD.h"
 #include "../API/FixApi/include/fiddef.h"
-#include "../Includes/WTSError.hpp"
-#include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSSessionInfo.hpp"
-#include "../Includes/WTSTradeDef.hpp"
-#include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VvTSError.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/VvTSSessionInfo.hpp"
+#include "../Includes/VvTSTradeDef.hpp"
+#include "../Includes/VvTSDataDef.hpp"
+#include "../Includes/VvTSVariant.hpp"
 #include "../Share/StdUtils.hpp"
 #include "../Share/TimeUtils.hpp"
 #include "../Includes/IBaseDataMgr.h"
@@ -32,7 +32,7 @@
  //By Wesley @ 2022.01.05
 #include "../Share/fmtlib.h"
 template<typename... Args>
-inline void write_log(ITraderSpi* sink, WTSLogLevel ll, const char* format, const Args&... args)
+inline void write_log(ITraderSpi* sink, VvTSLogLevel ll, const char* format, const Args&... args)
 {
 	if (sink == NULL)
 		return;
@@ -150,7 +150,7 @@ inline const char* exchgO2I(const char* exchg)
 	return "";
 }
 
-WTSOrderState wrapOrderState(int state)
+VvTSOrderState wrapOrderState(int state)
 {
 	switch (state)
 	{
@@ -304,7 +304,7 @@ string GetItem(HANDLE_SESSION sess, int fid)
 	return "";
 }
 
-void InitializeFix(WTSVariant* params)
+void InitializeFix(VvTSVariant* params)
 {
 	static bool bInited = false;
 	if(!bInited)
@@ -343,7 +343,7 @@ TraderDD::~TraderDD()
 
 }
 
-bool TraderDD::init(WTSVariant* params)
+bool TraderDD::init(VvTSVariant* params)
 {
 	m_strFront = params->getCString("front");
 
@@ -356,7 +356,7 @@ bool TraderDD::init(WTSVariant* params)
 	m_strNode = params->getCString("node");
 	m_strTrust = params->getCString("trustmethod");
 
-	WTSVariant* param = params->get("ddmodule");
+	VvTSVariant* param = params->get("ddmodule");
 	if (param != NULL)
 	{
 		m_strModule = getBinDir() + param->asCString();
@@ -409,7 +409,7 @@ void TraderDD::reconnect()
 	{
 		if (m_traderSink)
 		{
-			m_traderSink->handleEvent(WTE_Connect, -1);
+			m_traderSink->handleEvent(VvTE_Connect, -1);
 			m_traderSink->handleTraderLog(LL_ERROR, "[TraderDD]通讯连接失败");
 		}
 
@@ -466,7 +466,7 @@ void TraderDD::reconnect()
 	//	Fix_ReleaseSession(sess);
 	//}
 
-	if (m_traderSink) m_traderSink->handleEvent(WTE_Connect, 0);
+	if (m_traderSink) m_traderSink->handleEvent(VvTE_Connect, 0);
 }
 
 void TraderDD::connect()
@@ -804,7 +804,7 @@ int TraderDD::logout()
 	return 0;
 }
 
-int TraderDD::orderInsert(WTSEntrust* entrust)
+int TraderDD::orderInsert(VvTSEntrust* entrust)
 {
 	if (m_hConn == NULL || m_wrapperState != WS_ALLREADY)
 	{
@@ -852,7 +852,7 @@ int TraderDD::orderInsert(WTSEntrust* entrust)
 			Fix_GetErrMsg(sess, buf, len);
 			write_log(m_traderSink, LL_ERROR, "[TraderDD]委托指令发送失败: {}({})", buf, code);
 			
-			WTSError* err = WTSError::create(WEC_ORDERINSERT, buf);
+			VvTSError* err = VvTSError::create(WEC_ORDERINSERT, buf);
 			m_traderSink->onRspEntrust(entrust, err);
 		}
 		else
@@ -860,7 +860,7 @@ int TraderDD::orderInsert(WTSEntrust* entrust)
 			m_traderSink->onRspEntrust(entrust, NULL);
 
 			//这里手动发一笔回报，不然会有问题的
-			WTSOrderInfo* ordInfo = WTSOrderInfo::create(entrust);
+			VvTSOrderInfo* ordInfo = VvTSOrderInfo::create(entrust);
 			ordInfo->setOrderState(WOS_NotTraded_NotQueuing);
 			ordInfo->setVolTraded(0);
 			ordInfo->setVolLeft(ordInfo->getVolume());
@@ -892,7 +892,7 @@ int TraderDD::orderInsert(WTSEntrust* entrust)
 	return 0;
 }
 
-int TraderDD::orderAction(WTSEntrustAction* action)
+int TraderDD::orderAction(VvTSEntrustAction* action)
 {
 	if (m_wrapperState != WS_ALLREADY)
 		return -1;
@@ -921,7 +921,7 @@ int TraderDD::orderAction(WTSEntrustAction* action)
 			Fix_GetErrMsg(sess, buf, len);
 			write_log(m_traderSink, LL_ERROR, "[TraderDD]撤单指令发送失败，错误信息：{}({})", buf, code);
 
-			WTSError* err = WTSError::create(WEC_ORDERCANCEL, buf);
+			VvTSError* err = VvTSError::create(WEC_ORDERCANCEL, buf);
 			m_traderSink->onTraderError(err);
 		}
 		else
@@ -965,13 +965,13 @@ int TraderDD::queryAccount()
 		}
 		else
 		{
-			WTSArray* ayFunds = WTSArray::create();
+			VvTSArray* ayFunds = VvTSArray::create();
 			int row = Fix_GetCount(sess);
 			char buf[256] = { 0 };
 			int nSize = 256;
 			for (int i = 0; i < row; i++)
 			{
-				WTSAccountInfo* fundInfo = WTSAccountInfo::create();
+				VvTSAccountInfo* fundInfo = VvTSAccountInfo::create();
 				fundInfo->setAvailable(Fix_GetDouble(sess, FID_KYZJ, i));
 				fundInfo->setBalance(Fix_GetDouble(sess, FID_ZQSZ, i)+fundInfo->getAvailable());
 
@@ -1021,7 +1021,7 @@ int TraderDD::queryPositions()
 		}
 		else
 		{
-			WTSArray* ayPositions = WTSArray::create();
+			VvTSArray* ayPositions = VvTSArray::create();
 			int row = Fix_GetCount(sess);
 			char buf[256] = { 0 };
 			int nSize = 256;
@@ -1050,11 +1050,11 @@ int TraderDD::queryPositions()
 				if (strncmp(buf, "0", 1) == 0)  // 流通类型,1 流通 0非流通，如果是非流通则过掉
 					continue;
 
-				WTSContractInfo* contract = m_bdMgr->getContract(code.c_str(), exchg.c_str());
+				VvTSContractInfo* contract = m_bdMgr->getContract(code.c_str(), exchg.c_str());
 				if(contract)
 				{
-					WTSCommodityInfo* commInfo = contract->getCommInfo();
-					WTSPositionItem* pInfo = WTSPositionItem::create(code.c_str(), commInfo->getCurrency(), exchg.c_str());
+					VvTSCommodityInfo* commInfo = contract->getCommInfo();
+					VvTSPositionItem* pInfo = VvTSPositionItem::create(code.c_str(), commInfo->getCurrency(), exchg.c_str());
 					pInfo->setDirection(WDT_LONG);
 
 					double prevol = Fix_GetInt64(sess, FID_ZQSL, i);	//昨天的持仓，今天是不会变的
@@ -1121,19 +1121,19 @@ void TraderDD::OnRtnOrder(HANDLE_CONN hconn, HANDLE_SESSION hsess)
 	Fix_GetItem(hsess, FID_CXBZ, buf, len);
 	bool isCancel = (buf[0] == 'W');
 
-	WTSContractInfo* contract = m_bdMgr->getContract(code.c_str(), exchg.c_str());
+	VvTSContractInfo* contract = m_bdMgr->getContract(code.c_str(), exchg.c_str());
 	if (contract == NULL)
 		return;
 
-	WTSOrderInfo* ordInfo = NULL;
+	VvTSOrderInfo* ordInfo = NULL;
 	if(!isCancel)
 	{
 		len = 256;
 		Fix_GetItem(hsess, FID_WTH, buf, len);
-		ordInfo = (WTSOrderInfo*)m_mapLives->grab(buf);
+		ordInfo = (VvTSOrderInfo*)m_mapLives->grab(buf);
 		if (ordInfo == NULL)
 		{
-			ordInfo = WTSOrderInfo::create();
+			ordInfo = VvTSOrderInfo::create();
 			ordInfo->setPrice(Fix_GetDouble(hsess, FID_WTJG));
 			ordInfo->setVolume(Fix_GetDouble(hsess, FID_WTSL));
 			ordInfo->setDirection(WDT_LONG);
@@ -1211,7 +1211,7 @@ void TraderDD::OnRtnOrder(HANDLE_CONN hconn, HANDLE_SESSION hsess)
 		len = 256;
 		Fix_GetItem(hsess, FID_CXWTH, buf, len);
 		printf("cancel order id: %s", buf);
-		ordInfo = (WTSOrderInfo*)m_mapLives->grab(buf);
+		ordInfo = (VvTSOrderInfo*)m_mapLives->grab(buf);
 		if (ordInfo == NULL)
 		{
 			write_log(m_traderSink, LL_ERROR, "[TraderDD] 委托撤单的订单为空！");
@@ -1273,7 +1273,7 @@ void TraderDD::OnRtnTrade(HANDLE_CONN hconn, HANDLE_SESSION hsess)
 	if (!decimal::eq(Fix_GetDouble(hsess, FID_CDSL), 0.0))
 		return;
 
-	WTSContractInfo* contract = m_bdMgr->getContract(code.c_str(), exchg.c_str());
+	VvTSContractInfo* contract = m_bdMgr->getContract(code.c_str(), exchg.c_str());
 	if (contract == NULL)
 		return;
 
@@ -1283,12 +1283,12 @@ void TraderDD::OnRtnTrade(HANDLE_CONN hconn, HANDLE_SESSION hsess)
 	orderid = buf;
 
 
-	WTSCommodityInfo* commInfo = contract->getCommInfo();
-	WTSTradeInfo *trdInfo = WTSTradeInfo::create(code.c_str(), exchg.c_str());
+	VvTSCommodityInfo* commInfo = contract->getCommInfo();
+	VvTSTradeInfo *trdInfo = VvTSTradeInfo::create(code.c_str(), exchg.c_str());
 	trdInfo->setPrice(Fix_GetDouble(hsess, FID_CJJG));
 	trdInfo->setVolume(Fix_GetDouble(hsess, FID_CJSL));
 
-	WTSOrderInfo* ordInfo = (WTSOrderInfo*)m_mapLives->get(orderid);
+	VvTSOrderInfo* ordInfo = (VvTSOrderInfo*)m_mapLives->get(orderid);
 	if (ordInfo)
 	{
 		ordInfo->setVolTraded(ordInfo->getVolTraded() + trdInfo->getVolume());
@@ -1314,7 +1314,7 @@ void TraderDD::OnRtnTrade(HANDLE_CONN hconn, HANDLE_SESSION hsess)
 	trdInfo->setDirection(WDT_LONG);
 	trdInfo->setOffsetType(Fix_GetDouble(hsess, FID_JYLB) == 1 ? WOT_OPEN : WOT_CLOSE);	
 	trdInfo->setRefOrder(orderid.c_str());
-	trdInfo->setTradeType(WTT_Common);
+	trdInfo->setTradeType(VvTT_Common);
 
 	trdInfo->setAmount(Fix_GetDouble(hsess, FID_CJJE));
 
@@ -1358,7 +1358,7 @@ int TraderDD::queryOrders()
 		}
 		else
 		{
-			WTSArray* ayOrds = WTSArray::create();
+			VvTSArray* ayOrds = VvTSArray::create();
 			int row = Fix_GetCount(sess);
 			char buf[256] = { 0 };
 			int nSize = 256;
@@ -1387,11 +1387,11 @@ int TraderDD::queryOrders()
 				if (strncmp(buf, "W", 1) == 0)
 					continue;
 
-				WTSContractInfo* contract = m_bdMgr->getContract(code.c_str(), exchg.c_str());
+				VvTSContractInfo* contract = m_bdMgr->getContract(code.c_str(), exchg.c_str());
 				if (contract)
 				{
-					WTSCommodityInfo* commInfo = contract->getCommInfo();
-					WTSOrderInfo* ordInfo = WTSOrderInfo::create();
+					VvTSCommodityInfo* commInfo = contract->getCommInfo();
+					VvTSOrderInfo* ordInfo = VvTSOrderInfo::create();
 					ordInfo->setCode(code.c_str());
 					ordInfo->setExchange(exchg.c_str());
 
@@ -1502,7 +1502,7 @@ int TraderDD::queryTrades()
 		}
 		else
 		{
-			WTSArray* ayTrds = WTSArray::create();
+			VvTSArray* ayTrds = VvTSArray::create();
 			int row = Fix_GetCount(sess);
 			char buf[256] = { 0 };
 			int nSize = 256;
@@ -1533,11 +1533,11 @@ int TraderDD::queryTrades()
 				Fix_GetItem(sess, FID_ZQDM, buf, nSize, i);
 				std::string code = buf;
 
-				WTSContractInfo* contract = m_bdMgr->getContract(code.c_str(), exchg.c_str());
+				VvTSContractInfo* contract = m_bdMgr->getContract(code.c_str(), exchg.c_str());
 				if (contract)
 				{
-					WTSCommodityInfo* commInfo = contract->getCommInfo();
-					WTSTradeInfo *trdInfo = WTSTradeInfo::create(code.c_str(), exchg.c_str());
+					VvTSCommodityInfo* commInfo = contract->getCommInfo();
+					VvTSTradeInfo *trdInfo = VvTSTradeInfo::create(code.c_str(), exchg.c_str());
 					trdInfo->setPrice(Fix_GetDouble(sess, FID_CJJG, i));
 					trdInfo->setVolume(Fix_GetInt64(sess, FID_CJSL, i));
 					
@@ -1557,7 +1557,7 @@ int TraderDD::queryTrades()
 					nSize = 256;
 					Fix_GetItem(sess, FID_WTH, buf, nSize, i);
 					trdInfo->setRefOrder(buf);
-					trdInfo->setTradeType(WTT_Common);
+					trdInfo->setTradeType(VvTT_Common);
 
 					nSize = 256;
 					Fix_GetItem(sess, FID_CJJE, buf, nSize, i);

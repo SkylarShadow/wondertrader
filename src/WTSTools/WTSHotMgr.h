@@ -10,24 +10,24 @@
 #pragma once
 #include "../Includes/IHotMgr.h"
 #include "../Includes/FasterDefs.h"
-#include "../Includes/WTSCollection.hpp"
+#include "../Includes/VvTSCollection.hpp"
 #include <string>
 
-NS_WTP_BEGIN
-	class WTSSwitchItem;
-NS_WTP_END
+NS_VVTP_BEGIN
+	class VvTSSwitchItem;
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 //换月主力映射
-typedef WTSMap<uint32_t>			WTSDateHotMap;
+typedef VvTSMap<uint32_t>			WTSDateHotMap;
 //品种主力映射
-typedef WTSHashMap<std::string>		WTSProductHotMap;
+typedef VvTSHashMap<std::string>		WTSProductHotMap;
 //分市场主力映射
-typedef WTSHashMap<std::string>		WTSExchgHotMap;
+typedef VvTSHashMap<std::string>		WTSExchgHotMap;
 
 //自定义切换规则映射
-typedef WTSHashMap<std::string>		WTSCustomSwitchMap;
+typedef VvTSHashMap<std::string>		WTSCustomSwitchMap;
 
 class WTSHotMgr : public IHotMgr
 {
@@ -83,12 +83,12 @@ public:
 private:
 	//WTSExchgHotMap*	m_pExchgHotMap;
 	//WTSExchgHotMap*	m_pExchgScndMap;
-	//wt_hashset<std::string>	m_curHotCodes;
-	//wt_hashset<std::string>	m_curSecCodes;
+	//vvt_hashset<std::string>	m_curHotCodes;
+	//vvt_hashset<std::string>	m_curSecCodes;
 	bool			m_bInitialized;
 
 	WTSCustomSwitchMap*	m_mapCustRules;
-	typedef wt_hashmap<std::string, wt_hashset<std::string>>	CustomSwitchCodes;
+	typedef vvt_hashmap<std::string, vvt_hashset<std::string>>	CustomSwitchCodes;
 	CustomSwitchCodes	m_mapCustCodes;
 };
 

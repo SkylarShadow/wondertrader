@@ -13,8 +13,8 @@
 #include "WtExecMgr.h"
 #include "WtEngine.h"
 
-NS_WTP_BEGIN
-class WTSVariant;
+NS_VVTP_BEGIN
+class VvTSVariant;
 typedef std::shared_ptr<ICtaStraCtx> CtaContextPtr;
 
 class WtCtaRtTicker;
@@ -28,11 +28,11 @@ public:
 public:
 	//////////////////////////////////////////////////////////////////////////
 	//WtEngine接口
-	virtual void handle_push_quote(WTSTickData* newTick) override;
+	virtual void handle_push_quote(VvTSTickData* newTick) override;
 
-	virtual void on_tick(const char* stdCode, WTSTickData* curTick) override;
+	virtual void on_tick(const char* stdCode, VvTSTickData* curTick) override;
 
-	virtual void on_bar(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar) override;
+	virtual void on_bar(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar) override;
 
 	virtual void on_init() override;
 	virtual void on_session_begin() override;
@@ -40,7 +40,7 @@ public:
 
 	virtual void run() override;
 
-	virtual void init(WTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHotMgr* hotMgr, EventNotifier* notifier) override;
+	virtual void init(VvTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHotMgr* hotMgr, EventNotifier* notifier) override;
 
 	virtual bool isInTrading() override;
 	virtual uint32_t transTimeToMin(uint32_t uTime) override;
@@ -48,8 +48,8 @@ public:
 	///////////////////////////////////////////////////////////////////////////
 	//IExecuterStub 接口
 	virtual uint64_t get_real_time() override;
-	virtual WTSCommodityInfo* get_comm_info(const char* stdCode) override;
-	virtual WTSSessionInfo* get_sess_info(const char* stdCode) override;
+	virtual VvTSCommodityInfo* get_comm_info(const char* stdCode) override;
+	virtual VvTSSessionInfo* get_sess_info(const char* stdCode) override;
 	virtual IHotMgr* get_hot_mon() { return _hot_mgr; }
 	virtual uint32_t get_trading_day() { return _cur_tdate; }
 
@@ -69,7 +69,7 @@ public:
 		executer->setStub(this);
 	}
 
-	inline bool loadRouterRules(WTSVariant* cfg)
+	inline bool loadRouterRules(VvTSVariant* cfg)
 	{
 		return _exec_mgr.load_router_rules(cfg);
 	}
@@ -80,18 +80,18 @@ public:
 	void notify_trade(const char* straId, const char* stdCode, bool isLong, bool isOpen, uint64_t curTime, double price, const char* userTag);
 
 private:
-	typedef wt_hashmap<uint32_t, CtaContextPtr> ContextMap;
+	typedef vvt_hashmap<uint32_t, CtaContextPtr> ContextMap;
 	ContextMap		_ctx_map;
 
 	WtCtaRtTicker*	_tm_ticker;
 
 	WtExecuterMgr	_exec_mgr;
 
-	WTSVariant*		_cfg;
+	VvTSVariant*		_cfg;
 
 	typedef std::shared_ptr<boost::threadpool::pool> ThreadPoolPtr;
 	ThreadPoolPtr		_pool;
 };
 
-NS_WTP_END
+NS_VVTP_END
 

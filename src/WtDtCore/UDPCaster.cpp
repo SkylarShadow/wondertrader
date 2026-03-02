@@ -11,9 +11,9 @@
 #include "DataManager.h"
 
 #include "../Share/StrUtil.hpp"
-#include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VvTSDataDef.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/VvTSVariant.hpp"
 
 #include "../WTSTools/WTSBaseDataMgr.h"
 #include "../WTSTools/WTSLogger.h"
@@ -41,10 +41,10 @@ struct UDPDataPacket
 	T			_data;
 };
 #pragma pack(pop)
-typedef UDPDataPacket<WTSTickStruct>	UDPTickPacket;
-typedef UDPDataPacket<WTSOrdQueStruct>	UDPOrdQuePacket;
-typedef UDPDataPacket<WTSOrdDtlStruct>	UDPOrdDtlPacket;
-typedef UDPDataPacket<WTSTransStruct>	UDPTransPacket;
+typedef UDPDataPacket<VvTSTickStruct>	UDPTickPacket;
+typedef UDPDataPacket<VvTSOrdQueStruct>	UDPOrdQuePacket;
+typedef UDPDataPacket<VvTSOrdDtlStruct>	UDPOrdDtlPacket;
+typedef UDPDataPacket<VvTSTransStruct>	UDPTransPacket;
 
 UDPCaster::UDPCaster()
 	: m_bTerminated(false)
@@ -59,7 +59,7 @@ UDPCaster::~UDPCaster()
 {
 }
 
-bool UDPCaster::init(WTSVariant* cfg, WTSBaseDataMgr* bdMgr, DataManager* dtMgr)
+bool UDPCaster::init(VvTSVariant* cfg, WTSBaseDataMgr* bdMgr, DataManager* dtMgr)
 {
 	m_bdMgr = bdMgr;
 	m_dtMgr = dtMgr;
@@ -67,22 +67,22 @@ bool UDPCaster::init(WTSVariant* cfg, WTSBaseDataMgr* bdMgr, DataManager* dtMgr)
 	if (!cfg->getBoolean("active"))
 		return false;
 
-	WTSVariant* cfgBC = cfg->get("broadcast");
+	VvTSVariant* cfgBC = cfg->get("broadcast");
 	if (cfgBC)
 	{
 		for (uint32_t idx = 0; idx < cfgBC->size(); idx++)
 		{
-			WTSVariant* cfgItem = cfgBC->get(idx);
+			VvTSVariant* cfgItem = cfgBC->get(idx);
 			addBRecver(cfgItem->getCString("host"), cfgItem->getInt32("port"), cfgItem->getUInt32("type"));
 		}
 	}
 
-	WTSVariant* cfgMC = cfg->get("multicast");
+	VvTSVariant* cfgMC = cfg->get("multicast");
 	if (cfgMC)
 	{
 		for (uint32_t idx = 0; idx < cfgMC->size(); idx++)
 		{
-			WTSVariant* cfgItem = cfgMC->get(idx);
+			VvTSVariant* cfgItem = cfgMC->get(idx);
 			addMRecver(cfgItem->getCString("host"), cfgItem->getInt32("port"), cfgItem->getInt32("sendport"), cfgItem->getUInt32("type"));
 		}
 	}
@@ -173,11 +173,11 @@ void UDPCaster::do_receive()
 						code = fullcode.substr(pos + 1);
 						exchg = fullcode.substr(0, pos);
 					}
-					WTSContractInfo* ct = m_bdMgr->getContract(code.c_str(), exchg.c_str());
+					VvTSContractInfo* ct = m_bdMgr->getContract(code.c_str(), exchg.c_str());
 					if (ct == NULL)
 						continue;
 
-					WTSTickData* curTick = m_dtMgr->getCurTick(code.c_str(), exchg.c_str());
+					VvTSTickData* curTick = m_dtMgr->getCurTick(code.c_str(), exchg.c_str());
 					if(curTick == NULL)
 						continue;
 
@@ -185,7 +185,7 @@ void UDPCaster::do_receive()
 					data->resize(sizeof(UDPTickPacket), 0);
 					UDPTickPacket* pkt = (UDPTickPacket*)data->data();
 					pkt->_type = req->_type;
-					memcpy(&pkt->_data, &curTick->getTickStruct(), sizeof(WTSTickStruct));
+					memcpy(&pkt->_data, &curTick->getTickStruct(), sizeof(VvTSTickStruct));
 					curTick->release();
 					m_sktSubscribe->async_send_to(
 						boost::asio::buffer(*data, data->size()), m_senderEP,
@@ -265,27 +265,27 @@ bool UDPCaster::addMRecver(const char* remote, int port, int sendport, int type 
 	return true;
 }
 
-void UDPCaster::broadcast(WTSTickData* curTick)
+void UDPCaster::broadcast(VvTSTickData* curTick)
 {
 	do_broadcast(curTick, UDP_MSG_PUSHTICK);
 }
 
-void UDPCaster::broadcast(WTSOrdDtlData* curOrdDtl)
+void UDPCaster::broadcast(VvTSOrdDtlData* curOrdDtl)
 {
 	do_broadcast(curOrdDtl, UDP_MSG_PUSHORDDTL);
 }
 
-void UDPCaster::broadcast(WTSOrdQueData* curOrdQue)
+void UDPCaster::broadcast(VvTSOrdQueData* curOrdQue)
 {
 	do_broadcast(curOrdQue, UDP_MSG_PUSHORDQUE);
 }
 
-void UDPCaster::broadcast(WTSTransData* curTrans)
+void UDPCaster::broadcast(VvTSTransData* curTrans)
 {
 	do_broadcast(curTrans, UDP_MSG_PUSHTRANS);
 }
 
-void UDPCaster::do_broadcast(WTSObject* data, uint32_t dataType)
+void UDPCaster::do_broadcast(VvTSObject* data, uint32_t dataType)
 {
 	if(m_sktBroadcast == NULL || data == NULL || m_bTerminated)
 		return;
@@ -330,32 +330,32 @@ void UDPCaster::do_broadcast(WTSObject* data, uint32_t dataType)
 							buf_raw.resize(sizeof(UDPTickPacket));
 							UDPTickPacket* pack = (UDPTickPacket*)buf_raw.data();
 							pack->_type = castData._datatype;
-							WTSTickData* curObj = (WTSTickData*)castData._data;
-							memcpy(&pack->_data, &curObj->getTickStruct(), sizeof(WTSTickStruct));
+							VvTSTickData* curObj = (VvTSTickData*)castData._data;
+							memcpy(&pack->_data, &curObj->getTickStruct(), sizeof(VvTSTickStruct));
 						}
 						else if (castData._datatype == UDP_MSG_PUSHORDDTL)
 						{
 							buf_raw.resize(sizeof(UDPOrdDtlPacket));
 							UDPOrdDtlPacket* pack = (UDPOrdDtlPacket*)buf_raw.data();
 							pack->_type = castData._datatype;
-							WTSOrdDtlData* curObj = (WTSOrdDtlData*)castData._data;
-							memcpy(&pack->_data, &curObj->getOrdDtlStruct(), sizeof(WTSOrdDtlStruct));
+							VvTSOrdDtlData* curObj = (VvTSOrdDtlData*)castData._data;
+							memcpy(&pack->_data, &curObj->getOrdDtlStruct(), sizeof(VvTSOrdDtlStruct));
 						}
 						else if (castData._datatype == UDP_MSG_PUSHORDQUE)
 						{
 							buf_raw.resize(sizeof(UDPOrdQuePacket));
 							UDPOrdQuePacket* pack = (UDPOrdQuePacket*)buf_raw.data();
 							pack->_type = castData._datatype;
-							WTSOrdQueData* curObj = (WTSOrdQueData*)castData._data;
-							memcpy(&pack->_data, &curObj->getOrdQueStruct(), sizeof(WTSOrdQueStruct));
+							VvTSOrdQueData* curObj = (VvTSOrdQueData*)castData._data;
+							memcpy(&pack->_data, &curObj->getOrdQueStruct(), sizeof(VvTSOrdQueStruct));
 						}
 						else if (castData._datatype == UDP_MSG_PUSHTRANS)
 						{
 							buf_raw.resize(sizeof(UDPTransPacket));
 							UDPTransPacket* pack = (UDPTransPacket*)buf_raw.data();
 							pack->_type = castData._datatype;
-							WTSTransData* curObj = (WTSTransData*)castData._data;
-							memcpy(&pack->_data, &curObj->getTransStruct(), sizeof(WTSTransStruct));
+							VvTSTransData* curObj = (VvTSTransData*)castData._data;
+							memcpy(&pack->_data, &curObj->getTransStruct(), sizeof(VvTSTransStruct));
 						}
 						else
 						{

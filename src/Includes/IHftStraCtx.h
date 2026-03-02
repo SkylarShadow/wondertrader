@@ -12,14 +12,14 @@
 #include <string>
 #include "ExecuteDefs.h"
 
-#include "../Includes/WTSMarcos.h"
+#include "../Includes/VvTSMarcos.h"
 
-NS_WTP_BEGIN
-class WTSCommodityInfo;
-class WTSTickSlice;
-class WTSKlineSlice;
-class WTSTickData;
-struct WTSBarStruct;
+NS_VVTP_BEGIN
+class VvTSCommodityInfo;
+class VvTSTickSlice;
+class VvTSKlineSlice;
+class VvTSTickData;
+struct VvTSBarStruct;
 
 /*
  *	订单标记
@@ -41,11 +41,11 @@ public:
 
 	//回调函数
 	virtual void on_init() = 0;
-	virtual void on_tick(const char* stdCode, WTSTickData* newTick) = 0;
-	virtual void on_order_queue(const char* stdCode, WTSOrdQueData* newOrdQue) = 0;
-	virtual void on_order_detail(const char* stdCode, WTSOrdDtlData* newOrdDtl) = 0;
-	virtual void on_transaction(const char* stdCode, WTSTransData* newTrans) = 0;
-	virtual void on_bar(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar) {}
+	virtual void on_tick(const char* stdCode, VvTSTickData* newTick) = 0;
+	virtual void on_order_queue(const char* stdCode, VvTSOrdQueData* newOrdQue) = 0;
+	virtual void on_order_detail(const char* stdCode, VvTSOrdDtlData* newOrdDtl) = 0;
+	virtual void on_transaction(const char* stdCode, VvTSTransData* newTrans) = 0;
+	virtual void on_bar(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar) {}
 	virtual void on_session_begin(uint32_t uTDate) {}
 	virtual void on_session_end(uint32_t uTDate) {}
 	/*
@@ -54,10 +54,10 @@ public:
 	 */
 	virtual void on_bactest_end() {};
 
-	virtual void on_tick_updated(const char* stdCode, WTSTickData* newTick) {}
-	virtual void on_ordque_updated(const char* stdCode, WTSOrdQueData* newOrdQue) {}
-	virtual void on_orddtl_updated(const char* stdCode, WTSOrdDtlData* newOrdDtl) {}
-	virtual void on_trans_updated(const char* stdCode, WTSTransData* newTrans) {}
+	virtual void on_tick_updated(const char* stdCode, VvTSTickData* newTick) {}
+	virtual void on_ordque_updated(const char* stdCode, VvTSOrdQueData* newOrdQue) {}
+	virtual void on_orddtl_updated(const char* stdCode, VvTSOrdDtlData* newOrdDtl) {}
+	virtual void on_trans_updated(const char* stdCode, VvTSTransData* newTrans) {}
 
 	//策略接口
 	virtual bool		stra_cancel(uint32_t localid) = 0;
@@ -127,13 +127,13 @@ public:
 	 */
 	virtual uint32_t	stra_exit_short(const char* stdCode, double price, double qty, const char* userTag, bool isToday = false, int flag = 0) { return 0; }
 
-	virtual WTSCommodityInfo* stra_get_comminfo(const char* stdCode) = 0;
-	virtual WTSKlineSlice*	stra_get_bars(const char* stdCode, const char* period, uint32_t count) = 0;
-	virtual WTSTickSlice*	stra_get_ticks(const char* stdCode, uint32_t count) = 0;
-	virtual WTSOrdDtlSlice*	stra_get_order_detail(const char* stdCode, uint32_t count) = 0;
-	virtual WTSOrdQueSlice*	stra_get_order_queue(const char* stdCode, uint32_t count) = 0;
-	virtual WTSTransSlice*	stra_get_transaction(const char* stdCode, uint32_t count) = 0;
-	virtual WTSTickData*	stra_get_last_tick(const char* stdCode) = 0;
+	virtual VvTSCommodityInfo* stra_get_comminfo(const char* stdCode) = 0;
+	virtual VvTSKlineSlice*	stra_get_bars(const char* stdCode, const char* period, uint32_t count) = 0;
+	virtual VvTSTickSlice*	stra_get_ticks(const char* stdCode, uint32_t count) = 0;
+	virtual VvTSOrdDtlSlice*	stra_get_order_detail(const char* stdCode, uint32_t count) = 0;
+	virtual VvTSOrdQueSlice*	stra_get_order_queue(const char* stdCode, uint32_t count) = 0;
+	virtual VvTSTransSlice*	stra_get_transaction(const char* stdCode, uint32_t count) = 0;
+	virtual VvTSTickData*	stra_get_last_tick(const char* stdCode) = 0;
 
 	/*
 	 *	获取分月合约代码
@@ -168,4 +168,4 @@ protected:
 	std::string _name;
 };
 
-NS_WTP_END
+NS_VVTP_END

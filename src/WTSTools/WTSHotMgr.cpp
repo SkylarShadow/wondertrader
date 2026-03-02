@@ -10,8 +10,8 @@
 #include "WTSHotMgr.h"
 #include "../WTSUtils/WTSCfgLoader.h"
 
-#include "../Includes/WTSSwitchItem.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VvTSSwitchItem.hpp"
+#include "../Includes/VvTSVariant.hpp"
 
 #include "../Share/StrUtil.hpp"
 #include "../Share/TimeUtils.hpp"
@@ -73,7 +73,7 @@ double WTSHotMgr::getRuleFactor(const char* ruleTag, const char* fullPid, uint32
 
 	if(uDate == 0)
 	{
-		WTSSwitchItem* pItem = STATIC_CONVERT(dtMap->rbegin()->second, WTSSwitchItem*);
+		VvTSSwitchItem* pItem = STATIC_CONVERT(dtMap->rbegin()->second, VvTSSwitchItem*);
 		return pItem->get_factor();
 	}
 
@@ -81,14 +81,14 @@ double WTSHotMgr::getRuleFactor(const char* ruleTag, const char* fullPid, uint32
 	if(it == dtMap->end())
 	{
 		//找不到，说明记录的日期都比传入的日期小，所以返回最后一条的复权因子
-		WTSSwitchItem* pItem = STATIC_CONVERT(dtMap->rbegin()->second, WTSSwitchItem*);
+		VvTSSwitchItem* pItem = STATIC_CONVERT(dtMap->rbegin()->second, VvTSSwitchItem*);
 		return pItem->get_factor();
 	}
 	else
 	{
 		//找到了，就要看切换日期是否等于传入日期
 		//如果相等，说明刚好切换，那么就直接返回复权因子
-		WTSSwitchItem* pItem = STATIC_CONVERT(it->second, WTSSwitchItem*);
+		VvTSSwitchItem* pItem = STATIC_CONVERT(it->second, VvTSSwitchItem*);
 		if (pItem->switch_date() == uDate)
 		{
 			return pItem->get_factor();
@@ -105,7 +105,7 @@ double WTSHotMgr::getRuleFactor(const char* ruleTag, const char* fullPid, uint32
 			{
 				//如果不是第一个，则回退一个，再返回即可
 				it--;
-				WTSSwitchItem* pItem = STATIC_CONVERT(it->second, WTSSwitchItem*);
+				VvTSSwitchItem* pItem = STATIC_CONVERT(it->second, VvTSSwitchItem*);
 				return pItem->get_factor();
 			}
 		}
@@ -202,7 +202,7 @@ bool WTSHotMgr::loadCustomRules(const char* tag, const char* filename)
 		return false;
 	}
 
-	WTSVariant* root = WTSCfgLoader::load_from_file(filename);
+	VvTSVariant* root = WTSCfgLoader::load_from_file(filename);
 	if (root == NULL)
 		return false;
 
@@ -218,11 +218,11 @@ bool WTSHotMgr::loadCustomRules(const char* tag, const char* filename)
 
 	for (const std::string& exchg : root->memberNames())
 	{
-		WTSVariant* jExchg = root->get(exchg);
+		VvTSVariant* jExchg = root->get(exchg);
 
 		for (const std::string& pid : jExchg->memberNames())
 		{
-			WTSVariant* jProduct = jExchg->get(pid);
+			VvTSVariant* jProduct = jExchg->get(pid);
 			std::string fullPid = fmt::format("{}.{}", exchg, pid);
 
 			WTSDateHotMap* dateMap = WTSDateHotMap::create();
@@ -232,8 +232,8 @@ bool WTSHotMgr::loadCustomRules(const char* tag, const char* filename)
 			double factor = 1.0;
 			for (uint32_t i = 0; i < jProduct->size(); i++)
 			{
-				WTSVariant* jHotItem = jProduct->get(i);
-				WTSSwitchItem* pItem = WTSSwitchItem::create(
+				VvTSVariant* jHotItem = jProduct->get(i);
+				VvTSSwitchItem* pItem = VvTSSwitchItem::create(
 					exchg.c_str(), pid.c_str(),
 					jHotItem->getCString("from"), jHotItem->getCString("to"), 
 					jHotItem->getUInt32("date"));
@@ -286,7 +286,7 @@ const char* WTSHotMgr::getPrevCustomRawCode(const char* tag, const char* fullPid
 
 		cit--;
 
-		WTSSwitchItem* pItem = STATIC_CONVERT(cit->second, WTSSwitchItem*);
+		VvTSSwitchItem* pItem = STATIC_CONVERT(cit->second, VvTSSwitchItem*);
 		return pItem->to();
 	}
 	else
@@ -298,7 +298,7 @@ const char* WTSHotMgr::getPrevCustomRawCode(const char* tag, const char* fullPid
 
 		cit--;
 
-		WTSSwitchItem* pItem = STATIC_CONVERT(cit->second, WTSSwitchItem*);
+		VvTSSwitchItem* pItem = STATIC_CONVERT(cit->second, VvTSSwitchItem*);
 		return pItem->to();
 	}
 
@@ -330,12 +330,12 @@ const char* WTSHotMgr::getCustomRawCode(const char* tag, const char* fullPid, ui
 		if (cit == dtMap->end())
 			return "";
 
-		WTSSwitchItem* pItem = STATIC_CONVERT(cit->second, WTSSwitchItem*);
+		VvTSSwitchItem* pItem = STATIC_CONVERT(cit->second, VvTSSwitchItem*);
 		return pItem->to();
 	}
 	else
 	{
-		WTSSwitchItem* pItem = STATIC_CONVERT(dtMap->last(), WTSSwitchItem*);
+		VvTSSwitchItem* pItem = STATIC_CONVERT(dtMap->last(), VvTSSwitchItem*);
 		return pItem->to();
 	}
 
@@ -377,19 +377,19 @@ bool WTSHotMgr::isCustomHot(const char* tag, const char* fullCode, uint32_t dt /
 	WTSDateHotMap::ConstIterator cit = dtMap->lower_bound(dt);
 	if (cit != dtMap->end())
 	{
-		WTSSwitchItem* pItem = STATIC_CONVERT(cit->second, WTSSwitchItem*);
+		VvTSSwitchItem* pItem = STATIC_CONVERT(cit->second, VvTSSwitchItem*);
 		//因为登记的换月日期是开始生效的交易日，如果是下午盘后确定主力的话
 		//那么dt就会是第二天，所以，dt必须大于等于切换日期
 		if (pItem->switch_date() > dt)
 			cit--;
 
-		pItem = STATIC_CONVERT(cit->second, WTSSwitchItem*);
+		pItem = STATIC_CONVERT(cit->second, VvTSSwitchItem*);
 		if (strcmp(pItem->to(), rawCode) == 0)
 			return true;
 	}
 	else if (dtMap->size() > 0)
 	{
-		WTSSwitchItem* pItem = (WTSSwitchItem*)dtMap->last();
+		VvTSSwitchItem* pItem = (VvTSSwitchItem*)dtMap->last();
 		if (strcmp(pItem->to(), rawCode) == 0)
 			return true;
 	}
@@ -418,7 +418,7 @@ bool WTSHotMgr::splitCustomSections(const char* tag, const char* fullPid, uint32
 	for (; cit != dtMap->end(); cit++)
 	{
 		uint32_t curDate = cit->first;
-		WTSSwitchItem* hotItem = (WTSSwitchItem*)cit->second;
+		VvTSSwitchItem* hotItem = (VvTSSwitchItem*)cit->second;
 
 		if (curDate > eDt)
 		{

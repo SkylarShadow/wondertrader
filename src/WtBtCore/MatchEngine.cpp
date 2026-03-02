@@ -1,6 +1,6 @@
 ﻿#include "MatchEngine.h"
-#include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VvTSDataDef.hpp"
+#include "../Includes/VvTSVariant.hpp"
 
 #include "../Share/TimeUtils.hpp"
 #include "../Share/decimal.h"
@@ -12,7 +12,7 @@
 
 extern uint32_t makeLocalOrderID();
 
-void MatchEngine::init(WTSVariant* cfg)
+void MatchEngine::init(VvTSVariant* cfg)
 {
 	if (cfg == NULL)
 		return;
@@ -41,7 +41,7 @@ void MatchEngine::fire_orders(const char* stdCode, OrderIDs& to_erase)
 	}
 }
 
-void MatchEngine::match_orders(WTSTickData* curTick, OrderIDs& to_erase)
+void MatchEngine::match_orders(VvTSTickData* curTick, OrderIDs& to_erase)
 {
 	uint64_t curTime = (uint64_t)curTick->actiondate() * 1000000000 + curTick->actiontime();
 	uint64_t curUnixTime = TimeUtils::makeTime(curTick->actiondate(), curTick->actiontime());
@@ -184,7 +184,7 @@ void MatchEngine::match_orders(WTSTickData* curTick, OrderIDs& to_erase)
 	}
 }
 
-void MatchEngine::update_lob(WTSTickData* curTick)
+void MatchEngine::update_lob(VvTSTickData* curTick)
 {
 	LmtOrdBook& curBook = _lmt_ord_books[curTick->code()];
 	curBook._cur_px = PRICE_DOUBLE_TO_INT(curTick->price());
@@ -228,7 +228,7 @@ void MatchEngine::update_lob(WTSTickData* curTick)
 
 OrderIDs MatchEngine::buy(const char* stdCode, double price, double qty, uint64_t curTime)
 {
-	WTSTickData* lastTick = grab_last_tick(stdCode);
+	VvTSTickData* lastTick = grab_last_tick(stdCode);
 	if (lastTick == NULL)
 		return OrderIDs();
 
@@ -263,7 +263,7 @@ OrderIDs MatchEngine::buy(const char* stdCode, double price, double qty, uint64_
 
 OrderIDs MatchEngine::sell(const char* stdCode, double price, double qty, uint64_t curTime)
 {
-	WTSTickData* lastTick = grab_last_tick(stdCode);
+	VvTSTickData* lastTick = grab_last_tick(stdCode);
 	if (lastTick == NULL)
 		return OrderIDs();
 
@@ -337,7 +337,7 @@ double MatchEngine::cancel(uint32_t localid)
 	return ordInfo._left*(ordInfo._buy ? 1 : -1);
 }
 
-void MatchEngine::handle_tick(const char* stdCode, WTSTickData* curTick)
+void MatchEngine::handle_tick(const char* stdCode, VvTSTickData* curTick)
 {
 	if (NULL == curTick)
 		return;
@@ -364,10 +364,10 @@ void MatchEngine::handle_tick(const char* stdCode, WTSTickData* curTick)
 	}
 }
 
-WTSTickData* MatchEngine::grab_last_tick(const char* stdCode)
+VvTSTickData* MatchEngine::grab_last_tick(const char* stdCode)
 {
 	if (NULL == _tick_cache)
 		return NULL;
 
-	return (WTSTickData*)_tick_cache->grab(stdCode);
+	return (VvTSTickData*)_tick_cache->grab(stdCode);
 }

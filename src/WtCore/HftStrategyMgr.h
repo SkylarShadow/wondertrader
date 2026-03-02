@@ -73,11 +73,11 @@ private:
 				_remover(_fact);
 		}
 	} StraFactInfo;
-	typedef wt_hashmap<std::string, StraFactInfo> StraFactMap;
+	typedef vvt_hashmap<std::string, StraFactInfo> StraFactMap;
 
 	StraFactMap	_factories;
 
-	typedef wt_hashmap<std::string, HftStrategyPtr> StrategyMap;
+	typedef vvt_hashmap<std::string, HftStrategyPtr> StrategyMap;
 	StrategyMap	_strategies;
 };
 

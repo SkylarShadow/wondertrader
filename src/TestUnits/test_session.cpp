@@ -1,11 +1,11 @@
-﻿#include "../Includes/WTSSessionInfo.hpp"
+﻿#include "../Includes/VvTSSessionInfo.hpp"
 #include "gtest/gtest/gtest.h"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 TEST(test_session, test_allday)
 {
-	WTSSessionInfo* sInfo = WTSSessionInfo::create("ALLDAY", "ALLDAY", 0);
+	VvTSSessionInfo* sInfo = VvTSSessionInfo::create("ALLDAY", "ALLDAY", 0);
 	sInfo->addTradingSection(0, 2400);
 
 	EXPECT_EQ(sInfo->timeToMinutes(0), 0);
