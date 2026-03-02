@@ -17,7 +17,7 @@
 
 #include "../WTSTools/WTSBaseDataMgr.h"
 #include "../WTSTools/WTSLogger.h"
-#include "../WTSUtils/VvTSCfgLoader.h"
+#include "../VvTSUtils/VvTSCfgLoader.h"
 
 
 StateMonitor::StateMonitor()

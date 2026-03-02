@@ -11,7 +11,7 @@
 #include <string>
 #include <stdint.h>
 
-#include "../WTSUtils/zstdlib/zstd.h"
+#include "../VvTSUtils/zstdlib/zstd.h"
 
 class VvTSCmpHelper
 {

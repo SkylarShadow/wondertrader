@@ -16,9 +16,9 @@
 #include "../WtBtCore/WtHelper.h"
 
 #include "../WTSTools/WTSLogger.h"
-#include "../WTSUtils/SignalHook.hpp"
+#include "../VvTSUtils/SignalHook.hpp"
 
-#include "../WTSUtils/VvTSCfgLoader.h"
+#include "../VvTSUtils/VvTSCfgLoader.h"
 #include "../Includes/VvTSVariant.hpp"
 #include "../Share/StdUtils.hpp"
 #include "../Share/cppcli.hpp"

@@ -8,7 +8,7 @@
  * \brief 
  */
 #include "WTSBaseDataMgr.h"
-#include "../WTSUtils/VvTSCfgLoader.h"
+#include "../VvTSUtils/VvTSCfgLoader.h"
 #include "WTSLogger.h"
 
 #include "../Includes/VvTSContractInfo.hpp"

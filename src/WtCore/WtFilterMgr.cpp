@@ -3,7 +3,7 @@
 
 #include "../Share/CodeHelper.hpp"
 #include "../Includes/VvTSVariant.hpp"
-#include "../WTSUtils/VvTSCfgLoader.h"
+#include "../VvTSUtils/VvTSCfgLoader.h"
 #include "../WTSTools/WTSLogger.h"
 
 #include <boost/filesystem.hpp>

@@ -4,7 +4,7 @@
 
 #include "../WTSTools/WTSLogger.h"
 #include "../WTSTools/WTSBaseDataMgr.h"
-#include "../WTSUtils/VvTSCfgLoader.h"
+#include "../VvTSUtils/VvTSCfgLoader.h"
 
 #include "../Includes/VvTSVariant.hpp"
 

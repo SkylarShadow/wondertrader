@@ -23,13 +23,13 @@ IF(MSVC)
 	SET(LIBS
 		WtBtCore
 		WTSTools
-		WTSUtils
+		VvTSUtils
 	)
 ELSE(GNUCC)
 	SET(LIBS
 		WtBtCore
 		WTSTools
-		WTSUtils
+		VvTSUtils
 
 		dl
 		pthread

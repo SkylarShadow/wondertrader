@@ -8,7 +8,7 @@
  * \brief 
  */
 #include "WTSHotMgr.h"
-#include "../WTSUtils/VvTSCfgLoader.h"
+#include "../VvTSUtils/VvTSCfgLoader.h"
 
 #include "../Includes/VvTSSwitchItem.hpp"
 #include "../Includes/VvTSVariant.hpp"

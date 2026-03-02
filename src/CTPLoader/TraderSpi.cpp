@@ -10,7 +10,7 @@
 #include "../Includes/LoaderDef.hpp"
 #include "../Includes/VvTSVariant.hpp"
 
-#include "../WTSUtils/VvTSCfgLoader.h"
+#include "../VvTSUtils/VvTSCfgLoader.h"
 
 #include <rapidjson/document.h>
 #include <rapidjson/prettywriter.h>

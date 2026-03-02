@@ -21,7 +21,7 @@ ADD_LIBRARY(TraderDumper SHARED ${SRCS} ${HDRS})
 
 SET(LIBS
 	WTSTools
-	WTSUtils
+	VvTSUtils
 	)
 IF(MSVC)
 ELSE(GNUCC)

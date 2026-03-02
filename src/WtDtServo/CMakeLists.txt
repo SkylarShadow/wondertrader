@@ -22,7 +22,7 @@ ADD_LIBRARY(WtDtServo SHARED ${SRCS} ${HDRS})
 
 SET(LIBS
     WTSTools
-    WTSUtils
+    VvTSUtils
 )
 IF (MSVC)
 ELSE (GNUCC)

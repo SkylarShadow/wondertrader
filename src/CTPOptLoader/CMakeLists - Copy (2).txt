@@ -20,7 +20,7 @@ SET(SRC
 
 # SET(LIBS	
 # 	boost_filesystem
-#     WTSUtils
+#     VvTSUtils
 # 	dl
 # )
 
@@ -57,14 +57,14 @@ endif()
 IF (MSVC)
 	target_link_libraries(CTPOptLoader
     PRIVATE
-        WTSUtils
+        VvTSUtils
         ${BOOST_FS_LIB}
 )
 
 ELSE (GNUCC)
 	target_link_libraries(CTPOptLoader
     PRIVATE
-        WTSUtils
+        VvTSUtils
         ${BOOST_FS_LIB}
 )
 ENDIF ()

@@ -15,8 +15,8 @@
 #include "../Includes/VvTSDataDef.hpp"
 #include "../Includes/VvTSContractInfo.hpp"
 
-#include "../WTSUtils/SignalHook.hpp"
-#include "../WTSUtils/VvTSCfgLoader.h"
+#include "../VvTSUtils/SignalHook.hpp"
+#include "../VvTSUtils/VvTSCfgLoader.h"
 #include "../WTSTools/WTSLogger.h"
 
 #include "../Share/StrUtil.hpp"

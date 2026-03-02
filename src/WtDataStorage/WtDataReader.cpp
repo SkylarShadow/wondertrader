@@ -10,8 +10,8 @@
 #include "../Includes/IHotMgr.h"
 #include "../Includes/VvTSDataDef.hpp"
 
-#include "../WTSUtils/VvTSCmpHelper.hpp"
-#include "../WTSUtils/VvTSCfgLoader.h"
+#include "../VvTSUtils/VvTSCmpHelper.hpp"
+#include "../VvTSUtils/VvTSCfgLoader.h"
 
 #include <rapidjson/document.h>
 namespace rj = rapidjson;

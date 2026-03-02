@@ -19,9 +19,9 @@
 
 #include "../Share/StrUtil.hpp"
 
-#include "../WTSUtils/VvTSCfgLoader.h"
+#include "../VvTSUtils/VvTSCfgLoader.h"
 #include "../WTSTools/WTSLogger.h"
-#include "../WTSUtils/SignalHook.hpp"
+#include "../VvTSUtils/SignalHook.hpp"
 
 
 WtDtRunner::WtDtRunner()

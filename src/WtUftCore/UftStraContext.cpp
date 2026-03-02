@@ -23,7 +23,7 @@
 #include "../Share/TimeUtils.hpp"
 
 #include "../WTSTools/WTSLogger.h"
-#include "../WTSUtils/VvTSCfgLoader.h"
+#include "../VvTSUtils/VvTSCfgLoader.h"
 
 static const uint32_t DATA_SIZE_STEP = 8000;	//信息量每天最多4000
 

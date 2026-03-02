@@ -16,7 +16,7 @@
 #include "../Includes/VvTSContractInfo.hpp"
 
 #include "../WTSTools/WTSLogger.h"
-#include "../WTSUtils/VvTSCfgLoader.h"
+#include "../VvTSUtils/VvTSCfgLoader.h"
 
 #include "../Share/StrUtil.hpp"
 #include "../Share/TimeUtils.hpp"

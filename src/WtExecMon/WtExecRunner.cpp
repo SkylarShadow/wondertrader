@@ -5,14 +5,14 @@
 #include "../WtCore/WtDistExecuter.h"
 
 #include "../WTSTools/WTSLogger.h"
-#include "../WTSUtils/VvTSCfgLoader.h"
+#include "../VvTSUtils/VvTSCfgLoader.h"
 
 #include "../Includes/VvTSContractInfo.hpp"
 #include "../Includes/VvTSVariant.hpp"
 #include "../Share/CodeHelper.hpp"
 #include "../Share/ModuleHelper.hpp"
 #include "../Share/TimeUtils.hpp"
-#include "../WTSUtils/SignalHook.hpp"
+#include "../VvTSUtils/SignalHook.hpp"
 
 #ifdef _MSC_VER
 #include "../Common/mdump.h"

@@ -12,11 +12,11 @@
 #include "../WTSTools/WTSHotMgr.h"
 #include "../WTSTools/WTSBaseDataMgr.h"
 #include "../WTSTools/WTSLogger.h"
-#include "../WTSUtils/VvTSCfgLoader.h"
+#include "../VvTSUtils/VvTSCfgLoader.h"
 #include "../Share/StrUtil.hpp"
 #include "../Share/cppcli.hpp"
 
-#include "../WTSUtils/SignalHook.hpp"
+#include "../VvTSUtils/SignalHook.hpp"
 
 WTSBaseDataMgr	g_baseDataMgr;
 WTSHotMgr		g_hotMgr;

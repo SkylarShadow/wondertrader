@@ -12,7 +12,7 @@
 
 #include <boost/filesystem.hpp>
 
-#include "../WTSUtils/VvTSCfgLoader.h"
+#include "../VvTSUtils/VvTSCfgLoader.h"
 #include "../Includes/VvTSVariant.hpp"
 USING_NS_VVTP;
 

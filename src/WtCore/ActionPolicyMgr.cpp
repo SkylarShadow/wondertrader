@@ -13,7 +13,7 @@
 #include "../WTSTools/WTSLogger.h"
 
 #include "../Includes/VvTSVariant.hpp"
-#include "../WTSUtils/VvTSCfgLoader.h"
+#include "../VvTSUtils/VvTSCfgLoader.h"
 
 USING_NS_VVTP;
 

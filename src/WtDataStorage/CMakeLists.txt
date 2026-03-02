@@ -16,7 +16,7 @@ LINK_DIRECTORIES(${LNKS})
 ADD_LIBRARY(WtDataStorage SHARED ${SRCS} ${HDRS})
 
 SET(LIBS
-	WTSUtils
+	VvTSUtils
 )
 
 IF (MSVC)

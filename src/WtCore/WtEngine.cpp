@@ -27,7 +27,7 @@
 #include "../Includes/VvTSRiskDef.hpp"
 
 #include "../WTSTools/WTSLogger.h"
-#include "../WTSUtils/VvTSCfgLoader.h"
+#include "../VvTSUtils/VvTSCfgLoader.h"
 
 #include <rapidjson/document.h>
 #include <rapidjson/prettywriter.h>

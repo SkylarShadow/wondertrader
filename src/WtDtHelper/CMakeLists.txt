@@ -16,7 +16,7 @@ LINK_DIRECTORIES(${LNKS})
 ADD_LIBRARY(WtDtHelper SHARED ${SRCS} ${HDRS})
 
 SET(LIBS
-	WTSUtils
+	VvTSUtils
     WTSTools
 )
 IF (MSVC)

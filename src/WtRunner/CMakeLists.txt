@@ -21,7 +21,7 @@ LINK_DIRECTORIES(${LNKS})
 SET(LIBS
 	WtCore
 	WTSTools
-	WTSUtils
+	VvTSUtils
 	)
 
 IF (MSVC)

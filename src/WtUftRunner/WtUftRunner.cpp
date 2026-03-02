@@ -15,8 +15,8 @@
 
 #include "../Includes/VvTSVariant.hpp"
 #include "../WTSTools/WTSLogger.h"
-#include "../WTSUtils/VvTSCfgLoader.h"
-#include "../WTSUtils/SignalHook.hpp"
+#include "../VvTSUtils/VvTSCfgLoader.h"
+#include "../VvTSUtils/SignalHook.hpp"
 #include "../Share/StrUtil.hpp"
 
 const char* getBinDir()

@@ -21,9 +21,9 @@
 #include "../Share/ModuleHelper.hpp"
 
 #include "../WTSTools/WTSLogger.h"
-#include "../WTSUtils/VvTSCfgLoader.h"
+#include "../VvTSUtils/VvTSCfgLoader.h"
 #include "../Includes/VvTSVariant.hpp"
-#include "../WTSUtils/SignalHook.hpp"
+#include "../VvTSUtils/SignalHook.hpp"
 
 #ifdef _MSC_VER
 #include "../Common/mdump.h"

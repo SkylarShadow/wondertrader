@@ -27,8 +27,8 @@
 #include "../WTSTools/WTSDataFactory.h"
 #include "../WTSTools/CsvHelper.h"
 
-#include "../WTSUtils/VvTSCmpHelper.hpp"
-#include "../WTSUtils/VvTSCfgLoader.h"
+#include "../VvTSUtils/VvTSCmpHelper.hpp"
+#include "../VvTSUtils/VvTSCfgLoader.h"
 
 #include "../Share/CodeHelper.hpp"
 

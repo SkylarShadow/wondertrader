@@ -13,7 +13,7 @@ file(GLOB SRCS *.cpp ./gtest/*.cc)
 
 SET(LIBS
     WTSTools
-	WTSUtils
+	VvTSUtils
     WtShareHelper)
 IF (MSVC)
 ELSE(GNUCC)

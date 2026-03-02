@@ -23,7 +23,7 @@
 + ***BaseLibs***
 	BaseLibs包含了整个解决方案的基础库
 	- Share			包含了整个框架的基础数据结构、基础对象以及所有接口的定义，也包含了一些公共方法的封装
-	- WTSUtilsLib	包含了整个框架用到的第三方组件，如*pugixml*、*zstdlib*、*base64*、*md5*等
+	- VvTSUtilsLib	包含了整个框架用到的第三方组件，如*pugixml*、*zstdlib*、*base64*、*md5*等
 	- WTSToolsLib	框架的通用工具库，很多基础工具都在该项目里定义，如日志模块*WTSLogger*、基础数据模模块*WTSBaseDataMgr*等
 + ***DataKit***
 	数据组件包含了数据接入以及落地的项目代码

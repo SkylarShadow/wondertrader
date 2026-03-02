@@ -95,7 +95,7 @@ else (GNUCC)
 endif()
 
 #basic libraries
-add_subdirectory(WTSUtils)
+add_subdirectory(VvTSUtils)
 add_subdirectory(WTSTools)
 
 #contract Loade through ctp channel

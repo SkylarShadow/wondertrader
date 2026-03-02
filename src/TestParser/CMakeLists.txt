@@ -13,7 +13,7 @@ file(GLOB SRCS *.cpp)
 
 SET(LIBS
 	WTSTools
-	WTSUtils
+	VvTSUtils
 	)
     
 IF (MSVC)
