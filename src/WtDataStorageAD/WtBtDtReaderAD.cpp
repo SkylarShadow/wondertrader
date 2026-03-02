@@ -1,8 +1,8 @@
 ﻿#include "WtBtDtReaderAD.h"
 #include "LMDBKeys.h"
 
-#include "../Includes/WTSStruct.h"
-#include "../Includes/VVTSVariant.hpp"
+#include "../Includes/VvTSStruct.h"
+#include "../Includes/VvTSVariant.hpp"
 #include "../Share/StrUtil.hpp"
 #include "../Share/StdUtils.hpp"
 
@@ -11,7 +11,7 @@ USING_NS_VVTP;
 //By Wesley @ 2022.01.05
 #include "../Share/fmtlib.h"
 template<typename... Args>
-inline void pipe_btreader_log(IBtDtReaderSink* sink, WTSLogLevel ll, const char* format, const Args&... args)
+inline void pipe_btreader_log(IBtDtReaderSink* sink, VvTSLogLevel ll, const char* format, const Args&... args)
 {
 	if (sink == NULL)
 		return;
@@ -48,7 +48,7 @@ WtBtDtReaderAD::~WtBtDtReaderAD()
 
 }
 
-void WtBtDtReaderAD::init(VVTSVariant* cfg, IBtDtReaderSink* sink)
+void WtBtDtReaderAD::init(VvTSVariant* cfg, IBtDtReaderSink* sink)
 {
 	_sink = sink;
 
@@ -61,7 +61,7 @@ void WtBtDtReaderAD::init(VVTSVariant* cfg, IBtDtReaderSink* sink)
 	pipe_btreader_log(_sink, LL_INFO, "WtBtDtReaderAD initialized, root data dir is {}", _base_dir);
 }
 
-bool WtBtDtReaderAD::read_raw_bars(const char* exchg, const char* code, WTSKlinePeriod period, std::string& buffer)
+bool WtBtDtReaderAD::read_raw_bars(const char* exchg, const char* code, VvTSKlinePeriod period, std::string& buffer)
 {
 	//直接从LMDB读取
 	WtLMDBPtr db = get_k_db(exchg, period);
@@ -78,7 +78,7 @@ bool WtBtDtReaderAD::read_raw_bars(const char* exchg, const char* code, WTSKline
 			return;
 
 		std::size_t cnt = ayVals.size();
-		auto szUnit = sizeof(WTSBarStruct);
+		auto szUnit = sizeof(VvTSBarStruct);
 		buffer.resize(szUnit*cnt);
 		char* cursor = (char*)buffer.data();
 		for(const std::string& item : ayVals)
@@ -108,7 +108,7 @@ bool WtBtDtReaderAD::read_raw_ticks(const char* exchg, const char* code, uint32_
 			return;
 
 		std::size_t cnt = ayVals.size();
-		auto szUnit = sizeof(WTSTickStruct);
+		auto szUnit = sizeof(VvTSTickStruct);
 		buffer.resize(szUnit*cnt);
 		char* cursor = (char*)buffer.data();
 		for (const std::string& item : ayVals)
@@ -121,7 +121,7 @@ bool WtBtDtReaderAD::read_raw_ticks(const char* exchg, const char* code, uint32_
 	return true;
 }
 
-WtBtDtReaderAD::WtLMDBPtr WtBtDtReaderAD::get_k_db(const char* exchg, WTSKlinePeriod period)
+WtBtDtReaderAD::WtLMDBPtr WtBtDtReaderAD::get_k_db(const char* exchg, VvTSKlinePeriod period)
 {
 	WtLMDBMap* the_map = NULL;
 	std::string subdir;

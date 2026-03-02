@@ -18,7 +18,7 @@
 
 
 NS_VVTP_BEGIN
-class WTSTickData;
+class VvTSTickData;
 NS_VVTP_END
 
 USING_NS_VVTP;
@@ -39,7 +39,7 @@ public:
 
 //IQuoteParser 接口
 public:
-	virtual bool init(VVTSVariant* config) override;
+	virtual bool init(VvTSVariant* config) override;
 
 	virtual void release() override;
 

@@ -2,10 +2,10 @@
 #include <boost/filesystem.hpp>
 
 #include "../Includes/ITraderApi.h"
-#include "../Includes/VVTSVariant.hpp"
-#include "../Includes/WTSTradeDef.hpp"
-#include "../Includes/WTSError.hpp"
-#include "../Includes/WTSCollection.hpp"
+#include "../Includes/VvTSVariant.hpp"
+#include "../Includes/VvTSTradeDef.hpp"
+#include "../Includes/VvTSError.hpp"
+#include "../Includes/VvTSCollection.hpp"
 
 #include "../Share/TimeUtils.hpp"
 #include "../Share/StdUtils.hpp"
@@ -44,7 +44,7 @@ class TraderSpi : public ITraderSpi
 public:
 	TraderSpi() :m_bLogined(false), m_mapOrds(NULL){}
 
-	bool init(VVTSVariant* params, const char* ttype)
+	bool init(VvTSVariant* params, const char* ttype)
 	{
 		m_pParams = params;
 		if (m_pParams)
@@ -212,7 +212,7 @@ public:
 
 		bool bNeedToday = (strcmp(exchg, "SHFE") == 0 || strcmp(exchg, "INE") == 0);
 
-		WTSEntrust* entrust = WTSEntrust::create(code, qty, price, exchg);
+		VvTSEntrust* entrust = VvTSEntrust::create(code, qty, price, exchg);
 		if(!isNet)
 		{
 			entrust->setDirection(bs == 0 ? WDT_LONG : WDT_SHORT);
@@ -286,7 +286,7 @@ public:
 		}
 
 		bool bNeedToday = (strcmp(exchg, "SHFE") == 0 || strcmp(exchg, "INE") == 0);
-		WTSEntrust* entrust = WTSEntrust::create(code, qty, 0, exchg);
+		VvTSEntrust* entrust = VvTSEntrust::create(code, qty, 0, exchg);
 		entrust->setDirection(bs == 0 ? WDT_LONG : WDT_SHORT);
 		entrust->setOffsetType(offset == 0 ? WOT_OPEN : (bNeedToday ? WOT_CLOSETODAY : WOT_CLOSE));
 		entrust->setPriceType(WPT_ANYPRICE);
@@ -323,9 +323,9 @@ public:
 		}
 
 		if (m_mapOrds == NULL)
-			m_mapOrds = WTSObjectMap::create();
+			m_mapOrds = VvTSObjectMap::create();
 
-		WTSOrderInfo* ordInfo = (WTSOrderInfo*)m_mapOrds->get(orderid);
+		VvTSOrderInfo* ordInfo = (VvTSOrderInfo*)m_mapOrds->get(orderid);
 		if (ordInfo == NULL)
 		{
 			WTSLogger::info("Order not exists, Check your orders or query orders first");
@@ -334,7 +334,7 @@ public:
 
 
 		WTSLogger::info("[{}]Canceling [{}]...", m_pParams->getCString("user"), orderid);
-		WTSEntrustAction* action = WTSEntrustAction::create(ordInfo->getCode(), ordInfo->getExchg());
+		VvTSEntrustAction* action = VvTSEntrustAction::create(ordInfo->getCode(), ordInfo->getExchg());
 		action->setEntrustID(ordInfo->getEntrustID());
 		action->setOrderID(ordInfo->getOrderID());
 		action->setActionFlag(WAF_CANCEL);
@@ -346,9 +346,9 @@ public:
 	}
 
 public:
-	virtual void handleEvent(WTSTraderEvent e, int32_t ec)
+	virtual void handleEvent(VvTSTraderEvent e, int32_t ec)
 	{
-		if(e == WTE_Connect)
+		if(e == VvTE_Connect)
 		{
 			if (ec == 0)
 			{
@@ -364,7 +364,7 @@ public:
 		}
 	}
 
-	virtual void handleTraderLog(WTSLogLevel ll, const char* message) override
+	virtual void handleTraderLog(VvTSLogLevel ll, const char* message) override
 	{
 		WTSLogger::log_raw(ll, message);
 	}
@@ -386,7 +386,7 @@ public:
 		g_condOpt.notify_all();
 	}
 
-	virtual void onRspEntrust(WTSEntrust* entrust, WTSError *err)
+	virtual void onRspEntrust(VvTSEntrust* entrust, VvTSError *err)
 	{
 		if(err)
 		{
@@ -397,11 +397,11 @@ public:
 		
 	}
 
-	virtual void onRspAccount(WTSArray* ayAccounts)
+	virtual void onRspAccount(VvTSArray* ayAccounts)
 	{
 		if(ayAccounts != NULL)
 		{
-			WTSAccountInfo* accInfo = (WTSAccountInfo*)ayAccounts->at(0);
+			VvTSAccountInfo* accInfo = (VvTSAccountInfo*)ayAccounts->at(0);
 			if(accInfo)
 			{
 				WTSLogger::info("[{}]Fund data updated, balance: {:.2f}", m_pParams->getCString("user"), accInfo->getBalance());
@@ -412,7 +412,7 @@ public:
 		g_condOpt.notify_all();
 	}
 
-	virtual void onRspPosition(const WTSArray* ayPositions)
+	virtual void onRspPosition(const VvTSArray* ayPositions)
 	{
 		uint32_t cnt = 0;
 		if (ayPositions != NULL)
@@ -421,7 +421,7 @@ public:
 		WTSLogger::info("[{}] Positions updated, {} item totally", m_pParams->getCString("user"), cnt);
 		for(uint32_t i = 0; i < cnt; i++)
 		{
-			WTSPositionItem* posItem = (WTSPositionItem*)((WTSArray*)ayPositions)->at(i);
+			VvTSPositionItem* posItem = (VvTSPositionItem*)((VvTSArray*)ayPositions)->at(i);
 			if(posItem && posItem->getTotalPosition() > 0)
 			{
 				if(g_riskAct)
@@ -437,19 +437,19 @@ public:
 		g_condOpt.notify_all();
 	}
 
-	virtual void onRspOrders(const WTSArray* ayOrders)
+	virtual void onRspOrders(const VvTSArray* ayOrders)
 	{
 		uint32_t cnt = 0;
 		if (ayOrders != NULL)
 			cnt = ayOrders->size();
 
 		if (m_mapOrds == NULL)
-			m_mapOrds = WTSObjectMap::create();
+			m_mapOrds = VvTSObjectMap::create();
 
 		m_mapOrds->clear();
 		for (uint32_t i = 0; i < cnt; i++)
 		{
-			WTSOrderInfo* ordInfo = (WTSOrderInfo*)((WTSArray*)ayOrders)->at(i);
+			VvTSOrderInfo* ordInfo = (VvTSOrderInfo*)((VvTSArray*)ayOrders)->at(i);
 			if (ordInfo->isAlive())
 			{
 				m_mapOrds->add(StrUtil::trim(ordInfo->getOrderID()), ordInfo, true);
@@ -463,7 +463,7 @@ public:
 		g_condOpt.notify_all();
 	}
 
-	virtual void onRspTrades(const WTSArray* ayTrades)
+	virtual void onRspTrades(const VvTSArray* ayTrades)
 	{
 		uint32_t cnt = 0;
 		if (ayTrades != NULL)
@@ -482,7 +482,7 @@ public:
 		g_condOpt.notify_all();
 	}
 
-	virtual void onPushOrder(WTSOrderInfo* orderInfo)
+	virtual void onPushOrder(VvTSOrderInfo* orderInfo)
 	{
 		std::string orderid = StrUtil::trim(orderInfo->getOrderID());
 		if(orderInfo->getOrderState() != WOS_Canceled)
@@ -490,7 +490,7 @@ public:
 			if(!orderid.empty())
 			{
 				if (m_mapOrds == NULL)
-					m_mapOrds = WTSObjectMap::create();
+					m_mapOrds = VvTSObjectMap::create();
 
 				if (m_mapOrds->find(orderid) == m_mapOrds->end())
 				{
@@ -522,7 +522,7 @@ public:
 		}
 	}
 
-	virtual void onPushTrade(WTSTradeInfo* tradeRecord)
+	virtual void onPushTrade(VvTSTradeInfo* tradeRecord)
 	{
 		WTSLogger::info("[{}] Trade pushed,contract: {},price: {},Volume: {}", m_pParams->getCString("user"), tradeRecord->getCode(), tradeRecord->getPrice(), tradeRecord->getVolume());
 
@@ -534,7 +534,7 @@ public:
 		}
 	}
 
-	virtual void onTraderError(WTSError*	err)
+	virtual void onTraderError(VvTSError*	err)
 	{
 		if(err && err->getErrorCode() == WEC_ORDERCANCEL)
 		{
@@ -561,10 +561,10 @@ private:
 	ITraderApi*			m_pTraderApi;
 	FuncDeleteTrader	m_funcDelTrader;
 	std::string			m_strModule;
-	VVTSVariant*			m_pParams;
+	VvTSVariant*			m_pParams;
 
-	typedef WTSHashMap<std::string>	WTSObjectMap;
-	WTSObjectMap*		m_mapOrds;
+	typedef VvTSHashMap<std::string>	VvTSObjectMap;
+	VvTSObjectMap*		m_mapOrds;
 
 	bool				m_bLogined;
 };
@@ -586,14 +586,14 @@ int main()
 {
 	WTSLogger::init("logcfg.yaml");
 
-	VVTSVariant* root = WTSCfgLoader::load_from_file("config.yaml");
+	VvTSVariant* root = WTSCfgLoader::load_from_file("config.yaml");
 	if(root == NULL)
 	{
 		WTSLogger::log_raw(LL_ERROR, "配置文件config.yaml加载失败");
 		return 0;
 	}
 
-	VVTSVariant* cfg = root->get("config");
+	VvTSVariant* cfg = root->get("config");
 	bool isUTF8 = cfg->getBoolean("utf8");
 	if(cfg->has("session"))
 		g_bdMgr.loadSessions(cfg->getCString("session"));
@@ -612,7 +612,7 @@ int main()
 
 	std::string module = cfg->getCString("trader");
 	std::string profile = cfg->getCString("profile");
-	VVTSVariant* params = root->get(profile.c_str());
+	VvTSVariant* params = root->get(profile.c_str());
 	if(params == NULL)
 	{
 		WTSLogger::error("配置项{}不存在", profile);

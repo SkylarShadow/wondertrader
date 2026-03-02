@@ -47,14 +47,14 @@ void WtRiskMonFact::enumRiskMonitors(FuncEnumRiskMonCallback cb)
 	cb(FACT_NAME, "SimpleRiskMon", true);
 }
 
-WtRiskMonitor* WtRiskMonFact::createRiskMonotor(const char* name)
+VvtRiskMonitor* WtRiskMonFact::createRiskMonotor(const char* name)
 {
 	if (strcmp(name, "SimpleRiskMon") == 0)
 		return new WtSimpleRiskMon();
 	return NULL;
 }
 
-bool WtRiskMonFact::deleteRiskMonotor(WtRiskMonitor* unit)
+bool WtRiskMonFact::deleteRiskMonotor(VvtRiskMonitor* unit)
 {
 	if (unit == NULL)
 		return true;

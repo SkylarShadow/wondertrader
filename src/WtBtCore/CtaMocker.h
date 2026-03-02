@@ -16,8 +16,8 @@
 #include "../Includes/FasterDefs.h"
 #include "../Includes/ICtaStraCtx.h"
 #include "../Includes/CtaStrategyDefs.h"
-#include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSCollection.hpp"
+#include "../Includes/VvTSDataDef.hpp"
+#include "../Includes/VvTSCollection.hpp"
 
 #include "../Share/DLLHelper.hpp"
 #include "../Share/StdUtils.hpp"
@@ -40,8 +40,8 @@ const char COND_ACTION_SP = 4;	//直接设置仓位
 
 typedef struct _CondEntrust
 {
-	WTSCompareField _field;
-	WTSCompareType	_alg;
+	VvTSCompareField _field;
+	VvTSCompareType	_alg;
 	double			_target;
 
 	double			_qty;
@@ -88,7 +88,7 @@ private:
 	void	proc_tick(const char* stdCode, double last_px, double cur_px);
 
 public:
-	bool	init_cta_factory(VVTSVariant* cfg);
+	bool	init_cta_factory(VvTSVariant* cfg);
 	void	load_incremental_data(const char* lastBacktestName);
 	void	install_hook();
 	void	enable_hook(bool bEnabled = true);
@@ -97,8 +97,8 @@ public:
 public:
 	//////////////////////////////////////////////////////////////////////////
 	//IDataSink
-	virtual void	handle_tick(const char* stdCode, WTSTickData* curTick, uint32_t pxType = 0) override;
-	virtual void	handle_bar_close(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar) override;
+	virtual void	handle_tick(const char* stdCode, VvTSTickData* curTick, uint32_t pxType = 0) override;
+	virtual void	handle_bar_close(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar) override;
 	virtual void	handle_schedule(uint32_t uDate, uint32_t uTime) override;
 
 	virtual void	handle_init() override;
@@ -117,13 +117,13 @@ public:
 	virtual void on_init() override;
 	virtual void on_session_begin(uint32_t curTDate) override;
 	virtual void on_session_end(uint32_t curTDate) override;
-	virtual void on_tick(const char* stdCode, WTSTickData* newTick, bool bEmitStrategy = true) override;
-	virtual void on_bar(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar) override;
+	virtual void on_tick(const char* stdCode, VvTSTickData* newTick, bool bEmitStrategy = true) override;
+	virtual void on_bar(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar) override;
 	virtual bool on_schedule(uint32_t curDate, uint32_t curTime) override;
 	virtual void enum_position(FuncEnumCtaPosCallBack cb, bool bForExecute) override;
 
-	virtual void on_tick_updated(const char* stdCode, WTSTickData* newTick) override;
-	virtual void on_bar_close(const char* stdCode, const char* period, WTSBarStruct* newBar) override;
+	virtual void on_tick_updated(const char* stdCode, VvTSTickData* newTick) override;
+	virtual void on_bar_close(const char* stdCode, const char* period, VvTSBarStruct* newBar) override;
 	virtual void on_calculate(uint32_t curDate, uint32_t curTime) override;
 
 
@@ -161,10 +161,10 @@ public:
 	virtual double stra_get_detail_cost(const char* stdCode, const char* userTag) override;
 	virtual double stra_get_detail_profit(const char* stdCode, const char* userTag, int flag = 0) override;
 
-	virtual WTSCommodityInfo* stra_get_comminfo(const char* stdCode) override;
-	virtual WTSKlineSlice*	stra_get_bars(const char* stdCode, const char* period, uint32_t count, bool isMain = false) override;
-	virtual WTSTickSlice*	stra_get_ticks(const char* stdCode, uint32_t count) override;
-	virtual WTSTickData*	stra_get_last_tick(const char* stdCode) override;
+	virtual VvTSCommodityInfo* stra_get_comminfo(const char* stdCode) override;
+	virtual VvTSKlineSlice*	stra_get_bars(const char* stdCode, const char* period, uint32_t count, bool isMain = false) override;
+	virtual VvTSTickSlice*	stra_get_ticks(const char* stdCode, uint32_t count) override;
+	virtual VvTSTickData*	stra_get_last_tick(const char* stdCode) override;
 
 	virtual void stra_sub_ticks(const char* stdCode) override;
 	virtual void stra_sub_bar_events(const char* stdCode, const char* period) override;
@@ -411,7 +411,7 @@ protected:
 	uint64_t		_last_cond_min;
 
 	//tick订阅列表
-	wt_hashset<std::string> _tick_subs;
+	vvt_hashset<std::string> _tick_subs;
 
 	std::string		_chart_code;
 	std::string		_chart_period;
@@ -432,6 +432,6 @@ protected:
 
 	std::unordered_map<std::string, ChartIndex>	_chart_indice;
 
-	typedef vvt_hashmap<std::string, WTSTickStruct>	TickCache;
+	typedef vvt_hashmap<std::string, VvTSTickStruct>	TickCache;
 	TickCache	_ticks;
 };

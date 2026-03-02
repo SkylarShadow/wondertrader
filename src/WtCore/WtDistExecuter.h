@@ -2,7 +2,7 @@
 #include "IExecCommand.h"
 
 NS_VVTP_BEGIN
-class VVTSVariant;
+class VvTSVariant;
 
 class WtDistExecuter : public IExecCommand
 {
@@ -15,7 +15,7 @@ public:
 	 *	初始化执行器
 	 *	传入初始化参数
 	 */
-	bool init(VVTSVariant* params);
+	bool init(VvTSVariant* params);
 
 
 public:
@@ -27,10 +27,10 @@ public:
 	virtual void on_position_changed(const char* stdCode, double targetPos) override;
 
 
-	virtual void on_tick(const char* stdCode, WTSTickData* newTick) override;
+	virtual void on_tick(const char* stdCode, VvTSTickData* newTick) override;
 
 private:
-	VVTSVariant*			_config;
+	VvTSVariant*			_config;
 
 	uint32_t			_scale;
 

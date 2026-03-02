@@ -183,7 +183,7 @@ bool KilledBySignal::operator()(int exit_status) const {
     }
   }
 #  endif  // defined(GTEST_KILLED_BY_SIGNAL_OVERRIDE_)
-  return WIFSIGNALED(exit_status) && WTERMSIG(exit_status) == signum_;
+  return WIFSIGNALED(exit_status) && VvTERMSIG(exit_status) == signum_;
 }
 # endif  // !GTEST_OS_WINDOWS && !GTEST_OS_FUCHSIA
 
@@ -205,7 +205,7 @@ static std::string ExitSummary(int exit_code) {
   if (WIFEXITED(exit_code)) {
     m << "Exited with exit status " << WEXITSTATUS(exit_code);
   } else if (WIFSIGNALED(exit_code)) {
-    m << "Terminated by signal " << WTERMSIG(exit_code);
+    m << "Terminated by signal " << VvTERMSIG(exit_code);
   }
 #  ifdef WCOREDUMP
   if (WCOREDUMP(exit_code)) {

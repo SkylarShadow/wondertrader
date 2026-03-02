@@ -23,19 +23,19 @@ public:
 
 	void	set_positions(vvt_hashmap<std::string, double> target_pos);
 	void	handle_pos_change(const char* stdCode, double targetPos, double diffPos, const char* execid = "ALL");
-	void	handle_tick(const char* stdCode, WTSTickData* curTick);
+	void	handle_tick(const char* stdCode, VvTSTickData* curTick);
 
 	/*
 	 *	加载路由规则
 	 */
-	bool	load_router_rules(VVTSVariant* config);
+	bool	load_router_rules(VvTSVariant* config);
 
 	/*
 	 *	
 	 */
-	inline const wt_hashset<std::string>& get_route(const char* strategyid)
+	inline const vvt_hashset<std::string>& get_route(const char* strategyid)
 	{
-		static wt_hashset<std::string> ALL_EXECUTERS;
+		static vvt_hashset<std::string> ALL_EXECUTERS;
 		if (ALL_EXECUTERS.empty())
 			ALL_EXECUTERS.insert("ALL");
 
@@ -79,9 +79,9 @@ private:
 	typedef vvt_hashmap<std::string, double> TargetsMap;
 	vvt_hashmap<std::string, TargetsMap>	_all_cached_targets;
 
-	typedef wt_hashset<std::string>	ExecuterSet;
+	typedef vvt_hashset<std::string>	ExecuterSet;
 	vvt_hashmap<std::string, ExecuterSet>	_router_rules;
 
-	wt_hashset<std::string>	_routed_executers;
+	vvt_hashset<std::string>	_routed_executers;
 };
 NS_VVTP_END

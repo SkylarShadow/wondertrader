@@ -11,7 +11,7 @@
 #include "../WTSTools/WTSBaseDataMgr.h"
 
 NS_VVTP_BEGIN
-class VVTSVariant;
+class VvTSVariant;
 NS_VVTP_END
 
 USING_NS_VVTP;
@@ -42,7 +42,7 @@ public:
 
 	IHotMgr* get_hot_mgr() { return &_hot_mgr; }
 
-	WTSSessionInfo* get_session_info(const char* sid, bool isCode = true);
+	VvTSSessionInfo* get_session_info(const char* sid, bool isCode = true);
 
 	//////////////////////////////////////////////////////////////////////////
 	/// <summary>
@@ -50,20 +50,20 @@ public:
 	/// </summary>
 	/// <param name="curTick">最新的tick数据</param>
 	/// <param name="isHot">是否是主力合约代码</param>
-	virtual void handle_push_quote(WTSTickData* curTick) override;
+	virtual void handle_push_quote(VvTSTickData* curTick) override;
 
 	///////////////////////////////////////////////////////////////////////////
 	//IExecuterStub 接口
 	virtual uint64_t get_real_time() override;
-	virtual WTSCommodityInfo* get_comm_info(const char* stdCode) override;
-	virtual WTSSessionInfo* get_sess_info(const char* stdCode) override;
+	virtual VvTSCommodityInfo* get_comm_info(const char* stdCode) override;
+	virtual VvTSSessionInfo* get_sess_info(const char* stdCode) override;
 	virtual IHotMgr* get_hot_mon() override { return &_hot_mgr; }
 	virtual uint32_t get_trading_day() override;
 
 private:
-	bool initTraders(VVTSVariant* cfgTrader);
-	bool initParsers(VVTSVariant* cfgParser);
-	bool initExecuters(VVTSVariant* cfgExecuter);
+	bool initTraders(VvTSVariant* cfgTrader);
+	bool initParsers(VvTSVariant* cfgParser);
+	bool initExecuters(VvTSVariant* cfgExecuter);
 	bool initDataMgr();
 	bool initActionPolicy();
 
@@ -73,7 +73,7 @@ private:
 	WtExecuterFactory	_exe_factory;
 	WtExecuterMgr		_exe_mgr;
 
-	VVTSVariant*			_config;
+	VvTSVariant*			_config;
 
 	WtSimpDataMgr		_data_mgr;
 

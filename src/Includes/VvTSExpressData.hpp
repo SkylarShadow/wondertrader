@@ -1,5 +1,5 @@
 ﻿/*!
- * \file WTSExpressData.hpp
+ * \file VvTSExpressData.hpp
  * \project	WonderTrader
  *
  * \author Wesley
@@ -9,8 +9,8 @@
  */
 #pragma once
 #include <stdint.h>
-#include "WTSDataDef.hpp"
-#include "VVTSMarcos.h"
+#include "VvTSDataDef.hpp"
+#include "VvTSMarcos.h"
 
 #ifdef _MSC_VER
 #include <WTypes.h>
@@ -26,12 +26,12 @@ NS_VVTP_BEGIN
 
 //////////////////////////////////////////////////////////////////////////
 //线型类,指标用到
-class WTSLineInfo : public WTSObject
+class VvTSLineInfo : public VvTSObject
 {
 public:
-	static WTSLineInfo* create(COLORREF clr, int width = 1, int style = 0)
+	static VvTSLineInfo* create(COLORREF clr, int width = 1, int style = 0)
 	{
-		WTSLineInfo* pRet = new WTSLineInfo();
+		VvTSLineInfo* pRet = new VvTSLineInfo();
 		pRet->_line_color = clr;
 		pRet->_line_width = width;
 		pRet->_line_style = style;
@@ -43,7 +43,7 @@ public:
 	int style() const{return _line_style;}
 
 protected:
-	WTSLineInfo()
+	VvTSLineInfo()
 	:_line_color(RGB(255,255,255))
 	,_line_width(1)
 	,_line_style(0){}
@@ -57,12 +57,12 @@ protected:
 
 //////////////////////////////////////////////////////////////////////////
 //指标参数类
-class WTSExpressParams : public WTSObject
+class VvTSExpressParams : public VvTSObject
 {
 public:
-	static	WTSExpressParams* create()
+	static	VvTSExpressParams* create()
 	{
-		WTSExpressParams* pRet = new WTSExpressParams;
+		VvTSExpressParams* pRet = new VvTSExpressParams;
 
 		return pRet;
 	}
@@ -98,12 +98,12 @@ protected:
 
 //////////////////////////////////////////////////////////////////////////
 //指标线类
-class WTSExpressLine : public WTSValueArray
+class VvTSExpressLine : public VvTSValueArray
 {
 public:
-	static WTSExpressLine*	create(uint32_t size, WTSExpressLineType lineType = WELT_Polyline, uint32_t decimal = 0, uint32_t uStyle = ELS_LINE_VISIBLE|ELS_TITLE_VISIBLE)
+	static VvTSExpressLine*	create(uint32_t size, VvTSExpressLineType lineType = WELT_Polyline, uint32_t decimal = 0, uint32_t uStyle = ELS_LINE_VISIBLE|ELS_TITLE_VISIBLE)
 	{
-		WTSExpressLine* pRet = new WTSExpressLine;
+		VvTSExpressLine* pRet = new VvTSExpressLine;
 		pRet->m_uDecimal = decimal;
 		pRet->m_uStyle = uStyle;
 		pRet->m_lineType = lineType;
@@ -112,7 +112,7 @@ public:
 		return pRet;
 	}
 
-	WTSExpressLine(): m_ayLineInfo(NULL){}
+	VvTSExpressLine(): m_ayLineInfo(NULL){}
 
 	virtual void release()
 	{
@@ -121,12 +121,12 @@ public:
 			m_ayLineInfo->release();
 		}
 
-		WTSObject::release();
+		VvTSObject::release();
 	}
 
 	virtual void retain()
 	{
-		WTSObject::retain();
+		VvTSObject::retain();
 	}
 
 	/*
@@ -149,21 +149,21 @@ public:
 	 */
 	uint32_t	getDecimal(){return m_uDecimal;}
 
-	void		addLineInfo(WTSLineInfo* lineInfo)
+	void		addLineInfo(VvTSLineInfo* lineInfo)
 	{
 		if(m_ayLineInfo == NULL)
 		{
-			m_ayLineInfo = WTSArray::create();
+			m_ayLineInfo = VvTSArray::create();
 		}
 		m_ayLineInfo->append(lineInfo, true);
 	}
 
-	WTSLineInfo*	getLineInfo(uint32_t idx = 0)
+	VvTSLineInfo*	getLineInfo(uint32_t idx = 0)
 	{
 		if(m_ayLineInfo == NULL || m_ayLineInfo->size()==0 || idx >= m_ayLineInfo->size())
 			return NULL;
 
-		return STATIC_CONVERT(m_ayLineInfo->at(idx), WTSLineInfo*);
+		return STATIC_CONVERT(m_ayLineInfo->at(idx), VvTSLineInfo*);
 	}
 
 	void		clearLineInfo()
@@ -177,38 +177,38 @@ public:
 
 	bool		isStyle(uint32_t uStyle) const{ return (m_uStyle & uStyle) == uStyle; }
 
-	void		setLineType(WTSExpressLineType lineType){m_lineType = lineType;}
-	WTSExpressLineType getLineType() const{return m_lineType;}
+	void		setLineType(VvTSExpressLineType lineType){m_lineType = lineType;}
+	VvTSExpressLineType getLineType() const{return m_lineType;}
 
 protected:
-	WTSArray*		m_ayLineInfo;
+	VvTSArray*		m_ayLineInfo;
 	std::string		m_strLineTag;
 	uint32_t		m_uStyle;
 
 	uint32_t		m_uDecimal;
 	std::string		m_strFormat;
-	WTSExpressLineType	m_lineType;
+	VvTSExpressLineType	m_lineType;
 };
-typedef vector<WTSExpressLine*>	WTSVecExpLines;
+typedef vector<VvTSExpressLine*>	VvTSVecExpLines;
 
 
 //////////////////////////////////////////////////////////////////////////
 //指标类
-class WTSExpressData : public WTSObject
+class VvTSExpressData : public VvTSObject
 {
 public:
-	static WTSExpressData*	create(const char* title, WTSExpressType eType = WET_Unique)
+	static VvTSExpressData*	create(const char* title, VvTSExpressType eType = WET_Unique)
 	{
-		WTSExpressData* pRet = new WTSExpressData;
+		VvTSExpressData* pRet = new VvTSExpressData;
 		pRet->setTitle(title);
 		pRet->setType(eType);
 		return pRet;
 	}
 
 protected:
-	WTSExpressData() :m_ayExpLines(NULL), m_dDevide(1.0), m_dBaseLine(0.0), m_bBaseLine(false){}
+	VvTSExpressData() :m_ayExpLines(NULL), m_dDevide(1.0), m_dBaseLine(0.0), m_bBaseLine(false){}
 
-	virtual ~WTSExpressData()
+	virtual ~VvTSExpressData()
 	{
 		
 	}
@@ -219,14 +219,14 @@ public:
 		if (isSingleRefs() && m_ayExpLines)
 			m_ayExpLines->release();
 
-		WTSObject::release();
+		VvTSObject::release();
 	}
 
 	void		setTitle(const char* title){m_strExpTitle = title;}
 	const char* getTitle() const{return m_strExpTitle.c_str();}
 
-	void		setType(WTSExpressType eType){m_expType = eType;}
-	WTSExpressType	getType() const{return m_expType;}
+	void		setType(VvTSExpressType eType){m_expType = eType;}
+	VvTSExpressType	getType() const{return m_expType;}
 
 	void		setBaseLine(bool bEnable = true, double dBaseLine = 0.0)
 	{
@@ -237,13 +237,13 @@ public:
 	bool		hasBaseLine() const{ return m_bBaseLine; }
 	double		getBaseLine() const{ return m_dBaseLine; }
 
-	uint32_t	addExpLine(WTSExpressLine* line)
+	uint32_t	addExpLine(VvTSExpressLine* line)
 	{
 		if(NULL == line)
 			return INVALID_UINT32;
 
 		if(NULL == m_ayExpLines)
-			m_ayExpLines = WTSArray::create();
+			m_ayExpLines = VvTSArray::create();
 
 		m_ayExpLines->append(line, false);
 
@@ -251,12 +251,12 @@ public:
 	}
 
 
-	WTSExpressLine*	getExpLine(uint32_t idx)
+	VvTSExpressLine*	getExpLine(uint32_t idx)
 	{
 		if(NULL == m_ayExpLines || idx >= m_ayExpLines->size())
 			return NULL;
 
-		return STATIC_CONVERT(m_ayExpLines->at(idx), WTSExpressLine*);
+		return STATIC_CONVERT(m_ayExpLines->at(idx), VvTSExpressLine*);
 	}
 
 	uint32_t	getLineCount(){return (NULL == m_ayExpLines)?0:m_ayExpLines->size();}
@@ -269,8 +269,8 @@ public:
 		if(idx0 >= m_ayExpLines->size() || idx1 >= m_ayExpLines->size())
 			return false;
 
-		WTSExpressLine* line0 = STATIC_CONVERT(m_ayExpLines->at(idx0),WTSExpressLine*);
-		WTSExpressLine* line1 = STATIC_CONVERT(m_ayExpLines->at(idx1),WTSExpressLine*);
+		VvTSExpressLine* line0 = STATIC_CONVERT(m_ayExpLines->at(idx0),VvTSExpressLine*);
+		VvTSExpressLine* line1 = STATIC_CONVERT(m_ayExpLines->at(idx1),VvTSExpressLine*);
 
 		if(line0->size() < 2 || line1->size() < 2)
 			return false;
@@ -295,8 +295,8 @@ public:
 		if(idx0 >= m_ayExpLines->size() || idx1 >= m_ayExpLines->size())
 			return false;
 
-		WTSExpressLine* line0 = STATIC_CONVERT(m_ayExpLines->at(idx0),WTSExpressLine*);
-		WTSExpressLine* line1 = STATIC_CONVERT(m_ayExpLines->at(idx1),WTSExpressLine*);
+		VvTSExpressLine* line0 = STATIC_CONVERT(m_ayExpLines->at(idx0),VvTSExpressLine*);
+		VvTSExpressLine* line1 = STATIC_CONVERT(m_ayExpLines->at(idx1),VvTSExpressLine*);
 
 		if(line0->size() < 2 || line1->size() < 2)
 			return false;
@@ -316,10 +316,10 @@ public:
 	double		maxvalue(int32_t head, int32_t tail) const
 	{
 		double ret = INVALID_DOUBLE;
-		WTSArray::ConstIterator it = m_ayExpLines->begin();
+		VvTSArray::ConstIterator it = m_ayExpLines->begin();
 		for(; it != m_ayExpLines->end(); it++)
 		{
-			WTSExpressLine* line = STATIC_CONVERT(*it, WTSExpressLine*);
+			VvTSExpressLine* line = STATIC_CONVERT(*it, VvTSExpressLine*);
 			bool bAbs = (line->getLineType() == WELT_VolStick || line->getLineType() == WELT_AStickLine);
 			double v = line->maxvalue(head, tail, bAbs);
 			if(v == INVALID_DOUBLE)
@@ -336,10 +336,10 @@ public:
 	double		minvalue(int32_t head, int32_t tail) const
 	{
 		double ret = INVALID_DOUBLE;
-		WTSArray::ConstIterator it = m_ayExpLines->begin();
+		VvTSArray::ConstIterator it = m_ayExpLines->begin();
 		for(; it != m_ayExpLines->end(); it++)
 		{
-			WTSExpressLine* line = STATIC_CONVERT(*it, WTSExpressLine*);
+			VvTSExpressLine* line = STATIC_CONVERT(*it, VvTSExpressLine*);
 			bool bAbs = (line->getLineType() == WELT_VolStick || line->getLineType() == WELT_AStickLine);
 			if(bAbs)//原因是成交量柱,是以0开始绘制的
 				return 0;
@@ -360,7 +360,7 @@ public:
 		if(NULL == m_ayExpLines || m_ayExpLines->size()==0)
 			return 0;
 
-		return STATIC_CONVERT(m_ayExpLines->at(0), WTSExpressLine*)->size();
+		return STATIC_CONVERT(m_ayExpLines->at(0), VvTSExpressLine*)->size();
 	}
 
 	uint32_t	getPrecision() const { return m_uPrec; }
@@ -370,9 +370,9 @@ public:
 	double		getDevide() const{return m_dDevide;}
 
 protected:
-	WTSArray*		m_ayExpLines;
+	VvTSArray*		m_ayExpLines;
 	std::string		m_strExpTitle;
-	WTSExpressType	m_expType;
+	VvTSExpressType	m_expType;
 	uint32_t		m_uPrec;
 	double			m_dDevide;
 

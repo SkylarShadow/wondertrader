@@ -11,7 +11,7 @@
 
 
 template<typename... Args>
-inline void write_log(ITraderSpi* sink, WTSLogLevel ll, const char* format, const Args&... args)
+inline void write_log(ITraderSpi* sink, VvTSLogLevel ll, const char* format, const Args&... args)
 {
 	if (sink == NULL)
 		return;
@@ -81,7 +81,7 @@ TraderHuaX::~TraderHuaX()
 
 #pragma region "Huax::API::TraderSpi"
 
-WTSEntrust* TraderHuaX::makeEntrust(CTORATstpInputOrderField* entrust_info)
+VvTSEntrust* TraderHuaX::makeEntrust(CTORATstpInputOrderField* entrust_info)
 {
 	std::string code, exchg;
 	if (entrust_info->ExchangeID == TORA_TSTP_EXD_SSE)
@@ -95,11 +95,11 @@ WTSEntrust* TraderHuaX::makeEntrust(CTORATstpInputOrderField* entrust_info)
 	}
 
 	code = entrust_info->SecurityID;
-	WTSContractInfo* ct = _bd_mgr->getContract(code.c_str(), exchg.c_str());
+	VvTSContractInfo* ct = _bd_mgr->getContract(code.c_str(), exchg.c_str());
 	if (ct == NULL)
 		return NULL;
 
-	WTSEntrust* pRet = WTSEntrust::create(
+	VvTSEntrust* pRet = VvTSEntrust::create(
 		code.c_str(),
 		(uint32_t)entrust_info->VolumeTotalOriginal,
 		entrust_info->OrderPriceType,
@@ -123,7 +123,7 @@ WTSEntrust* TraderHuaX::makeEntrust(CTORATstpInputOrderField* entrust_info)
 	return pRet;
 }
 
-WTSOrderInfo* TraderHuaX::makeOrderInfo(CTORATstpOrderField* order_info)
+VvTSOrderInfo* TraderHuaX::makeOrderInfo(CTORATstpOrderField* order_info)
 {
 	std::string code, exchg;
 	if (order_info->ExchangeID == TORA_TSTP_EXD_SSE)
@@ -131,11 +131,11 @@ WTSOrderInfo* TraderHuaX::makeOrderInfo(CTORATstpOrderField* order_info)
 	else
 		exchg = WT_MKT_SZ_A;
 	code = order_info->SecurityID;
-	WTSContractInfo* contract = _bd_mgr->getContract(code.c_str(), exchg.c_str());
+	VvTSContractInfo* contract = _bd_mgr->getContract(code.c_str(), exchg.c_str());
 	if (contract == NULL)
 		return NULL;
 
-	WTSOrderInfo* pRet = WTSOrderInfo::create();
+	VvTSOrderInfo* pRet = VvTSOrderInfo::create();
 	pRet->setContractInfo(contract);
 	pRet->setPrice(order_info->LimitPrice);
 	pRet->setVolume((uint32_t)order_info->VolumeTotalOriginal);
@@ -191,7 +191,7 @@ WTSOrderInfo* TraderHuaX::makeOrderInfo(CTORATstpOrderField* order_info)
 	return pRet;
 }
 
-WTSTradeInfo* TraderHuaX::makeTradeInfo(CTORATstpTradeField* trade_info)
+VvTSTradeInfo* TraderHuaX::makeTradeInfo(CTORATstpTradeField* trade_info)
 {
 	std::string code, exchg;
 	if (trade_info->ExchangeID == TORA_TSTP_EXD_SSE)
@@ -199,11 +199,11 @@ WTSTradeInfo* TraderHuaX::makeTradeInfo(CTORATstpTradeField* trade_info)
 	else if (trade_info->ExchangeID == TORA_TSTP_EXD_SZSE)
 		exchg = WT_MKT_SZ_A;
 	code = trade_info->SecurityID;
-	WTSContractInfo* contract = _bd_mgr->getContract(code.c_str(), exchg.c_str());
+	VvTSContractInfo* contract = _bd_mgr->getContract(code.c_str(), exchg.c_str());
 	if (contract == NULL)
 		return NULL;
 
-	WTSTradeInfo *pRet = WTSTradeInfo::create(code.c_str(), exchg.c_str());
+	VvTSTradeInfo *pRet = VvTSTradeInfo::create(code.c_str(), exchg.c_str());
 	pRet->setVolume((uint32_t)trade_info->Volume);
 	pRet->setPrice(trade_info->Price);
 	pRet->setTradeID(trade_info->TradeID);
@@ -227,7 +227,7 @@ WTSTradeInfo* TraderHuaX::makeTradeInfo(CTORATstpTradeField* trade_info)
 
 	genEntrustID(pRet->getRefOrder(), trade_info->OrderRef);
 
-	pRet->setTradeType(WTT_Common);
+	pRet->setTradeType(VvTT_Common);
 
 	double amount = pRet->getVolume() * pRet->getPrice();
 	pRet->setAmount(amount);
@@ -239,7 +239,7 @@ WTSTradeInfo* TraderHuaX::makeTradeInfo(CTORATstpTradeField* trade_info)
 	return pRet;
 }
 
-inline WTSPositionItem* TraderHuaX::makePositionItem(CTORATstpPositionField* position_info)
+inline VvTSPositionItem* TraderHuaX::makePositionItem(CTORATstpPositionField* position_info)
 {
 	std::string code, exchg;
 	if (position_info->ExchangeID == TORA_TSTP_EXD_SSE)
@@ -247,12 +247,12 @@ inline WTSPositionItem* TraderHuaX::makePositionItem(CTORATstpPositionField* pos
 	else if (position_info->ExchangeID == TORA_TSTP_EXD_SZSE)
 		exchg = WT_MKT_SZ_A;
 	code = position_info->SecurityID;
-	WTSContractInfo* contract = _bd_mgr->getContract(code.c_str(), exchg.c_str());
+	VvTSContractInfo* contract = _bd_mgr->getContract(code.c_str(), exchg.c_str());
 	if (contract)
 	{
-		WTSCommodityInfo* commInfo = contract->getCommInfo();
+		VvTSCommodityInfo* commInfo = contract->getCommInfo();
 		std::string key = code;
-		WTSPositionItem* pos = WTSPositionItem::create(code.c_str(), commInfo->getCurrency(), commInfo->getExchg());
+		VvTSPositionItem* pos = VvTSPositionItem::create(code.c_str(), commInfo->getCurrency(), commInfo->getExchg());
 		pos->setContractInfo(contract);
 		pos->setDirection(WDT_LONG);
 
@@ -271,9 +271,9 @@ inline WTSPositionItem* TraderHuaX::makePositionItem(CTORATstpPositionField* pos
 	return nullptr;
 }
 
-inline WTSAccountInfo* TraderHuaX::makeAccountInfo(CTORATstpTradingAccountField* accountField)
+inline VvTSAccountInfo* TraderHuaX::makeAccountInfo(CTORATstpTradingAccountField* accountField)
 {
-	WTSAccountInfo* accountInfo = WTSAccountInfo::create();
+	VvTSAccountInfo* accountInfo = VvTSAccountInfo::create();
 	accountInfo->setPreBalance(accountField->PreDeposit);
 	accountInfo->setCloseProfit(0);
 	accountInfo->setDynProfit(0);
@@ -305,7 +305,7 @@ inline WTSAccountInfo* TraderHuaX::makeAccountInfo(CTORATstpTradingAccountField*
 void TraderHuaX::OnFrontDisconnected(int nReason)
 {
 	if (_sink)
-		_sink->handleEvent(WTE_Close, nReason);
+		_sink->handleEvent(VvTE_Close, nReason);
 
 	_state = TS_NOTLOGIN;
 	//_asyncio.post([this](){
@@ -323,15 +323,15 @@ void TraderHuaX::OnRspError(CTORATstpRspInfoField* pRspInfoField, int nRequestID
 
 void TraderHuaX::OnRspOrderInsert(CTORATstpInputOrderField* pInputOrderField, CTORATstpRspInfoField* pRspInfoField, int nRequestID)
 {
-	WTSError* error = nullptr;
-	WTSEntrust* entrust = nullptr;
+	VvTSError* error = nullptr;
+	VvTSEntrust* entrust = nullptr;
 	if (IsErrorInfo(pRspInfoField))
 	{
-		error = WTSError::create(WEC_ORDERINSERT, pRspInfoField->ErrorMsg);
+		error = VvTSError::create(WEC_ORDERINSERT, pRspInfoField->ErrorMsg);
 	}
 	else
 	{
-		error = WTSError::create(WEC_NONE, pRspInfoField->ErrorMsg);
+		error = VvTSError::create(WEC_NONE, pRspInfoField->ErrorMsg);
 	}
 
 	entrust = makeEntrust(pInputOrderField);
@@ -346,7 +346,7 @@ void TraderHuaX::OnRspOrderInsert(CTORATstpInputOrderField* pInputOrderField, CT
 
 void TraderHuaX::OnRtnOrder(CTORATstpOrderField* pOrderField)
 {
-	WTSOrderInfo* orderInfo = makeOrderInfo(pOrderField);
+	VvTSOrderInfo* orderInfo = makeOrderInfo(pOrderField);
 	if (orderInfo)
 	{
 		if (_sink)
@@ -357,8 +357,8 @@ void TraderHuaX::OnRtnOrder(CTORATstpOrderField* pOrderField)
 
 void TraderHuaX::OnErrRtnOrderInsert(CTORATstpInputOrderField* pInputOrderField, CTORATstpRspInfoField* pRspInfoField, int nRequestID)
 {
-	WTSEntrust* entrust = makeEntrust(pInputOrderField);
-	WTSError* error = WTSError::create(WEC_ORDERINSERT, pRspInfoField->ErrorMsg);
+	VvTSEntrust* entrust = makeEntrust(pInputOrderField);
+	VvTSError* error = VvTSError::create(WEC_ORDERINSERT, pRspInfoField->ErrorMsg);
 
 	if (error && entrust)
 	{
@@ -371,7 +371,7 @@ void TraderHuaX::OnErrRtnOrderInsert(CTORATstpInputOrderField* pInputOrderField,
 
 void TraderHuaX::OnRtnTrade(CTORATstpTradeField* pTradeField)
 {
-	WTSTradeInfo* trdInfo = makeTradeInfo(pTradeField);
+	VvTSTradeInfo* trdInfo = makeTradeInfo(pTradeField);
 	if (trdInfo)
 	{
 		if (_sink)
@@ -385,7 +385,7 @@ void TraderHuaX::OnErrRtnOrderAction(CTORATstpInputOrderActionField* pInputOrder
 {
 	if (IsErrorInfo(pRspInfoField))
 	{
-		WTSError* error = WTSError::create(WEC_ORDERCANCEL, pRspInfoField->ErrorMsg);
+		VvTSError* error = VvTSError::create(WEC_ORDERCANCEL, pRspInfoField->ErrorMsg);
 		_sink->onTraderError(error);
 		error->release();
 	}
@@ -396,9 +396,9 @@ void TraderHuaX::OnRspQryOrder(CTORATstpOrderField* pOrderField, CTORATstpRspInf
 	if (!IsErrorInfo(pRspInfoField) && pOrderField)
 	{
 		if (NULL == _orders)
-			_orders = WTSArray::create();
+			_orders = VvTSArray::create();
 
-		WTSOrderInfo* orderInfo = makeOrderInfo(pOrderField);
+		VvTSOrderInfo* orderInfo = makeOrderInfo(pOrderField);
 		if (orderInfo)
 		{
 			_orders->append(orderInfo, false);
@@ -420,9 +420,9 @@ void TraderHuaX::OnRspQryTrade(CTORATstpTradeField* pTradeField, CTORATstpRspInf
 	if (!IsErrorInfo(pRspInfoField) && pTradeField)
 	{
 		if (NULL == _trades)
-			_trades = WTSArray::create();
+			_trades = VvTSArray::create();
 
-		WTSTradeInfo* trdInfo = makeTradeInfo(pTradeField);
+		VvTSTradeInfo* trdInfo = makeTradeInfo(pTradeField);
 		if (trdInfo)
 		{
 			_trades->append(trdInfo, false);
@@ -444,11 +444,11 @@ void TraderHuaX::OnRspQryPosition(CTORATstpPositionField* pPositionField, CTORAT
 	if (!IsErrorInfo(pRspInfoField) && pPositionField)
 	{
 		if (NULL == _positions)
-			_positions = WTSArray::create();
+			_positions = VvTSArray::create();
 
 		// 华鑫里面持仓没有买卖方向，用证券代码做key
 		std::string key = pPositionField->SecurityID;
-		WTSPositionItem* pos = makePositionItem(pPositionField);
+		VvTSPositionItem* pos = makePositionItem(pPositionField);
 		if (pos)
 		{
 			_positions->append(pos, false);
@@ -472,8 +472,8 @@ void TraderHuaX::OnRspQryTradingAccount(CTORATstpTradingAccountField* pTradingAc
 	if (!IsErrorInfo(pRspInfoField) && pTradingAccountField)
 	{
 		if (NULL == _accounts)
-			_accounts = WTSArray::create();
-		WTSAccountInfo* accountInfo = makeAccountInfo(pTradingAccountField);
+			_accounts = VvTSArray::create();
+		VvTSAccountInfo* accountInfo = makeAccountInfo(pTradingAccountField);
 
 		if (accountInfo)
 		{
@@ -497,7 +497,7 @@ void TraderHuaX::OnRspUserLogin(CTORATstpRspUserLoginField* pRspUserLoginField, 
 	{
 		write_log(_sink, LL_INFO, "[TraderHuaX] [{}] Login faild, erroMsg: {}...", _user.c_str(), pRspInfoField->ErrorMsg);
 		if (_sink)
-			_sink->handleEvent(WTE_Logout, -1);
+			_sink->handleEvent(VvTE_Logout, -1);
 		StdThreadPtr thrd(new StdThread([this]() {
 			std::this_thread::sleep_for(std::chrono::seconds(2));
 			write_log(_sink, LL_WARN, "[TraderHuaX] {} relogin...", _user.c_str());
@@ -534,7 +534,7 @@ void TraderHuaX::OnRspGetConnectionInfo(CTORATstpConnectionInfoField* pConnectio
 			pConnectionInfoField->OuterPort,
 			pConnectionInfoField->MacAddress);
 		if (_sink)
-			_sink->handleEvent(WTE_Connect, 0);
+			_sink->handleEvent(VvTE_Connect, 0);
 	}
 	else
 	{
@@ -612,7 +612,7 @@ void TraderHuaX::OnFrontConnected()
 #pragma endregion "Huax::API:TraderSpi"
 
 #pragma region "ITraderApi"
-bool TraderHuaX::init(VVTSVariant *params)
+bool TraderHuaX::init(VvTSVariant *params)
 {
 	_user = params->getCString("user");
 	_pass = params->getCString("pass");
@@ -707,7 +707,7 @@ void TraderHuaX::reconnect()
 	if (_api == NULL)
 	{
 		if (_sink)
-			_sink->handleEvent(WTE_Connect, -1);
+			_sink->handleEvent(VvTE_Connect, -1);
 		write_log(_sink,LL_ERROR, "[TraderHuaX] Module initializing failed");
 
 		StdThreadPtr thrd(new StdThread([this](){
@@ -847,7 +847,7 @@ int TraderHuaX::logout()
 	return 0;
 }
 
-int TraderHuaX::orderInsert(WTSEntrust* entrust)
+int TraderHuaX::orderInsert(VvTSEntrust* entrust)
 {
 	if (_api == NULL || _state != TS_ALLREADY)
 	{
@@ -907,7 +907,7 @@ int TraderHuaX::orderInsert(WTSEntrust* entrust)
 	return 0;
 }
 
-int TraderHuaX::orderAction(WTSEntrustAction* action)
+int TraderHuaX::orderAction(VvTSEntrustAction* action)
 {
 	if (_api == NULL || _state != TS_ALLREADY)
 	{
@@ -1022,7 +1022,7 @@ int TraderHuaX::queryTrades()
 #pragma endregion "ITraderApi"
 
 #pragma region "Huax::API::warp"
-inline WTSDirectionType TraderHuaX::wrapDirectionType(TTORATstpDirectionType dirType)
+inline VvTSDirectionType TraderHuaX::wrapDirectionType(TTORATstpDirectionType dirType)
 {
 	switch (dirType)
 	{
@@ -1052,7 +1052,7 @@ inline WTSDirectionType TraderHuaX::wrapDirectionType(TTORATstpDirectionType dir
 	}
 }
 
-inline WTSPriceType TraderHuaX::wrapPriceType(TTORATstpDirectionType priceType)
+inline VvTSPriceType TraderHuaX::wrapPriceType(TTORATstpDirectionType priceType)
 {
 	if (TORA_TSTP_OPT_AnyPrice == priceType)
 		return WPT_ANYPRICE;
@@ -1064,7 +1064,7 @@ inline WTSPriceType TraderHuaX::wrapPriceType(TTORATstpDirectionType priceType)
 		write_log(_sink, LL_WARN, "[TraderHuaX] unsupport priceType {}", priceType);
 }
 
-inline WTSOrderState TraderHuaX::wrapOrderState(TTORATstpOrderStatusType orderState)
+inline VvTSOrderState TraderHuaX::wrapOrderState(TTORATstpOrderStatusType orderState)
 {
 	switch (orderState)
 	{

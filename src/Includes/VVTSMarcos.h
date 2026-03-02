@@ -64,9 +64,9 @@
 #endif
 #endif
 
-typedef unsigned int		VvtUInt32;
-typedef unsigned long long	VvtUInt64;
-typedef const char*			VvtString;
+typedef unsigned int		VvTUInt32;
+typedef unsigned long long	VvTUInt64;
+typedef const char*			VvTString;
 
 #ifdef _MSC_VER
 #define vvt_stricmp _stricmp

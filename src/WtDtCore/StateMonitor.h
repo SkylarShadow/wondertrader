@@ -11,10 +11,10 @@
 #include <vector>
 #include "../Share/StdUtils.hpp"
 #include "../Includes/FasterDefs.h"
-#include "../Includes/VVTSMarcos.h"
+#include "../Includes/VvTSMarcos.h"
 
 NS_VVTP_BEGIN
-class WTSSessionInfo;
+class VvTSSessionInfo;
 NS_VVTP_END
 
 USING_NS_VVTP;
@@ -38,7 +38,7 @@ typedef struct _StateInfo
 	uint32_t	_close_time;
 	uint32_t	_proc_time;
 	SimpleState	_state;
-	WTSSessionInfo*	_sInfo;
+	VvTSSessionInfo*	_sInfo;
 
 	typedef struct _Section
 	{

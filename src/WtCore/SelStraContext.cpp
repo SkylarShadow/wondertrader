@@ -37,13 +37,13 @@ void SelStraContext::on_session_end(uint32_t uTDate)
 	SelStraBaseCtx::on_session_end(uTDate);
 }
 
-void SelStraContext::on_bar_close(const char* stdCode, const char* period, WTSBarStruct* newBar)
+void SelStraContext::on_bar_close(const char* stdCode, const char* period, VvTSBarStruct* newBar)
 {
 	if (_strategy)
 		_strategy->on_bar(this, stdCode, period, newBar);
 }
 
-void SelStraContext::on_tick_updated(const char* stdCode, WTSTickData* newTick)
+void SelStraContext::on_tick_updated(const char* stdCode, VvTSTickData* newTick)
 {
 	auto it = _tick_subs.find(stdCode);
 	if (it == _tick_subs.end())

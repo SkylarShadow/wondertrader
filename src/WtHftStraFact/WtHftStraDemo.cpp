@@ -1,9 +1,9 @@
 ﻿#include "WtHftStraDemo.h"
 #include "../Includes/IHftStraCtx.h"
 
-#include "../Includes/VVTSVariant.hpp"
-#include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSContractInfo.hpp"
+#include "../Includes/VvTSVariant.hpp"
+#include "../Includes/VvTSDataDef.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
 #include "../Share/TimeUtils.hpp"
 #include "../Share/decimal.h"
 #include "../Share/fmtlib.h"
@@ -40,7 +40,7 @@ const char* WtHftStraDemo::getFactName()
 	return FACT_NAME;
 }
 
-bool WtHftStraDemo::init(VVTSVariant* cfg)
+bool WtHftStraDemo::init(VvTSVariant* cfg)
 {
 	//这里演示一下外部传入参数的获取
 	_code = cfg->getCString("code");
@@ -62,11 +62,11 @@ void WtHftStraDemo::on_entrust(uint32_t localid, bool bSuccess, const char* mess
 
 void WtHftStraDemo::on_init(IHftStraCtx* ctx)
 {
-	//WTSTickSlice* ticks = ctx->stra_get_ticks(_code.c_str(), _count);
+	//VvTSTickSlice* ticks = ctx->stra_get_ticks(_code.c_str(), _count);
 	//if (ticks)
 	//	ticks->release();
 
-	WTSKlineSlice* kline = ctx->stra_get_bars(_code.c_str(), "m1", 30);
+	VvTSKlineSlice* kline = ctx->stra_get_bars(_code.c_str(), "m1", 30);
 	if (kline)
 		kline->release();
 
@@ -86,14 +86,14 @@ void WtHftStraDemo::do_calc(IHftStraCtx* ctx)
 		return;
 	}
 
-	WTSTickData* curTick = ctx->stra_get_last_tick(code);
+	VvTSTickData* curTick = ctx->stra_get_last_tick(code);
 	if (curTick == NULL)
 		return;
 
 	uint32_t curMin = curTick->actiontime() / 100000;	//actiontime是带毫秒的,要取得分钟,则需要除以10w
 	if (curMin > _last_calc_time)
 	{//如果spread上次计算的时候小于当前分钟,则重算spread
-		//WTSKlineSlice* kline = ctx->stra_get_bars(code, "m5", 30);
+		//VvTSKlineSlice* kline = ctx->stra_get_bars(code, "m5", 30);
 		//if (kline)
 		//	kline->release();
 
@@ -123,7 +123,7 @@ void WtHftStraDemo::do_calc(IHftStraCtx* ctx)
 		double curPos = ctx->stra_get_position(code);
 		curPos -= _reserved;
 
-		WTSCommodityInfo* cInfo = ctx->stra_get_comminfo(code);
+		VvTSCommodityInfo* cInfo = ctx->stra_get_comminfo(code);
 
 		if (signal > 0 && curPos <= 0)
 		{//正向信号,且当前仓位小于等于0
@@ -158,7 +158,7 @@ void WtHftStraDemo::do_calc(IHftStraCtx* ctx)
 	curTick->release();
 }
 
-void WtHftStraDemo::on_tick(IHftStraCtx* ctx, const char* code, WTSTickData* newTick)
+void WtHftStraDemo::on_tick(IHftStraCtx* ctx, const char* code, VvTSTickData* newTick)
 {	
 	if (_code.compare(code) != 0)
 		return;
@@ -194,7 +194,7 @@ void WtHftStraDemo::check_orders()
 	}
 }
 
-void WtHftStraDemo::on_bar(IHftStraCtx* ctx, const char* code, const char* period, uint32_t times, WTSBarStruct* newBar)
+void WtHftStraDemo::on_bar(IHftStraCtx* ctx, const char* code, const char* period, uint32_t times, VvTSBarStruct* newBar)
 {
 	
 }

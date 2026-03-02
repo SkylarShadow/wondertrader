@@ -1,5 +1,5 @@
 ﻿/*!
- * \file WTSSessionInfo.hpp
+ * \file VvTSSessionInfo.hpp
  * \project	WonderTrader
  *
  * \author Wesley
@@ -10,14 +10,14 @@
 #pragma once
 #include <vector>
 
-#include "WTSObject.hpp"
+#include "VvTSObject.hpp"
 #include "../Share/TimeUtils.hpp"
 
 NS_VVTP_BEGIN
 
 static const char* DEFAULT_SESSIONID = "TRADING";
 
-class WTSSessionInfo : public WTSObject
+class VvTSSessionInfo : public VvTSObject
 {
 public:
 	//交易时段
@@ -52,19 +52,19 @@ protected:
 	std::string		m_strName;
 
 protected:
-	WTSSessionInfo(int32_t offset)
+	VvTSSessionInfo(int32_t offset)
 	{
 		m_uOffsetMins = offset;
 	}
-	virtual ~WTSSessionInfo(){}
+	virtual ~VvTSSessionInfo(){}
 
 public:
 	const char* id() const{ return m_strID.c_str(); }
 	const char* name() const{ return m_strName.c_str(); }
 
-	static WTSSessionInfo* create(const char* sid, const char* name, int32_t offset = 0)
+	static VvTSSessionInfo* create(const char* sid, const char* name, int32_t offset = 0)
 	{
-		WTSSessionInfo* pRet = new WTSSessionInfo(offset);
+		VvTSSessionInfo* pRet = new VvTSSessionInfo(offset);
 		pRet->m_strID = sid;
 		pRet->m_strName = name;
 		return pRet;

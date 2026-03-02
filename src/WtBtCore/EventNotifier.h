@@ -11,8 +11,8 @@
 
 #include <queue>
 
-#include "../Includes/VVTSMarcos.h"
-#include "../Includes/WTSObject.hpp"
+#include "../Includes/VvTSMarcos.h"
+#include "../Includes/VvTSObject.hpp"
 #include "../Share/StdUtils.hpp"
 
 typedef unsigned long(*FuncCreateMQServer)(const char*, bool);
@@ -24,7 +24,7 @@ typedef void(*FuncRegCallbacks)(FuncLogCallback);
 
 
 NS_VVTP_BEGIN
-class VVTSVariant;
+class VvTSVariant;
 
 class EventNotifier
 {
@@ -33,7 +33,7 @@ public:
 	~EventNotifier();
 
 public:
-	bool	init(VVTSVariant* cfg);
+	bool	init(VvTSVariant* cfg);
 	void	notifyEvent(const char* evtType);
 	void	notifyData(const char* topic, void* data , uint32_t dataLen);
 	void	notifyFund(const char* topic, uint32_t uDate, double total_profit, double dynprofit, double dynbalance, double total_fee);

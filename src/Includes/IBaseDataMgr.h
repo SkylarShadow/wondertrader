@@ -11,18 +11,18 @@
 #include <string>
 #include <stdint.h>
 
-#include "VVTSMarcos.h"
+#include "VvTSMarcos.h"
 #include "FasterDefs.h"
 
 NS_VVTP_BEGIN
 typedef CodeSet ContractSet;
 
-class WTSContractInfo;
-class WTSArray;
-class WTSSessionInfo;
-class WTSCommodityInfo;
+class VvTSContractInfo;
+class VvTSArray;
+class VvTSSessionInfo;
+class VvTSCommodityInfo;
 
-typedef wt_hashset<uint32_t> HolidaySet;
+typedef vvt_hashset<uint32_t> HolidaySet;
 typedef struct _TradingDayTpl
 {
 	uint32_t	_cur_tdate;
@@ -34,15 +34,15 @@ typedef struct _TradingDayTpl
 class IBaseDataMgr
 {
 public:
-	virtual WTSCommodityInfo*	getCommodity(const char* exchgpid)						= 0;
-	virtual WTSCommodityInfo*	getCommodity(const char* exchg, const char* pid)		= 0;
+	virtual VvTSCommodityInfo*	getCommodity(const char* exchgpid)						= 0;
+	virtual VvTSCommodityInfo*	getCommodity(const char* exchg, const char* pid)		= 0;
 
-	virtual WTSContractInfo*	getContract(const char* code, const char* exchg = "", uint32_t uDate = 0)	= 0;
-	virtual WTSArray*			getContracts(const char* exchg = "", uint32_t uDate = 0)					= 0;
+	virtual VvTSContractInfo*	getContract(const char* code, const char* exchg = "", uint32_t uDate = 0)	= 0;
+	virtual VvTSArray*			getContracts(const char* exchg = "", uint32_t uDate = 0)					= 0;
 
-	virtual WTSSessionInfo*		getSession(const char* sid)						= 0;
-	virtual WTSSessionInfo*		getSessionByCode(const char* code, const char* exchg = "") = 0;
-	virtual WTSArray*			getAllSessions() = 0;
+	virtual VvTSSessionInfo*		getSession(const char* sid)						= 0;
+	virtual VvTSSessionInfo*		getSessionByCode(const char* code, const char* exchg = "") = 0;
+	virtual VvTSArray*			getAllSessions() = 0;
 
 	virtual bool				isHoliday(const char* pid, uint32_t uDate, bool isTpl = false) = 0;
 

@@ -13,16 +13,16 @@
 #include <queue>
 #include <stdint.h>
 
-#include "../Includes/WTSTypes.h"
+#include "../Includes/VvTSTypes.h"
 #include "../Includes/ITraderApi.h"
-#include "../Includes/WTSCollection.hpp"
+#include "../Includes/VvTSCollection.hpp"
 
 #include "../API/yd1.108.360/ydApi.h"
 
 #include "../Share/IniHelper.hpp"
 #include "../Share/StdUtils.hpp"
 #include "../Share/DLLHelper.hpp"
-#include "../Share/WtKVCache.hpp"
+#include "../Share/VvtKVCache.hpp"
 
 USING_NS_VVTP;
 
@@ -77,7 +77,7 @@ private:
 	//////////////////////////////////////////////////////////////////////////
 	//ITraderApi接口
 public:
-	virtual bool init(VVTSVariant* params) override;
+	virtual bool init(VvTSVariant* params) override;
 
 	virtual void release() override;
 
@@ -95,9 +95,9 @@ public:
 
 	virtual int logout() override;
 
-	virtual int orderInsert(WTSEntrust* eutrust) override;
+	virtual int orderInsert(VvTSEntrust* eutrust) override;
 
-	virtual int orderAction(WTSEntrustAction* action) override;
+	virtual int orderAction(VvTSEntrustAction* action) override;
 
 	virtual int queryAccount() override;
 
@@ -109,10 +109,10 @@ public:
 
 
 protected:
-	WTSOrderInfo*	makeOrderInfo(const YDOrder* orderField, const YDInstrument* instInfo);
-	WTSEntrust*		makeEntrust(const YDInputOrder *entrustField, const YDInstrument* instInfo);
-	WTSTradeInfo*	makeTradeRecord(const YDTrade *tradeField, const YDInstrument* instInfo);
-	WTSError*		makeError(int errorno, WTSErroCode ec);
+	VvTSOrderInfo*	makeOrderInfo(const YDOrder* orderField, const YDInstrument* instInfo);
+	VvTSEntrust*		makeEntrust(const YDInputOrder *entrustField, const YDInstrument* instInfo);
+	VvTSTradeInfo*	makeTradeRecord(const YDTrade *tradeField, const YDInstrument* instInfo);
+	VvTSError*		makeError(int errorno, VvTSErrorCode ec);
 
 	bool			generateEntrustID(uint32_t orderRef, char* buffer);
 	bool			extractEntrustID(const char* entrustid, uint32_t &orderRef);
@@ -144,11 +144,11 @@ protected:
 	YDApi*						m_pUserAPI;
 	std::atomic<uint32_t>		m_iRequestID;
 
-	typedef WTSHashMap<std::string> DataMap;
+	typedef VvTSHashMap<std::string> DataMap;
 	DataMap*					m_mapPosition;
 	DataMap*					m_mapTrades;
 	DataMap*					m_mapOrders;
-	WTSArray*					m_ayFunds;
+	VvTSArray*					m_ayFunds;
 
 	IBaseDataMgr*				m_bdMgr;
 
@@ -165,8 +165,8 @@ protected:
 
 	//IniHelper		m_iniHelper;
 	//委托单标记缓存器
-	WtKVCache		m_eidCache;
+	VvtKVCache		m_eidCache;
 	//订单标记缓存器
-	WtKVCache		m_oidCache;
+	VvtKVCache		m_oidCache;
 };
 

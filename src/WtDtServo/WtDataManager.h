@@ -14,23 +14,23 @@
 #include "../Includes/IDataManager.h"
 #include "../Includes/IRdmDtReader.h"
 #include "../Includes/FasterDefs.h"
-#include "../Includes/WTSCollection.hpp"
+#include "../Includes/VvTSCollection.hpp"
 #include "../Share/StdUtils.hpp"
 
 
 class WtDtRunner;
 
 NS_VVTP_BEGIN
-class VVTSVariant;
-class WTSTickData;
-class WTSKlineSlice;
-class WTSKlineData;
-class WTSTickSlice;
+class VvTSVariant;
+class VvTSTickData;
+class VvTSKlineSlice;
+class VvTSKlineData;
+class VvTSTickSlice;
 class IBaseDataMgr;
 class IHotMgr;
-class WTSSessionInfo;
-struct WTSBarStruct;
-class WTSCommodityInfo;
+class VvTSSessionInfo;
+struct VvTSBarStruct;
+class VvTSCommodityInfo;
 
 class WtDataManager : public IRdmDtReaderSink
 {
@@ -39,9 +39,9 @@ public:
 	~WtDataManager();
 
 private:
-	bool	initStore(VVTSVariant* cfg);
+	bool	initStore(VvTSVariant* cfg);
 
-	WTSSessionInfo* get_session_info(const char* sid, bool isCode = false);
+	VvTSSessionInfo* get_session_info(const char* sid, bool isCode = false);
 
 //////////////////////////////////////////////////////////////////////////
 //IRdmDtReaderSink
@@ -59,35 +59,35 @@ public:
 	/*
 	 *	@brief	输出数据读取模块的日志
 	 */
-	virtual void			reader_log(WTSLogLevel ll, const char* message) override;
+	virtual void			reader_log(VvTSLogLevel ll, const char* message) override;
 
 public:
-	bool	init(VVTSVariant* cfg, WtDtRunner* runner);
+	bool	init(VvTSVariant* cfg, WtDtRunner* runner);
 
-	WTSOrdQueSlice* get_order_queue_slice(const char* stdCode, uint64_t stime, uint64_t etime = 0);
-	WTSOrdDtlSlice* get_order_detail_slice(const char* stdCode, uint64_t stime, uint64_t etime = 0);
-	WTSTransSlice* get_transaction_slice(const char* stdCode, uint64_t stime, uint64_t etime = 0);
+	VvTSOrdQueSlice* get_order_queue_slice(const char* stdCode, uint64_t stime, uint64_t etime = 0);
+	VvTSOrdDtlSlice* get_order_detail_slice(const char* stdCode, uint64_t stime, uint64_t etime = 0);
+	VvTSTransSlice* get_transaction_slice(const char* stdCode, uint64_t stime, uint64_t etime = 0);
 
-	WTSTickSlice* get_tick_slice_by_date(const char* stdCode, uint32_t uDate = 0);
-	WTSKlineSlice* get_skline_slice_by_date(const char* stdCode, uint32_t secs, uint32_t uDate = 0);
-	WTSKlineSlice* get_kline_slice_by_date(const char* stdCode, WTSKlinePeriod period, uint32_t times, uint32_t uDate = 0);
+	VvTSTickSlice* get_tick_slice_by_date(const char* stdCode, uint32_t uDate = 0);
+	VvTSKlineSlice* get_skline_slice_by_date(const char* stdCode, uint32_t secs, uint32_t uDate = 0);
+	VvTSKlineSlice* get_kline_slice_by_date(const char* stdCode, VvTSKlinePeriod period, uint32_t times, uint32_t uDate = 0);
 
-	WTSTickSlice* get_tick_slices_by_range(const char* stdCode, uint64_t stime, uint64_t etime = 0);
-	WTSKlineSlice* get_kline_slice_by_range(const char* stdCode, WTSKlinePeriod period, uint32_t times, uint64_t stime, uint64_t etime = 0);
+	VvTSTickSlice* get_tick_slices_by_range(const char* stdCode, uint64_t stime, uint64_t etime = 0);
+	VvTSKlineSlice* get_kline_slice_by_range(const char* stdCode, VvTSKlinePeriod period, uint32_t times, uint64_t stime, uint64_t etime = 0);
 
-	WTSTickSlice* get_tick_slice_by_count(const char* stdCode, uint32_t count, uint64_t etime = 0);
-	WTSKlineSlice* get_kline_slice_by_count(const char* stdCode, WTSKlinePeriod period, uint32_t times, uint32_t count, uint64_t etime = 0);
+	VvTSTickSlice* get_tick_slice_by_count(const char* stdCode, uint32_t count, uint64_t etime = 0);
+	VvTSKlineSlice* get_kline_slice_by_count(const char* stdCode, VvTSKlinePeriod period, uint32_t times, uint32_t count, uint64_t etime = 0);
 
 	/*
 	 *	获取复权因子
 	 *	@stdCode	合约代码
 	 *	@commInfo	品种信息
 	 */
-	double	get_exright_factor(const char* stdCode, WTSCommodityInfo* commInfo = NULL);
+	double	get_exright_factor(const char* stdCode, VvTSCommodityInfo* commInfo = NULL);
 
-	void	subscribe_bar(const char* stdCode, WTSKlinePeriod period, uint32_t times);
+	void	subscribe_bar(const char* stdCode, VvTSKlinePeriod period, uint32_t times);
 	void	clear_subbed_bars();
-	void	update_bars(const char* stdCode, WTSTickData* newTick);
+	void	update_bars(const char* stdCode, VvTSTickData* newTick);
 
 	void	clear_cache();
 
@@ -103,9 +103,9 @@ private:
 	//K线缓存
 	typedef struct _BarCache
 	{
-		WTSKlineData*	_bars;
+		VvTSKlineData*	_bars;
 		uint64_t		_last_bartime;
-		WTSKlinePeriod	_period;
+		VvTSKlinePeriod	_period;
 		uint32_t		_times;
 
 		_BarCache():_last_bartime(0),_period(KP_DAY),_times(1),_bars(NULL){}
@@ -113,7 +113,7 @@ private:
 	typedef vvt_hashmap<std::string, BarCache>	BarCacheMap;
 	BarCacheMap	_bars_cache;
 
-	typedef WTSHashMap<std::string>	RtBarMap;
+	typedef VvTSHashMap<std::string>	RtBarMap;
 	RtBarMap*		_rt_bars;
 	StdUniqueMutex	_mtx_rtbars;
 };

@@ -14,7 +14,7 @@
 
 #include "../Share/CodeHelper.hpp"
 #include "../Includes/IDataManager.h"
-#include "../Includes/VVTSVariant.hpp"
+#include "../Includes/VvTSVariant.hpp"
 #include "../Includes/IHotMgr.h"
 #include "../Includes/IBaseDataMgr.h"
 #include "../Share/decimal.h"
@@ -54,7 +54,7 @@ void WtDiffExecuter::setTrader(TraderAdapter* adapter)
 		_channel_ready = _trader->isReady();
 }
 
-bool WtDiffExecuter::init(VVTSVariant* params)
+bool WtDiffExecuter::init(VvTSVariant* params)
 {
 	if (params == NULL)
 		return false;
@@ -106,7 +106,7 @@ void WtDiffExecuter::load_data()
 		{
 			const char* stdCode = jItem["code"].GetString();
 			CodeHelper::CodeInfo cInfo = CodeHelper::extractStdCode(stdCode, NULL);
-			WTSContractInfo* ct = _bd_mgr->getContract(cInfo._code, cInfo._exchg);
+			VvTSContractInfo* ct = _bd_mgr->getContract(cInfo._code, cInfo._exchg);
 			if (ct == NULL)
 			{
 				WTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "[{}] Ticker {} is not valid", _name, stdCode);
@@ -125,7 +125,7 @@ void WtDiffExecuter::load_data()
 		{
 			const char* stdCode = jItem["code"].GetString();
 			CodeHelper::CodeInfo cInfo = CodeHelper::extractStdCode(stdCode, NULL);
-			WTSContractInfo* ct = _bd_mgr->getContract(cInfo._code, cInfo._exchg);
+			VvTSContractInfo* ct = _bd_mgr->getContract(cInfo._code, cInfo._exchg);
 			if (ct == NULL)
 			{
 				WTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "[{}] Ticker {} is not valid", _name, stdCode);
@@ -197,7 +197,7 @@ ExecuteUnitPtr WtDiffExecuter::getUnit(const char* stdCode, bool bAutoCreate /* 
 	CodeHelper::CodeInfo codeInfo = CodeHelper::extractStdCode(stdCode, NULL);
 	std::string commID = codeInfo.stdCommID();
 
-	VVTSVariant* policy = _config->get("policy");
+	VvTSVariant* policy = _config->get("policy");
 	std::string des = commID;
 	if (!policy->has(commID.c_str()))
 		des = "default";
@@ -212,7 +212,7 @@ ExecuteUnitPtr WtDiffExecuter::getUnit(const char* stdCode, bool bAutoCreate /* 
 
 	if (bAutoCreate)
 	{
-		VVTSVariant* cfg = policy->get(des.c_str());
+		VvTSVariant* cfg = policy->get(des.c_str());
 
 		const char* name = cfg->getCString("name");
 		ExecuteUnitPtr unit = _factory->createDiffExeUnit(name);
@@ -241,7 +241,7 @@ ExecuteUnitPtr WtDiffExecuter::getUnit(const char* stdCode, bool bAutoCreate /* 
 //////////////////////////////////////////////////////////////////////////
 //ExecuteContext
 #pragma region Context回调接口
-WTSTickSlice* WtDiffExecuter::getTicks(const char* stdCode, uint32_t count, uint64_t etime /* = 0 */)
+VvTSTickSlice* WtDiffExecuter::getTicks(const char* stdCode, uint32_t count, uint64_t etime /* = 0 */)
 {
 	if (_data_mgr == NULL)
 		return NULL;
@@ -249,7 +249,7 @@ WTSTickSlice* WtDiffExecuter::getTicks(const char* stdCode, uint32_t count, uint
 	return _data_mgr->get_tick_slice(stdCode, count);
 }
 
-WTSTickData* WtDiffExecuter::grabLastTick(const char* stdCode)
+VvTSTickData* WtDiffExecuter::grabLastTick(const char* stdCode)
 {
 	if (_data_mgr == NULL)
 		return NULL;
@@ -320,12 +320,12 @@ void WtDiffExecuter::writeLog(const char* message)
 	WTSLogger::log_dyn_raw("executer", _name.c_str(), LL_INFO, szBuf);
 }
 
-WTSCommodityInfo* WtDiffExecuter::getCommodityInfo(const char* stdCode)
+VvTSCommodityInfo* WtDiffExecuter::getCommodityInfo(const char* stdCode)
 {
 	return _stub->get_comm_info(stdCode);
 }
 
-WTSSessionInfo* WtDiffExecuter::getSessionInfo(const char* stdCode)
+VvTSSessionInfo* WtDiffExecuter::getSessionInfo(const char* stdCode)
 {
 	return _stub->get_sess_info(stdCode);
 }
@@ -440,7 +440,7 @@ void WtDiffExecuter::set_position(const vvt_hashmap<std::string, double>& target
 		if(tit != targets.end())
 			continue;
 
-		WTSContractInfo* cInfo = _bd_mgr->getContract(stdCode);
+		VvTSContractInfo* cInfo = _bd_mgr->getContract(stdCode);
 		if(cInfo == NULL)
 			continue;
 
@@ -478,7 +478,7 @@ void WtDiffExecuter::set_position(const vvt_hashmap<std::string, double>& target
 	save_data();
 }
 
-void WtDiffExecuter::on_tick(const char* stdCode, WTSTickData* newTick)
+void WtDiffExecuter::on_tick(const char* stdCode, VvTSTickData* newTick)
 {
 	ExecuteUnitPtr unit = getUnit(stdCode, false);
 	if (unit == NULL)

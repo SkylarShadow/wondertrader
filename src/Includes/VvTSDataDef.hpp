@@ -1,5 +1,5 @@
 ﻿/*!
- * \file WTSDataDef.hpp
+ * \file VvTSDataDef.hpp
  * \project	WonderTrader
  *
  * \author Wesley
@@ -14,12 +14,12 @@
 #include <string.h>
 #include <chrono>
 
-#include "WTSObject.hpp"
+#include "VvTSObject.hpp"
 
-#include "WTSTypes.h"
-#include "VVTSMarcos.h"
-#include "WTSStruct.h"
-#include "WTSCollection.hpp"
+#include "VvTSTypes.h"
+#include "VvTSMarcos.h"
+#include "VvTSStruct.h"
+#include "VvTSCollection.hpp"
 
 using namespace std;
 
@@ -27,14 +27,14 @@ using namespace std;
 
 
 NS_VVTP_BEGIN
-class WTSContractInfo;
+class VvTSContractInfo;
 /*
  *	数值数组的内部封装
  *	采用std::vector实现
  *	包含数据格式化字符串
  *	数值的数据类型为double
  */
-class WTSValueArray : public WTSObject
+class VvTSValueArray : public VvTSObject
 {
 protected:
 	vector<double>	m_vecData;
@@ -44,9 +44,9 @@ public:
 	 *	创建一个数值数组对象
 	 *	@decimal 保留的小数点位数
 	 */
-	static WTSValueArray* create()
+	static VvTSValueArray* create()
 	{
-		WTSValueArray* pRet = new WTSValueArray;
+		VvTSValueArray* pRet = new VvTSValueArray;
 		pRet->m_vecData.clear();
 		return pRet;
 	}
@@ -199,18 +199,18 @@ public:
  *	这个比较特殊,因为要拼接当日和历史的
  *	所以有两个开始地址
  */
-class WTSKlineSlice : public WTSObject
+class VvTSKlineSlice : public VvTSObject
 {
 private:
 	char			_code[MAX_INSTRUMENT_LENGTH];
-	WTSKlinePeriod	_period;
+	VvTSKlinePeriod	_period;
 	uint32_t		_times;
-	typedef std::pair<WTSBarStruct*, uint32_t> BarBlock;
+	typedef std::pair<VvTSBarStruct*, uint32_t> BarBlock;
 	std::vector<BarBlock> _blocks;
 	uint32_t		_count;
 
 protected:
-	WTSKlineSlice()
+	VvTSKlineSlice()
 		: _period(KP_Minute1)
 		, _times(1)
 		, _count(0)
@@ -231,9 +231,9 @@ protected:
 
 
 public:
-	static WTSKlineSlice* create(const char* code, WTSKlinePeriod period, uint32_t times, WTSBarStruct* bars = NULL, int32_t count = 0)
+	static VvTSKlineSlice* create(const char* code, VvTSKlinePeriod period, uint32_t times, VvTSBarStruct* bars = NULL, int32_t count = 0)
 	{
-		WTSKlineSlice *pRet = new WTSKlineSlice;
+		VvTSKlineSlice *pRet = new VvTSKlineSlice;
 		vvt_strcpy(pRet->_code, code);
 		pRet->_period = period;
 		pRet->_times = times;
@@ -244,7 +244,7 @@ public:
 		return pRet;
 	}
 
-	inline bool appendBlock(WTSBarStruct* bars, uint32_t count)
+	inline bool appendBlock(VvTSBarStruct* bars, uint32_t count)
 	{
 		if (bars == NULL || count == 0)
 			return false;
@@ -259,7 +259,7 @@ public:
 		return _blocks.size();
 	}
 
-	inline WTSBarStruct*	get_block_addr(std::size_t blkIdx)
+	inline VvTSBarStruct*	get_block_addr(std::size_t blkIdx)
 	{
 		if (blkIdx >= _blocks.size())
 			return NULL;
@@ -275,7 +275,7 @@ public:
 		return _blocks[blkIdx].second;
 	}
 
-	inline WTSBarStruct*	at(int32_t idx)
+	inline VvTSBarStruct*	at(int32_t idx)
 	{
 		if (_count == 0)
 			return NULL;
@@ -295,7 +295,7 @@ public:
 		return NULL;
 	}
 
-	inline const WTSBarStruct*	at(int32_t idx) const
+	inline const VvTSBarStruct*	at(int32_t idx) const
 	{
 		if (_count == 0)
 			return NULL;
@@ -379,7 +379,7 @@ public:
 	*	如果超出范围,则返回NULL
 	*	@type 支持的类型有KT_OPEN、KT_HIGH、KT_LOW、KT_CLOSE,KFT_VOLUME、KT_DATE
 	*/
-	WTSValueArray*	extractData(WTSKlineFieldType type, int32_t head = 0, int32_t tail = -1) const
+	VvTSValueArray*	extractData(VvTSKlineFieldType type, int32_t head = 0, int32_t tail = -1) const
 	{
 		if (_count == 0)
 			return NULL;
@@ -390,13 +390,13 @@ public:
 		int32_t begin = max(0, min(head, tail));
 		int32_t end = min(max(head, tail), size() - 1);
 
-		WTSValueArray *vArray = NULL;
+		VvTSValueArray *vArray = NULL;
 
-		vArray = WTSValueArray::create();
+		vArray = VvTSValueArray::create();
 
 		for (int32_t i = begin; i <= end; i++)
 		{
-			const WTSBarStruct& day = *at(i);
+			const VvTSBarStruct& day = *at(i);
 			switch (type)
 			{
 			case KFT_OPEN:
@@ -434,26 +434,26 @@ public:
 
 /*
  *	K线数据
- *	K线数据的内部数据使用WTSBarStruct
- *	WTSBarStruct是一个结构体
+ *	K线数据的内部数据使用VvTSBarStruct
+ *	VvTSBarStruct是一个结构体
  *	因为K线数据单独使用的可能性较低
- *	所以不做WTSObject派生类的封装
+ *	所以不做VvTSObject派生类的封装
  */
-class WTSKlineData : public WTSObject
+class VvTSKlineData : public VvTSObject
 {
 public:
-	typedef std::vector<WTSBarStruct> WTSBarList;
+	typedef std::vector<VvTSBarStruct> VvTSBarList;
 
 protected:
 	char			m_strCode[32];
-	WTSKlinePeriod	m_kpPeriod;
+	VvTSKlinePeriod	m_kpPeriod;
 	uint32_t		m_uTimes;
 	bool			m_bUnixTime;	//是否是时间戳格式,目前只在秒线上有效
-	WTSBarList		m_vecBarData;
+	VvTSBarList		m_vecBarData;
 	bool			m_bClosed;		//是否是闭合K线
 
 protected:
-	WTSKlineData()
+	VvTSKlineData()
 		:m_kpPeriod(KP_Minute1)
 		,m_uTimes(1)
 		,m_bUnixTime(false)
@@ -478,9 +478,9 @@ public:
 	 *	@code 要创建的合约代码
 	 *	@size 初始分配的数据长度
 	 */
-	static WTSKlineData* create(const char* code, uint32_t size)
+	static VvTSKlineData* create(const char* code, uint32_t size)
 	{
-		WTSKlineData *pRet = new WTSKlineData;
+		VvTSKlineData *pRet = new VvTSKlineData;
 		pRet->m_vecBarData.resize(size);
 		vvt_strcpy(pRet->m_strCode, code);
 
@@ -495,11 +495,11 @@ public:
 	 *	@period	基础周期
 	 *	@times 倍数
 	 */
-	inline void	setPeriod(WTSKlinePeriod period, uint32_t times = 1){ m_kpPeriod = period; m_uTimes = times; }
+	inline void	setPeriod(VvTSKlinePeriod period, uint32_t times = 1){ m_kpPeriod = period; m_uTimes = times; }
 
 	inline void	setUnixTime(bool bEnabled = true){ m_bUnixTime = bEnabled; }
 
-	inline WTSKlinePeriod	period() const{ return m_kpPeriod; }
+	inline VvTSKlinePeriod	period() const{ return m_kpPeriod; }
 	inline uint32_t		times() const{ return m_uTimes; }
 	inline bool			isUnixTime() const{ return m_bUnixTime; }
 
@@ -741,7 +741,7 @@ public:
 	 *	如果超出范围,则返回NULL
 	 *	@type 支持的类型有KT_OPEN、KT_HIGH、KT_LOW、KT_CLOSE,KFT_VOLUME、KT_DATE
 	 */
-	WTSValueArray*	extractData(WTSKlineFieldType type, int32_t head = 0, int32_t tail = -1) const
+	VvTSValueArray*	extractData(VvTSKlineFieldType type, int32_t head = 0, int32_t tail = -1) const
 	{
 		head = translateIdx(head);
 		tail = translateIdx(tail);
@@ -752,13 +752,13 @@ public:
 		if(begin >= m_vecBarData.size() || end >= (int32_t)m_vecBarData.size())
 			return NULL;
 
-		WTSValueArray *vArray = NULL;
+		VvTSValueArray *vArray = NULL;
 
-		vArray = WTSValueArray::create();
+		vArray = VvTSValueArray::create();
 
 		for(uint32_t i = 0; i < m_vecBarData.size(); i++)
 		{
-			const WTSBarStruct& day = m_vecBarData.at(i);
+			const VvTSBarStruct& day = m_vecBarData.at(i);
 			switch(type)
 			{
 			case KFT_OPEN:
@@ -797,9 +797,9 @@ public:
 	/*
 	 *	获取K线内部vector的引用
 	 */
-	inline WTSBarList& getDataRef(){ return m_vecBarData; }
+	inline VvTSBarList& getDataRef(){ return m_vecBarData; }
 
-	inline WTSBarStruct*	at(int32_t idx)
+	inline VvTSBarStruct*	at(int32_t idx)
 	{
 		idx = translateIdx(idx);
 
@@ -819,13 +819,13 @@ public:
 			m_vecBarData.clear();
 		}		
 
-		WTSObject::release();
+		VvTSObject::release();
 	}
 
 	/*
 	 *	追加一条K线
 	 */
-	inline void	appendBar(const WTSBarStruct& bar)
+	inline void	appendBar(const VvTSBarStruct& bar)
 	{
 		if(m_vecBarData.empty())
 		{
@@ -833,10 +833,10 @@ public:
 		}
 		else
 		{
-			WTSBarStruct* lastBar = at(-1);
+			VvTSBarStruct* lastBar = at(-1);
 			if(lastBar->date==bar.date && lastBar->time==bar.time)
 			{
-				memcpy(lastBar, &bar, sizeof(WTSBarStruct));
+				memcpy(lastBar, &bar, sizeof(VvTSBarStruct));
 			}
 			else
 			{
@@ -850,21 +850,21 @@ public:
 
 /*
  *	Tick数据对象
- *	内部封装WTSTickStruct
+ *	内部封装VvTSTickStruct
  *	封装的主要目的是出于跨语言的考虑
  */
-class WTSTickData : public WTSPoolObject<WTSTickData>
+class VvTSTickData : public VvTSPoolObject<VvTSTickData>
 {
 public:
-	WTSTickData() :m_pContract(NULL) {}
+	VvTSTickData() :m_pContract(NULL) {}
 
 	/*
 	 *	创建一个tick数据对象
 	 *	@stdCode 合约代码
 	 */
-	static inline WTSTickData* create(const char* stdCode)
+	static inline VvTSTickData* create(const char* stdCode)
 	{
-		WTSTickData* pRet = WTSTickData::allocate();
+		VvTSTickData* pRet = VvTSTickData::allocate();
 		auto len = strlen(stdCode);
 		memcpy(pRet->m_tickStruct.code, stdCode, len);
 		pRet->m_tickStruct.code[len] = 0;
@@ -876,10 +876,10 @@ public:
 	 *	根据tick结构体创建一个tick数据对象
 	 *	@tickData tick结构体
 	 */
-	static inline WTSTickData* create(WTSTickStruct& tickData)
+	static inline VvTSTickData* create(VvTSTickStruct& tickData)
 	{
-		WTSTickData* pRet = allocate();
-		memcpy(&pRet->m_tickStruct, &tickData, sizeof(WTSTickStruct));
+		VvTSTickData* pRet = allocate();
+		memcpy(&pRet->m_tickStruct, &tickData, sizeof(VvTSTickStruct));
 
 		return pRet;
 	}
@@ -1007,35 +1007,35 @@ public:
 	/*
 	 *	返回tick结构体的引用
 	 */
-	inline WTSTickStruct&	getTickStruct(){ return m_tickStruct; }
+	inline VvTSTickStruct&	getTickStruct(){ return m_tickStruct; }
 
-	inline void setContractInfo(WTSContractInfo* cInfo) { m_pContract = cInfo; }
-	inline WTSContractInfo* getContractInfo() const { return m_pContract; }
+	inline void setContractInfo(VvTSContractInfo* cInfo) { m_pContract = cInfo; }
+	inline VvTSContractInfo* getContractInfo() const { return m_pContract; }
 
 private:
-	WTSTickStruct		m_tickStruct;
-	WTSContractInfo*	m_pContract;
+	VvTSTickStruct		m_tickStruct;
+	VvTSContractInfo*	m_pContract;
 };
 
-class WTSOrdQueData : public WTSObject
+class VvTSOrdQueData : public VvTSObject
 {
 public:
-	static inline WTSOrdQueData* create(const char* code)
+	static inline VvTSOrdQueData* create(const char* code)
 	{
-		WTSOrdQueData* pRet = new WTSOrdQueData;
+		VvTSOrdQueData* pRet = new VvTSOrdQueData;
 		vvt_strcpy(pRet->m_oqStruct.code, code);
 		return pRet;
 	}
 
-	static inline WTSOrdQueData* create(WTSOrdQueStruct& ordQueData)
+	static inline VvTSOrdQueData* create(VvTSOrdQueStruct& ordQueData)
 	{
-		WTSOrdQueData* pRet = new WTSOrdQueData;
-		memcpy(&pRet->m_oqStruct, &ordQueData, sizeof(WTSOrdQueStruct));
+		VvTSOrdQueData* pRet = new VvTSOrdQueData;
+		memcpy(&pRet->m_oqStruct, &ordQueData, sizeof(VvTSOrdQueStruct));
 
 		return pRet;
 	}
 
-	inline WTSOrdQueStruct& getOrdQueStruct(){return m_oqStruct;}
+	inline VvTSOrdQueStruct& getOrdQueStruct(){return m_oqStruct;}
 
 	inline const char* exchg() const{ return m_oqStruct.exchg; }
 	inline const char* code() const{ return m_oqStruct.code; }
@@ -1045,33 +1045,33 @@ public:
 
 	inline void		setCode(const char* code) { vvt_strcpy(m_oqStruct.code, code); }
 
-	inline void setContractInfo(WTSContractInfo* cInfo) { m_pContract = cInfo; }
-	inline WTSContractInfo* getContractInfo() const { return m_pContract; }
+	inline void setContractInfo(VvTSContractInfo* cInfo) { m_pContract = cInfo; }
+	inline VvTSContractInfo* getContractInfo() const { return m_pContract; }
 
 private:
-	WTSOrdQueStruct		m_oqStruct;
-	WTSContractInfo*	m_pContract;
+	VvTSOrdQueStruct		m_oqStruct;
+	VvTSContractInfo*	m_pContract;
 };
 
-class WTSOrdDtlData : public WTSObject
+class VvTSOrdDtlData : public VvTSObject
 {
 public:
-	static inline WTSOrdDtlData* create(const char* code)
+	static inline VvTSOrdDtlData* create(const char* code)
 	{
-		WTSOrdDtlData* pRet = new WTSOrdDtlData;
+		VvTSOrdDtlData* pRet = new VvTSOrdDtlData;
 		vvt_strcpy(pRet->m_odStruct.code, code);
 		return pRet;
 	}
 
-	static inline WTSOrdDtlData* create(WTSOrdDtlStruct& odData)
+	static inline VvTSOrdDtlData* create(VvTSOrdDtlStruct& odData)
 	{
-		WTSOrdDtlData* pRet = new WTSOrdDtlData;
-		memcpy(&pRet->m_odStruct, &odData, sizeof(WTSOrdDtlStruct));
+		VvTSOrdDtlData* pRet = new VvTSOrdDtlData;
+		memcpy(&pRet->m_odStruct, &odData, sizeof(VvTSOrdDtlStruct));
 
 		return pRet;
 	}
 
-	inline WTSOrdDtlStruct& getOrdDtlStruct(){ return m_odStruct; }
+	inline VvTSOrdDtlStruct& getOrdDtlStruct(){ return m_odStruct; }
 
 	inline const char* exchg() const{ return m_odStruct.exchg; }
 	inline const char* code() const{ return m_odStruct.code; }
@@ -1081,29 +1081,29 @@ public:
 
 	inline void		setCode(const char* code) { vvt_strcpy(m_odStruct.code, code); }
 
-	inline void setContractInfo(WTSContractInfo* cInfo) { m_pContract = cInfo; }
-	inline WTSContractInfo* getContractInfo() const { return m_pContract; }
+	inline void setContractInfo(VvTSContractInfo* cInfo) { m_pContract = cInfo; }
+	inline VvTSContractInfo* getContractInfo() const { return m_pContract; }
 
 
 private:
-	WTSOrdDtlStruct		m_odStruct;
-	WTSContractInfo*	m_pContract;
+	VvTSOrdDtlStruct		m_odStruct;
+	VvTSContractInfo*	m_pContract;
 };
 
-class WTSTransData : public WTSObject
+class VvTSTransData : public VvTSObject
 {
 public:
-	static inline WTSTransData* create(const char* code)
+	static inline VvTSTransData* create(const char* code)
 	{
-		WTSTransData* pRet = new WTSTransData;
+		VvTSTransData* pRet = new VvTSTransData;
 		vvt_strcpy(pRet->m_tsStruct.code, code);
 		return pRet;
 	}
 
-	static inline WTSTransData* create(WTSTransStruct& transData)
+	static inline VvTSTransData* create(VvTSTransStruct& transData)
 	{
-		WTSTransData* pRet = new WTSTransData;
-		memcpy(&pRet->m_tsStruct, &transData, sizeof(WTSTransStruct));
+		VvTSTransData* pRet = new VvTSTransData;
+		memcpy(&pRet->m_tsStruct, &transData, sizeof(VvTSTransStruct));
 
 		return pRet;
 	}
@@ -1114,31 +1114,31 @@ public:
 	inline uint32_t actiondate() const{ return m_tsStruct.action_date; }
 	inline uint32_t actiontime() const { return m_tsStruct.action_time; }
 
-	inline WTSTransStruct& getTransStruct(){ return m_tsStruct; }
+	inline VvTSTransStruct& getTransStruct(){ return m_tsStruct; }
 
 	inline void		setCode(const char* code) { vvt_strcpy(m_tsStruct.code, code); }
 
-	inline void setContractInfo(WTSContractInfo* cInfo) { m_pContract = cInfo; }
-	inline WTSContractInfo* getContractInfo() const { return m_pContract; }
+	inline void setContractInfo(VvTSContractInfo* cInfo) { m_pContract = cInfo; }
+	inline VvTSContractInfo* getContractInfo() const { return m_pContract; }
 
 private:
-	WTSTransStruct		m_tsStruct;
-	WTSContractInfo*	m_pContract;
+	VvTSTransStruct		m_tsStruct;
+	VvTSContractInfo*	m_pContract;
 };
 
 /*
  *	@brief 历史Tick数据数组
- *	@details 内部使用WTSArray作为容器
+ *	@details 内部使用VvTSArray作为容器
  */
-class WTSHisTickData : public WTSObject
+class VvTSHisTickData : public VvTSObject
 {
 protected:
 	char						m_strCode[32];
-	std::vector<WTSTickStruct>	m_ayTicks;
+	std::vector<VvTSTickStruct>	m_ayTicks;
 	bool						m_bValidOnly;
 	double						m_dFactor;
 
-	WTSHisTickData() :m_bValidOnly(false), m_dFactor(1.0){}
+	VvTSHisTickData() :m_bValidOnly(false), m_dFactor(1.0){}
 
 public:
 	/*
@@ -1148,9 +1148,9 @@ public:
 	 *	@param stdCode 合约代码
 	 *	@param nSize 预先分配的大小
 	 */
-	static inline WTSHisTickData* create(const char* stdCode, unsigned int nSize = 0, bool bValidOnly = false, double factor = 1.0)
+	static inline VvTSHisTickData* create(const char* stdCode, unsigned int nSize = 0, bool bValidOnly = false, double factor = 1.0)
 	{
-		WTSHisTickData *pRet = new WTSHisTickData;
+		VvTSHisTickData *pRet = new VvTSHisTickData;
 		vvt_strcpy(pRet->m_strCode, stdCode);
 		pRet->m_ayTicks.resize(nSize);
 		pRet->m_bValidOnly = bValidOnly;
@@ -1165,9 +1165,9 @@ public:
 
 	 *	@param ayTicks tick数组对象指针
 	 */
-	static inline WTSHisTickData* create(const char* stdCode, bool bValidOnly = false, double factor = 1.0)
+	static inline VvTSHisTickData* create(const char* stdCode, bool bValidOnly = false, double factor = 1.0)
 	{
-		WTSHisTickData *pRet = new WTSHisTickData;
+		VvTSHisTickData *pRet = new VvTSHisTickData;
 		vvt_strcpy(pRet->m_strCode, stdCode);
 		pRet->m_bValidOnly = bValidOnly;
 		pRet->m_dFactor = factor;
@@ -1186,7 +1186,7 @@ public:
 	 *	获取指定位置的tick数据
 	 *	
 	 */
-	inline WTSTickStruct*	at(uint32_t idx)
+	inline VvTSTickStruct*	at(uint32_t idx)
 	{
 		if (m_ayTicks.empty() || idx >= m_ayTicks.size())
 			return NULL;
@@ -1194,14 +1194,14 @@ public:
 		return &m_ayTicks[idx];
 	}
 
-	inline std::vector<WTSTickStruct>& getDataRef() { return m_ayTicks; }
+	inline std::vector<VvTSTickStruct>& getDataRef() { return m_ayTicks; }
 
 	inline bool isValidOnly() const{ return m_bValidOnly; }
 
 	/*
 	*	追加一条Tick
 	*/
-	inline void	appendTick(const WTSTickStruct& ts)
+	inline void	appendTick(const VvTSTickStruct& ts)
 	{
 		m_ayTicks.emplace_back(ts);
 		//复权修正
@@ -1218,16 +1218,16 @@ public:
  *	@details 切片并没有真实的复制内存,而只是取了开始和结尾的下标
  *	这样使用虽然更快,但是使用场景要非常小心,因为他依赖于基础数据对象
  */
-class WTSTickSlice : public WTSObject
+class VvTSTickSlice : public VvTSObject
 {
 private:
 	char			_code[MAX_INSTRUMENT_LENGTH];
-	typedef std::pair<WTSTickStruct*, uint32_t> TickBlock;
+	typedef std::pair<VvTSTickStruct*, uint32_t> TickBlock;
 	std::vector<TickBlock> _blocks;
 	uint32_t		_count;
 
 protected:
-	WTSTickSlice() { _blocks.clear(); }
+	VvTSTickSlice() { _blocks.clear(); }
 	inline int32_t		translateIdx(int32_t idx) const
 	{
 		if (idx < 0)
@@ -1239,12 +1239,12 @@ protected:
 	}
 
 public:
-	static inline WTSTickSlice* create(const char* code, WTSTickStruct* ticks = NULL, uint32_t count = 0)
+	static inline VvTSTickSlice* create(const char* code, VvTSTickStruct* ticks = NULL, uint32_t count = 0)
 	{
 		//if (ticks == NULL || count == 0)
 		//	return NULL;
 
-		WTSTickSlice* slice = new WTSTickSlice();
+		VvTSTickSlice* slice = new VvTSTickSlice();
 		vvt_strcpy(slice->_code, code);
 		if(ticks != NULL)
 		{
@@ -1255,7 +1255,7 @@ public:
 		return slice;
 	}
 
-	inline bool appendBlock(WTSTickStruct* ticks, uint32_t count)
+	inline bool appendBlock(VvTSTickStruct* ticks, uint32_t count)
 	{
 		if (ticks == NULL || count == 0)
 			return false;
@@ -1265,7 +1265,7 @@ public:
 		return true;
 	}
 
-	inline bool insertBlock(std::size_t idx, WTSTickStruct* ticks, uint32_t count)
+	inline bool insertBlock(std::size_t idx, VvTSTickStruct* ticks, uint32_t count)
 	{
 		if (ticks == NULL || count == 0)
 			return false;
@@ -1280,7 +1280,7 @@ public:
 		return _blocks.size();
 	}
 
-	inline WTSTickStruct*	get_block_addr(std::size_t blkIdx)
+	inline VvTSTickStruct*	get_block_addr(std::size_t blkIdx)
 	{
 		if (blkIdx >= _blocks.size())
 			return NULL;
@@ -1300,7 +1300,7 @@ public:
 
 	inline bool empty() const{ return (_count == 0); }
 
-	inline const WTSTickStruct* at(int32_t idx)
+	inline const VvTSTickStruct* at(int32_t idx)
 	{
 		if (_count == 0)
 			return NULL;
@@ -1326,15 +1326,15 @@ public:
  *	@details 切片并没有真实的复制内存,而只是取了开始和结尾的下标
  *	这样使用虽然更快,但是使用场景要非常小心,因为他依赖于基础数据对象
  */
-class WTSOrdDtlSlice : public WTSObject
+class VvTSOrdDtlSlice : public VvTSObject
 {
 private:
 	char				m_strCode[MAX_INSTRUMENT_LENGTH];
-	WTSOrdDtlStruct*	m_ptrBegin;
+	VvTSOrdDtlStruct*	m_ptrBegin;
 	uint32_t			m_uCount;
 
 protected:
-	WTSOrdDtlSlice() :m_ptrBegin(NULL), m_uCount(0) {}
+	VvTSOrdDtlSlice() :m_ptrBegin(NULL), m_uCount(0) {}
 	inline int32_t		translateIdx(int32_t idx) const
 	{
 		if (idx < 0)
@@ -1346,12 +1346,12 @@ protected:
 	}
 
 public:
-	static inline WTSOrdDtlSlice* create(const char* code, WTSOrdDtlStruct* firstItem, uint32_t count)
+	static inline VvTSOrdDtlSlice* create(const char* code, VvTSOrdDtlStruct* firstItem, uint32_t count)
 	{
 		if (count == 0 || firstItem == NULL)
 			return NULL;
 
-		WTSOrdDtlSlice* slice = new WTSOrdDtlSlice();
+		VvTSOrdDtlSlice* slice = new VvTSOrdDtlSlice();
 		vvt_strcpy(slice->m_strCode, code);
 		slice->m_ptrBegin = firstItem;
 		slice->m_uCount = count;
@@ -1363,7 +1363,7 @@ public:
 
 	inline bool empty() const { return (m_uCount == 0) || (m_ptrBegin == NULL); }
 
-	inline const WTSOrdDtlStruct* at(int32_t idx)
+	inline const VvTSOrdDtlStruct* at(int32_t idx)
 	{
 		if (m_ptrBegin == NULL)
 			return NULL;
@@ -1378,15 +1378,15 @@ public:
  *	@details 切片并没有真实的复制内存,而只是取了开始和结尾的下标
  *	这样使用虽然更快,但是使用场景要非常小心,因为他依赖于基础数据对象
  */
-class WTSOrdQueSlice : public WTSObject
+class VvTSOrdQueSlice : public VvTSObject
 {
 private:
 	char				m_strCode[MAX_INSTRUMENT_LENGTH];
-	WTSOrdQueStruct*	m_ptrBegin;
+	VvTSOrdQueStruct*	m_ptrBegin;
 	uint32_t			m_uCount;
 
 protected:
-	WTSOrdQueSlice() :m_ptrBegin(NULL), m_uCount(0) {}
+	VvTSOrdQueSlice() :m_ptrBegin(NULL), m_uCount(0) {}
 	inline int32_t		translateIdx(int32_t idx) const
 	{
 		if (idx < 0)
@@ -1398,12 +1398,12 @@ protected:
 	}
 
 public:
-	static inline WTSOrdQueSlice* create(const char* code, WTSOrdQueStruct* firstItem, uint32_t count)
+	static inline VvTSOrdQueSlice* create(const char* code, VvTSOrdQueStruct* firstItem, uint32_t count)
 	{
 		if (count == 0 || firstItem == NULL)
 			return NULL;
 
-		WTSOrdQueSlice* slice = new WTSOrdQueSlice();
+		VvTSOrdQueSlice* slice = new VvTSOrdQueSlice();
 		vvt_strcpy(slice->m_strCode, code);
 		slice->m_ptrBegin = firstItem;
 		slice->m_uCount = count;
@@ -1415,7 +1415,7 @@ public:
 
 	inline bool empty() const { return (m_uCount == 0) || (m_ptrBegin == NULL); }
 
-	inline const WTSOrdQueStruct* at(int32_t idx)
+	inline const VvTSOrdQueStruct* at(int32_t idx)
 	{
 		if (m_ptrBegin == NULL)
 			return NULL;
@@ -1430,15 +1430,15 @@ public:
  *	@details 切片并没有真实的复制内存,而只是取了开始和结尾的下标
  *	这样使用虽然更快,但是使用场景要非常小心,因为他依赖于基础数据对象
  */
-class WTSTransSlice : public WTSObject
+class VvTSTransSlice : public VvTSObject
 {
 private:
 	char			m_strCode[MAX_INSTRUMENT_LENGTH];
-	WTSTransStruct*	m_ptrBegin;
+	VvTSTransStruct*	m_ptrBegin;
 	uint32_t		m_uCount;
 
 protected:
-	WTSTransSlice() :m_ptrBegin(NULL), m_uCount(0) {}
+	VvTSTransSlice() :m_ptrBegin(NULL), m_uCount(0) {}
 	inline int32_t		translateIdx(int32_t idx) const
 	{
 		if (idx < 0)
@@ -1450,12 +1450,12 @@ protected:
 	}
 
 public:
-	static inline WTSTransSlice* create(const char* code, WTSTransStruct* firstItem, uint32_t count)
+	static inline VvTSTransSlice* create(const char* code, VvTSTransStruct* firstItem, uint32_t count)
 	{
 		if (count == 0 || firstItem == NULL)
 			return NULL;
 
-		WTSTransSlice* slice = new WTSTransSlice();
+		VvTSTransSlice* slice = new VvTSTransSlice();
 		vvt_strcpy(slice->m_strCode, code);
 		slice->m_ptrBegin = firstItem;
 		slice->m_uCount = count;
@@ -1467,7 +1467,7 @@ public:
 
 	inline bool empty() const { return (m_uCount == 0) || (m_ptrBegin == NULL); }
 
-	inline const WTSTransStruct* at(int32_t idx)
+	inline const VvTSTransStruct* at(int32_t idx)
 	{
 		if (m_ptrBegin == NULL)
 			return NULL;

@@ -13,7 +13,7 @@
 
 #include <exception>
 
-#include "../Includes/WTSContractInfo.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
 
 
 CtaStraContext::CtaStraContext(WtCtaEngine* engine, const char* name, int32_t slippage)
@@ -28,7 +28,7 @@ CtaStraContext::~CtaStraContext()
 
 //////////////////////////////////////////////////////////////////////////
 //»Øµ÷º¯Êý
-void CtaStraContext::on_bar_close(const char* code, const char* period, WTSBarStruct* newBar)
+void CtaStraContext::on_bar_close(const char* code, const char* period, VvTSBarStruct* newBar)
 {
 	if (_strategy)
 		_strategy->on_bar(this, code, period, newBar);
@@ -60,7 +60,7 @@ void CtaStraContext::on_session_end(uint32_t uTDate)
 	CtaStraBaseCtx::on_session_end(uTDate);
 }
 
-void CtaStraContext::on_tick_updated(const char* code, WTSTickData* newTick)
+void CtaStraContext::on_tick_updated(const char* code, VvTSTickData* newTick)
 {
 	auto it = _tick_subs.find(code);
 	if (it == _tick_subs.end())

@@ -18,8 +18,8 @@
 #include "../Share/decimal.h"
 #include "../Share/CodeHelper.hpp"
 
-#include "../Includes/VVTSVariant.hpp"
-#include "../Includes/WTSContractInfo.hpp"
+#include "../Includes/VvTSVariant.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
 
 #include "../WTSTools/WTSLogger.h"
 
@@ -49,7 +49,7 @@ WtHftEngine::~WtHftEngine()
 		_cfg->release();
 }
 
-void WtHftEngine::init(VVTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHotMgr* hotMgr, EventNotifier* notifier /* = NULL */)
+void WtHftEngine::init(VvTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHotMgr* hotMgr, EventNotifier* notifier /* = NULL */)
 {
 	WtEngine::init(cfg, bdMgr, dataMgr, hotMgr, notifier);
 
@@ -66,7 +66,7 @@ void WtHftEngine::run()
 	}
 
 	_tm_ticker = new WtHftRtTicker(this);
-	VVTSVariant* cfgProd = _cfg->get("product");
+	VvTSVariant* cfgProd = _cfg->get("product");
 	_tm_ticker->init(_data_mgr->reader(), cfgProd->getCString("session"));
 
 	//启动之前,先把运行中的策略落地
@@ -106,13 +106,13 @@ void WtHftEngine::run()
 	_tm_ticker->run();
 }
 
-void WtHftEngine::handle_push_quote(WTSTickData* newTick)
+void WtHftEngine::handle_push_quote(VvTSTickData* newTick)
 {
 	if (_tm_ticker)
 		_tm_ticker->on_tick(newTick);
 }
 
-void WtHftEngine::handle_push_order_detail(WTSOrdDtlData* curOrdDtl)
+void WtHftEngine::handle_push_order_detail(VvTSOrdDtlData* curOrdDtl)
 {
 	const char* stdCode = curOrdDtl->code();
 	auto sit = _orddtl_sub_map.find(stdCode);
@@ -135,7 +135,7 @@ void WtHftEngine::handle_push_order_detail(WTSOrdDtlData* curOrdDtl)
 	}
 }
 
-void WtHftEngine::handle_push_order_queue(WTSOrdQueData* curOrdQue)
+void WtHftEngine::handle_push_order_queue(VvTSOrdQueData* curOrdQue)
 {
 	const char* stdCode = curOrdQue->code();
 	auto sit = _ordque_sub_map.find(stdCode);
@@ -158,7 +158,7 @@ void WtHftEngine::handle_push_order_queue(WTSOrdQueData* curOrdQue)
 	}
 }
 
-void WtHftEngine::handle_push_transaction(WTSTransData* curTrans)
+void WtHftEngine::handle_push_transaction(VvTSTransData* curTrans)
 {
 	const char* stdCode = curTrans->code();
 	auto sit = _trans_sub_map.find(stdCode);
@@ -211,7 +211,7 @@ void WtHftEngine::sub_transaction(uint32_t sid, const char* stdCode)
 	sids[sid] = std::make_pair(sid, 0);
 }
 
-void WtHftEngine::on_tick(const char* stdCode, WTSTickData* curTick)
+void WtHftEngine::on_tick(const char* stdCode, VvTSTickData* curTick)
 {
 	WtEngine::on_tick(stdCode, curTick);
 
@@ -254,8 +254,8 @@ void WtHftEngine::on_tick(const char* stdCode, WTSTickData* curTick)
 						}
 						else //(opt == 2)
 						{
-							WTSTickData* newTick = WTSTickData::create(curTick->getTickStruct());
-							WTSTickStruct& newTS = newTick->getTickStruct();
+							VvTSTickData* newTick = VvTSTickData::create(curTick->getTickStruct());
+							VvTSTickStruct& newTS = newTick->getTickStruct();
 							newTick->setContractInfo(curTick->getContractInfo());
 
 							//这里做一个复权因子的处理
@@ -277,7 +277,7 @@ void WtHftEngine::on_tick(const char* stdCode, WTSTickData* curTick)
 	}
 }
 
-void WtHftEngine::on_bar(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar)
+void WtHftEngine::on_bar(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar)
 {
 	thread_local static char key[64] = { 0 };
 	fmtutil::format_to(key, "{}-{}-{}", stdCode, period, times);
@@ -352,17 +352,17 @@ HftContextPtr WtHftEngine::getContext(uint32_t id)
 	return it->second;
 }
 
-WTSOrdQueSlice* WtHftEngine::get_order_queue_slice(uint32_t sid, const char* code, uint32_t count)
+VvTSOrdQueSlice* WtHftEngine::get_order_queue_slice(uint32_t sid, const char* code, uint32_t count)
 {
 	return _data_mgr->get_order_queue_slice(code, count);
 }
 
-WTSOrdDtlSlice* WtHftEngine::get_order_detail_slice(uint32_t sid, const char* code, uint32_t count)
+VvTSOrdDtlSlice* WtHftEngine::get_order_detail_slice(uint32_t sid, const char* code, uint32_t count)
 {
 	return _data_mgr->get_order_detail_slice(code, count);
 }
 
-WTSTransSlice* WtHftEngine::get_transaction_slice(uint32_t sid, const char* code, uint32_t count)
+VvTSTransSlice* WtHftEngine::get_transaction_slice(uint32_t sid, const char* code, uint32_t count)
 {
 	return _data_mgr->get_transaction_slice(code, count);
 }

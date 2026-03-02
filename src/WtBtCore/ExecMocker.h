@@ -33,11 +33,11 @@ public:
 
 	//////////////////////////////////////////////////////////////////////////
 	//IDataSink
-	virtual void handle_tick(const char* stdCode, WTSTickData* curTick, uint32_t pxType) override;
+	virtual void handle_tick(const char* stdCode, VvTSTickData* curTick, uint32_t pxType) override;
 	virtual void handle_schedule(uint32_t uDate, uint32_t uTime) override;
 	virtual void handle_init() override;
 
-	virtual void handle_bar_close(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar) override;
+	virtual void handle_bar_close(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar) override;
 
 	virtual void handle_session_begin(uint32_t curTDate) override;
 
@@ -47,9 +47,9 @@ public:
 
 	//////////////////////////////////////////////////////////////////////////
 	//ExecuteContext
-	virtual WTSTickSlice* getTicks(const char* stdCode, uint32_t count, uint64_t etime = 0) override;
+	virtual VvTSTickSlice* getTicks(const char* stdCode, uint32_t count, uint64_t etime = 0) override;
 
-	virtual WTSTickData* grabLastTick(const char* stdCode) override;
+	virtual VvTSTickData* grabLastTick(const char* stdCode) override;
 
 	virtual double getPosition(const char* stdCode, bool validOnly = true, int32_t flag = 3) override;
 
@@ -67,13 +67,13 @@ public:
 
 	virtual void writeLog(const char* message) override;
 
-	virtual WTSCommodityInfo* getCommodityInfo(const char* stdCode) override;
-	virtual WTSSessionInfo* getSessionInfo(const char* stdCode) override;
+	virtual VvTSCommodityInfo* getCommodityInfo(const char* stdCode) override;
+	virtual VvTSSessionInfo* getSessionInfo(const char* stdCode) override;
 
 	virtual uint64_t getCurTime() override;
 
 public:
-	bool	init(VVTSVariant* cfg);
+	bool	init(VvTSVariant* cfg);
 
 private:
 	HisDataReplayer*	_replayer;
@@ -110,7 +110,7 @@ private:
 
 	double			_position;
 	double			_undone;
-	WTSTickData*	_last_tick;
+	VvTSTickData*	_last_tick;
 	double			_sig_px;
 	uint64_t		_sig_time;
 

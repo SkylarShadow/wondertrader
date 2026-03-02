@@ -12,13 +12,13 @@ public:
 
 	virtual const char* getName() override;
 
-	virtual bool init(VVTSVariant* cfg) override;
+	virtual bool init(VvTSVariant* cfg) override;
 
 	virtual void on_schedule(ICtaStraCtx* ctx, uint32_t curDate, uint32_t curTime) override;
 
 	virtual void on_init(ICtaStraCtx* ctx) override;
 
-	virtual void on_tick(ICtaStraCtx* ctx, const char* stdCode, WTSTickData* newTick) override;
+	virtual void on_tick(ICtaStraCtx* ctx, const char* stdCode, VvTSTickData* newTick) override;
 
 	virtual void on_session_begin(ICtaStraCtx* ctx, uint32_t uTDate) override;
 

@@ -8,10 +8,10 @@
  * \brief
  */
 #include "ParserHuaX.h"
-#include "../Includes/WTSVersion.h"
+#include "../Includes/VvTSRiskDef.hpp"
 
 template<typename... Args>
-inline void write_log(IParserSpi* sink, WTSLogLevel ll, const char* format, const Args&... args)
+inline void write_log(IParserSpi* sink, VvTSLogLevel ll, const char* format, const Args&... args)
 {
 	if (sink == NULL)
 		return;
@@ -78,7 +78,7 @@ ParserHuaX::~ParserHuaX()
 	_api = NULL;
 }
 
-bool ParserHuaX::init(VVTSVariant* config)
+bool ParserHuaX::init(VvTSVariant* config)
 {
 	_front = config->getCString("front");
 	_strUser = config->getCString("user");
@@ -168,11 +168,11 @@ void ParserHuaX::DoLogin()
 		{
 			if (iResult == -1)
 			{
-				_sink->handleEvent(WPE_Connect, iResult);
+				_sink->handleEvent(VvPE_Connect, iResult);
 			}
 			else
 			{
-				_sink->handleEvent(WPE_Connect, 0);
+				_sink->handleEvent(VvPE_Connect, 0);
 
 				write_log(_sink, LL_ERROR, "[ParserHuaX] Sending login request failed: {}", iResult);
 			}
@@ -357,7 +357,7 @@ void ParserHuaX::registerSpi(IParserSpi* listener)
 void ParserHuaX::OnFrontConnected()
 {
 	if (_sink)
-		_sink->handleEvent(WPE_Connect, 0);
+		_sink->handleEvent(VvPE_Connect, 0);
 	DoLogin();
 }
 
@@ -375,7 +375,7 @@ void ParserHuaX::OnRspUserLogin(CTORATstpRspUserLoginField* pRspUserLoginField, 
 
 		if (_sink)
 		{
-			_sink->handleEvent(WPE_Login, 0);
+			_sink->handleEvent(VvPE_Login, 0);
 		}
 
 		DoSubscribeMD();
@@ -426,18 +426,18 @@ void ParserHuaX::OnRtnMarketData(CTORATstpMarketDataField* market_data)
 
 	code = market_data->SecurityID;
 
-	WTSContractInfo* ct = _pBaseDataMgr->getContract(code.c_str(), exchg.c_str());
+	VvTSContractInfo* ct = _pBaseDataMgr->getContract(code.c_str(), exchg.c_str());
 	if (ct == NULL)
 	{
 		if (_sink)
 			write_log(_sink, LL_ERROR, "[ParserHuaX] Instrument {}.{} not exists...", exchg, code);
 		return;
 	}
-	WTSCommodityInfo* commInfo = ct->getCommInfo();
+	VvTSCommodityInfo* commInfo = ct->getCommInfo();
 
-	WTSTickData* tick = WTSTickData::create(code.c_str());
+	VvTSTickData* tick = VvTSTickData::create(code.c_str());
 	tick->setContractInfo(ct);
-	WTSTickStruct& quote = tick->getTickStruct();
+	VvTSTickStruct& quote = tick->getTickStruct();
 	strcpy(quote.exchg, commInfo->getExchg());
 
 	quote.action_date = actDate;

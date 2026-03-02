@@ -92,7 +92,7 @@ GTEST_API_ bool InDeathTestChild();
 //   ASSERT_EXIT(server.ExitNow(), ::testing::ExitedWithCode(0), "Exiting");
 //
 //   bool KilledBySIGHUP(int exit_code) {
-//     return WIFSIGNALED(exit_code) && WTERMSIG(exit_code) == SIGHUP;
+//     return WIFSIGNALED(exit_code) && VvTERMSIG(exit_code) == SIGHUP;
 //   }
 //
 //   ASSERT_EXIT(client.HangUpServer(), KilledBySIGHUP, "Hanging up!");

@@ -2,9 +2,9 @@
 
 #include "../Includes/ICtaStraCtx.h"
 
-#include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/VVTSVariant.hpp"
-#include "../Includes/WTSDataDef.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/VvTSVariant.hpp"
+#include "../Includes/VvTSDataDef.hpp"
 #include "../Share/decimal.h"
 
 extern const char* FACT_NAME;
@@ -32,7 +32,7 @@ const char* WtStraDualThrust::getName()
 	return "DualThrust";
 }
 
-bool WtStraDualThrust::init(VVTSVariant* cfg)
+bool WtStraDualThrust::init(VvTSVariant* cfg)
 {
 	if (cfg == NULL)
 		return false;
@@ -74,7 +74,7 @@ void WtStraDualThrust::on_schedule(ICtaStraCtx* ctx, uint32_t curDate, uint32_t 
 {
 	std::string code = _code;
 
-	WTSKlineSlice *kline = ctx->stra_get_bars(code.c_str(), _period.c_str(), _count, true);
+	VvTSKlineSlice *kline = ctx->stra_get_bars(code.c_str(), _period.c_str(), _count, true);
 	if(kline == NULL)
 	{
 		//这里可以输出一些日志
@@ -97,7 +97,7 @@ void WtStraDualThrust::on_schedule(ICtaStraCtx* ctx, uint32_t curDate, uint32_t 
 	double hh = kline->maxprice(-days, -2);
 	double ll = kline->minprice(-days, -2);
 
-	WTSValueArray* closes = kline->extractData(KFT_CLOSE);
+	VvTSValueArray* closes = kline->extractData(KFT_CLOSE);
 	double hc = closes->maxvalue(-days, -2);
 	double lc = closes->minvalue(-days, -2);
 	double curPx = closes->at(-1);
@@ -112,7 +112,7 @@ void WtStraDualThrust::on_schedule(ICtaStraCtx* ctx, uint32_t curDate, uint32_t 
 	ctx->set_index_value("DualThrust", "upper_bound", upper_bound);
 	ctx->set_index_value("DualThrust", "lower_bound", lower_bound);
 
-	WTSCommodityInfo* commInfo = ctx->stra_get_comminfo(_code.c_str());
+	VvTSCommodityInfo* commInfo = ctx->stra_get_comminfo(_code.c_str());
 
 	double curPos = ctx->stra_get_position(_moncode.c_str()) / trdUnit;
 	if(decimal::eq(curPos,0))
@@ -171,7 +171,7 @@ void WtStraDualThrust::on_init(ICtaStraCtx* ctx)
 {
 	std::string code = _code;
 	ctx->stra_sub_ticks(_code.c_str());
-	WTSKlineSlice *kline = ctx->stra_get_bars(code.c_str(), _period.c_str(), _count, true);
+	VvTSKlineSlice *kline = ctx->stra_get_bars(code.c_str(), _period.c_str(), _count, true);
 	if (kline == NULL)
 	{
 		//这里可以输出一些日志
@@ -191,7 +191,7 @@ void WtStraDualThrust::on_init(ICtaStraCtx* ctx)
 	ctx->register_index_line("DualThrust", "lower_bound", 0);
 }
 
-void WtStraDualThrust::on_tick(ICtaStraCtx* ctx, const char* stdCode, WTSTickData* newTick)
+void WtStraDualThrust::on_tick(ICtaStraCtx* ctx, const char* stdCode, VvTSTickData* newTick)
 {
 	//没有什么要处理
 }

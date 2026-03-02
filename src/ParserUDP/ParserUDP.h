@@ -28,7 +28,7 @@ public:
 
 	//IQuoteParser ½Ó¿Ú
 public:
-	virtual bool init(VVTSVariant* config) override;
+	virtual bool init(VvTSVariant* config) override;
 
 	virtual void release() override;
 

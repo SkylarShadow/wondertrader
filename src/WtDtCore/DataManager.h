@@ -14,11 +14,11 @@
 #include "../Share/BoostMappingFile.hpp"
 
 NS_VVTP_BEGIN
-class WTSTickData;
-class WTSOrdQueData;
-class WTSOrdDtlData;
-class WTSTransData;
-class VVTSVariant;
+class VvTSTickData;
+class VvTSOrdQueData;
+class VvTSOrdDtlData;
+class VvTSTransData;
+class VvTSVariant;
 class IDataCaster;
 NS_VVTP_END
 
@@ -35,7 +35,7 @@ public:
 	~DataManager();
 
 public:
-	bool init(VVTSVariant* params, WTSBaseDataMgr* bdMgr, StateMonitor* stMonitor);
+	bool init(VvTSVariant* params, WTSBaseDataMgr* bdMgr, StateMonitor* stMonitor);
 
 	void add_ext_dumper(const char* id, IHisDataDumper* dumper);
 
@@ -49,19 +49,19 @@ public:
 
 	void release();
 
-	bool writeTick(WTSTickData* curTick, uint32_t procFlag);
+	bool writeTick(VvTSTickData* curTick, uint32_t procFlag);
 
-	bool writeOrderQueue(WTSOrdQueData* curOrdQue);
+	bool writeOrderQueue(VvTSOrdQueData* curOrdQue);
 
-	bool writeOrderDetail(WTSOrdDtlData* curOrdDetail);
+	bool writeOrderDetail(VvTSOrdDtlData* curOrdDetail);
 
-	bool writeTransaction(WTSTransData* curTrans);
+	bool writeTransaction(VvTSTransData* curTrans);
 
 	void transHisData(const char* sid);
 	
 	bool isSessionProceeded(const char* sid);
 
-	WTSTickData* getCurTick(const char* code, const char* exchg = "");
+	VvTSTickData* getCurTick(const char* code, const char* exchg = "");
 
 public:
 	//////////////////////////////////////////////////////////////////////////
@@ -70,13 +70,13 @@ public:
 
 	virtual bool canSessionReceive(const char* sid) override;
 
-	virtual void broadcastTick(WTSTickData* curTick) override;
+	virtual void broadcastTick(VvTSTickData* curTick) override;
 
-	virtual void broadcastOrdQue(WTSOrdQueData* curOrdQue) override;
+	virtual void broadcastOrdQue(VvTSOrdQueData* curOrdQue) override;
 
-	virtual void broadcastOrdDtl(WTSOrdDtlData* curOrdDtl) override;
+	virtual void broadcastOrdDtl(VvTSOrdDtlData* curOrdDtl) override;
 
-	virtual void broadcastTrans(WTSTransData* curTrans) override;
+	virtual void broadcastTrans(VvTSTransData* curTrans) override;
 
 	virtual CodeSet* getSessionComms(const char* sid) override;
 
@@ -87,7 +87,7 @@ public:
 	*	@ll			日志级别
 	*	@message	日志内容
 	*/
-	virtual void outputLog(WTSLogLevel ll, const char* message) override;
+	virtual void outputLog(VvTSLogLevel ll, const char* message) override;
 
 private:
 	IDataWriter*		_writer;

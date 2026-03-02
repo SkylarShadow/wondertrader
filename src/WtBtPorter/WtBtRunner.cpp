@@ -22,7 +22,7 @@
 
 #include "../WTSTools/WTSLogger.h"
 #include "../WTSUtils/WTSCfgLoader.h"
-#include "../Includes/VVTSVariant.hpp"
+#include "../Includes/VvTSVariant.hpp"
 #include "../WTSUtils/SignalHook.hpp"
 
 #ifdef _MSC_VER
@@ -95,7 +95,7 @@ WtBtRunner::~WtBtRunner()
 {
 }
 
-bool WtBtRunner::loadRawHisBars(void* obj, const char* stdCode, WTSKlinePeriod period, FuncReadBars cb)
+bool WtBtRunner::loadRawHisBars(void* obj, const char* stdCode, VvTSKlinePeriod period, FuncReadBars cb)
 {
 	StdUniqueLock lock(_feed_mtx);
 	if (_ext_raw_bar_loader == NULL)
@@ -120,7 +120,7 @@ bool WtBtRunner::loadRawHisBars(void* obj, const char* stdCode, WTSKlinePeriod p
 	}
 }
 
-bool WtBtRunner::loadFinalHisBars(void* obj, const char* stdCode, WTSKlinePeriod period, FuncReadBars cb)
+bool WtBtRunner::loadFinalHisBars(void* obj, const char* stdCode, VvTSKlinePeriod period, FuncReadBars cb)
 {
 	StdUniqueLock lock(_feed_mtx);
 	if (_ext_fnl_bar_loader == NULL)
@@ -181,7 +181,7 @@ bool WtBtRunner::loadRawHisTicks(void* obj, const char* stdCode, uint32_t uDate,
 	return _ext_tick_loader(stdCode, uDate);
 }
 
-void WtBtRunner::feedRawBars(WTSBarStruct* bars, uint32_t count)
+void WtBtRunner::feedRawBars(VvTSBarStruct* bars, uint32_t count)
 {
 	if(_ext_fnl_bar_loader == NULL && _ext_raw_bar_loader == NULL)
 	{
@@ -203,7 +203,7 @@ void WtBtRunner::feedAdjFactors(const char* stdCode, uint32_t* dates, double* fa
 	_feeder_fcts(_feed_obj, stdCode, dates, factors, count);
 }
 
-void WtBtRunner::feedRawTicks(WTSTickStruct* ticks, uint32_t count)
+void WtBtRunner::feedRawTicks(VvTSTickStruct* ticks, uint32_t count)
 {
 	if (_ext_tick_loader == NULL)
 	{
@@ -314,7 +314,7 @@ uint32_t WtBtRunner::initSelMocker(const char* name, uint32_t date, uint32_t tim
 	return _sel_mocker->id();
 }
 
-void WtBtRunner::ctx_on_bar(uint32_t id, const char* stdCode, const char* period, WTSBarStruct* newBar, EngineType eType/*= ET_CTA*/)
+void WtBtRunner::ctx_on_bar(uint32_t id, const char* stdCode, const char* period, VvTSBarStruct* newBar, EngineType eType/*= ET_CTA*/)
 {
 	switch (eType)
 	{
@@ -382,7 +382,7 @@ void WtBtRunner::ctx_on_session_event(uint32_t id, uint32_t curTDate, bool isBeg
 	}
 }
 
-void WtBtRunner::ctx_on_tick(uint32_t id, const char* stdCode, WTSTickData* newTick, EngineType eType/*= ET_CTA*/)
+void WtBtRunner::ctx_on_tick(uint32_t id, const char* stdCode, VvTSTickData* newTick, EngineType eType/*= ET_CTA*/)
 {
 	switch (eType)
 	{
@@ -394,19 +394,19 @@ void WtBtRunner::ctx_on_tick(uint32_t id, const char* stdCode, WTSTickData* newT
 	}
 }
 
-void WtBtRunner::hft_on_order_queue(uint32_t id, const char* stdCode, WTSOrdQueData* newOrdQue)
+void WtBtRunner::hft_on_order_queue(uint32_t id, const char* stdCode, VvTSOrdQueData* newOrdQue)
 {
 	if (_cb_hft_ordque)
 		_cb_hft_ordque(id, stdCode, &newOrdQue->getOrdQueStruct());
 }
 
-void WtBtRunner::hft_on_order_detail(uint32_t id, const char* stdCode, WTSOrdDtlData* newOrdDtl)
+void WtBtRunner::hft_on_order_detail(uint32_t id, const char* stdCode, VvTSOrdDtlData* newOrdDtl)
 {
 	if (_cb_hft_orddtl)
 		_cb_hft_orddtl(id, stdCode, &newOrdDtl->getOrdDtlStruct());
 }
 
-void WtBtRunner::hft_on_transaction(uint32_t id, const char* stdCode, WTSTransData* newTrans)
+void WtBtRunner::hft_on_transaction(uint32_t id, const char* stdCode, VvTSTransData* newTrans)
 {
 	if (_cb_hft_trans)
 		_cb_hft_trans(id, stdCode, &newTrans->getTransStruct());
@@ -418,19 +418,19 @@ void WtBtRunner::hft_on_channel_ready(uint32_t cHandle, const char* trader)
 		_cb_hft_chnl(cHandle, trader, 1000/*CHNL_EVENT_READY*/);
 }
 
-void WtBtRunner::hft_on_entrust(uint32_t cHandle, VvtUInt32 localid, const char* stdCode, bool bSuccess, const char* message, const char* userTag)
+void WtBtRunner::hft_on_entrust(uint32_t cHandle, VvTUInt32 localid, const char* stdCode, bool bSuccess, const char* message, const char* userTag)
 {
 	if (_cb_hft_entrust)
 		_cb_hft_entrust(cHandle, localid, stdCode, bSuccess, message, userTag);
 }
 
-void WtBtRunner::hft_on_order(uint32_t cHandle, VvtUInt32 localid, const char* stdCode, bool isBuy, double totalQty, double leftQty, double price, bool isCanceled, const char* userTag)
+void WtBtRunner::hft_on_order(uint32_t cHandle, VvTUInt32 localid, const char* stdCode, bool isBuy, double totalQty, double leftQty, double price, bool isCanceled, const char* userTag)
 {
 	if (_cb_hft_ord)
 		_cb_hft_ord(cHandle, localid, stdCode, isBuy, totalQty, leftQty, price, isCanceled, userTag);
 }
 
-void WtBtRunner::hft_on_trade(uint32_t cHandle, VvtUInt32 localid, const char* stdCode, bool isBuy, double vol, double price, const char* userTag)
+void WtBtRunner::hft_on_trade(uint32_t cHandle, VvTUInt32 localid, const char* stdCode, bool isBuy, double vol, double price, const char* userTag)
 {
 	if (_cb_hft_trd)
 		_cb_hft_trd(cHandle, localid, stdCode, isBuy, vol, price, userTag);
@@ -468,9 +468,9 @@ void WtBtRunner::config(const char* cfgFile, bool isFile /* = true */)
 
 	_replayer.init(_cfg->get("replayer"), &_notifier, _ext_fnl_bar_loader != NULL ? this : NULL);
 
-	VVTSVariant* cfgEnv = _cfg->get("env");
+	VvTSVariant* cfgEnv = _cfg->get("env");
 	const char* mode = cfgEnv->getCString("mocker");
-	VVTSVariant* cfgMode = _cfg->get(mode);
+	VvTSVariant* cfgMode = _cfg->get(mode);
 	if (strcmp(mode, "cta") == 0 && cfgMode)
 	{
 		const char* name = cfgMode->getCString("name");
@@ -494,7 +494,7 @@ void WtBtRunner::config(const char* cfgFile, bool isFile /* = true */)
 		_sel_mocker->init_sel_factory(cfgMode);
 		_replayer.register_sink(_sel_mocker, name);
 
-		VVTSVariant* cfgTask = cfgMode->get("task");
+		VvTSVariant* cfgTask = cfgMode->get("task");
 		if(cfgTask)
 			_replayer.register_task(_sel_mocker->id(), cfgTask->getUInt32("date"), cfgTask->getUInt32("time"),
 				cfgTask->getCString("period"), cfgTask->getCString("trdtpl"), cfgTask->getCString("session"));
@@ -589,7 +589,7 @@ void WtBtRunner::release()
 	WTSLogger::stop();
 }
 
-void WtBtRunner::set_time_range(VvtUInt64 stime, VvtUInt64 etime)
+void WtBtRunner::set_time_range(VvTUInt64 stime, VvTUInt64 etime)
 {
 	_replayer.set_time_range(stime, etime);
 
@@ -625,9 +625,9 @@ const char* LOG_TAGS[] = {
 	"none",
 };
 
-bool WtBtRunner::initEvtNotifier(VVTSVariant* cfg)
+bool WtBtRunner::initEvtNotifier(VvTSVariant* cfg)
 {
-	if (cfg == NULL || cfg->type() != VVTSVariant::VT_Object)
+	if (cfg == NULL || cfg->type() != VvTSVariant::VT_Object)
 		return false;
 
 	_notifier.init(cfg);

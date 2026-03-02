@@ -2,7 +2,7 @@
 #include "WtFilterMgr.h"
 
 #include "../Share/decimal.h"
-#include "../Includes/VVTSVariant.hpp"
+#include "../Includes/VvTSVariant.hpp"
 
 #include "../WTSTools/WTSLogger.h"
 
@@ -106,7 +106,7 @@ void WtExecuterMgr::handle_pos_change(const char* stdCode, double targetPos, dou
 	}
 }
 
-void WtExecuterMgr::handle_tick(const char* stdCode, WTSTickData* curTick)
+void WtExecuterMgr::handle_tick(const char* stdCode, VvTSTickData* curTick)
 {
 	//for (auto it = _executers.begin(); it != _executers.end(); it++)
 	//{
@@ -206,16 +206,16 @@ void WtExecuterMgr::commit_cached_targets(double scale /* = 1.0 */)
 	_all_cached_targets.clear();
 }
 
-bool WtExecuterMgr::load_router_rules(VVTSVariant* config)
+bool WtExecuterMgr::load_router_rules(VvTSVariant* config)
 {
 	if (config == NULL || !config->isArray())
 		return false;
 
 	for(uint32_t i = 0; i < config->size(); i++)
 	{
-		VVTSVariant* item = config->get(i);
+		VvTSVariant* item = config->get(i);
 		const char* straName = item->getCString("strategy");
-		VVTSVariant* itemExec = item->get("executer");
+		VvTSVariant* itemExec = item->get("executer");
 		if(itemExec->isArray())
 		{
 			uint32_t cnt = itemExec->size();

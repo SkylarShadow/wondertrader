@@ -18,9 +18,9 @@
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/strand.hpp>
 
-#include "../Includes/WTSTypes.h"
+#include "../Includes/VvTSTypes.h"
 #include "../Includes/ITraderApi.h"
-#include "../Includes/WTSCollection.hpp"
+#include "../Includes/VvTSCollection.hpp"
 
 #include "../API/FixApi/include/FixApi.h"
 
@@ -64,7 +64,7 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	//ITraderApi接口
 public:
-	virtual bool init(VVTSVariant* params) override;
+	virtual bool init(VvTSVariant* params) override;
 
 	virtual void release() override;
 
@@ -82,9 +82,9 @@ public:
 
 	virtual int logout() override;
 
-	virtual int orderInsert(WTSEntrust* eutrust) override;
+	virtual int orderInsert(VvTSEntrust* eutrust) override;
 
-	virtual int orderAction(WTSEntrustAction* action) override;
+	virtual int orderAction(VvTSEntrustAction* action) override;
 
 	virtual int queryAccount() override;
 
@@ -123,7 +123,7 @@ protected:
 	ITraderSpi*		m_traderSink;
 	uint64_t		m_uLastQryTime;
 
-	typedef WTSHashMap<std::string> TradeDataMap;
+	typedef VvTSHashMap<std::string> TradeDataMap;
 	TradeDataMap*	m_mapLives;
 	std::unordered_set<std::string>	m_tradeids;
 

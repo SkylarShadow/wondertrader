@@ -16,15 +16,15 @@ public:
 
 	virtual const char* getFactName() override;
 
-	virtual bool init(VVTSVariant* cfg) override;
+	virtual bool init(VvTSVariant* cfg) override;
 
 	virtual void on_init(ISelStraCtx* ctx) override;
 
 	virtual void on_schedule(ISelStraCtx* ctx, uint32_t uDate, uint32_t uTime) override;
 
-	virtual void on_tick(ISelStraCtx* ctx, const char* stdCode, WTSTickData* newTick) override;
+	virtual void on_tick(ISelStraCtx* ctx, const char* stdCode, VvTSTickData* newTick) override;
 
-	virtual void on_bar(ISelStraCtx* ctx, const char* stdCode, const char* period, WTSBarStruct* newBar) override;
+	virtual void on_bar(ISelStraCtx* ctx, const char* stdCode, const char* period, VvTSBarStruct* newBar) override;
 
 private:
 	//指标参数

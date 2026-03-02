@@ -52,7 +52,7 @@ const char* WtStockMinImpactExeUnit::getName()
 	return "WtStockMinImpactExeUnit";
 }
 
-void WtStockMinImpactExeUnit::init(ExecuteContext* ctx, const char* stdCode, VVTSVariant* cfg)
+void WtStockMinImpactExeUnit::init(ExecuteContext* ctx, const char* stdCode, VvTSVariant* cfg)
 {
 	ExecuteUnit::init(ctx, stdCode, cfg);
 	_comm_info = ctx->getCommodityInfo(stdCode);
@@ -183,7 +183,7 @@ void WtStockMinImpactExeUnit::check_unmanager_order()
 	}
 }
 
-void WtStockMinImpactExeUnit::on_tick(WTSTickData* newTick)
+void WtStockMinImpactExeUnit::on_tick(VvTSTickData* newTick)
 {
 	_now = TimeUtils::getLocalTimeNow();
 	if (newTick == NULL || _code.compare(newTick->code()) != 0)
@@ -313,7 +313,7 @@ void WtStockMinImpactExeUnit::set_position(const char* stdCode, double newVol)
 
 	_is_finish = false;
 	_start_time = TimeUtils::getLocalTimeNow();
-	WTSTickData* tick = _ctx->grabLastTick(_code.c_str());
+	VvTSTickData* tick = _ctx->grabLastTick(_code.c_str());
 	if (tick)
 	{
 		_start_price = tick->price();

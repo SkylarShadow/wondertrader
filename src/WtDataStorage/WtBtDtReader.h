@@ -11,13 +11,13 @@
 #include "../Share/StdUtils.hpp"
 
 NS_VVTP_BEGIN
-class VVTSVariant;
-class WTSTickSlice;
-class WTSKlineSlice;
-class WTSOrdDtlSlice;
-class WTSOrdQueSlice;
-class WTSTransSlice;
-class WTSArray;
+class VvTSVariant;
+class VvTSTickSlice;
+class VvTSKlineSlice;
+class VvTSOrdDtlSlice;
+class VvTSOrdQueSlice;
+class VvTSTransSlice;
+class VvTSArray;
 
 class IBaseDataMgr;
 class IHotMgr;
@@ -32,9 +32,9 @@ public:
 //////////////////////////////////////////////////////////////////////////
 //IBtDtReader
 public:
-	virtual void init(VVTSVariant* cfg, IBtDtReaderSink* sink);
+	virtual void init(VvTSVariant* cfg, IBtDtReaderSink* sink);
 
-	virtual bool read_raw_bars(const char* exchg, const char* code, WTSKlinePeriod period, std::string& buffer) override;
+	virtual bool read_raw_bars(const char* exchg, const char* code, VvTSKlinePeriod period, std::string& buffer) override;
 	virtual bool read_raw_ticks(const char* exchg, const char* code, uint32_t uDate, std::string& buffer) override;
 
 	virtual bool read_raw_order_details(const char* exchg, const char* code, uint32_t uDate, std::string& buffer) override;

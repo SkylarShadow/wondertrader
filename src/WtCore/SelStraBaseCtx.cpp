@@ -16,8 +16,8 @@
 #include <rapidjson/prettywriter.h>
 
 #include "../Share/StrUtil.hpp"
-#include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSSessionInfo.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/VvTSSessionInfo.hpp"
 #include "../Includes/IHotMgr.h"
 #include "../Share/decimal.h"
 #include "../Share/CodeHelper.hpp"
@@ -483,7 +483,7 @@ void SelStraBaseCtx::save_data(uint32_t flag /* = 0xFFFFFFFF */)
 
 //////////////////////////////////////////////////////////////////////////
 //回调函数
-void SelStraBaseCtx::on_bar(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar)
+void SelStraBaseCtx::on_bar(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar)
 {
 	if (newBar == NULL)
 		return;
@@ -522,7 +522,7 @@ void SelStraBaseCtx::update_dyn_profit(const char* stdCode, double price)
 		}
 		else
 		{
-			WTSCommodityInfo* commInfo = _engine->get_commodity_info(stdCode);
+			VvTSCommodityInfo* commInfo = _engine->get_commodity_info(stdCode);
 			double dynprofit = 0;
 			for (auto pit = pInfo._details.begin(); pit != pInfo._details.end(); pit++)
 			{
@@ -553,7 +553,7 @@ void SelStraBaseCtx::update_dyn_profit(const char* stdCode, double price)
 	_fund_info._total_dynprofit = total_dynprofit;
 }
 
-void SelStraBaseCtx::on_tick(const char* stdCode, WTSTickData* newTick, bool bEmitStrategy /* = true */)
+void SelStraBaseCtx::on_tick(const char* stdCode, VvTSTickData* newTick, bool bEmitStrategy /* = true */)
 {
 	_price_map[stdCode] = newTick->price();
 
@@ -562,7 +562,7 @@ void SelStraBaseCtx::on_tick(const char* stdCode, WTSTickData* newTick, bool bEm
 		auto it = _sig_map.find(stdCode);
 		if (it != _sig_map.end())
 		{
-			WTSSessionInfo* sInfo = _engine->get_session_info(stdCode, true);
+			VvTSSessionInfo* sInfo = _engine->get_session_info(stdCode, true);
 
 			if (sInfo->isInTradingTime(_engine->get_raw_time(), true))
 			{
@@ -600,7 +600,7 @@ bool SelStraBaseCtx::on_schedule(uint32_t curDate, uint32_t curTime, uint32_t fi
 	on_strategy_schedule(curDate, fireTime);
 	log_debug("Strategy {} scheduled @ {}", _context_id, curTime);
 
-	wt_hashset<std::string> to_clear;
+	vvt_hashset<std::string> to_clear;
 	for (auto& v : _pos_map)
 	{
 		const PosInfo& pInfo = v.second;
@@ -734,7 +734,7 @@ double SelStraBaseCtx::stra_get_price(const char* stdCode)
 
 void SelStraBaseCtx::stra_set_position(const char* stdCode, double qty, const char* userTag /* = "" */)
 {
-	WTSCommodityInfo* commInfo = _engine->get_commodity_info(stdCode);
+	VvTSCommodityInfo* commInfo = _engine->get_commodity_info(stdCode);
 	if (commInfo == NULL)
 	{
 		log_error("Cannot find corresponding commodity info of {}", stdCode);
@@ -796,7 +796,7 @@ void SelStraBaseCtx::do_set_position(const char* stdCode, double qty, const char
 
 	double diff = qty - pInfo._volume;
 
-	WTSCommodityInfo* commInfo = _engine->get_commodity_info(stdCode);
+	VvTSCommodityInfo* commInfo = _engine->get_commodity_info(stdCode);
 	if (commInfo == NULL)
 		return;
 
@@ -932,7 +932,7 @@ void SelStraBaseCtx::do_set_position(const char* stdCode, double qty, const char
 	_engine->handle_pos_change(_name.c_str(), stdCode, diff);
 }
 
-WTSKlineSlice* SelStraBaseCtx::stra_get_bars(const char* stdCode, const char* period, uint32_t count)
+VvTSKlineSlice* SelStraBaseCtx::stra_get_bars(const char* stdCode, const char* period, uint32_t count)
 {
 	thread_local static char key[64] = { 0 };
 	fmtutil::format_to(key, "{}#{}", stdCode, period);
@@ -946,13 +946,13 @@ WTSKlineSlice* SelStraBaseCtx::stra_get_bars(const char* stdCode, const char* pe
 	uint64_t etime = 0;
 	if (period[0] == 'd')
 	{
-		WTSSessionInfo* sInfo = _engine->get_session_info(stdCode, true);
+		VvTSSessionInfo* sInfo = _engine->get_session_info(stdCode, true);
 		etime = (uint64_t)_schedule_date * 10000 + sInfo->getCloseTime();
 	}
 	else
 		etime = (uint64_t)_schedule_date * 10000 + _schedule_time;
 
-	WTSKlineSlice* kline = _engine->get_kline_slice(_context_id, stdCode, basePeriod, count, times, etime);
+	VvTSKlineSlice* kline = _engine->get_kline_slice(_context_id, stdCode, basePeriod, count, times, etime);
 
 	KlineTag& tag = _kline_tags[key];
 	tag._closed = false;
@@ -966,12 +966,12 @@ WTSKlineSlice* SelStraBaseCtx::stra_get_bars(const char* stdCode, const char* pe
 	return kline;
 }
 
-WTSTickSlice* SelStraBaseCtx::stra_get_ticks(const char* stdCode, uint32_t count)
+VvTSTickSlice* SelStraBaseCtx::stra_get_ticks(const char* stdCode, uint32_t count)
 {
 	return _engine->get_tick_slice(_context_id, stdCode, count);
 }
 
-WTSTickData* SelStraBaseCtx::stra_get_last_tick(const char* stdCode)
+VvTSTickData* SelStraBaseCtx::stra_get_last_tick(const char* stdCode)
 {
 	return _engine->get_last_tick(_context_id, stdCode);
 }
@@ -989,7 +989,7 @@ void SelStraBaseCtx::stra_sub_ticks(const char* stdCode)
 	log_info("Market data subscribed: {}", stdCode);
 }
 
-WTSCommodityInfo* SelStraBaseCtx::stra_get_comminfo(const char* stdCode)
+VvTSCommodityInfo* SelStraBaseCtx::stra_get_comminfo(const char* stdCode)
 {
 	return _engine->get_commodity_info(stdCode);
 }
@@ -999,7 +999,7 @@ std::string SelStraBaseCtx::stra_get_rawcode(const char* stdCode)
 	return _engine->get_rawcode(stdCode);
 }
 
-WTSSessionInfo* SelStraBaseCtx::stra_get_sessinfo(const char* stdCode)
+VvTSSessionInfo* SelStraBaseCtx::stra_get_sessinfo(const char* stdCode)
 {
 	return _engine->get_session_info(stdCode, true);
 }

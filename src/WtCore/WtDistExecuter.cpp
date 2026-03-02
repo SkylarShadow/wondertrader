@@ -1,6 +1,6 @@
 ﻿#include "WtDistExecuter.h"
 
-#include "../Includes/VVTSVariant.hpp"
+#include "../Includes/VvTSVariant.hpp"
 
 #include "../Share/decimal.h"
 #include "../WTSTools/WTSLogger.h"
@@ -18,7 +18,7 @@ WtDistExecuter::~WtDistExecuter()
 
 }
 
-bool WtDistExecuter::init(VVTSVariant* params)
+bool WtDistExecuter::init(VvTSVariant* params)
 {
 	if (params == NULL)
 		return false;
@@ -65,7 +65,7 @@ void WtDistExecuter::on_position_changed(const char* stdCode, double targetPos)
 	//这里广播目标仓位
 }
 
-void WtDistExecuter::on_tick(const char* stdCode, WTSTickData* newTick)
+void WtDistExecuter::on_tick(const char* stdCode, VvTSTickData* newTick)
 {
 	//分布式执行器不需要处理ontick
 }

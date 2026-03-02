@@ -12,10 +12,10 @@
 #include "../WtCore/WtHelper.h"
 
 #include "../Share/StrUtil.hpp"
-#include "../Includes/WTSDataDef.hpp"
-#include "../Includes/VVTSVariant.hpp"
+#include "../Includes/VvTSDataDef.hpp"
+#include "../Includes/VvTSVariant.hpp"
 #include "../Share/DLLHelper.hpp"
-#include "../Includes/WTSSessionInfo.hpp"
+#include "../Includes/VvTSSessionInfo.hpp"
 
 #include "../WTSTools/WTSLogger.h"
 #include "../WTSTools/WTSDataFactory.h"
@@ -40,7 +40,7 @@ WtSimpDataMgr::~WtSimpDataMgr()
 		_rt_tick_map->release();
 }
 
-bool WtSimpDataMgr::initStore(VVTSVariant* cfg)
+bool WtSimpDataMgr::initStore(VvTSVariant* cfg)
 {
 	if (cfg == NULL)
 		return false;
@@ -81,7 +81,7 @@ bool WtSimpDataMgr::initStore(VVTSVariant* cfg)
 	return true;
 }
 
-bool WtSimpDataMgr::init(VVTSVariant* cfg, WtExecRunner* runner)
+bool WtSimpDataMgr::init(VvTSVariant* cfg, WtExecRunner* runner)
 {
 	_runner = runner;
 	return initStore(cfg->get("store"));
@@ -117,17 +117,17 @@ uint32_t WtSimpDataMgr::get_secs()
 	return _cur_secs;
 }
 
-void WtSimpDataMgr::reader_log(WTSLogLevel ll, const char* message)
+void WtSimpDataMgr::reader_log(VvTSLogLevel ll, const char* message)
 {
 	WTSLogger::log_raw(ll, message);
 }
 
-void WtSimpDataMgr::on_bar(const char* code, WTSKlinePeriod period, WTSBarStruct* newBar)
+void WtSimpDataMgr::on_bar(const char* code, VvTSKlinePeriod period, VvTSBarStruct* newBar)
 {
 
 }
 
-void WtSimpDataMgr::handle_push_quote(const char* stdCode, WTSTickData* curTick)
+void WtSimpDataMgr::handle_push_quote(const char* stdCode, VvTSTickData* curTick)
 {
 	if (curTick == NULL)
 		return;
@@ -161,12 +161,12 @@ void WtSimpDataMgr::handle_push_quote(const char* stdCode, WTSTickData* curTick)
 	_cur_tdate = curTick->tradingdate();
 }
 
-WTSTickData* WtSimpDataMgr::grab_last_tick(const char* code)
+VvTSTickData* WtSimpDataMgr::grab_last_tick(const char* code)
 {
 	if (_rt_tick_map == NULL)
 		return NULL;
 
-	WTSTickData* curTick = (WTSTickData*)_rt_tick_map->get(code);
+	VvTSTickData* curTick = (VvTSTickData*)_rt_tick_map->get(code);
 	if (curTick == NULL)
 		return NULL;
 
@@ -175,7 +175,7 @@ WTSTickData* WtSimpDataMgr::grab_last_tick(const char* code)
 }
 
 
-WTSTickSlice* WtSimpDataMgr::get_tick_slice(const char* code, uint32_t count, uint64_t etime /*= 0*/)
+VvTSTickSlice* WtSimpDataMgr::get_tick_slice(const char* code, uint32_t count, uint64_t etime /*= 0*/)
 {
 	if (_reader == NULL)
 		return NULL;
@@ -184,7 +184,7 @@ WTSTickSlice* WtSimpDataMgr::get_tick_slice(const char* code, uint32_t count, ui
 }
 
 
-WTSKlineSlice* WtSimpDataMgr::get_kline_slice(const char* stdCode, WTSKlinePeriod period, uint32_t times, uint32_t count, uint64_t etime /*= 0*/)
+VvTSKlineSlice* WtSimpDataMgr::get_kline_slice(const char* stdCode, VvTSKlinePeriod period, uint32_t times, uint32_t count, uint64_t etime /*= 0*/)
 {
 	if (_reader == NULL)
 		return NULL;
@@ -197,19 +197,19 @@ WTSKlineSlice* WtSimpDataMgr::get_kline_slice(const char* stdCode, WTSKlinePerio
 	}
 
 	//只有非基础周期的会进到下面的步骤
-	WTSSessionInfo* sInfo = _runner->get_session_info(stdCode, true);
+	VvTSSessionInfo* sInfo = _runner->get_session_info(stdCode, true);
 
 	if (_bars_cache == NULL)
 		_bars_cache = DataCacheMap::create();
 
 	key = StrUtil::printf("%s-%u-%u", stdCode, period, times);
 
-	WTSKlineData* kData = (WTSKlineData*)_bars_cache->get(key);
+	VvTSKlineData* kData = (VvTSKlineData*)_bars_cache->get(key);
 	//如果缓存里的K线条数大于请求的条数, 则直接返回
 	if (kData == NULL || kData->size() < count)
 	{
 		uint32_t realCount = count * times + times;
-		WTSKlineSlice* rawData = _reader->readKlineSlice(stdCode, period, realCount, etime);
+		VvTSKlineSlice* rawData = _reader->readKlineSlice(stdCode, period, realCount, etime);
 		if (rawData != NULL)
 		{
 			kData = g_dataFact.extractKlineData(rawData, period, times, sInfo, true);
@@ -227,7 +227,7 @@ WTSKlineSlice* WtSimpDataMgr::get_kline_slice(const char* stdCode, WTSKlinePerio
 	int32_t sIdx = 0;
 	uint32_t rtCnt = min(kData->size(), count);
 	sIdx = kData->size() - rtCnt;
-	WTSBarStruct* rtHead = kData->at(sIdx);
-	WTSKlineSlice* slice = WTSKlineSlice::create(stdCode, period, times, rtHead, rtCnt);
+	VvTSBarStruct* rtHead = kData->at(sIdx);
+	VvTSKlineSlice* slice = VvTSKlineSlice::create(stdCode, period, times, rtHead, rtCnt);
 	return slice;
 }

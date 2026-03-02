@@ -21,9 +21,9 @@ public:
 	virtual const char* getName() override;
 	virtual void enumRiskMonitors(FuncEnumRiskMonCallback cb) override;
 
-	virtual WtRiskMonitor* createRiskMonotor(const char* name) override;
+	virtual VvtRiskMonitor* createRiskMonotor(const char* name) override;
 
-	virtual bool deleteRiskMonotor(WtRiskMonitor* unit) override;
+	virtual bool deleteRiskMonotor(VvtRiskMonitor* unit) override;
 
 };
 

@@ -16,7 +16,7 @@
 #include "../Share/SpinMutex.hpp"
 
 NS_VVTP_BEGIN
-class VVTSVariant;
+class VvTSVariant;
 class IDataManager;
 class TraderAdapter;
 class IHotMgr;
@@ -34,7 +34,7 @@ public:
 	 *	初始化执行器
 	 *	传入初始化参数
 	 */
-	bool init(VVTSVariant* params);
+	bool init(VvTSVariant* params);
 
 	void setTrader(TraderAdapter* adapter);
 
@@ -44,9 +44,9 @@ private:
 public:
 	//////////////////////////////////////////////////////////////////////////
 	//ExecuteContext
-	virtual WTSTickSlice*	getTicks(const char* code, uint32_t count, uint64_t etime = 0) override;
+	virtual VvTSTickSlice*	getTicks(const char* code, uint32_t count, uint64_t etime = 0) override;
 
-	virtual WTSTickData*	grabLastTick(const char* code) override;
+	virtual VvTSTickData*	grabLastTick(const char* code) override;
 
 	virtual double		getPosition(const char* stdCode, bool validOnly = true, int32_t flag = 3) override;
 	virtual OrderMap*	getOrders(const char* code) override;
@@ -58,8 +58,8 @@ public:
 	virtual OrderIDs	cancel(const char* code, bool isBuy, double qty) override;
 	virtual void		writeLog(const char* message) override;
 
-	virtual WTSCommodityInfo*	getCommodityInfo(const char* stdCode) override;
-	virtual WTSSessionInfo*		getSessionInfo(const char* stdCode) override;
+	virtual VvTSCommodityInfo*	getCommodityInfo(const char* stdCode) override;
+	virtual VvTSSessionInfo*		getSessionInfo(const char* stdCode) override;
 
 	virtual uint64_t	getCurTime() override;
 
@@ -78,7 +78,7 @@ public:
 	/*
 	 *	实时行情回调
 	 */
-	virtual void on_tick(const char* stdCode, WTSTickData* newTick) override;
+	virtual void on_tick(const char* stdCode, VvTSTickData* newTick) override;
 
 	/*
 	 *	成交回报
@@ -121,7 +121,7 @@ private:
 	TraderAdapter*		_trader;
 	WtExecuterFactory*	_factory;
 	IDataManager*		_data_mgr;
-	VVTSVariant*			_config;
+	VvTSVariant*			_config;
 
 	double				_scale;				//放大倍数
 	bool				_auto_clear;		//是否自动清理上一期的主力合约头寸
@@ -140,10 +140,10 @@ private:
 	CodeGroups				_groups;			//合约组合（组合名称到组合的映射）
 	CodeGroups				_code_to_groups;	//合约代码到组合的映射
 
-	wt_hashset<std::string>	_clear_includes;	//自动清理包含品种
-	wt_hashset<std::string>	_clear_excludes;	//自动清理排除品种
+	vvt_hashset<std::string>	_clear_includes;	//自动清理包含品种
+	vvt_hashset<std::string>	_clear_excludes;	//自动清理排除品种
 
-	wt_hashset<std::string> _channel_holds;		//通道持仓
+	vvt_hashset<std::string> _channel_holds;		//通道持仓
 
 	vvt_hashmap<std::string, double> _target_pos;
 

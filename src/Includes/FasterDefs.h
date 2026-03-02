@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include <string.h>
-#include "VVTSMarcos.h"
+#include "VvTSMarcos.h"
 #include "../FasterLibs/tsl/robin_map.h"
 #include "../FasterLibs/tsl/robin_set.h"
 
@@ -98,19 +98,19 @@ public:
 };
 
 template<class Key, class Hash = std::hash<Key>>
-class wt_hashset : public ankerl::unordered_dense::set<Key, Hash>
+class vvt_hashset : public ankerl::unordered_dense::set<Key, Hash>
 {
 public:
 	typedef ankerl::unordered_dense::set<Key, Hash>	Container;
-	wt_hashset() :Container() {}
+	vvt_hashset() :Container() {}
 };
 
 template<>
-class wt_hashset<std::string, string_hash> : public ankerl::unordered_dense::set<std::string, string_hash>
+class vvt_hashset<std::string, string_hash> : public ankerl::unordered_dense::set<std::string, string_hash>
 {
 public:
 	typedef ankerl::unordered_dense::set<std::string, string_hash>	Container;
-	wt_hashset() :Container() {}
+	vvt_hashset() :Container() {}
 };
 
 NS_VVTP_END

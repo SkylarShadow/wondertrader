@@ -20,7 +20,7 @@
 
 
 NS_VVTP_BEGIN
-class VVTSVariant;
+class VvTSVariant;
 NS_VVTP_END
 
 namespace hft
@@ -43,7 +43,7 @@ namespace hft
 		bool initModules();
 		bool initStrategies();
 
-		bool initEngine(VVTSVariant* cfg);
+		bool initEngine(VvTSVariant* cfg);
 
 	private:
 		TraderAdapterMgr	_traders;

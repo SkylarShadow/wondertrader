@@ -13,18 +13,18 @@
 #include "../Includes/ITraderApi.h"
 #include "../Share/BoostFile.hpp"
 #include "../Share/StdUtils.hpp"
-#include "../Includes/WTSCollection.hpp"
+#include "../Includes/VvTSCollection.hpp"
 #include "../Share/SpinMutex.hpp"
 
 NS_VVTP_BEGIN
-class VVTSVariant;
-class WTSContractInfo;
-class WTSCommodityInfo;
+class VvTSVariant;
+class VvTSContractInfo;
+class VvTSCommodityInfo;
 class ITrdNotifySink;
 class ActionPolicyMgr;
 
 typedef std::vector<uint32_t> OrderIDs;
-typedef WTSMap<uint32_t> OrderMap;
+typedef VvTSMap<uint32_t> OrderMap;
 
 class TraderAdapter : public ITraderSpi
 {
@@ -98,7 +98,7 @@ public:
 	} RiskParams;
 
 public:
-	bool init(const char* id, VVTSVariant* params, IBaseDataMgr* bdMgr, ActionPolicyMgr* policyMgr);
+	bool init(const char* id, VvTSVariant* params, IBaseDataMgr* bdMgr, ActionPolicyMgr* policyMgr);
 
 	bool initExt(const char* id, ITraderApi* api, IBaseDataMgr* bdMgr, ActionPolicyMgr* policyMgr);
 
@@ -116,12 +116,12 @@ public:
 	}
 
 private:
-	uint32_t doEntrust(WTSEntrust* entrust);
-	bool	doCancel(WTSOrderInfo* ordInfo);
+	uint32_t doEntrust(VvTSEntrust* entrust);
+	bool	doCancel(VvTSOrderInfo* ordInfo);
 
 	inline void	printPosition(const char* stdCode, const PosItem& pItem);
 
-	inline WTSContractInfo* getContract(const char* stdCode);
+	inline VvTSContractInfo* getContract(const char* stdCode);
 
 	inline void updateUndone(const char* stdCode, double qty);
 
@@ -142,8 +142,8 @@ public:
 
 	uint32_t getInfos(const char* stdCode);
 
-	OrderIDs buy(const char* stdCode, double price, double qty, int flag, bool bForceClose, WTSContractInfo* cInfo = NULL);
-	OrderIDs sell(const char* stdCode, double price, double qty, int flag, bool bForceClose, WTSContractInfo* cInfo = NULL);
+	OrderIDs buy(const char* stdCode, double price, double qty, int flag, bool bForceClose, VvTSContractInfo* cInfo = NULL);
+	OrderIDs sell(const char* stdCode, double price, double qty, int flag, bool bForceClose, VvTSContractInfo* cInfo = NULL);
 
 	/*
 	 *	下单接口: 开多
@@ -198,34 +198,34 @@ public:
 public:
 	//////////////////////////////////////////////////////////////////////////
 	//ITraderSpi接口
-	virtual void handleEvent(WTSTraderEvent e, int32_t ec) override;
+	virtual void handleEvent(VvTSTraderEvent e, int32_t ec) override;
 
 	virtual void onLoginResult(bool bSucc, const char* msg, uint32_t tradingdate) override;
 
 	virtual void onLogout() override;
 
-	virtual void onRspEntrust(WTSEntrust* entrust, WTSError *err) override;
+	virtual void onRspEntrust(VvTSEntrust* entrust, VvTSError *err) override;
 
-	virtual void onRspAccount(WTSArray* ayAccounts) override;
+	virtual void onRspAccount(VvTSArray* ayAccounts) override;
 
-	virtual void onRspPosition(const WTSArray* ayPositions) override;
+	virtual void onRspPosition(const VvTSArray* ayPositions) override;
 
-	virtual void onRspOrders(const WTSArray* ayOrders) override;
+	virtual void onRspOrders(const VvTSArray* ayOrders) override;
 
-	virtual void onRspTrades(const WTSArray* ayTrades) override;
+	virtual void onRspTrades(const VvTSArray* ayTrades) override;
 
-	virtual void onPushOrder(WTSOrderInfo* orderInfo) override;
+	virtual void onPushOrder(VvTSOrderInfo* orderInfo) override;
 
-	virtual void onPushTrade(WTSTradeInfo* tradeRecord) override;
+	virtual void onPushTrade(VvTSTradeInfo* tradeRecord) override;
 
-	virtual void onTraderError(WTSError* err, void* pData = NULL) override;
+	virtual void onTraderError(VvTSError* err, void* pData = NULL) override;
 
 	virtual IBaseDataMgr* getBaseDataMgr() override;
 
-	virtual void handleTraderLog(WTSLogLevel ll, const char* message) override;
+	virtual void handleTraderLog(VvTSLogLevel ll, const char* message) override;
 
 private:
-	VVTSVariant*			_cfg;
+	VvTSVariant*			_cfg;
 	std::string			_id;
 	std::string			_order_pattern;
 
@@ -235,7 +235,7 @@ private:
 	FuncDeleteTrader	_remover;
 	AdapterState		_state;
 
-	wt_hashset<ITrdNotifySink*>	_sinks;
+	vvt_hashset<ITrdNotifySink*>	_sinks;
 
 	IBaseDataMgr*		_bd_mgr;
 	ActionPolicyMgr*	_policy_mgr;
@@ -244,11 +244,11 @@ private:
 
 	SpinMutex	_mtx_orders;
 	OrderMap*	_orders;
-	wt_hashset<std::string> _orderids;	//主要用于标记有没有处理过该订单
+	vvt_hashset<std::string> _orderids;	//主要用于标记有没有处理过该订单
 
 	vvt_hashmap<std::string, double> _undone_qty;	//未完成数量
 
-	typedef WTSHashMap<std::string>	TradeStatMap;
+	typedef VvTSHashMap<std::string>	TradeStatMap;
 	TradeStatMap*	_stat_map;	//统计数据
 
 	//这两个缓存时间内的容器,主要是为了控制瞬间流量而设置的
@@ -258,7 +258,7 @@ private:
 	CodeTimeCacheMap	_cancel_time_cache;	//撤单时间缓存
 
 	//如果被风控了,就会进入到排除队列
-	wt_hashset<std::string>	_exclude_codes;
+	vvt_hashset<std::string>	_exclude_codes;
 
 	typedef vvt_hashmap<std::string, RiskParams>	RiskParamsMap;
 	RiskParamsMap	_risk_params_map;

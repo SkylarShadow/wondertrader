@@ -1,15 +1,15 @@
 ﻿#include "HisDataMgr.h"
 #include "WtHelper.h"
 #include "../Share/DLLHelper.hpp"
-#include "../Includes/VVTSVariant.hpp"
+#include "../Includes/VvTSVariant.hpp"
 #include "../WTSTools/WTSLogger.h"
 
-void HisDataMgr::reader_log(WTSLogLevel ll, const char* message)
+void HisDataMgr::reader_log(VvTSLogLevel ll, const char* message)
 {
 	WTSLogger::log_raw(ll, message);
 }
 
-bool HisDataMgr::init(VVTSVariant* cfg)
+bool HisDataMgr::init(VvTSVariant* cfg)
 {
 	std::string module = cfg->getCString("module");
 	if (module.empty())
@@ -44,7 +44,7 @@ bool HisDataMgr::init(VVTSVariant* cfg)
 	return true;
 }
 
-bool HisDataMgr::load_raw_bars(const char* exchg, const char* code, WTSKlinePeriod period, FuncLoadDataCallback cb)
+bool HisDataMgr::load_raw_bars(const char* exchg, const char* code, VvTSKlinePeriod period, FuncLoadDataCallback cb)
 {
 	if(_reader == NULL)
 	{

@@ -17,11 +17,11 @@
 #include "../API/AtpTradeApi/include/atp_trade_api.h"
 
 #include "../Includes/ITraderApi.h"
-#include "../Includes/WTSCollection.hpp"
+#include "../Includes/VvTSCollection.hpp"
 
 #include "../Share/StdUtils.hpp"
 #include "../Share/DLLHelper.hpp"
-#include "../Share/WtKVCache.hpp"
+#include "../Share/VvtKVCache.hpp"
 
 
 USING_NS_VVTP;
@@ -113,7 +113,7 @@ public:
 public:
 	//////////////////////////////////////////////////////////////////////////
 	//ITraderApi 接口
-	virtual bool init(VVTSVariant *params) override;
+	virtual bool init(VvTSVariant *params) override;
 
 	virtual void release() override;
 
@@ -131,9 +131,9 @@ public:
 
 	virtual int logout() override;
 
-	virtual int orderInsert(WTSEntrust* eutrust) override;
+	virtual int orderInsert(VvTSEntrust* eutrust) override;
 
-	virtual int orderAction(WTSEntrustAction* action) override;
+	virtual int orderAction(VvTSEntrustAction* action) override;
 
 	virtual int queryAccount() override;
 
@@ -148,11 +148,11 @@ private:
 	inline uint32_t	genRequestID();
 	void		doLogin(const char* productid);
 
-	inline WTSOrderInfo*	makeOrderInfo(const APIOrderUnit* orderField);
-	inline WTSEntrust*		makeEntrust(const ATPRspOrderStatusAckMsg *entrustField);
-	inline WTSTradeInfo*	makeTradeInfo(const APITradeOrderUnit *tradeField);
-	inline WTSOrderInfo*	makeOrderInfo(const ATPRspOrderStatusAckMsg *order_status_ack);
-	inline WTSTradeInfo*	makeTradeRecord(const ATPRspCashAuctionTradeERMsg *cash_auction_trade_er);
+	inline VvTSOrderInfo*	makeOrderInfo(const APIOrderUnit* orderField);
+	inline VvTSEntrust*		makeEntrust(const ATPRspOrderStatusAckMsg *entrustField);
+	inline VvTSTradeInfo*	makeTradeInfo(const APITradeOrderUnit *tradeField);
+	inline VvTSOrderInfo*	makeOrderInfo(const ATPRspOrderStatusAckMsg *order_status_ack);
+	inline VvTSTradeInfo*	makeTradeRecord(const ATPRspCashAuctionTradeERMsg *cash_auction_trade_er);
 
 	inline bool	extractEntrustID(const char* entrustid, uint32_t &orderRef);
 	inline void	genEntrustID(char* buffer, uint32_t orderRef);
@@ -162,10 +162,10 @@ private:
 	ITraderSpi*		_sink;
 	bool			_close_flag;
 
-	typedef WTSHashMap<std::string> PositionMap;
+	typedef VvTSHashMap<std::string> PositionMap;
 	PositionMap*			_positions;
-	WTSArray*				_trades;
-	WTSArray*				_orders;
+	VvTSArray*				_trades;
+	VvTSArray*				_orders;
 
 	IBaseDataMgr*			_bd_mgr;
 
@@ -205,14 +205,14 @@ private:
 	DllHandle		m_hInstATP;
 
 	//委托单标记缓存器
-	WtKVCache		m_eidCache;
+	VvtKVCache		m_eidCache;
 	//订单标记缓存器
-	WtKVCache		m_oidCache;
+	VvtKVCache		m_oidCache;
 
 	std::map<int32_t, int32_t> report_sync;
 
-	WTSArray* ayOrders;  // 订单查询结果
-	WTSArray* ayTrades;  // 成交查询结果
+	VvTSArray* ayOrders;  // 订单查询结果
+	VvTSArray* ayTrades;  // 成交查询结果
 
 	std::atomic<int64_t> _return_nums;  // 查询返回条数
 };

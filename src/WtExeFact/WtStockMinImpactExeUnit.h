@@ -9,9 +9,9 @@
 #pragma once
 #include "../Includes/ExecuteDefs.h"
 #include "WtOrdMon.h"
-#include "../Includes/VVTSVariant.hpp"
-#include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSSessionInfo.hpp"
+#include "../Includes/VvTSVariant.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/VvTSSessionInfo.hpp"
 #include "../Share/decimal.h"
 #include "../Share/StrUtil.hpp"
 #include "../Share/fmtlib.h"
@@ -69,7 +69,7 @@ public:
 	 *	ctx		执行单元运行环境
 	 *	code	管理的合约代码
 	 */
-	virtual void init(ExecuteContext* ctx, const char* stdCode, VVTSVariant* cfg) override;
+	virtual void init(ExecuteContext* ctx, const char* stdCode, VvTSVariant* cfg) override;
 
 	/*
 	 *	订单回报
@@ -86,7 +86,7 @@ public:
 	 *	tick数据回调
 	 *	newTick	最新的tick数据
 	 */
-	virtual void on_tick(WTSTickData* newTick) override;
+	virtual void on_tick(VvTSTickData* newTick) override;
 
 	/*
 	 *	成交回报
@@ -134,7 +134,7 @@ private:
 	void check_unmanager_order();
 
 private:
-	WTSTickData* _last_tick;	//上一笔行情
+	VvTSTickData* _last_tick;	//上一笔行情
 	double		_target_pos;	//目标仓位
 	double		_target_amount;  // 目标金额
 	double		_target_ratio;  // 目标持仓比例
@@ -142,8 +142,8 @@ private:
 	double		_avaliable{ 0 }; // 账户可用
 
 	StdUniqueMutex	_mtx_calc;
-	WTSCommodityInfo* _comm_info;
-	WTSSessionInfo* _sess_info;
+	VvTSCommodityInfo* _comm_info;
+	VvTSSessionInfo* _sess_info;
 
 	//////////////////////////////////////////////////////////////////////////
 	//执行参数
@@ -193,7 +193,7 @@ public:
 		{
 			is_KC = true;
 		}
-		WTSCommodityInfo* comm_info = _ctx->getCommodityInfo(stdCode.c_str());
+		VvTSCommodityInfo* comm_info = _ctx->getCommodityInfo(stdCode.c_str());
 		double min_order = 1.0;
 		if (strcmp(comm_info->getProduct(), cbondStr) == 0)
 			min_order = 10.0;

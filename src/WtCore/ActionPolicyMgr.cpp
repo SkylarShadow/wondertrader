@@ -12,7 +12,7 @@
 #include "../Share/StdUtils.hpp"
 #include "../WTSTools/WTSLogger.h"
 
-#include "../Includes/VVTSVariant.hpp"
+#include "../Includes/VvTSVariant.hpp"
 #include "../WTSUtils/WTSCfgLoader.h"
 
 USING_NS_VVTP;
@@ -28,7 +28,7 @@ ActionPolicyMgr::~ActionPolicyMgr()
 
 bool ActionPolicyMgr::init(const char* filename)
 {
-	VVTSVariant* cfg = WTSCfgLoader::load_from_file(filename);
+	VvTSVariant* cfg = WTSCfgLoader::load_from_file(filename);
 	if (cfg == NULL)
 		return false;
 
@@ -36,15 +36,15 @@ bool ActionPolicyMgr::init(const char* filename)
 	for (auto it = keys.begin(); it != keys.end(); it++)
 	{
 		const char* gpName = (*it).c_str();
-		VVTSVariant*	vGpItem = cfg->get(gpName);
+		VvTSVariant*	vGpItem = cfg->get(gpName);
 		ActionRuleGroup& gp = _rules[gpName];
 
-		VVTSVariant* vOrds = vGpItem->get("order");
+		VvTSVariant* vOrds = vGpItem->get("order");
 		if(vOrds != NULL && vOrds->isArray())
 		{
 			for (uint32_t i = 0; i < vOrds->size(); i++)
 			{
-				VVTSVariant* vObj = vOrds->get(i);
+				VvTSVariant* vObj = vOrds->get(i);
 				ActionRule aRule;
 				const char* action = vObj->getCString("action");
 				uint32_t uLimit = vObj->getUInt32("limit");
@@ -72,7 +72,7 @@ bool ActionPolicyMgr::init(const char* filename)
 			}
 		}
 
-		VVTSVariant* filters = vGpItem->get("filters");
+		VvTSVariant* filters = vGpItem->get("filters");
 		if(filters!=NULL && filters->isArray() && filters->size()>0)
 		{
 			for (uint32_t i = 0; i < filters->size(); i++)

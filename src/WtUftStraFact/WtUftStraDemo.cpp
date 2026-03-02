@@ -1,9 +1,9 @@
 ﻿#include "WtUftStraDemo.h"
 #include "../Includes/IUftStraCtx.h"
 
-#include "../Includes/VVTSVariant.hpp"
-#include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSContractInfo.hpp"
+#include "../Includes/VvTSVariant.hpp"
+#include "../Includes/VvTSDataDef.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
 #include "../Share/TimeUtils.hpp"
 #include "../Share/decimal.h"
 #include "../Share/fmtlib.h"
@@ -38,7 +38,7 @@ const char* WtUftStraDemo::getFactName()
 	return FACT_NAME;
 }
 
-bool WtUftStraDemo::init(VVTSVariant* cfg)
+bool WtUftStraDemo::init(VvTSVariant* cfg)
 {
 	//这里演示一下外部传入参数的获取
 	_code = cfg->getCString("code");
@@ -69,7 +69,7 @@ void WtUftStraDemo::on_init(IUftStraCtx* ctx)
 	ctx->watch_param("lots", _lots);
 	ctx->commit_param_watcher();
 
-	WTSKlineSlice* kline = ctx->stra_get_bars(_code.c_str(), "m1", 30);
+	VvTSKlineSlice* kline = ctx->stra_get_bars(_code.c_str(), "m1", 30);
 	if (kline)
 		kline->release();
 
@@ -78,7 +78,7 @@ void WtUftStraDemo::on_init(IUftStraCtx* ctx)
 	_ctx = ctx;
 }
 
-void WtUftStraDemo::on_tick(IUftStraCtx* ctx, const char* code, WTSTickData* newTick)
+void WtUftStraDemo::on_tick(IUftStraCtx* ctx, const char* code, VvTSTickData* newTick)
 {	
 	if (_code.compare(code) != 0)
 		return;
@@ -92,14 +92,14 @@ void WtUftStraDemo::on_tick(IUftStraCtx* ctx, const char* code, WTSTickData* new
 	if (!_channel_ready)
 		return;
 
-	WTSTickData* curTick = ctx->stra_get_last_tick(code);
+	VvTSTickData* curTick = ctx->stra_get_last_tick(code);
 	if (curTick)
 		curTick->release();
 
 	uint32_t curMin = newTick->actiontime() / 100000;	//actiontime是带毫秒的,要取得分钟,则需要除以10w
 	if (curMin > _last_calc_time)
 	{//如果spread上次计算的时候小于当前分钟,则重算spread
-		//WTSKlineSlice* kline = ctx->stra_get_bars(code, "m5", 30);
+		//VvTSKlineSlice* kline = ctx->stra_get_bars(code, "m5", 30);
 		//if (kline)
 		//	kline->release();
 
@@ -135,7 +135,7 @@ void WtUftStraDemo::on_tick(IUftStraCtx* ctx, const char* code, WTSTickData* new
 	{
 		double curPos = ctx->stra_get_position(code);
 
-		WTSCommodityInfo* cInfo = ctx->stra_get_comminfo(code);
+		VvTSCommodityInfo* cInfo = ctx->stra_get_comminfo(code);
 
 		if(signal > 0  && decimal::le(curPos, 0))
 		{//正向信号,且当前仓位小于等于0
@@ -190,7 +190,7 @@ void WtUftStraDemo::check_orders()
 	}
 }
 
-void WtUftStraDemo::on_bar(IUftStraCtx* ctx, const char* code, const char* period, uint32_t times, WTSBarStruct* newBar)
+void WtUftStraDemo::on_bar(IUftStraCtx* ctx, const char* code, const char* period, uint32_t times, VvTSBarStruct* newBar)
 {
 	
 }

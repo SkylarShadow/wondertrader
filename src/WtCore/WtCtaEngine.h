@@ -14,7 +14,7 @@
 #include "WtEngine.h"
 
 NS_VVTP_BEGIN
-class VVTSVariant;
+class VvTSVariant;
 typedef std::shared_ptr<ICtaStraCtx> CtaContextPtr;
 
 class WtCtaRtTicker;
@@ -28,11 +28,11 @@ public:
 public:
 	//////////////////////////////////////////////////////////////////////////
 	//WtEngine接口
-	virtual void handle_push_quote(WTSTickData* newTick) override;
+	virtual void handle_push_quote(VvTSTickData* newTick) override;
 
-	virtual void on_tick(const char* stdCode, WTSTickData* curTick) override;
+	virtual void on_tick(const char* stdCode, VvTSTickData* curTick) override;
 
-	virtual void on_bar(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar) override;
+	virtual void on_bar(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar) override;
 
 	virtual void on_init() override;
 	virtual void on_session_begin() override;
@@ -40,7 +40,7 @@ public:
 
 	virtual void run() override;
 
-	virtual void init(VVTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHotMgr* hotMgr, EventNotifier* notifier) override;
+	virtual void init(VvTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHotMgr* hotMgr, EventNotifier* notifier) override;
 
 	virtual bool isInTrading() override;
 	virtual uint32_t transTimeToMin(uint32_t uTime) override;
@@ -48,8 +48,8 @@ public:
 	///////////////////////////////////////////////////////////////////////////
 	//IExecuterStub 接口
 	virtual uint64_t get_real_time() override;
-	virtual WTSCommodityInfo* get_comm_info(const char* stdCode) override;
-	virtual WTSSessionInfo* get_sess_info(const char* stdCode) override;
+	virtual VvTSCommodityInfo* get_comm_info(const char* stdCode) override;
+	virtual VvTSSessionInfo* get_sess_info(const char* stdCode) override;
 	virtual IHotMgr* get_hot_mon() { return _hot_mgr; }
 	virtual uint32_t get_trading_day() { return _cur_tdate; }
 
@@ -69,7 +69,7 @@ public:
 		executer->setStub(this);
 	}
 
-	inline bool loadRouterRules(VVTSVariant* cfg)
+	inline bool loadRouterRules(VvTSVariant* cfg)
 	{
 		return _exec_mgr.load_router_rules(cfg);
 	}
@@ -87,7 +87,7 @@ private:
 
 	WtExecuterMgr	_exec_mgr;
 
-	VVTSVariant*		_cfg;
+	VvTSVariant*		_cfg;
 
 	typedef std::shared_ptr<boost::threadpool::pool> ThreadPoolPtr;
 	ThreadPoolPtr		_pool;

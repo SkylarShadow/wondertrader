@@ -14,10 +14,10 @@
 #include "ShareManager.h"
 
 #include "../Includes/UftStrategyDefs.h"
-#include "../Includes/WTSContractInfo.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
 #include "../Includes/IBaseDataMgr.h"
-#include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/VVTSVariant.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/VvTSVariant.hpp"
 
 #include "../Share/decimal.h"
 #include "../Share/TimeUtils.hpp"
@@ -61,12 +61,12 @@ void UftStraContext::on_init()
 }
 
 
-void UftStraContext::on_tick(const char* stdCode, WTSTickData* newTick)
+void UftStraContext::on_tick(const char* stdCode, VvTSTickData* newTick)
 {
 	auto it = _positions.find(stdCode);
 	if(it != _positions.end())
 	{
-		WTSCommodityInfo* commInfo = newTick->getContractInfo()->getCommInfo();
+		VvTSCommodityInfo* commInfo = newTick->getContractInfo()->getCommInfo();
 		uint32_t volscale = commInfo->getVolScale();
 		PosInfo& pInfo = it->second;
 
@@ -91,25 +91,25 @@ void UftStraContext::on_tick(const char* stdCode, WTSTickData* newTick)
 		_strategy->on_tick(this, stdCode, newTick);
 }
 
-void UftStraContext::on_order_queue(const char* stdCode, WTSOrdQueData* newOrdQue)
+void UftStraContext::on_order_queue(const char* stdCode, VvTSOrdQueData* newOrdQue)
 {
 	if (_strategy)
 		_strategy->on_order_queue(this, stdCode, newOrdQue);
 }
 
-void UftStraContext::on_order_detail(const char* stdCode, WTSOrdDtlData* newOrdDtl)
+void UftStraContext::on_order_detail(const char* stdCode, VvTSOrdDtlData* newOrdDtl)
 {
 	if (_strategy)
 		_strategy->on_order_detail(this, stdCode, newOrdDtl);
 }
 
-void UftStraContext::on_transaction(const char* stdCode, WTSTransData* newTrans)
+void UftStraContext::on_transaction(const char* stdCode, VvTSTransData* newTrans)
 {
 	if (_strategy)
 		_strategy->on_transaction(this, stdCode, newTrans);
 }
 
-void UftStraContext::on_bar(const char* code, const char* period, uint32_t times, WTSBarStruct* newBar)
+void UftStraContext::on_bar(const char* code, const char* period, uint32_t times, VvTSBarStruct* newBar)
 {
 	if (_strategy)
 		_strategy->on_bar(this, code, period, times, newBar);
@@ -120,7 +120,7 @@ void UftStraContext::on_trade(uint32_t localid, const char* stdCode, bool isLong
 	if (!is_my_order(localid))
 		return;
 
-	WTSContractInfo* cInfo = _engine->get_contract_info(stdCode);
+	VvTSContractInfo* cInfo = _engine->get_contract_info(stdCode);
 
 	uint32_t volscale = cInfo->getCommInfo()->getVolScale();
 
@@ -594,7 +594,7 @@ void UftStraContext::on_order(uint32_t localid, const char* stdCode, bool isLong
 	if (it == _order_ids.end())
 		return;
 
-	WTSContractInfo* cInfo = _engine->get_contract_info(stdCode);
+	VvTSContractInfo* cInfo = _engine->get_contract_info(stdCode);
 	uft::OrderStruct*& curOrd = it->second;
 	if(curOrd == NULL)
 	{
@@ -920,12 +920,12 @@ uint32_t UftStraContext::stra_exit_short(const char* stdCode, double price, doub
 	return localid;
 }
 
-WTSCommodityInfo* UftStraContext::stra_get_comminfo(const char* stdCode)
+VvTSCommodityInfo* UftStraContext::stra_get_comminfo(const char* stdCode)
 {
 	return _engine->get_commodity_info(stdCode);
 }
 
-WTSKlineSlice* UftStraContext::stra_get_bars(const char* stdCode, const char* period, uint32_t count)
+VvTSKlineSlice* UftStraContext::stra_get_bars(const char* stdCode, const char* period, uint32_t count)
 {
 	thread_local static char basePeriod[2] = { 0 };
 	basePeriod[0] = period[0];
@@ -933,7 +933,7 @@ WTSKlineSlice* UftStraContext::stra_get_bars(const char* stdCode, const char* pe
 	if (strlen(period) > 1)
 		times = strtoul(period + 1, NULL, 10);
 
-	WTSKlineSlice* ret = _engine->get_kline_slice(_context_id, stdCode, basePeriod, count, times);
+	VvTSKlineSlice* ret = _engine->get_kline_slice(_context_id, stdCode, basePeriod, count, times);
 
 	if (ret)
 		_engine->sub_tick(id(), stdCode);
@@ -941,27 +941,27 @@ WTSKlineSlice* UftStraContext::stra_get_bars(const char* stdCode, const char* pe
 	return ret;
 }
 
-WTSTickSlice* UftStraContext::stra_get_ticks(const char* stdCode, uint32_t count)
+VvTSTickSlice* UftStraContext::stra_get_ticks(const char* stdCode, uint32_t count)
 {
-	WTSTickSlice* ticks = _engine->get_tick_slice(_context_id, stdCode, count);
+	VvTSTickSlice* ticks = _engine->get_tick_slice(_context_id, stdCode, count);
 
 	if (ticks)
 		_engine->sub_tick(id(), stdCode);
 	return ticks;
 }
 
-WTSOrdDtlSlice* UftStraContext::stra_get_order_detail(const char* stdCode, uint32_t count)
+VvTSOrdDtlSlice* UftStraContext::stra_get_order_detail(const char* stdCode, uint32_t count)
 {
-	WTSOrdDtlSlice* ret = _engine->get_order_detail_slice(_context_id, stdCode, count);
+	VvTSOrdDtlSlice* ret = _engine->get_order_detail_slice(_context_id, stdCode, count);
 
 	if (ret)
 		_engine->sub_order_detail(id(), stdCode);
 	return ret;
 }
 
-WTSOrdQueSlice* UftStraContext::stra_get_order_queue(const char* stdCode, uint32_t count)
+VvTSOrdQueSlice* UftStraContext::stra_get_order_queue(const char* stdCode, uint32_t count)
 {
-	WTSOrdQueSlice* ret = _engine->get_order_queue_slice(_context_id, stdCode, count);
+	VvTSOrdQueSlice* ret = _engine->get_order_queue_slice(_context_id, stdCode, count);
 
 	if (ret)
 		_engine->sub_order_queue(id(), stdCode);
@@ -969,9 +969,9 @@ WTSOrdQueSlice* UftStraContext::stra_get_order_queue(const char* stdCode, uint32
 }
 
 
-WTSTransSlice* UftStraContext::stra_get_transaction(const char* stdCode, uint32_t count)
+VvTSTransSlice* UftStraContext::stra_get_transaction(const char* stdCode, uint32_t count)
 {
-	WTSTransSlice* ret = _engine->get_transaction_slice(_context_id, stdCode, count);
+	VvTSTransSlice* ret = _engine->get_transaction_slice(_context_id, stdCode, count);
 
 	if (ret)
 		_engine->sub_transaction(id(), stdCode);
@@ -979,7 +979,7 @@ WTSTransSlice* UftStraContext::stra_get_transaction(const char* stdCode, uint32_
 }
 
 
-WTSTickData* UftStraContext::stra_get_last_tick(const char* stdCode)
+VvTSTickData* UftStraContext::stra_get_last_tick(const char* stdCode)
 {
 	return _engine->get_last_tick(_context_id, stdCode);
 }
@@ -1044,14 +1044,14 @@ void UftStraContext::load_local_data()
 
 		WTSLogger::log_dyn("strategy", _name.c_str(), LL_WARN, "{} detected, positions will be overwrited", mannualfile);
 
-		VVTSVariant* manual = WTSCfgLoader::load_from_file(mannualfile);
+		VvTSVariant* manual = WTSCfgLoader::load_from_file(mannualfile);
 		if (manual == NULL)
 		{
 			WTSLogger::log_dyn("strategy", _name.c_str(), LL_ERROR, "parsing mannual file {} failed", mannualfile);
 			break;
 		}
 
-		VVTSVariant* ayDetails = manual->get("details");
+		VvTSVariant* ayDetails = manual->get("details");
 		if(ayDetails == NULL)
 			break;
 
@@ -1084,10 +1084,10 @@ void UftStraContext::load_local_data()
 
 			for (uint32_t i = 0; i < ayDetails->size(); i++)
 			{
-				VVTSVariant* objDetail = ayDetails->get(i);
+				VvTSVariant* objDetail = ayDetails->get(i);
 				const char* exchg = objDetail->getCString("exchg");
 				const char* code = objDetail->getCString("code");
-				WTSContractInfo* cInfo = _engine->get_basedata_mgr()->getContract(code, exchg);
+				VvTSContractInfo* cInfo = _engine->get_basedata_mgr()->getContract(code, exchg);
 				if(cInfo == NULL)
 				{
 					WTSLogger::log_dyn("strategy", _name.c_str(), LL_ERROR, "{}.{} not exist, skip this details", exchg, code);
@@ -1161,7 +1161,7 @@ void UftStraContext::load_local_data()
 					if(decimal::eq(ds._volume, 0))
 						continue;
 
-					WTSContractInfo* cInfo = _engine->get_basedata_mgr()->getContract(ds._code, ds._exchg);
+					VvTSContractInfo* cInfo = _engine->get_basedata_mgr()->getContract(ds._code, ds._exchg);
 					if (cInfo == NULL)
 						continue;
 
@@ -1183,7 +1183,7 @@ void UftStraContext::load_local_data()
 				{
 					uft::DetailStruct& ds = _pos_blk._block->_details[i];
 
-					WTSContractInfo* cInfo = _engine->get_basedata_mgr()->getContract(ds._code, ds._exchg);
+					VvTSContractInfo* cInfo = _engine->get_basedata_mgr()->getContract(ds._code, ds._exchg);
 					if (cInfo == NULL)
 						continue;
 

@@ -31,17 +31,17 @@ public:
 public:
 	inline void		regiter_callbacks(FuncLogCallback cbLog) { _cb_log = cbLog; }
 
-	VvtUInt32	create_server(const char* url, bool confirm);
-	void		destroy_server(VvtUInt32 id);
-	void		publish_message(VvtUInt32 id, const char* topic, const void* data, VvtUInt32 dataLen);
+	VvTUInt32	create_server(const char* url, bool confirm);
+	void		destroy_server(VvTUInt32 id);
+	void		publish_message(VvTUInt32 id, const char* topic, const void* data, VvTUInt32 dataLen);
 
-	VvtUInt32	create_client(const char* url, FuncMQCallback cb);
-	void		destroy_client(VvtUInt32 id);
-	void		sub_topic(VvtUInt32 id, const char* topic);
-	void		start_client(VvtUInt32 id);
+	VvTUInt32	create_client(const char* url, FuncMQCallback cb);
+	void		destroy_client(VvTUInt32 id);
+	void		sub_topic(VvTUInt32 id, const char* topic);
+	void		start_client(VvTUInt32 id);
 
-	void		log_server(VvtUInt32 id, const char* message);
-	void		log_client(VvtUInt32 id, const char* message);
+	void		log_server(VvTUInt32 id, const char* message);
+	void		log_client(VvTUInt32 id, const char* message);
 
 private:
 	typedef vvt_hashmap<uint32_t, MQServerPtr> ServerMap;

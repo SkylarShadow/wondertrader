@@ -17,9 +17,9 @@ public:
 //////////////////////////////////////////////////////////////////////////
 //IBtDtReader
 public:
-	virtual void init(VVTSVariant* cfg, IBtDtReaderSink* sink);
+	virtual void init(VvTSVariant* cfg, IBtDtReaderSink* sink);
 
-	virtual bool read_raw_bars(const char* exchg, const char* code, WTSKlinePeriod period, std::string& buffer) override;
+	virtual bool read_raw_bars(const char* exchg, const char* code, VvTSKlinePeriod period, std::string& buffer) override;
 	virtual bool read_raw_ticks(const char* exchg, const char* code, uint32_t uDate, std::string& buffer) override;
 
 private:
@@ -42,7 +42,7 @@ private:
 	//用exchg.code作为key，如BINANCE.BTCUSDT
 	WtLMDBMap	_tick_dbs;
 
-	WtLMDBPtr	get_k_db(const char* exchg, WTSKlinePeriod period);
+	WtLMDBPtr	get_k_db(const char* exchg, VvTSKlinePeriod period);
 
 	WtLMDBPtr	get_t_db(const char* exchg, const char* code);
 };

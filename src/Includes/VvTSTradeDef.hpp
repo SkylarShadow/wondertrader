@@ -1,5 +1,5 @@
 ﻿/*!
- * \file WTSTradeDef.hpp
+ * \file VvTSTradeDef.hpp
  * \project	WonderTrader
  *
  * \author Wesley
@@ -8,9 +8,9 @@
  * \brief Wt交易数据对象定义,包括委托、订单、成交、持仓、资金、持仓明细等数据
  */
 #pragma once
-#include "WTSObject.hpp"
-#include "WTSTypes.h"
-#include "VVTSMarcos.h"
+#include "VvTSObject.hpp"
+#include "VvTSTypes.h"
+#include "VvTSMarcos.h"
 
 #include <time.h>
 #include <string>
@@ -18,14 +18,14 @@
 #include<chrono>
 
 NS_VVTP_BEGIN
-class WTSContractInfo;
+class VvTSContractInfo;
 
 //////////////////////////////////////////////////////////////////////////
 //委托数据结构,用户客户端向服务端发起
-class WTSEntrust : public WTSPoolObject<WTSEntrust>
+class VvTSEntrust : public VvTSPoolObject<VvTSEntrust>
 {
 public:
-	WTSEntrust()
+	VvTSEntrust()
 		: m_iPrice(0)
 		, m_dVolume(0)
 		, m_businessType(BT_CASH)
@@ -39,12 +39,12 @@ public:
 	{
 	}
 
-	virtual ~WTSEntrust(){}
+	virtual ~VvTSEntrust(){}
 
 public:
-	static inline WTSEntrust* create(const char* code, double vol, double price, const char* exchg = "", WTSBusinessType bType = BT_CASH) noexcept
+	static inline VvTSEntrust* create(const char* code, double vol, double price, const char* exchg = "", VvTSBusinessType bType = BT_CASH) noexcept
 	{
-		WTSEntrust* pRet = WTSEntrust::allocate();
+		VvTSEntrust* pRet = VvTSEntrust::allocate();
 		if(pRet)
 		{
 			//vvt_strcpy(pRet->m_strExchg, exchg);
@@ -77,18 +77,18 @@ public:
 		vvt_strcpy(m_strCode, code, len);
     }
 
-	inline void setDirection(WTSDirectionType dType)noexcept {m_direction = dType;}
-	inline void setPriceType(WTSPriceType pType)noexcept {m_priceType = pType;}
-	inline void setOrderFlag(WTSOrderFlag oFlag)noexcept {m_orderFlag = oFlag;}
-	inline void setOffsetType(WTSOffsetType oType)noexcept {m_offsetType = oType;}
+	inline void setDirection(VvTSDirectionType dType)noexcept {m_direction = dType;}
+	inline void setPriceType(VvTSPriceType pType)noexcept {m_priceType = pType;}
+	inline void setOrderFlag(VvTSOrderFlag oFlag)noexcept {m_orderFlag = oFlag;}
+	inline void setOffsetType(VvTSOffsetType oType)noexcept {m_offsetType = oType;}
 
-	inline WTSDirectionType	getDirection() const noexcept {return m_direction;}
-	inline WTSPriceType		getPriceType() const noexcept {return m_priceType;}
-	inline WTSOrderFlag		getOrderFlag() const noexcept {return m_orderFlag;}
-	inline WTSOffsetType	getOffsetType() const noexcept {return m_offsetType;}
+	inline VvTSDirectionType	getDirection() const noexcept {return m_direction;}
+	inline VvTSPriceType		getPriceType() const noexcept {return m_priceType;}
+	inline VvTSOrderFlag		getOrderFlag() const noexcept {return m_orderFlag;}
+	inline VvTSOffsetType	getOffsetType() const noexcept {return m_offsetType;}
 
-	inline void setBusinessType(WTSBusinessType bType) noexcept { m_businessType = bType; }
-	inline WTSBusinessType	getBusinessType() const  noexcept { return m_businessType; }
+	inline void setBusinessType(VvTSBusinessType bType) noexcept { m_businessType = bType; }
+	inline VvTSBusinessType	getBusinessType() const  noexcept { return m_businessType; }
 
 	inline void setVolume(double volume) noexcept { m_dVolume = volume; }
 	inline void setPrice(double price) noexcept { m_iPrice = price; }
@@ -111,8 +111,8 @@ public:
 	inline bool isNet() const  noexcept { return m_bIsNet; }
 	inline bool isBuy() const  noexcept { return m_bIsBuy; }
 
-	inline void setContractInfo(WTSContractInfo* cInfo) noexcept { m_pContract = cInfo; }
-	inline WTSContractInfo* getContractInfo() const  noexcept { return m_pContract; }
+	inline void setContractInfo(VvTSContractInfo* cInfo) noexcept { m_pContract = cInfo; }
+	inline VvTSContractInfo* getContractInfo() const  noexcept { return m_pContract; }
 
 protected:
 	char			m_strExchg[MAX_EXCHANGE_LENGTH];
@@ -123,38 +123,38 @@ protected:
 	bool			m_bIsNet;
 	bool			m_bIsBuy;
 
-	WTSDirectionType	m_direction;
-	WTSPriceType		m_priceType;
-	WTSOrderFlag		m_orderFlag;
-	WTSOffsetType		m_offsetType;
+	VvTSDirectionType	m_direction;
+	VvTSPriceType		m_priceType;
+	VvTSOrderFlag		m_orderFlag;
+	VvTSOffsetType		m_offsetType;
 
 	char				m_strEntrustID[64] = { 0 };
 	char				m_strUserTag[64] = { 0 };
 
-	WTSBusinessType		m_businessType;
+	VvTSBusinessType		m_businessType;
 
-	WTSContractInfo*	m_pContract;
+	VvTSContractInfo*	m_pContract;
 };
 
 
 //////////////////////////////////////////////////////////////////////////
 //委托操作: 撤单、改单
-class WTSEntrustAction : public WTSPoolObject<WTSEntrustAction>
+class VvTSEntrustAction : public VvTSPoolObject<VvTSEntrustAction>
 {
 public:
-	WTSEntrustAction()
+	VvTSEntrustAction()
 		: m_actionFlag(WAF_CANCEL)
 		, m_businessType(BT_CASH)
 	{
 
 	}
 
-	virtual ~WTSEntrustAction(){}
+	virtual ~VvTSEntrustAction(){}
 
 public:
-	static inline WTSEntrustAction* create(const char* code, const char* exchg = "", WTSBusinessType bType = BT_CASH) noexcept
+	static inline VvTSEntrustAction* create(const char* code, const char* exchg = "", VvTSBusinessType bType = BT_CASH) noexcept
 	{
-		WTSEntrustAction* pRet = WTSEntrustAction::allocate();
+		VvTSEntrustAction* pRet = VvTSEntrustAction::allocate();
 		if(pRet)
 		{
 			vvt_strcpy(pRet->m_strExchg, exchg);
@@ -166,9 +166,9 @@ public:
 		return NULL;
 	}
 
-	static inline WTSEntrustAction* createCancelAction(const char* eid, const char* oid) noexcept
+	static inline VvTSEntrustAction* createCancelAction(const char* eid, const char* oid) noexcept
 	{
-		WTSEntrustAction* pRet = new WTSEntrustAction;
+		VvTSEntrustAction* pRet = new VvTSEntrustAction;
 		if(pRet)
 		{
 			vvt_strcpy(pRet->m_strEnturstID, eid);
@@ -196,8 +196,8 @@ public:
 			strncpy(m_strCode, code, len);
 	}
 
-	inline void setActionFlag(WTSActionFlag af) noexcept {m_actionFlag = af;}
-	inline WTSActionFlag getActionFlag() const noexcept {return m_actionFlag;}
+	inline void setActionFlag(VvTSActionFlag af) noexcept {m_actionFlag = af;}
+	inline VvTSActionFlag getActionFlag() const noexcept {return m_actionFlag;}
 
 	inline void setEntrustID(const char* eid) noexcept { vvt_strcpy(m_strEnturstID, eid); }
 	inline const char* getEntrustID() const noexcept {return m_strEnturstID;}
@@ -206,36 +206,36 @@ public:
 	inline void setOrderID(const char* oid) noexcept { vvt_strcpy(m_strOrderID, oid); }
 	inline const char* getOrderID() const noexcept {return m_strOrderID;}
 
-	inline void setBusinessType(WTSBusinessType bType) noexcept { m_businessType = bType; }
-	inline WTSBusinessType	getBusinessType() const  noexcept { return m_businessType; }
+	inline void setBusinessType(VvTSBusinessType bType) noexcept { m_businessType = bType; }
+	inline VvTSBusinessType	getBusinessType() const  noexcept { return m_businessType; }
 
 	inline void setUserTag(const char* tag)  noexcept { vvt_strcpy(m_strUserTag, tag); }
 	inline const char* getUserTag() const  noexcept { return m_strUserTag; }
 	inline char* getUserTag()  noexcept { return m_strUserTag; }
 
-	inline void setContractInfo(WTSContractInfo* cInfo)  noexcept { m_pContract = cInfo; }
-	inline WTSContractInfo* getContractInfo() const  noexcept { return m_pContract; }
+	inline void setContractInfo(VvTSContractInfo* cInfo)  noexcept { m_pContract = cInfo; }
+	inline VvTSContractInfo* getContractInfo() const  noexcept { return m_pContract; }
 
 protected:
 	char			m_strExchg[MAX_EXCHANGE_LENGTH];
 	char			m_strCode[MAX_INSTRUMENT_LENGTH];
 
 	char			m_strEnturstID[64] = { 0 };
-	WTSActionFlag	m_actionFlag;
+	VvTSActionFlag	m_actionFlag;
 
 	char			m_strOrderID[64] = { 0 };
 	char			m_strUserTag[64] = { 0 };
 
-	WTSBusinessType		m_businessType;
-	WTSContractInfo*	m_pContract;
+	VvTSBusinessType		m_businessType;
+	VvTSContractInfo*	m_pContract;
 };
 
 //////////////////////////////////////////////////////////////////////////
 //订单信息,查看订单状态变化等
-class WTSOrderInfo : public WTSPoolObject<WTSOrderInfo>
+class VvTSOrderInfo : public VvTSPoolObject<VvTSOrderInfo>
 {
 public:
-	WTSOrderInfo()
+	VvTSOrderInfo()
 		:m_orderState(WOS_Submitting)
 		,m_orderType(WORT_Normal)
 		,m_uInsertDate(0)
@@ -247,12 +247,12 @@ public:
 
 	}
 
-	virtual ~WTSOrderInfo(){}
+	virtual ~VvTSOrderInfo(){}
 
 public:
-	static inline WTSOrderInfo* create(WTSEntrust* entrust = NULL) noexcept
+	static inline VvTSOrderInfo* create(VvTSEntrust* entrust = NULL) noexcept
 	{
-		WTSOrderInfo *pRet = WTSOrderInfo::allocate();
+		VvTSOrderInfo *pRet = VvTSOrderInfo::allocate();
 
 		if(entrust != NULL)
 		{
@@ -276,7 +276,7 @@ public:
 	}
 
 public:
-	//这部分是和WTSEntrust同步的
+	//这部分是和VvTSEntrust同步的
 	inline void setExchange(const char* exchg, std::size_t len = 0)  noexcept {
 		if (len == 0)
 			vvt_strcpy(m_strExchg, exchg);
@@ -290,18 +290,18 @@ public:
 			strncpy(m_strCode, code, len);
 	}
 
-	inline void setDirection(WTSDirectionType dType)  noexcept { m_direction = dType; }
-	inline void setPriceType(WTSPriceType pType)  noexcept { m_priceType = pType; }
-	inline void setOrderFlag(WTSOrderFlag oFlag)  noexcept { m_orderFlag = oFlag; }
-	inline void setOffsetType(WTSOffsetType oType) noexcept { m_offsetType = oType; }
+	inline void setDirection(VvTSDirectionType dType)  noexcept { m_direction = dType; }
+	inline void setPriceType(VvTSPriceType pType)  noexcept { m_priceType = pType; }
+	inline void setOrderFlag(VvTSOrderFlag oFlag)  noexcept { m_orderFlag = oFlag; }
+	inline void setOffsetType(VvTSOffsetType oType) noexcept { m_offsetType = oType; }
 
-	inline WTSDirectionType	getDirection() const  noexcept { return m_direction; }
-	inline WTSPriceType		getPriceType() const  noexcept { return m_priceType; }
-	inline WTSOrderFlag		getOrderFlag() const  noexcept { return m_orderFlag; }
-	inline WTSOffsetType	getOffsetType() const  noexcept { return m_offsetType; }
+	inline VvTSDirectionType	getDirection() const  noexcept { return m_direction; }
+	inline VvTSPriceType		getPriceType() const  noexcept { return m_priceType; }
+	inline VvTSOrderFlag		getOrderFlag() const  noexcept { return m_orderFlag; }
+	inline VvTSOffsetType	getOffsetType() const  noexcept { return m_offsetType; }
 
-	inline void setBusinessType(WTSBusinessType bType)  noexcept { m_businessType = bType; }
-	inline WTSBusinessType	getBusinessType() const  noexcept { return m_businessType; }
+	inline void setBusinessType(VvTSBusinessType bType)  noexcept { m_businessType = bType; }
+	inline VvTSBusinessType	getBusinessType() const  noexcept { return m_businessType; }
 
 	inline void setVolume(double volume)  noexcept { m_dVolume = volume; }
 	inline void setPrice(double price)  noexcept { m_iPrice = price; }
@@ -324,8 +324,8 @@ public:
 	inline bool isNet() const  noexcept { return m_bIsNet; }
 	inline bool isBuy() const  noexcept { return m_bIsBuy; }
 
-	inline void setContractInfo(WTSContractInfo* cInfo)  noexcept { m_pContract = cInfo; }
-	inline WTSContractInfo* getContractInfo() const  noexcept { return m_pContract; }
+	inline void setContractInfo(VvTSContractInfo* cInfo)  noexcept { m_pContract = cInfo; }
+	inline VvTSContractInfo* getContractInfo() const  noexcept { return m_pContract; }
 
 public:
 	inline void	setOrderDate(uint32_t uDate) noexcept {m_uInsertDate = uDate;}
@@ -334,16 +334,16 @@ public:
 	inline void	setVolLeft(double vol) noexcept { m_dVolLeft = vol; }
 	
 	inline void	setOrderID(const char* oid) noexcept { vvt_strcpy(m_strOrderID, oid); }
-	inline void	setOrderState(WTSOrderState os) noexcept {m_orderState = os;}
-	inline void	setOrderType(WTSOrderType ot) noexcept {m_orderType = ot;}
+	inline void	setOrderState(VvTSOrderState os) noexcept {m_orderState = os;}
+	inline void	setOrderType(VvTSOrderType ot) noexcept {m_orderType = ot;}
 
 	inline uint32_t getOrderDate() const noexcept {return m_uInsertDate;}
 	inline uint64_t getOrderTime() const noexcept {return m_uInsertTime;}
 	inline double getVolTraded() const noexcept { return m_dVolTraded; }
 	inline double getVolLeft() const noexcept { return m_dVolLeft; }
     
-	inline WTSOrderState		getOrderState() const  noexcept { return m_orderState; }
-	inline WTSOrderType			getOrderType() const  noexcept { return m_orderType; }
+	inline VvTSOrderState		getOrderState() const  noexcept { return m_orderState; }
+	inline VvTSOrderType			getOrderType() const  noexcept { return m_orderType; }
 	inline const char*			getOrderID() const  noexcept { return m_strOrderID; }
 	inline char*			getOrderID()  noexcept { return m_strOrderID; }
 
@@ -369,7 +369,7 @@ public:
 	inline bool	isError() const noexcept { return m_bIsError; }
 
 private:
-	//这部分成员和WTSEntrust一致
+	//这部分成员和VvTSEntrust一致
 	char			m_strExchg[MAX_EXCHANGE_LENGTH];
 	char			m_strCode[MAX_INSTRUMENT_LENGTH];
 	double			m_dVolume;
@@ -378,16 +378,16 @@ private:
 	bool			m_bIsNet;
 	bool			m_bIsBuy;
 
-	WTSDirectionType	m_direction;
-	WTSPriceType		m_priceType;
-	WTSOrderFlag		m_orderFlag;
-	WTSOffsetType		m_offsetType;
+	VvTSDirectionType	m_direction;
+	VvTSPriceType		m_priceType;
+	VvTSOrderFlag		m_orderFlag;
+	VvTSOffsetType		m_offsetType;
 
 	char				m_strEntrustID[64] = { 0 };
 	char				m_strUserTag[64] = { 0 };
 
-	WTSBusinessType		m_businessType;
-	WTSContractInfo*	m_pContract;
+	VvTSBusinessType		m_businessType;
+	VvTSContractInfo*	m_pContract;
 
 	//这部分是Order专有的成员
 	uint32_t	m_uInsertDate;
@@ -396,30 +396,30 @@ private:
 	double		m_dVolLeft;
 	bool		m_bIsError;
 
-	WTSOrderState	m_orderState;
-	WTSOrderType	m_orderType;
+	VvTSOrderState	m_orderState;
+	VvTSOrderType	m_orderType;
 	char			m_strOrderID[64] = { 0 };
 	std::string		m_strStateMsg;
 };
 
 //////////////////////////////////////////////////////////////////////////
-class WTSTradeInfo : public WTSPoolObject<WTSTradeInfo>
+class VvTSTradeInfo : public VvTSPoolObject<VvTSTradeInfo>
 {
 public:
-	WTSTradeInfo()
+	VvTSTradeInfo()
 		: m_orderType(WORT_Normal)
-		, m_tradeType(WTT_Common)
+		, m_tradeType(VvTT_Common)
 		, m_uAmount(0)
 		, m_dPrice(0)
 		, m_businessType(BT_CASH)
 		, m_pContract(NULL)
 	{}
-	virtual ~WTSTradeInfo(){}
+	virtual ~VvTSTradeInfo(){}
 
 public:
-	static inline WTSTradeInfo* create(const char* code, const char* exchg = "", WTSBusinessType bType = BT_CASH)
+	static inline VvTSTradeInfo* create(const char* code, const char* exchg = "", VvTSBusinessType bType = BT_CASH)
 	{
-		WTSTradeInfo *pRet = WTSTradeInfo::allocate();
+		VvTSTradeInfo *pRet = VvTSTradeInfo::allocate();
 		vvt_strcpy(pRet->m_strExchg, exchg);
 		vvt_strcpy(pRet->m_strCode, code);
 		pRet->m_businessType = bType;
@@ -430,10 +430,10 @@ public:
 	inline void setTradeID(const char* tradeid) noexcept { vvt_strcpy(m_strTradeID, tradeid); }
 	inline void setRefOrder(const char* oid) noexcept { vvt_strcpy(m_strRefOrder, oid); }
 	
-	inline void setDirection(WTSDirectionType dType)noexcept {m_direction = dType;}
-	inline void setOffsetType(WTSOffsetType oType)noexcept {m_offsetType = oType;}
-	inline void setOrderType(WTSOrderType ot)noexcept {m_orderType = ot;}
-	inline void setTradeType(WTSTradeType tt)noexcept {m_tradeType = tt;}
+	inline void setDirection(VvTSDirectionType dType)noexcept {m_direction = dType;}
+	inline void setOffsetType(VvTSOffsetType oType)noexcept {m_offsetType = oType;}
+	inline void setOrderType(VvTSOrderType ot)noexcept {m_orderType = ot;}
+	inline void setTradeType(VvTSTradeType tt)noexcept {m_tradeType = tt;}
 
 	inline void setVolume(double volume)noexcept {m_dVolume = volume;}
 	inline void setPrice(double price)noexcept { m_dPrice = price; }
@@ -443,10 +443,10 @@ public:
 
 	inline void setAmount(double amount) noexcept { m_uAmount = amount; }
 
-	inline WTSDirectionType	getDirection() const noexcept {return m_direction;}
-	inline WTSOffsetType	getOffsetType() const noexcept {return m_offsetType;}
-	inline WTSOrderType		getOrderType() const noexcept {return m_orderType;}
-	inline WTSTradeType		getTradeType() const noexcept {return m_tradeType;}
+	inline VvTSDirectionType	getDirection() const noexcept {return m_direction;}
+	inline VvTSOffsetType	getOffsetType() const noexcept {return m_offsetType;}
+	inline VvTSOrderType		getOrderType() const noexcept {return m_orderType;}
+	inline VvTSTradeType		getTradeType() const noexcept {return m_tradeType;}
 
 	inline double getVolume() const { return m_dVolume; }
 	inline double getPrice() const noexcept { return m_dPrice; }
@@ -467,15 +467,15 @@ public:
 	inline void setUserTag(const char* tag) noexcept { vvt_strcpy(m_strUserTag, tag); }
 	inline const char* getUserTag() const noexcept { return m_strUserTag; }
 
-	inline void setBusinessType(WTSBusinessType bType) noexcept  { m_businessType = bType; }
-	inline WTSBusinessType	getBusinessType() const noexcept { return m_businessType; }
+	inline void setBusinessType(VvTSBusinessType bType) noexcept  { m_businessType = bType; }
+	inline VvTSBusinessType	getBusinessType() const noexcept { return m_businessType; }
 
 	inline void setNetDirection(bool isBuy) noexcept { m_bIsNet = true; m_bIsBuy = isBuy; }
 	inline bool isNet() const noexcept { return m_bIsNet; }
 	inline bool isBuy() const noexcept { return m_bIsBuy; }
 
-	inline void setContractInfo(WTSContractInfo* cInfo) noexcept { m_pContract = cInfo; }
-	inline WTSContractInfo* getContractInfo() const noexcept { return m_pContract; }
+	inline void setContractInfo(VvTSContractInfo* cInfo) noexcept { m_pContract = cInfo; }
+	inline VvTSContractInfo* getContractInfo() const noexcept { return m_pContract; }
 
 protected:
 	char	m_strExchg[MAX_EXCHANGE_LENGTH];	//市场
@@ -492,25 +492,25 @@ protected:
 	bool		m_bIsNet;
 	bool		m_bIsBuy;
 
-	WTSDirectionType	m_direction;
-	WTSOffsetType		m_offsetType;
-	WTSOrderType		m_orderType;
-	WTSTradeType		m_tradeType;
+	VvTSDirectionType	m_direction;
+	VvTSOffsetType		m_offsetType;
+	VvTSOrderType		m_orderType;
+	VvTSTradeType		m_tradeType;
 
 	double		m_uAmount;
 
-	WTSBusinessType		m_businessType;
-	WTSContractInfo*	m_pContract;
+	VvTSBusinessType		m_businessType;
+	VvTSContractInfo*	m_pContract;
 };
 
 //////////////////////////////////////////////////////////////////////////
 //持仓信息
-class WTSPositionItem : public WTSPoolObject<WTSPositionItem>
+class VvTSPositionItem : public VvTSPoolObject<VvTSPositionItem>
 {
 public:
-	static inline WTSPositionItem* create(const char* code, const char* currency = "CNY", const char* exchg = "", WTSBusinessType bType = BT_CASH)
+	static inline VvTSPositionItem* create(const char* code, const char* currency = "CNY", const char* exchg = "", VvTSBusinessType bType = BT_CASH)
 	{
-		WTSPositionItem *pRet = WTSPositionItem::allocate();
+		VvTSPositionItem *pRet = VvTSPositionItem::allocate();
 		vvt_strcpy(pRet->m_strExchg, exchg);
 		vvt_strcpy(pRet->m_strCode, code);
 		vvt_strcpy(pRet->m_strCurrency, currency);
@@ -519,7 +519,7 @@ public:
 		return pRet;
 	}
 
-	inline void setDirection(WTSDirectionType dType){m_direction = dType;}
+	inline void setDirection(VvTSDirectionType dType){m_direction = dType;}
 	inline void setPrePosition(double prePos){ m_dPrePosition = prePos; }
 	inline void setNewPosition(double newPos){ m_dNewPosition = newPos; }
 	inline void setAvailPrePos(double availPos){ m_dAvailPrePos = availPos; }
@@ -529,7 +529,7 @@ public:
 	inline void setAvgPrice(double avgPrice){ m_dAvgPrice = avgPrice; }
 	inline void setDynProfit(double profit){ m_dDynProfit = profit; }
 
-	inline WTSDirectionType getDirection() const{return m_direction;}
+	inline VvTSDirectionType getDirection() const{return m_direction;}
 	inline double	getPrePosition() const{ return m_dPrePosition; }
 	inline double	getNewPosition() const{ return m_dNewPosition; }
 	inline double	getAvailPrePos() const{ return m_dAvailPrePos; }
@@ -551,14 +551,14 @@ public:
 	inline const char* getCurrency() const{ return m_strCurrency; }
 	inline const char* getExchg() const{ return m_strExchg; }
 
-	inline void setBusinessType(WTSBusinessType bType) { m_businessType = bType; }
-	inline WTSBusinessType	getBusinessType() const { return m_businessType; }
+	inline void setBusinessType(VvTSBusinessType bType) { m_businessType = bType; }
+	inline VvTSBusinessType	getBusinessType() const { return m_businessType; }
 
-	inline void setContractInfo(WTSContractInfo* cInfo) { m_pContract = cInfo; }
-	inline WTSContractInfo* getContractInfo() const { return m_pContract; }
+	inline void setContractInfo(VvTSContractInfo* cInfo) { m_pContract = cInfo; }
+	inline VvTSContractInfo* getContractInfo() const { return m_pContract; }
 
 public:
-	WTSPositionItem()
+	VvTSPositionItem()
 		: m_direction(WDT_LONG)
 		, m_dPrePosition(0)
 		, m_dNewPosition(0)
@@ -571,14 +571,14 @@ public:
 		, m_businessType(BT_CASH)
 		, m_pContract(NULL)
 	{}
-	virtual ~WTSPositionItem(){}
+	virtual ~VvTSPositionItem(){}
 
 protected:
 	char			m_strExchg[MAX_EXCHANGE_LENGTH];
 	char			m_strCode[MAX_INSTRUMENT_LENGTH];
 	char			m_strCurrency[8] = { 0 };
 
-	WTSDirectionType	m_direction;//多空方向
+	VvTSDirectionType	m_direction;//多空方向
 	double		m_dPrePosition;		//昨仓
 	double		m_dNewPosition;		//今仓
 	double		m_dAvailPrePos;		//可平昨仓
@@ -588,16 +588,16 @@ protected:
 	double		m_dAvgPrice;		//持仓均价
 	double		m_dDynProfit;		//浮动盈亏
 
-	WTSBusinessType		m_businessType;
-	WTSContractInfo*	m_pContract;
+	VvTSBusinessType		m_businessType;
+	VvTSContractInfo*	m_pContract;
 };
 
 //////////////////////////////////////////////////////////////////////////
 //账户信息
-class WTSAccountInfo : public WTSPoolObject<WTSAccountInfo>
+class VvTSAccountInfo : public VvTSPoolObject<VvTSAccountInfo>
 {
 public:
-	WTSAccountInfo()
+	VvTSAccountInfo()
 		: m_strCurrency("CNY")
 		, m_dBalance(0)
 		, m_dPreBalance(0)
@@ -611,10 +611,10 @@ public:
 		, m_dAvailable(0)
 	{
 	}
-	virtual ~WTSAccountInfo(){}
+	virtual ~VvTSAccountInfo(){}
 
 public:
-	static inline WTSAccountInfo* create(){return WTSAccountInfo::allocate();}
+	static inline VvTSAccountInfo* create(){return VvTSAccountInfo::allocate();}
 
 	inline void	setCurrency(const char* currency){ m_strCurrency = currency; }
 

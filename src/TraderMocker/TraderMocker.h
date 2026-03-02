@@ -8,11 +8,11 @@
 #include "../Includes/FasterDefs.h"
 #include "../Includes/ITraderApi.h"
 #include "../Share/StdUtils.hpp"
-#include "../Includes/WTSCollection.hpp"
+#include "../Includes/VvTSCollection.hpp"
 
 
 NS_VVTP_BEGIN
-	class WTSTickData;
+	class VvTSTickData;
 NS_VVTP_END
 
 USING_NS_VVTP;
@@ -60,16 +60,16 @@ private:
 	double			_max_qty;
 	double			_min_qty;
 
-	WTSArray*		_orders;
-	WTSArray*		_trades;
-	typedef WTSHashMap<std::string> TickCache;
+	VvTSArray*		_orders;
+	VvTSArray*		_trades;
+	typedef VvTSHashMap<std::string> TickCache;
 	TickCache*		_ticks;
 
-	typedef WTSHashMap<std::string> OrderCache;
+	typedef VvTSHashMap<std::string> OrderCache;
 	OrderCache*			_awaits;
 	StdUniqueMutex	_mtx_awaits;
 
-	wt_hashset<std::string>	_codes;
+	vvt_hashset<std::string>	_codes;
 
 	uint64_t		_max_tick_time;
 	uint64_t		_last_match_time;
@@ -116,7 +116,7 @@ private:
 //////////////////////////////////////////////////////////////////////////
 //ITraderApi
 public:
-	virtual bool init(VVTSVariant *params) override;
+	virtual bool init(VvTSVariant *params) override;
 
 	virtual void release() override;
 
@@ -134,9 +134,9 @@ public:
 
 	virtual int logout() override;
 
-	virtual int orderInsert(WTSEntrust* eutrust) override;
+	virtual int orderInsert(VvTSEntrust* eutrust) override;
 
-	virtual int orderAction(WTSEntrustAction* action) override;
+	virtual int orderAction(VvTSEntrustAction* action) override;
 
 	virtual int queryAccount() override;
 

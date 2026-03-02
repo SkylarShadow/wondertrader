@@ -2,7 +2,7 @@
 #include "EventNotifier.h"
 
 #include "../Share/CodeHelper.hpp"
-#include "../Includes/VVTSVariant.hpp"
+#include "../Includes/VvTSVariant.hpp"
 #include "../WTSUtils/WTSCfgLoader.h"
 #include "../WTSTools/WTSLogger.h"
 
@@ -35,7 +35,7 @@ void WtFilterMgr::load_filters(const char* fileName)
 			_notifier->notify_event("Filter file has been reloaded");
 	}
 
-	VVTSVariant* cfg = WTSCfgLoader::load_from_file(_filter_file.c_str());
+	VvTSVariant* cfg = WTSCfgLoader::load_from_file(_filter_file.c_str());
 
 	_filter_timestamp = lastModTime;
 
@@ -44,13 +44,13 @@ void WtFilterMgr::load_filters(const char* fileName)
 	_exec_filters.clear();
 
 	//读策略过滤器
-	VVTSVariant* filterStra = cfg->get("strategy_filters");
+	VvTSVariant* filterStra = cfg->get("strategy_filters");
 	if (filterStra)
 	{
 		auto keys = filterStra->memberNames();
 		for (const std::string& key : keys)
 		{
-			VVTSVariant* cfgItem = filterStra->get(key.c_str());
+			VvTSVariant* cfgItem = filterStra->get(key.c_str());
 			const char* action = cfgItem->getCString("action");
 			FilterAction fAct = FA_None;
 			if (vvt_stricmp(action, "ignore") == 0)
@@ -74,14 +74,14 @@ void WtFilterMgr::load_filters(const char* fileName)
 	}
 
 	//读代码过滤器
-	VVTSVariant* filterCodes = cfg->get("code_filters");
+	VvTSVariant* filterCodes = cfg->get("code_filters");
 	if (filterCodes)
 	{
 		auto codes = filterCodes->memberNames();
 		for (const std::string& stdCode : codes)
 		{
 
-			VVTSVariant* cfgItem = filterCodes->get(stdCode.c_str());
+			VvTSVariant* cfgItem = filterCodes->get(stdCode.c_str());
 			const char* action = cfgItem->getCString("action");
 			FilterAction fAct = FA_None;
 			if (vvt_stricmp(action, "ignore") == 0)
@@ -105,7 +105,7 @@ void WtFilterMgr::load_filters(const char* fileName)
 	}
 
 	//读通道过滤器
-	VVTSVariant* filterExecuters = cfg->get("executer_filters");
+	VvTSVariant* filterExecuters = cfg->get("executer_filters");
 	if (filterExecuters)
 	{
 		auto executer_ids = filterExecuters->memberNames();

@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <stdint.h>
 #include <string.h>
-#include "../Includes/VVTSMarcos.h"
+#include "../Includes/VvTSMarcos.h"
 
 #pragma warning(disable:4200)
 

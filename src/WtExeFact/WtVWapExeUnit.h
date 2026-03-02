@@ -35,7 +35,7 @@ public:
 	*	ctx		执行单元运行环境
 	*	code	管理的合约代码
 	*/
-	virtual void init(ExecuteContext* ctx, const char* stdCode, VVTSVariant* cfg) override;
+	virtual void init(ExecuteContext* ctx, const char* stdCode, VvTSVariant* cfg) override;
 
 	/*
 	*	订单回报
@@ -52,7 +52,7 @@ public:
 	*	tick数据回调
 	*	newTick	最新的tick数据
 	*/
-	virtual void on_tick(WTSTickData* newTick) override;
+	virtual void on_tick(VvTSTickData* newTick) override;
 
 	/*
 	*	成交回报
@@ -86,13 +86,13 @@ public:
 	virtual void on_channel_lost() override;
 
 private:
-	WTSTickData* _last_tick;	//上一笔行情
+	VvTSTickData* _last_tick;	//上一笔行情
 	double		_target_pos;	//目标仓位
 	bool		_channel_ready;
 	StdUniqueMutex	_mtx_calc;
 
-	WTSCommodityInfo* _comm_info;
-	WTSSessionInfo*	_sess_info;
+	VvTSCommodityInfo* _comm_info;
+	VvTSSessionInfo*	_sess_info;
 	uint32_t	_cancel_times;//撤单次数
 
 

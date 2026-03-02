@@ -5,20 +5,20 @@
 #include <functional>
 #include <string.h>
 
-#include "../Includes/VVTSMarcos.h"
-#include "../Includes/WTSCollection.hpp"
+#include "../Includes/VvTSMarcos.h"
+#include "../Includes/VvTSCollection.hpp"
 #include "../Includes/FasterDefs.h"
 
 NS_VVTP_BEGIN
-class WTSTickData;
-class VVTSVariant;
+class VvTSTickData;
+class VvTSVariant;
 NS_VVTP_END
 
 USING_NS_VVTP;
 
 typedef std::vector<uint32_t> OrderIDs;
 
-typedef WTSHashMap<std::string>	WTSTickCache;
+typedef VvTSHashMap<std::string>	WTSTickCache;
 
 class IMatchSink
 {
@@ -60,19 +60,19 @@ public:
 	}
 private:
 	void	fire_orders(const char* stdCode, OrderIDs& to_erase);
-	void	match_orders(WTSTickData* curTick, OrderIDs& to_erase);
-	void	update_lob(WTSTickData* curTick);
+	void	match_orders(VvTSTickData* curTick, OrderIDs& to_erase);
+	void	update_lob(VvTSTickData* curTick);
 
-	inline WTSTickData*	grab_last_tick(const char* stdCode);
+	inline VvTSTickData*	grab_last_tick(const char* stdCode);
 
 public:
-	void	init(VVTSVariant* cfg);
+	void	init(VvTSVariant* cfg);
 
 	void	regisSink(IMatchSink* sink) { _sink = sink; }
 
 	void	clear();
 
-	void	handle_tick(const char* stdCode, WTSTickData* curTick);
+	void	handle_tick(const char* stdCode, VvTSTickData* curTick);
 
 	OrderIDs	buy(const char* stdCode, double price, double qty, uint64_t curTime);
 	OrderIDs	sell(const char* stdCode, double price, double qty, uint64_t curTime);

@@ -92,7 +92,7 @@ const char * WtStockVWapExeUnit::getName()
 	return "WtStockVWapExeUnit";
 }
 
-void WtStockVWapExeUnit::init(ExecuteContext * ctx, const char * stdCode, VVTSVariant * cfg)
+void WtStockVWapExeUnit::init(ExecuteContext * ctx, const char * stdCode, VvTSVariant * cfg)
 {
 	ExecuteUnit::init(ctx, stdCode, cfg);
 
@@ -236,7 +236,7 @@ void WtStockVWapExeUnit::on_channel_ready()
 }
 
 
-void WtStockVWapExeUnit::on_tick(WTSTickData * newTick)
+void WtStockVWapExeUnit::on_tick(VvTSTickData * newTick)
 {
 	if (newTick == NULL || _code.compare(newTick->code()) != 0)
 		return;
@@ -440,7 +440,7 @@ void WtStockVWapExeUnit::do_calc()
 	//设定本轮目标仓位
 	_this_target = realPos + curQty;
 
-	WTSTickData* curTick = _last_tick;
+	VvTSTickData* curTick = _last_tick;
 	uint64_t now = TimeUtils::getLocalTimeNow();
 	isBuy = decimal::gt(diffQty, 0);
 	double targetPx = 0;
@@ -503,7 +503,7 @@ void WtStockVWapExeUnit::fire_at_once(double qty)
 	if (decimal::eq(qty, 0))
 		return;
 	_last_tick->retain();
-	WTSTickData* curTick = _last_tick;
+	VvTSTickData* curTick = _last_tick;
 	const char* code = _code.c_str();
 	uint64_t now = TimeUtils::getLocalTimeNow();
 	bool isBuy = decimal::gt(qty, 0);
@@ -565,7 +565,7 @@ void WtStockVWapExeUnit::set_position(const char * stdCode, double newVol)
 	_target_mode = TargetMode::stocks;
 	_is_finish = false;
 	_start_time = TimeUtils::getLocalTimeNow();
-	WTSTickData* tick = _ctx->grabLastTick(_code.c_str());
+	VvTSTickData* tick = _ctx->grabLastTick(_code.c_str());
 	if (tick) {
 		_start_price = tick->price();
 		tick->release();

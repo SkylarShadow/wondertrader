@@ -9,8 +9,8 @@
  */
 #include "WtSimpRiskMon.h"
 
-#include "../Includes/WTSRiskDef.hpp"
-#include "../Includes/VVTSVariant.hpp"
+#include "../Includes/VvTSRiskDef.hpp"
+#include "../Includes/VvTSVariant.hpp"
 #include "../Share/TimeUtils.hpp"
 #include "../Share/decimal.h"
 #include "../Share/fmtlib.h"
@@ -27,9 +27,9 @@ const char* WtSimpleRiskMon::getFactName()
 	return FACT_NAME;
 }
 
-void WtSimpleRiskMon::init(WtPortContext* ctx, VVTSVariant* cfg)
+void WtSimpleRiskMon::init(VvtPortContext* ctx, VvTSVariant* cfg)
 {
-	WtRiskMonitor::init(ctx, cfg);
+	VvtRiskMonitor::init(ctx, cfg);
 
 	_calc_span = cfg->getUInt32("calc_span");
 	_risk_span = cfg->getUInt32("risk_span");
@@ -55,8 +55,8 @@ void WtSimpleRiskMon::run()
 		{
 			if (_ctx && _ctx->isInTrading())
 			{
-				WTSPortFundInfo* fundInfo = _ctx->getFundInfo();
-				const WTSFundStruct& fs = fundInfo->fundInfo();
+				VvTSPortFundInfo* fundInfo = _ctx->getFundInfo();
+				const VvTSFundStruct& fs = fundInfo->fundInfo();
 				/*
 				* 条件1: 整体盘子的浮动收益比上一交易日结束时（收盘价计）, 增长 1% 以上
 				*		组合盘的动态权益 ≥ 上日收盘时的动态权益的 101%

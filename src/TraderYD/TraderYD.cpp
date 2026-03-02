@@ -9,14 +9,14 @@
  */
 #include "TraderYD.h"
 
-#include "../Includes/WTSError.hpp"
-#include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSSessionInfo.hpp"
-#include "../Includes/WTSTradeDef.hpp"
-#include "../Includes/WTSDataDef.hpp"
-#include "../Includes/VVTSVariant.hpp"
+#include "../Includes/VvTSError.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/VvTSSessionInfo.hpp"
+#include "../Includes/VvTSTradeDef.hpp"
+#include "../Includes/VvTSDataDef.hpp"
+#include "../Includes/VvTSVariant.hpp"
 #include "../Includes/IBaseDataMgr.h"
-#include "../Includes/WTSCollection.hpp"
+#include "../Includes/VvTSCollection.hpp"
 
 #include "../Share/decimal.h"
 #include "../Share/ModuleHelper.hpp"
@@ -29,7 +29,7 @@ const char* ORDER_SECTION = "orders";
 //By Wesley @ 2022.01.05
 #include "../Share/fmtlib.h"
 template<typename... Args>
-inline void write_log(ITraderSpi* sink, WTSLogLevel ll, const char* format, const Args&... args)
+inline void write_log(ITraderSpi* sink, VvTSLogLevel ll, const char* format, const Args&... args)
 {
 	if (sink == NULL)
 		return;
@@ -40,7 +40,7 @@ inline void write_log(ITraderSpi* sink, WTSLogLevel ll, const char* format, cons
 	sink->handleTraderLog(ll, buffer);
 }
 
-inline WTSDirectionType wrapPosDirection(int dirType)
+inline VvTSDirectionType wrapPosDirection(int dirType)
 {
 	if (YD_PD_Long == dirType)
 		return WDT_LONG;
@@ -48,7 +48,7 @@ inline WTSDirectionType wrapPosDirection(int dirType)
 		return WDT_SHORT;
 }
 
-inline WTSDirectionType wrapDirectionType(int dirType, int offsetType)
+inline VvTSDirectionType wrapDirectionType(int dirType, int offsetType)
 {
 	if (YD_D_Buy == dirType)
 		if (offsetType == YD_OF_Open)
@@ -62,7 +62,7 @@ inline WTSDirectionType wrapDirectionType(int dirType, int offsetType)
 			return WDT_LONG;
 }
 
-inline int wrapDirectionType(WTSDirectionType dirType, WTSOffsetType offsetType)
+inline int wrapDirectionType(VvTSDirectionType dirType, VvTSOffsetType offsetType)
 {
 	if (WDT_LONG == dirType)
 		if (offsetType == WOT_OPEN)
@@ -76,7 +76,7 @@ inline int wrapDirectionType(WTSDirectionType dirType, WTSOffsetType offsetType)
 			return YD_D_Buy;
 }
 
-inline int wrapPriceType(WTSPriceType pType, WTSOrderFlag oFlag)
+inline int wrapPriceType(VvTSPriceType pType, VvTSOrderFlag oFlag)
 {
 	if (WOF_FAK == oFlag)
 		return YD_ODT_FAK;
@@ -93,7 +93,7 @@ inline int wrapPriceType(WTSPriceType pType, WTSOrderFlag oFlag)
 	return YD_ODT_Market;
 }
 
-inline WTSOffsetType wrapOffsetType(int offType)
+inline VvTSOffsetType wrapOffsetType(int offType)
 {
 	if (YD_OF_Open == offType)
 		return WOT_OPEN;
@@ -107,7 +107,7 @@ inline WTSOffsetType wrapOffsetType(int offType)
 		return WOT_FORCECLOSE;
 }
 
-inline int wrapOffsetType(WTSOffsetType offType)
+inline int wrapOffsetType(VvTSOffsetType offType)
 {
 	if (WOT_OPEN == offType)
 		return YD_OF_Open;
@@ -121,7 +121,7 @@ inline int wrapOffsetType(WTSOffsetType offType)
 		return YD_OF_ForceClose;
 }
 
-inline WTSOrderState wrapOrderState(int orderState)
+inline VvTSOrderState wrapOrderState(int orderState)
 {
 	switch (orderState)
 	{
@@ -179,7 +179,7 @@ TraderYD::~TraderYD()
 void TraderYD::notifyReadyForLogin(bool hasLoginFailed)
 {
 	if (m_sink)
-		m_sink->handleEvent(WTE_Connect, 0);
+		m_sink->handleEvent(VvTE_Connect, 0);
 }
 
 
@@ -235,10 +235,10 @@ void TraderYD::notifyLogin(int errorNo, int maxOrderRef, bool isMonitor)
 
 void TraderYD::notifyFailedOrder(const YDInputOrder *pFailedOrder, const YDInstrument *pInstrument, const YDAccount *pAccount)
 {
-	WTSEntrust* entrust = makeEntrust(pFailedOrder, pInstrument);
+	VvTSEntrust* entrust = makeEntrust(pFailedOrder, pInstrument);
 	if (entrust)
 	{
-		WTSError *err = makeError(pFailedOrder->ErrorNo, WEC_ORDERINSERT);
+		VvTSError *err = makeError(pFailedOrder->ErrorNo, WEC_ORDERINSERT);
 		//g_orderMgr.onRspEntrust(entrust, err);
 		if (m_sink)
 			m_sink->onRspEntrust(entrust, err);
@@ -249,7 +249,7 @@ void TraderYD::notifyFailedOrder(const YDInputOrder *pFailedOrder, const YDInstr
 
 void TraderYD::notifyFailedCancelOrder(const YDFailedCancelOrder *pFailedCancelOrder, const YDExchange *pExchange, const YDAccount *pAccount)
 {
-	WTSError* error = makeError(pFailedCancelOrder->ErrorNo, WEC_ORDERCANCEL);
+	VvTSError* error = makeError(pFailedCancelOrder->ErrorNo, WEC_ORDERCANCEL);
 	if (m_sink)
 		m_sink->onTraderError(error);
 }
@@ -270,7 +270,7 @@ void TraderYD::notifyFinishInit()
 	{
 		const YDAccount* accInfo = m_pUserAPI->getMyAccount();
 
-		WTSAccountInfo* accountInfo = WTSAccountInfo::create();
+		VvTSAccountInfo* accountInfo = VvTSAccountInfo::create();
 		accountInfo->setPreBalance(accInfo->PreBalance);
 		accountInfo->setDeposit(accInfo->Deposit);
 		accountInfo->setWithdraw(accInfo->Withdraw);
@@ -278,7 +278,7 @@ void TraderYD::notifyFinishInit()
 		accountInfo->setCurrency("CNY");
 
 		if (m_ayFunds == NULL)
-			m_ayFunds = WTSArray::create();
+			m_ayFunds = VvTSArray::create();
 
 		m_ayFunds->append(accountInfo, false);
 	}
@@ -294,15 +294,15 @@ void TraderYD::notifyFinishInit()
 			const YDPrePosition* pInfo = m_pUserAPI->getPrePosition(i);
 			const YDInstrument* instInfo = pInfo->m_pInstrument;
 
-			WTSContractInfo* contract = m_bdMgr->getContract(instInfo->InstrumentID, instInfo->m_pExchange->ExchangeID);
+			VvTSContractInfo* contract = m_bdMgr->getContract(instInfo->InstrumentID, instInfo->m_pExchange->ExchangeID);
 			if (contract)
 			{
-				WTSCommodityInfo* commInfo = contract->getCommInfo();
+				VvTSCommodityInfo* commInfo = contract->getCommInfo();
 				std::string key = fmt::format("{}-{}", contract->getCode(), wrapPosDirection(pInfo->PositionDirection));
-				WTSPositionItem* pos = (WTSPositionItem*)m_mapPosition->get(key);
+				VvTSPositionItem* pos = (VvTSPositionItem*)m_mapPosition->get(key);
 				if (pos == NULL)
 				{
-					pos = WTSPositionItem::create(contract->getCode(), commInfo->getCurrency(), commInfo->getExchg());
+					pos = VvTSPositionItem::create(contract->getCode(), commInfo->getCurrency(), commInfo->getExchg());
 					pos->setDirection(wrapPosDirection(pInfo->PositionDirection));
 					pos->setContractInfo(contract);
 					m_mapPosition->add(key, pos, false);
@@ -336,7 +336,7 @@ void TraderYD::notifyFinishInit()
 
 void TraderYD::notifyOrder(const YDOrder *pOrder, const YDInstrument *pInstrument, const YDAccount *pAccount)
 {
-	WTSOrderInfo *orderInfo = makeOrderInfo(pOrder, pInstrument);
+	VvTSOrderInfo *orderInfo = makeOrderInfo(pOrder, pInstrument);
 	if (orderInfo)
 	{
 		//先往缓存里丢
@@ -353,13 +353,13 @@ void TraderYD::notifyOrder(const YDOrder *pOrder, const YDInstrument *pInstrumen
 			if (orderInfo->getOffsetType() != WOT_OPEN)
 			{
 				const char* key = fmtutil::format("{}-{}", orderInfo->getCode(), orderInfo->getDirection());
-				WTSPositionItem* pos = (WTSPositionItem*)m_mapPosition->get(key);
+				VvTSPositionItem* pos = (VvTSPositionItem*)m_mapPosition->get(key);
 				double preQty = pos->getPrePosition();
 				double newQty = pos->getNewPosition();
 				double availPre = pos->getAvailPrePos();
 				double availNew = pos->getAvailNewPos();
 
-				WTSCommodityInfo* commInfo = orderInfo->getContractInfo()->getCommInfo();
+				VvTSCommodityInfo* commInfo = orderInfo->getContractInfo()->getCommInfo();
 				if(commInfo->getCoverMode() == CM_CoverToday)
 				{
 					if (orderInfo->getOffsetType() == WOT_CLOSETODAY)
@@ -384,13 +384,13 @@ void TraderYD::notifyOrder(const YDOrder *pOrder, const YDInstrument *pInstrumen
 		}
 		else
 		{
-			WTSOrderInfo* preOrd = (WTSOrderInfo*)it->second;
+			VvTSOrderInfo* preOrd = (VvTSOrderInfo*)it->second;
 			//如果订单不是第一次被推送，则看是否是撤单
 			//如果是撤单，并且之间订单状态还是有效的，则对平仓委托要释放冻结的手数
 			if(preOrd->isAlive() && orderInfo->getOrderState() == WOS_Canceled && orderInfo->getOffsetType() != WOT_OPEN)
 			{
 				std::string key = fmt::format("{}-{}", orderInfo->getCode(), orderInfo->getDirection());
-				WTSPositionItem* pos = (WTSPositionItem*)m_mapPosition->get(key);
+				VvTSPositionItem* pos = (VvTSPositionItem*)m_mapPosition->get(key);
 				double preQty = pos->getPrePosition();
 				double newQty = pos->getNewPosition();
 				double availPre = pos->getAvailPrePos();
@@ -398,7 +398,7 @@ void TraderYD::notifyOrder(const YDOrder *pOrder, const YDInstrument *pInstrumen
 
 				double untrade = orderInfo->getVolume() - orderInfo->getVolTraded();
 
-				WTSCommodityInfo* commInfo = orderInfo->getContractInfo()->getCommInfo();
+				VvTSCommodityInfo* commInfo = orderInfo->getContractInfo()->getCommInfo();
 				if (commInfo->getCoverMode() == CM_CoverToday)
 				{
 					if (orderInfo->getOffsetType() == WOT_CLOSETODAY)
@@ -434,7 +434,7 @@ void TraderYD::notifyOrder(const YDOrder *pOrder, const YDInstrument *pInstrumen
 
 void TraderYD::notifyTrade(const YDTrade *pTrade, const YDInstrument *pInstrument, const YDAccount *pAccount)
 {
-	WTSTradeInfo *trdInfo = makeTradeRecord(pTrade, pInstrument);
+	VvTSTradeInfo *trdInfo = makeTradeRecord(pTrade, pInstrument);
 	if (trdInfo)
 	{
 		//先往缓存里丢
@@ -442,8 +442,8 @@ void TraderYD::notifyTrade(const YDTrade *pTrade, const YDInstrument *pInstrumen
 			m_mapTrades = DataMap::create();
 
 		const char* tid = trdInfo->getTradeID();
-		WTSContractInfo* contract = trdInfo->getContractInfo();
-		WTSCommodityInfo* commInfo = contract->getCommInfo();
+		VvTSContractInfo* contract = trdInfo->getContractInfo();
+		VvTSCommodityInfo* commInfo = contract->getCommInfo();
 		auto it = m_mapTrades->find(tid);
 		if(it == m_mapTrades->end())
 		{
@@ -451,10 +451,10 @@ void TraderYD::notifyTrade(const YDTrade *pTrade, const YDInstrument *pInstrumen
 
 			//成交回报，主要更新持仓
 			std::string key = fmt::format("{}-{}", trdInfo->getCode(), trdInfo->getDirection());
-			WTSPositionItem* pos = (WTSPositionItem*)m_mapPosition->get(key);
+			VvTSPositionItem* pos = (VvTSPositionItem*)m_mapPosition->get(key);
 			if(pos == NULL)
 			{
-				pos = WTSPositionItem::create(contract->getCode(), commInfo->getCurrency(), commInfo->getExchg());
+				pos = VvTSPositionItem::create(contract->getCode(), commInfo->getCurrency(), commInfo->getExchg());
 				pos->setContractInfo(contract);
 				pos->setDirection(trdInfo->getDirection());
 				m_mapPosition->add(key, pos, false);
@@ -533,13 +533,13 @@ void TraderYD::notifyAccount(const YDAccount *accInfo)
 	if (accInfo == NULL)
 		return;
 
-	WTSAccountInfo* accountInfo = static_cast<WTSAccountInfo*>(m_ayFunds->at(0));
+	VvTSAccountInfo* accountInfo = static_cast<VvTSAccountInfo*>(m_ayFunds->at(0));
 	accountInfo->setPreBalance(accInfo->PreBalance);
 	accountInfo->setDeposit(accInfo->Deposit);
 	accountInfo->setWithdraw(accInfo->Withdraw);
 }
 
-bool TraderYD::init(VVTSVariant* config)
+bool TraderYD::init(VvTSVariant* config)
 {
 	m_strCfgFile = config->getCString("config");
 	m_strUser = config->getCString("user");
@@ -687,7 +687,7 @@ int TraderYD::logout()
 	return 0;
 }
 
-int TraderYD::orderInsert(WTSEntrust* entrust)
+int TraderYD::orderInsert(VvTSEntrust* entrust)
 {
 	if (m_pUserAPI == NULL || m_wrapperState != WS_ALLREADY)
 	{
@@ -745,7 +745,7 @@ int TraderYD::orderInsert(WTSEntrust* entrust)
 	return 0;
 }
 
-int TraderYD::orderAction(WTSEntrustAction* action)
+int TraderYD::orderAction(VvTSEntrustAction* action)
 {
 	if (m_wrapperState != WS_ALLREADY)
 		return -1;
@@ -801,7 +801,7 @@ int TraderYD::queryPositions()
 	{
 		StdUniqueLock lock(m_mtxQuery);
 		m_queQuery.push([this]() {
-			WTSArray* ayPos = WTSArray::create();
+			VvTSArray* ayPos = VvTSArray::create();
 
 			if (m_mapPosition && m_mapPosition->size() > 0)
 			{
@@ -831,7 +831,7 @@ int TraderYD::queryOrders()
 	{
 		StdUniqueLock lock(m_mtxQuery);
 		m_queQuery.push([this]() {
-			WTSArray* ayOrders = WTSArray::create();
+			VvTSArray* ayOrders = VvTSArray::create();
 			if(m_mapOrders)
 			{
 				for(auto it = m_mapOrders->begin(); it != m_mapOrders->end(); it++)
@@ -856,7 +856,7 @@ int TraderYD::queryTrades()
 	{
 		StdUniqueLock lock(m_mtxQuery);
 		m_queQuery.push([this]() {
-			WTSArray* ayTrades = WTSArray::create();
+			VvTSArray* ayTrades = VvTSArray::create();
 			if (m_mapTrades)
 			{
 				for (auto it = m_mapTrades->begin(); it != m_mapTrades->end(); it++)
@@ -871,15 +871,15 @@ int TraderYD::queryTrades()
 	return 0;
 }
 
-WTSOrderInfo* TraderYD::makeOrderInfo(const YDOrder* orderField, const YDInstrument* instInfo)
+VvTSOrderInfo* TraderYD::makeOrderInfo(const YDOrder* orderField, const YDInstrument* instInfo)
 {
 	const YDExchange* exchgInfo = instInfo->m_pExchange;
 
-	WTSContractInfo* contract = m_bdMgr->getContract(instInfo->InstrumentID, exchgInfo->ExchangeID);
+	VvTSContractInfo* contract = m_bdMgr->getContract(instInfo->InstrumentID, exchgInfo->ExchangeID);
 	if (contract == NULL)
 		return NULL;
 
-	WTSOrderInfo* pRet = WTSOrderInfo::create();
+	VvTSOrderInfo* pRet = VvTSOrderInfo::create();
 	pRet->setContractInfo(contract);
 	pRet->setPrice(orderField->Price);
 	pRet->setVolume(orderField->OrderVolume);
@@ -933,13 +933,13 @@ WTSOrderInfo* TraderYD::makeOrderInfo(const YDOrder* orderField, const YDInstrum
 	return pRet;
 }
 
-WTSEntrust* TraderYD::makeEntrust(const YDInputOrder *entrustField, const YDInstrument* instInfo)
+VvTSEntrust* TraderYD::makeEntrust(const YDInputOrder *entrustField, const YDInstrument* instInfo)
 {
-	WTSContractInfo* ct = m_bdMgr->getContract(instInfo->InstrumentID, instInfo->m_pExchange->ExchangeID);
+	VvTSContractInfo* ct = m_bdMgr->getContract(instInfo->InstrumentID, instInfo->m_pExchange->ExchangeID);
 	if (ct == NULL)
 		return NULL;
 
-	WTSEntrust* pRet = WTSEntrust::create(
+	VvTSEntrust* pRet = VvTSEntrust::create(
 		ct->getCode(),
 		entrustField->OrderVolume,
 		entrustField->Price,
@@ -966,22 +966,22 @@ WTSEntrust* TraderYD::makeEntrust(const YDInputOrder *entrustField, const YDInst
 	return pRet;
 }
 
-WTSError* TraderYD::makeError(int errorno, WTSErroCode ec)
+VvTSError* TraderYD::makeError(int errorno, VvTSErrorCode ec)
 {
-	WTSError* pRet = WTSError::create(ec, fmt::format("ErrorNo: {}", errorno).c_str());
+	VvTSError* pRet = VvTSError::create(ec, fmt::format("ErrorNo: {}", errorno).c_str());
 	return pRet;
 }
 
-WTSTradeInfo* TraderYD::makeTradeRecord(const YDTrade *tradeField, const YDInstrument* instInfo)
+VvTSTradeInfo* TraderYD::makeTradeRecord(const YDTrade *tradeField, const YDInstrument* instInfo)
 {
-	WTSContractInfo* contract = m_bdMgr->getContract(instInfo->InstrumentID, instInfo->m_pExchange->ExchangeID);
+	VvTSContractInfo* contract = m_bdMgr->getContract(instInfo->InstrumentID, instInfo->m_pExchange->ExchangeID);
 	if (contract == NULL)
 		return NULL;
 
-	WTSCommodityInfo* commInfo = contract->getCommInfo();
-	WTSSessionInfo* sInfo = commInfo->getSessionInfo();
+	VvTSCommodityInfo* commInfo = contract->getCommInfo();
+	VvTSSessionInfo* sInfo = commInfo->getSessionInfo();
 
-	WTSTradeInfo *pRet = WTSTradeInfo::create(contract->getCode(), commInfo->getExchg());
+	VvTSTradeInfo *pRet = VvTSTradeInfo::create(contract->getCode(), commInfo->getExchg());
 	pRet->setContractInfo(contract);
 	pRet->setVolume(tradeField->Volume);
 	pRet->setPrice(tradeField->Price);
@@ -993,12 +993,12 @@ WTSTradeInfo* TraderYD::makeTradeRecord(const YDTrade *tradeField, const YDInstr
 	pRet->setTradeDate(uDate);
 	pRet->setTradeTime(TimeUtils::makeTime(uDate, uTime * 1000));
 
-	WTSDirectionType dType = wrapDirectionType(tradeField->Direction, tradeField->OffsetFlag);
+	VvTSDirectionType dType = wrapDirectionType(tradeField->Direction, tradeField->OffsetFlag);
 
 	pRet->setDirection(dType);
 	pRet->setOffsetType(wrapOffsetType(tradeField->OffsetFlag));
 	fmtutil::format_to(pRet->getRefOrder(), "{}", tradeField->OrderSysID);
-	pRet->setTradeType(WTT_Common);
+	pRet->setTradeType(VvTT_Common);
 
 	double amount = commInfo->getVolScale()*tradeField->Volume*pRet->getPrice();
 	pRet->setAmount(amount);

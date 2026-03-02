@@ -13,13 +13,13 @@
 #include "../Includes/IDataManager.h"
 
 #include "../Includes/FasterDefs.h"
-#include "../Includes/WTSCollection.hpp"
+#include "../Includes/VvTSCollection.hpp"
 
 NS_VVTP_BEGIN
-class VVTSVariant;
-class WTSTickData;
-class WTSKlineSlice;
-class WTSTickSlice;
+class VvTSVariant;
+class VvTSTickData;
+class VvTSKlineSlice;
+class VvTSTickSlice;
 class IBaseDataMgr;
 class IBaseDataMgr;
 class WtEngine;
@@ -31,30 +31,30 @@ public:
 	~WtDtMgr();
 
 private:
-	bool	initStore(VVTSVariant* cfg);
+	bool	initStore(VvTSVariant* cfg);
 
 public:
-	bool	init(VVTSVariant* cfg, WtEngine* engine, bool bForceCache = false);
+	bool	init(VvTSVariant* cfg, WtEngine* engine, bool bForceCache = false);
 
 	void	regsiter_loader(IHisDataLoader* loader) { _loader = loader; }
 
-	void	handle_push_quote(const char* stdCode, WTSTickData* newTick);
+	void	handle_push_quote(const char* stdCode, VvTSTickData* newTick);
 
 	//////////////////////////////////////////////////////////////////////////
 	//IDataManager 接口
-	virtual WTSTickSlice* get_tick_slice(const char* stdCode, uint32_t count, uint64_t etime = 0) override;
-	virtual WTSOrdQueSlice* get_order_queue_slice(const char* stdCode, uint32_t count, uint64_t etime = 0) override;
-	virtual WTSOrdDtlSlice* get_order_detail_slice(const char* stdCode, uint32_t count, uint64_t etime = 0) override;
-	virtual WTSTransSlice* get_transaction_slice(const char* stdCode, uint32_t count, uint64_t etime = 0) override;
-	virtual WTSKlineSlice* get_kline_slice(const char* stdCode, WTSKlinePeriod period, uint32_t times, uint32_t count, uint64_t etime = 0) override;
-	virtual WTSTickData* grab_last_tick(const char* stdCode) override;
+	virtual VvTSTickSlice* get_tick_slice(const char* stdCode, uint32_t count, uint64_t etime = 0) override;
+	virtual VvTSOrdQueSlice* get_order_queue_slice(const char* stdCode, uint32_t count, uint64_t etime = 0) override;
+	virtual VvTSOrdDtlSlice* get_order_detail_slice(const char* stdCode, uint32_t count, uint64_t etime = 0) override;
+	virtual VvTSTransSlice* get_transaction_slice(const char* stdCode, uint32_t count, uint64_t etime = 0) override;
+	virtual VvTSKlineSlice* get_kline_slice(const char* stdCode, VvTSKlinePeriod period, uint32_t times, uint32_t count, uint64_t etime = 0) override;
+	virtual VvTSTickData* grab_last_tick(const char* stdCode) override;
 	virtual double get_adjusting_factor(const char* stdCode, uint32_t uDate) override;
 
 	virtual uint32_t get_adjusting_flag() override;
 
 	//////////////////////////////////////////////////////////////////////////
 	//IDataReaderSink
-	virtual void	on_bar(const char* code, WTSKlinePeriod period, WTSBarStruct* newBar) override;
+	virtual void	on_bar(const char* code, VvTSKlinePeriod period, VvTSBarStruct* newBar) override;
 	virtual void	on_all_bar_updated(uint32_t updateTime) override;
 
 	virtual IBaseDataMgr*	get_basedata_mgr() override;
@@ -63,7 +63,7 @@ public:
 	virtual uint32_t	get_min_time()override;
 	virtual uint32_t	get_secs() override;
 
-	virtual void		reader_log(WTSLogLevel ll, const char* message) override;
+	virtual void		reader_log(VvTSLogLevel ll, const char* message) override;
 
 	inline IDataReader*	reader() { return _reader; }
 	inline IHisDataLoader*	loader() { return _loader; }
@@ -76,8 +76,8 @@ private:
 	bool			_align_by_section;	//强制小节对齐
 	bool			_force_cache;		//强制缓存K线
 
-	wt_hashset<std::string> _subed_basic_bars;
-	typedef WTSHashMap<std::string> DataCacheMap;
+	vvt_hashset<std::string> _subed_basic_bars;
+	typedef VvTSHashMap<std::string> DataCacheMap;
 	DataCacheMap*	_bars_cache;	//K线缓存
 	DataCacheMap*	_rt_tick_map;	//实时tick缓存
 	//By Wesley @ 2022.02.11
@@ -90,9 +90,9 @@ private:
 		char		_code[MAX_INSTRUMENT_LENGTH];
 		char		_period[2] = { 0 };
 		uint32_t	_times;
-		WTSBarStruct* _newBar;
+		VvTSBarStruct* _newBar;
 
-		_NotifyItem(const char* code, char period, uint32_t times, WTSBarStruct* newBar)
+		_NotifyItem(const char* code, char period, uint32_t times, VvTSBarStruct* newBar)
 			: _times(times), _newBar(newBar)
 		{
 			vvt_strcpy(_code, code);

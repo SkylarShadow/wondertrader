@@ -1,5 +1,5 @@
 ﻿/*!
- * \file WTSTypes.h
+ * \file VvTSTypes.h
  * \project	WonderTrader
  *
  * \author Wesley
@@ -8,7 +8,7 @@
  * \brief WonderTrader基本数据类型定义文件
  */
 #pragma once
-#include "VVTSMarcos.h"
+#include "VvTSMarcos.h"
 #include <stdint.h>
 
 NS_VVTP_BEGIN
@@ -94,7 +94,7 @@ typedef enum tagKlineFieldType
 	KFT_TIME,
 	KFT_VOLUME,
 	KFT_SVOLUME
-} WTSKlineFieldType;
+} VvTSKlineFieldType;
 
 /*
  *	K线周期
@@ -107,7 +107,7 @@ typedef enum tagKlinePeriod
 	KP_DAY,
 	KP_Week,
 	KP_Month
-} WTSKlinePeriod;
+} VvTSKlinePeriod;
 
 static const char* PERIOD_NAME[] = 
 {
@@ -131,7 +131,7 @@ typedef enum tagLogLevel
 	LL_ERROR,
 	LL_FATAL,
 	LL_NONE
-} WTSLogLevel;
+} VvTSLogLevel;
 
 /*
  *	价格类型
@@ -164,17 +164,17 @@ typedef enum tagPriceType
 	WPT_DC_FOK,						//全部成交或立即取消
 	WPT_DC_IOC,						//立即成交并取消剩余
 	WPT_DC_OPTLIMITIOC				//市价委托立即成交并取消剩余
-} WTSPriceType;
+} VvTSPriceType;
 
 /*
  *	时间条件
  */
 typedef enum tagTimeCondition
 {
-	WTC_IOC		= '1',	//立即完成,否则撤销
-	WTC_GFS,			//本节有效
-	WTC_GFD,			//当日有效
-} WTSTimeCondition;
+	VvTC_IOC		= '1',	//立即完成,否则撤销
+	VvTC_GFS,			//本节有效
+	VvTC_GFD,			//当日有效
+} VvTSTimeCondition;
 
 /*
  *	订单标志
@@ -184,7 +184,7 @@ typedef enum tagOrderFlag
 	WOF_NOR = '0',		//普通订单
 	WOF_FAK,			//fak
 	WOF_FOK,			//fok
-} WTSOrderFlag;
+} VvTSOrderFlag;
 
 /*
  *	开平方向
@@ -196,7 +196,7 @@ typedef enum tagOffsetType
 	WOT_FORCECLOSE,				//强平
 	WOT_CLOSETODAY,				//平今
 	WOT_CLOSEYESTERDAY,			//平昨
-} WTSOffsetType;
+} VvTSOffsetType;
 
 /*
  *	多空方向
@@ -206,7 +206,7 @@ typedef enum tagDirectionType
 	WDT_LONG			= '0',	//做多
 	WDT_SHORT,					//做空
 	WDT_NET						//净
-} WTSDirectionType;
+} VvTSDirectionType;
 
 /*
  *	业务类型
@@ -221,7 +221,7 @@ typedef enum tagBusinessType
 	BT_FREEZE	= '5',	//期权对锁
 	BT_CREDIT	= '6',	//融资融券
 	BT_UNKNOWN			//未知业务类型
-} WTSBusinessType;
+} VvTSBusinessType;
 
 /*
  *	订单操作类型
@@ -230,7 +230,7 @@ typedef enum tagActionFlag
 {
 	WAF_CANCEL			= '0',	//撤销
 	WAF_MODIFY			= '3',	//修改
-} WTSActionFlag;
+} VvTSActionFlag;
 
 /*
  *	订单状态
@@ -246,7 +246,7 @@ typedef enum tagOrderState
 	WOS_Submitting				= 'a',	//正在提交
 	WOS_Cancelling,						//在撤
 	WOS_Nottouched,						//未触发
-} WTSOrderState;
+} VvTSOrderState;
 
 /*
  *	订单类型
@@ -257,19 +257,19 @@ typedef enum tagOrderType
 	WORT_Exception,					//异常订单
 	WORT_System,					//系统订单
 	WORT_Hedge						//对冲订单
-} WTSOrderType;
+} VvTSOrderType;
 
 /*
  *	成交类型
  */
 typedef enum tagTradeType
 {
-	WTT_Common				= '0',	//普通
-	WTT_OptionExecution		= '1',	//期权执行
-	WTT_OTC					= '2',	//OTC成交
-	WTT_EFPDerived			= '3',	//期转现衍生成交
-	WTT_CombinationDerived	= '4'	//组合衍生成交
-} WTSTradeType;
+	VvTT_Common				= '0',	//普通
+	VvTT_OptionExecution		= '1',	//期权执行
+	VvTT_OTC					= '2',	//OTC成交
+	VvTT_EFPDerived			= '3',	//期转现衍生成交
+	VvTT_CombinationDerived	= '4'	//组合衍生成交
+} VvTSTradeType;
 
 
 /*
@@ -283,7 +283,7 @@ typedef enum tagErrorCode
 	WEC_EXECINSERT,					//行权指令错误
 	WEC_EXECCANCEL,					//行权撤销错误
 	WEC_UNKNOWN			=	9999	//未知错误
-} WTSErroCode;
+} VvTSErrorCode;
 
 /*
  *	比较字段
@@ -295,7 +295,7 @@ typedef enum tagCompareField
 	WCF_ASKPRICE,					//卖一价
 	WCF_PRICEDIFF,					//价差,止盈止损专用
 	WCF_NONE				=	9	//不比较
-} WTSCompareField;
+} VvTSCompareField;
 
 /*
  *	比较类型
@@ -307,29 +307,29 @@ typedef enum tagCompareType
 	WCT_Smaller,					//小于
 	WCT_LargerOrEqual,				//大于等于
 	WCT_SmallerOrEqual				//小于等于
-}WTSCompareType;
+}VvTSCompareType;
 
 /*
  *	行情解析器事件
  */
 typedef enum tagParserEvent
 {
-	WPE_Connect			= 0,		//连接事件
-	WPE_Close,						//关闭事件
-	WPE_Login,						//登录
-	WPE_Logout						//注销
-}WTSParserEvent;
+	VvPE_Connect			= 0,		//连接事件
+	VvPE_Close,						//关闭事件
+	VvPE_Login,						//登录
+	VvPE_Logout						//注销
+}VvTSParserEvent;
 
 /*
  *	交易模块事件
  */
 typedef enum tagTraderEvent
 {
-	WTE_Connect			= 0,		//连接事件
-	WTE_Close,						//关闭事件
-	WTE_Login,						//登录
-	WTE_Logout						//注销
-}WTSTraderEvent;
+	VvTE_Connect			= 0,		//连接事件
+	VvTE_Close,						//关闭事件
+	VvTE_Login,						//登录
+	VvTE_Logout						//注销
+}VvTSTraderEvent;
 
 /*
  *	交易状态
@@ -343,12 +343,12 @@ typedef enum tagTradeStatus
 	TS_AuctionBalance	= '4',	//集合竞价平衡
 	TS_AuctionMatch		= '5',	//集合竞价撮合
 	TS_Closed			= '6'	//收盘
-}WTSTradeStatus;
+}VvTSTradeStatus;
 
 /*
  *	买卖方向类型
  */
-typedef uint32_t WTSBSDirectType;
+typedef uint32_t VvTSBSDirectType;
 #define BDT_Buy		'B'	//买入	
 #define BDT_Sell	'S'	//卖出
 #define BDT_Unknown ' '	//未知
@@ -358,7 +358,7 @@ typedef uint32_t WTSBSDirectType;
 /*
  *	成交类型
  */
-typedef uint32_t WTSTransType;
+typedef uint32_t VvTSTransType;
 #define TT_Unknown	'U'	//未知类型
 #define TT_Match	'M'	//撮合成交
 #define TT_Cancel	'C'	//撤单
@@ -366,7 +366,7 @@ typedef uint32_t WTSTransType;
 /*
  *	委托明细类型
  */
-typedef uint32_t WTSOrdDetailType;
+typedef uint32_t VvTSOrdDetailType;
 #define ODT_Unknown		0	//未知类型
 #define ODT_BestPrice	'U'	//本方最优
 #define ODT_AnyPrice	'1'	//市价

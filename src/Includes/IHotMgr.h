@@ -8,7 +8,7 @@
  * \brief 主力合约管理器接口定义
  */
 #pragma once
-#include "VVTSMarcos.h"
+#include "VvTSMarcos.h"
 #include <vector>
 #include <string>
 #include <stdint.h>

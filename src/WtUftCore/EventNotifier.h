@@ -11,8 +11,8 @@
 
 #include <boost/asio/io_service.hpp>
 
-#include "../Includes/VVTSMarcos.h"
-#include "../Includes/WTSObject.hpp"
+#include "../Includes/VvTSMarcos.h"
+#include "../Includes/VvTSObject.hpp"
 #include "../Share/StdUtils.hpp"
 
 typedef unsigned long(*FuncCreateMQServer)(const char*);
@@ -24,9 +24,9 @@ typedef void(*FuncRegCallbacks)(FuncLogCallback);
 
 
 NS_VVTP_BEGIN
-class WTSTradeInfo;
-class WTSOrderInfo;
-class VVTSVariant;
+class VvTSTradeInfo;
+class VvTSOrderInfo;
+class VvTSVariant;
 
 class EventNotifier
 {
@@ -35,14 +35,14 @@ public:
 	~EventNotifier();
 
 private:
-	void	tradeToJson(const char* trader, uint32_t localid, const char* stdCode, WTSTradeInfo* trdInfo, std::string& output);
-	void	orderToJson(const char* trader, uint32_t localid, const char* stdCode, WTSOrderInfo* ordInfo, std::string& output);
+	void	tradeToJson(const char* trader, uint32_t localid, const char* stdCode, VvTSTradeInfo* trdInfo, std::string& output);
+	void	orderToJson(const char* trader, uint32_t localid, const char* stdCode, VvTSOrderInfo* ordInfo, std::string& output);
 
 public:
-	bool	init(VVTSVariant* cfg);
+	bool	init(VvTSVariant* cfg);
 
-	void	notify(const char* trader, uint32_t localid, const char* stdCode, WTSTradeInfo* trdInfo);
-	void	notify(const char* trader, uint32_t localid, const char* stdCode, WTSOrderInfo* ordInfo);
+	void	notify(const char* trader, uint32_t localid, const char* stdCode, VvTSTradeInfo* trdInfo);
+	void	notify(const char* trader, uint32_t localid, const char* stdCode, VvTSOrderInfo* ordInfo);
 	void	notify(const char* trader, const char* message);
 
 	void	notify_log(const char* tag, const char* message);

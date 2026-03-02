@@ -1,5 +1,5 @@
 ﻿/*!
- * \file WTSStruct.h
+ * \file VvTSStruct.h
  * \project	WonderTrader
  *
  * \author Wesley
@@ -11,7 +11,7 @@
 #include <memory>
 #include <stdint.h>
 #include <string.h>
-#include "WTSTypes.h"
+#include "VvTSTypes.h"
 
 #ifdef _MSC_VER
 #pragma warning(disable:4200)
@@ -21,12 +21,12 @@ NS_VVTP_BEGIN
 
 #pragma pack(push, 1)
 
-struct WTSBarStructOld
+struct VvTSBarStructOld
 {
 public:
-	WTSBarStructOld()
+	VvTSBarStructOld()
 	{
-		memset(this, 0, sizeof(WTSBarStructOld));
+		memset(this, 0, sizeof(VvTSBarStructOld));
 	}
 
 	uint32_t	date;
@@ -43,7 +43,7 @@ public:
 	int32_t		add;	//增仓
 };
 
-struct WTSTickStructOld
+struct VvTSTickStructOld
 {
 	char		exchg[10];
 	char		code[MAX_INSTRUMENT_LENGTH];
@@ -76,9 +76,9 @@ struct WTSTickStructOld
 	double		ask_prices[10];		//委卖价格
 	uint32_t	bid_qty[10];		//委买量
 	uint32_t	ask_qty[10];		//委卖量
-	WTSTickStructOld()
+	VvTSTickStructOld()
 	{
-		memset(this, 0, sizeof(WTSTickStructOld));
+		memset(this, 0, sizeof(VvTSTickStructOld));
 	}
 };
 
@@ -89,12 +89,12 @@ struct WTSTickStructOld
 //新的结构体，全部改成8字节对齐的方式
 #pragma pack(push, 8)
 
-struct WTSBarStruct
+struct VvTSBarStruct
 {
 public:
-	WTSBarStruct()
+	VvTSBarStruct()
 	{
-		memset(this, 0, sizeof(WTSBarStruct));
+		memset(this, 0, sizeof(VvTSBarStruct));
 	}
 
 	uint32_t	date;		//日期
@@ -123,7 +123,7 @@ public:
 
 	//By Wesley @ 2021.12.30
 	//直接复制老结构体
-	WTSBarStruct& operator = (const WTSBarStructOld& bar)
+	VvTSBarStruct& operator = (const VvTSBarStructOld& bar)
 	{
 		date = bar.date;
 		time = bar.time;
@@ -143,7 +143,7 @@ public:
 	}
 };
 
-struct WTSTickStruct
+struct VvTSTickStruct
 {
 	char		exchg[MAX_EXCHANGE_LENGTH];
 	char		code[MAX_INSTRUMENT_LENGTH];
@@ -177,12 +177,12 @@ struct WTSTickStruct
 	double		ask_prices[10];		//委卖价格
 	double		bid_qty[10];		//委买量
 	double		ask_qty[10];		//委卖量
-	WTSTickStruct()
+	VvTSTickStruct()
 	{
-		memset(this, 0, sizeof(WTSTickStruct));
+		memset(this, 0, sizeof(VvTSTickStruct));
 	}
 
-	WTSTickStruct& operator = (const WTSTickStructOld& tick)
+	VvTSTickStruct& operator = (const VvTSTickStructOld& tick)
 	{
 		strncpy(exchg, tick.exchg, MAX_EXCHANGE_LENGTH);
 		strncpy(code, tick.code, MAX_INSTRUMENT_LENGTH);
@@ -223,7 +223,7 @@ struct WTSTickStruct
 	}
 };
 
-struct WTSOrdQueStruct
+struct VvTSOrdQueStruct
 {
 	char		exchg[MAX_EXCHANGE_LENGTH];
 	char		code[MAX_INSTRUMENT_LENGTH];
@@ -231,20 +231,20 @@ struct WTSOrdQueStruct
 	uint32_t	trading_date;		//交易日,如20140327
 	uint32_t	action_date;		//自然日期,如20140327
 	uint32_t	action_time;		//发生时间,精确到毫秒,如105932000
-	WTSBSDirectType	side;			//委托方向
+	VvTSBSDirectType	side;			//委托方向
 
 	double		price;			//委托价格
 	uint32_t	order_items;	//订单个数
 	uint32_t	qsize;			//队列长度
 	uint32_t	volumes[50];	//委托明细
 
-	WTSOrdQueStruct()
+	VvTSOrdQueStruct()
 	{
-		memset(this, 0, sizeof(WTSOrdQueStruct));
+		memset(this, 0, sizeof(VvTSOrdQueStruct));
 	}
 };
 
-struct WTSOrdDtlStruct
+struct VvTSOrdDtlStruct
 {
 	char		exchg[MAX_EXCHANGE_LENGTH];
 	char		code[MAX_INSTRUMENT_LENGTH];
@@ -256,16 +256,16 @@ struct WTSOrdDtlStruct
 	uint64_t			index;			//委托编号(从1开始,递增1)
 	double				price;			//委托价格
 	uint32_t			volume;			//委托数量
-	WTSBSDirectType		side;		//委托方向
-	WTSOrdDetailType	otype;		//委托类型
+	VvTSBSDirectType		side;		//委托方向
+	VvTSOrdDetailType	otype;		//委托类型
 
-	WTSOrdDtlStruct()
+	VvTSOrdDtlStruct()
 	{
-		memset(this, 0, sizeof(WTSOrdDtlStruct));
+		memset(this, 0, sizeof(VvTSOrdDtlStruct));
 	}
 };
 
-struct WTSTransStruct
+struct VvTSTransStruct
 {
 	char		exchg[MAX_EXCHANGE_LENGTH];
 	char		code[MAX_INSTRUMENT_LENGTH];
@@ -275,17 +275,17 @@ struct WTSTransStruct
 	uint32_t	action_time;		//发生时间,精确到毫秒,如105932000
 	int64_t		index;			//成交编号(从1开始,递增1)
 
-	WTSTransType	ttype;			//成交类型: 'C', 0
-	WTSBSDirectType	side;			//BS标志
+	VvTSTransType	ttype;			//成交类型: 'C', 0
+	VvTSBSDirectType	side;			//BS标志
 
 	double			price;			//成交价格
 	uint32_t		volume;			//成交数量
 	int64_t			askorder;		//叫卖序号
 	int64_t			bidorder;		//叫买序号
 
-	WTSTransStruct()
+	VvTSTransStruct()
 	{
-		memset(this, 0, sizeof(WTSTransStruct));
+		memset(this, 0, sizeof(VvTSTransStruct));
 	}
 };
 

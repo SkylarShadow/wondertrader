@@ -48,7 +48,7 @@ void ExpCtaMocker::on_session_end(uint32_t uCurDate)
 	CtaMocker::on_session_end(uCurDate);
 }
 
-void ExpCtaMocker::on_tick_updated(const char* stdCode, WTSTickData* newTick)
+void ExpCtaMocker::on_tick_updated(const char* stdCode, VvTSTickData* newTick)
 {
 	auto it = _tick_subs.find(stdCode);
 	if (it == _tick_subs.end())
@@ -58,7 +58,7 @@ void ExpCtaMocker::on_tick_updated(const char* stdCode, WTSTickData* newTick)
 	getRunner().ctx_on_tick(_context_id, stdCode, newTick, ET_CTA);
 }
 
-void ExpCtaMocker::on_bar_close(const char* code, const char* period, WTSBarStruct* newBar)
+void ExpCtaMocker::on_bar_close(const char* code, const char* period, VvTSBarStruct* newBar)
 {
 	CtaMocker::on_bar_close(code, period, newBar);
 

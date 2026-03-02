@@ -13,7 +13,7 @@
 
 #include "../Share/CodeHelper.hpp"
 #include "../Includes/IDataManager.h"
-#include "../Includes/VVTSVariant.hpp"
+#include "../Includes/VvTSVariant.hpp"
 #include "../Includes/IHotMgr.h"
 #include "../Share/decimal.h"
 
@@ -48,7 +48,7 @@ void WtLocalExecuter::setTrader(TraderAdapter* adapter)
 		_channel_ready = _trader->isReady();
 }
 
-bool WtLocalExecuter::init(VVTSVariant* params)
+bool WtLocalExecuter::init(VvTSVariant* params)
 {
 	if (params == NULL)
 		return false;
@@ -72,16 +72,16 @@ bool WtLocalExecuter::init(VVTSVariant* params)
 	 *	includes: 包含列表，格式如CFFEX.IF
 	 *	excludes: 排除列表，格式如CFFEX.IF
 	 */
-	VVTSVariant* cfgClear = params->get("clear");
+	VvTSVariant* cfgClear = params->get("clear");
 	if(cfgClear)
 	{
 		_auto_clear = cfgClear->getBoolean("active");
-		VVTSVariant* cfgItem = cfgClear->get("includes");
+		VvTSVariant* cfgItem = cfgClear->get("includes");
 		if(cfgItem)
 		{
-			if (cfgItem->type() == VVTSVariant::VT_String)
+			if (cfgItem->type() == VvTSVariant::VT_String)
 				_clear_includes.insert(cfgItem->asCString());
-			else if (cfgItem->type() == VVTSVariant::VT_Array)
+			else if (cfgItem->type() == VvTSVariant::VT_Array)
 			{
 				for(uint32_t i = 0; i < cfgItem->size(); i++)
 					_clear_includes.insert(cfgItem->get(i)->asCString());
@@ -91,9 +91,9 @@ bool WtLocalExecuter::init(VVTSVariant* params)
 		cfgItem = cfgClear->get("excludes");
 		if (cfgItem)
 		{
-			if (cfgItem->type() == VVTSVariant::VT_String)
+			if (cfgItem->type() == VvTSVariant::VT_String)
 				_clear_excludes.insert(cfgItem->asCString());
-			else if (cfgItem->type() == VVTSVariant::VT_Array)
+			else if (cfgItem->type() == VvTSVariant::VT_Array)
 			{
 				for (uint32_t i = 0; i < cfgItem->size(); i++)
 					_clear_excludes.insert(cfgItem->get(i)->asCString());
@@ -101,7 +101,7 @@ bool WtLocalExecuter::init(VVTSVariant* params)
 		}
 	}
 
-	VVTSVariant* cfgGroups = params->get("groups");
+	VvTSVariant* cfgGroups = params->get("groups");
 	if (cfgGroups)
 	{
 		auto names = cfgGroups->memberNames();
@@ -114,7 +114,7 @@ bool WtLocalExecuter::init(VVTSVariant* params)
 				vvt_strcpy(gpInfo->_name, gpname.c_str(), gpname.size());
 			}
 
-			VVTSVariant* cfgGrp = cfgGroups->get(gpname.c_str());
+			VvTSVariant* cfgGrp = cfgGroups->get(gpname.c_str());
 			auto codes = cfgGrp->memberNames();
 			for(const std::string& code : codes)
 			{
@@ -135,7 +135,7 @@ ExecuteUnitPtr WtLocalExecuter::getUnit(const char* stdCode, bool bAutoCreate /*
 	CodeHelper::CodeInfo codeInfo = CodeHelper::extractStdCode(stdCode, NULL);
 	std::string commID = codeInfo.stdCommID();
 
-	VVTSVariant* policy = _config->get("policy");
+	VvTSVariant* policy = _config->get("policy");
 	std::string des = commID;
 	if (!policy->has(commID.c_str()))
 		des = "default";
@@ -150,7 +150,7 @@ ExecuteUnitPtr WtLocalExecuter::getUnit(const char* stdCode, bool bAutoCreate /*
 
 	if (bAutoCreate)
 	{
-		VVTSVariant* cfg = policy->get(des.c_str());
+		VvTSVariant* cfg = policy->get(des.c_str());
 
 		const char* name = cfg->getCString("name");
 		ExecuteUnitPtr unit = _factory->createExeUnit(name);
@@ -175,7 +175,7 @@ ExecuteUnitPtr WtLocalExecuter::getUnit(const char* stdCode, bool bAutoCreate /*
 //////////////////////////////////////////////////////////////////////////
 //ExecuteContext
 #pragma region Context回调接口
-WTSTickSlice* WtLocalExecuter::getTicks(const char* stdCode, uint32_t count, uint64_t etime /* = 0 */)
+VvTSTickSlice* WtLocalExecuter::getTicks(const char* stdCode, uint32_t count, uint64_t etime /* = 0 */)
 {
 	if (_data_mgr == NULL)
 		return NULL;
@@ -183,7 +183,7 @@ WTSTickSlice* WtLocalExecuter::getTicks(const char* stdCode, uint32_t count, uin
 	return _data_mgr->get_tick_slice(stdCode, count);
 }
 
-WTSTickData* WtLocalExecuter::grabLastTick(const char* stdCode)
+VvTSTickData* WtLocalExecuter::grabLastTick(const char* stdCode)
 {
 	if (_data_mgr == NULL)
 		return NULL;
@@ -255,12 +255,12 @@ void WtLocalExecuter::writeLog(const char* message)
 	WTSLogger::log_dyn_raw("executer", _name.c_str(), LL_INFO, szBuf);
 }
 
-WTSCommodityInfo* WtLocalExecuter::getCommodityInfo(const char* stdCode)
+VvTSCommodityInfo* WtLocalExecuter::getCommodityInfo(const char* stdCode)
 {
 	return _stub->get_comm_info(stdCode);
 }
 
-WTSSessionInfo* WtLocalExecuter::getSessionInfo(const char* stdCode)
+VvTSSessionInfo* WtLocalExecuter::getSessionInfo(const char* stdCode)
 {
 	return _stub->get_sess_info(stdCode);
 }
@@ -441,7 +441,7 @@ void WtLocalExecuter::set_position(const vvt_hashmap<std::string, double>& targe
 	}
 }
 
-void WtLocalExecuter::on_tick(const char* stdCode, WTSTickData* newTick)
+void WtLocalExecuter::on_tick(const char* stdCode, VvTSTickData* newTick)
 {
 	ExecuteUnitPtr unit = getUnit(stdCode, false);
 	if (unit == NULL)

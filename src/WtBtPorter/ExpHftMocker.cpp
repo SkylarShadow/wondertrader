@@ -11,7 +11,7 @@ ExpHftMocker::ExpHftMocker(HisDataReplayer* replayer, const char* name)
 
 }
 
-void ExpHftMocker::on_bar(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar)
+void ExpHftMocker::on_bar(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar)
 {
 	if (newBar == NULL)
 		return;
@@ -73,7 +73,7 @@ void ExpHftMocker::on_order(uint32_t localid, const char* stdCode, bool isBuy, d
 	getRunner().hft_on_order(_context_id, localid, stdCode, isBuy, totalQty, leftQty, price, isCanceled, userTag);
 }
 
-void ExpHftMocker::on_tick_updated(const char* stdCode, WTSTickData* newTick)
+void ExpHftMocker::on_tick_updated(const char* stdCode, VvTSTickData* newTick)
 {
 	auto it = _tick_subs.find(stdCode);
 	if (it == _tick_subs.end())
@@ -83,17 +83,17 @@ void ExpHftMocker::on_tick_updated(const char* stdCode, WTSTickData* newTick)
 	getRunner().ctx_on_tick(_context_id, stdCode, newTick, ET_HFT);
 }
 
-void ExpHftMocker::on_ordque_updated(const char* stdCode, WTSOrdQueData* newOrdQue)
+void ExpHftMocker::on_ordque_updated(const char* stdCode, VvTSOrdQueData* newOrdQue)
 {
 	getRunner().hft_on_order_queue(_context_id, stdCode, newOrdQue);
 }
 
-void ExpHftMocker::on_orddtl_updated(const char* stdCode, WTSOrdDtlData* newOrdDtl)
+void ExpHftMocker::on_orddtl_updated(const char* stdCode, VvTSOrdDtlData* newOrdDtl)
 {
 	getRunner().hft_on_order_detail(_context_id, stdCode, newOrdDtl);
 }
 
-void ExpHftMocker::on_trans_updated(const char* stdCode, WTSTransData* newTrans)
+void ExpHftMocker::on_trans_updated(const char* stdCode, VvTSTransData* newTrans)
 {
 	getRunner().hft_on_transaction(_context_id, stdCode, newTrans);
 }

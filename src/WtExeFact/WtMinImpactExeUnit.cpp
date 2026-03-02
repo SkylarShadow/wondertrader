@@ -8,9 +8,9 @@
  */
 #include "WtMinImpactExeUnit.h"
 
-#include "../Includes/VVTSVariant.hpp"
-#include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSSessionInfo.hpp"
+#include "../Includes/VvTSVariant.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/VvTSSessionInfo.hpp"
 #include "../Share/decimal.h"
 #include "../Share/StrUtil.hpp"
 #include "../Share//fmtlib.h"
@@ -75,7 +75,7 @@ const char* WtMinImpactExeUnit::getName()
 	return "WtMinImpactExeUnit";
 }
 
-void WtMinImpactExeUnit::init(ExecuteContext* ctx, const char* stdCode, VVTSVariant* cfg)
+void WtMinImpactExeUnit::init(ExecuteContext* ctx, const char* stdCode, VvTSVariant* cfg)
 {
 	ExecuteUnit::init(ctx, stdCode, cfg);
 
@@ -194,7 +194,7 @@ void WtMinImpactExeUnit::on_channel_lost()
  *	tick数据回调
  *	newTick	最新的tick数据
  */
-void WtMinImpactExeUnit::on_tick(WTSTickData* newTick)
+void WtMinImpactExeUnit::on_tick(VvTSTickData* newTick)
 {
 	if (newTick == NULL || _code.compare(newTick->code()) != 0)
 		return;

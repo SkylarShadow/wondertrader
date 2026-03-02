@@ -15,9 +15,9 @@
 #include <oes_api/oes_async_api.h>
 
 #include "../Includes/ITraderApi.h"
-#include "../Includes/WTSCollection.hpp"
+#include "../Includes/VvTSCollection.hpp"
 
-#include "../Share/WtKVCache.hpp"
+#include "../Share/VvtKVCache.hpp"
 #include "../Share/StdUtils.hpp"
 #include "../Share/DLLHelper.hpp"
 
@@ -54,7 +54,7 @@ public:
 public:
 	//////////////////////////////////////////////////////////////////////////
 	//ITraderApi 接口
-	virtual bool init(VVTSVariant *params) override;
+	virtual bool init(VvTSVariant *params) override;
 
 	virtual void release() override;
 
@@ -72,9 +72,9 @@ public:
 
 	virtual int logout() override;
 
-	virtual int orderInsert(WTSEntrust* eutrust) override;
+	virtual int orderInsert(VvTSEntrust* eutrust) override;
 
-	virtual int orderAction(WTSEntrustAction* action) override;
+	virtual int orderAction(VvTSEntrustAction* action) override;
 
 	virtual int queryAccount() override;
 
@@ -88,9 +88,9 @@ private:
 	void		reconnect();
 	void		doLogin();
 
-	inline WTSOrderInfo*	makeOrderInfo(OesOrdCnfmT* orderField);
-	inline WTSEntrust*		makeEntrust(OesOrdRejectT *entrustField);
-	inline WTSTradeInfo*	makeTradeInfo(OesTrdCnfmT *tradeField);
+	inline VvTSOrderInfo*	makeOrderInfo(OesOrdCnfmT* orderField);
+	inline VvTSEntrust*		makeEntrust(OesOrdRejectT *entrustField);
+	inline VvTSTradeInfo*	makeTradeInfo(OesTrdCnfmT *tradeField);
 
 	inline bool	extractEntrustID(const char* entrustid, uint32_t &orderRef);
 	inline void	genEntrustID(char* buffer, uint32_t orderRef);
@@ -103,10 +103,10 @@ private:
 
 	IBaseDataMgr*			_bd_mgr;
 
-	WTSArray*		_trades;
-	WTSArray*		_orders;
-	WTSArray*		_funds;
-	WTSArray*		_positions;
+	VvTSArray*		_trades;
+	VvTSArray*		_orders;
+	VvTSArray*		_funds;
+	VvTSArray*		_positions;
 
 	std::string		_config;
 	std::string		_user;
@@ -120,8 +120,8 @@ private:
 	StdThreadPtr				_thrd_worker;
 
 	//委托单标记缓存器
-	WtKVCache		m_eidCache;
+	VvtKVCache		m_eidCache;
 	//订单标记缓存器
-	WtKVCache		m_oidCache;
+	VvtKVCache		m_oidCache;
 };
 

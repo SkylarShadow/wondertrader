@@ -1,5 +1,5 @@
 ﻿/*!
- * \file WTSContractInfo.hpp
+ * \file VvTSContractInfo.hpp
  * \project	WonderTrader
  *
  * \author Wesley
@@ -8,21 +8,21 @@
  * \brief Wt品种信息、合约信息定义文件
  */
 #pragma once
-#include "WTSObject.hpp"
-#include "WTSTypes.h"
+#include "VvTSObject.hpp"
+#include "VvTSTypes.h"
 #include "FasterDefs.h"
 #include <string>
 #include <sstream>
 
 NS_VVTP_BEGIN
-class WTSSessionInfo;
+class VvTSSessionInfo;
 
-class WTSCommodityInfo: public WTSObject
+class VvTSCommodityInfo: public VvTSObject
 {
 public:
-	static WTSCommodityInfo* create(const char* pid, const char* name, const char* exchg, const char* session, const char* trdtpl, const char* currency = "CNY")
+	static VvTSCommodityInfo* create(const char* pid, const char* name, const char* exchg, const char* session, const char* trdtpl, const char* currency = "CNY")
 	{
-		WTSCommodityInfo* ret = new WTSCommodityInfo;
+		VvTSCommodityInfo* ret = new VvTSCommodityInfo;
 		ret->m_strName = name;
 		ret->m_strExchg = exchg;
 		ret->m_strProduct = pid;
@@ -88,8 +88,8 @@ public:
 	inline double	getLotsTick() const { return m_dLotTick; }
 	inline double	getMinLots() const { return m_dMinLots; }
 
-	inline void		setSessionInfo(WTSSessionInfo* sInfo) { m_pSession = sInfo; }
-	inline WTSSessionInfo* getSessionInfo() const { return m_pSession; }
+	inline void		setSessionInfo(VvTSSessionInfo* sInfo) { m_pSession = sInfo; }
+	inline VvTSSessionInfo* getSessionInfo() const { return m_pSession; }
 
 	inline void		setFeeRates(double open, double close, double closeToday, bool byVolume)
 	{
@@ -134,8 +134,8 @@ public:
 	}
 
 protected:
-	WTSCommodityInfo():m_nFeeAlg(-1){}
-	virtual ~WTSCommodityInfo() {}
+	VvTSCommodityInfo():m_nFeeAlg(-1){}
+	virtual ~VvTSCommodityInfo() {}
 
 private:
 	std::string	m_strName;		//品种名称
@@ -159,7 +159,7 @@ private:
 
 	CodeSet				m_setCodes;
 
-	WTSSessionInfo*		m_pSession;
+	VvTSSessionInfo*		m_pSession;
 
 	double	m_dOpenFee;		//开仓手续费
 	double	m_dCloseFee;	//平仓手续费
@@ -168,12 +168,12 @@ private:
 	double	m_dMarginRate;	//保证金率
 };
 
-class WTSContractInfo :	public WTSObject
+class VvTSContractInfo :	public VvTSObject
 {
 public:
-	static WTSContractInfo* create(const char* code, const char* name, const char* exchg, const char* pid)
+	static VvTSContractInfo* create(const char* code, const char* name, const char* exchg, const char* pid)
 	{
-		WTSContractInfo* ret = new WTSContractInfo;
+		VvTSContractInfo* ret = new VvTSContractInfo;
 		ret->m_strCode = code;
 		ret->m_strName = name;
 		ret->m_strProduct = pid;
@@ -245,8 +245,8 @@ public:
 		return commRate == 0.0 ? m_sMarginRatio : m_commInfo->getMarginRate();
 	}
 
-	inline void setCommInfo(WTSCommodityInfo* commInfo) { m_commInfo = commInfo; }
-	inline WTSCommodityInfo* getCommInfo() const { return m_commInfo; }
+	inline void setCommInfo(VvTSCommodityInfo* commInfo) { m_commInfo = commInfo; }
+	inline VvTSCommodityInfo* getCommInfo() const { return m_commInfo; }
 
 	inline void		setFeeRates(double open, double close, double closeToday, bool byVolume)
 	{
@@ -306,11 +306,11 @@ public:
 	inline T*	getExtData() noexcept { return static_cast<T*>(m_pExtData); }
 
 protected:
-	WTSContractInfo()
+	VvTSContractInfo()
 		: m_commInfo(NULL), m_openDate(19900101), m_expireDate(30991231)
 		, m_lMarginRatio(0), m_sMarginRatio(0), m_nFeeAlg(-1), m_uMarginFlag(0)
 		, m_uHotFlag(0), m_uTotalIdx(UINT_MAX), m_pExtData(NULL){}
-	virtual ~WTSContractInfo(){}
+	virtual ~VvTSContractInfo(){}
 
 private:
 	std::string	m_strCode;
@@ -338,7 +338,7 @@ private:
 	double		m_dCloseTFee;	//平今手续费
 	int			m_nFeeAlg;		//手续费算法，默认为-1，不计算,0是按成交量，1为按成交额
 
-	WTSCommodityInfo*	m_commInfo;
+	VvTSCommodityInfo*	m_commInfo;
 	uint32_t	m_uHotFlag;
 	std::string	m_strHotCode;
 

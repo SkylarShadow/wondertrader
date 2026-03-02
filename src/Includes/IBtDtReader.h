@@ -10,10 +10,10 @@
 #pragma once
 #include <string>
 
-#include "../Includes/WTSTypes.h"
+#include "../Includes/VvTSTypes.h"
 
 NS_VVTP_BEGIN
-class VVTSVariant;
+class VvTSVariant;
 
 /*
  *	@brief 数据读取模块回调接口
@@ -25,7 +25,7 @@ public:
 	/*
 	 *	@brief	输出数据读取模块的日志
 	 */
-	virtual void		reader_log(WTSLogLevel ll, const char* message) = 0;
+	virtual void		reader_log(VvTSLogLevel ll, const char* message) = 0;
 };
 
 /*
@@ -40,9 +40,9 @@ public:
 	virtual ~IBtDtReader(){}
 
 public:
-	virtual void init(VVTSVariant* cfg, IBtDtReaderSink* sink) { _sink = sink; }
+	virtual void init(VvTSVariant* cfg, IBtDtReaderSink* sink) { _sink = sink; }
 
-	virtual bool read_raw_bars(const char* exchg, const char* code, WTSKlinePeriod period, std::string& buffer) = 0;
+	virtual bool read_raw_bars(const char* exchg, const char* code, VvTSKlinePeriod period, std::string& buffer) = 0;
 	virtual bool read_raw_ticks(const char* exchg, const char* code, uint32_t uDate, std::string& buffer) = 0;
 
 	virtual bool read_raw_order_details(const char* exchg, const char* code, uint32_t uDate, std::string& buffer) { return false; }

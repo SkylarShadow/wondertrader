@@ -41,12 +41,12 @@ void ExpSelContext::on_strategy_schedule(uint32_t curDate, uint32_t curTime)
 	getRunner().ctx_on_calc(_context_id, curDate, curTime, ET_SEL);
 }
 
-void ExpSelContext::on_bar_close(const char* stdCode, const char* period, WTSBarStruct* newBar)
+void ExpSelContext::on_bar_close(const char* stdCode, const char* period, VvTSBarStruct* newBar)
 {
 	getRunner().ctx_on_bar(_context_id, stdCode, period, newBar, ET_SEL);
 }
 
-void ExpSelContext::on_tick_updated(const char* stdCode, WTSTickData* newTick)
+void ExpSelContext::on_tick_updated(const char* stdCode, VvTSTickData* newTick)
 {
 	auto it = _tick_subs.find(stdCode);
 	if (it == _tick_subs.end())

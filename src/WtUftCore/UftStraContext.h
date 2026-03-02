@@ -39,15 +39,15 @@ public:
 
 	virtual void on_init() override;
 
-	virtual void on_tick(const char* code, WTSTickData* newTick) override;
+	virtual void on_tick(const char* code, VvTSTickData* newTick) override;
 
-	virtual void on_order_queue(const char* stdCode, WTSOrdQueData* newOrdQue) override;
+	virtual void on_order_queue(const char* stdCode, VvTSOrdQueData* newOrdQue) override;
 
-	virtual void on_order_detail(const char* stdCode, WTSOrdDtlData* newOrdDtl) override;
+	virtual void on_order_detail(const char* stdCode, VvTSOrdDtlData* newOrdDtl) override;
 
-	virtual void on_transaction(const char* stdCode, WTSTransData* newTrans) override;
+	virtual void on_transaction(const char* stdCode, VvTSTransData* newTrans) override;
 
-	virtual void on_bar(const char* code, const char* period, uint32_t times, WTSBarStruct* newBar) override;
+	virtual void on_bar(const char* code, const char* period, uint32_t times, VvTSBarStruct* newBar) override;
 
 	virtual void on_trade(uint32_t localid, const char* stdCode, bool isLong, uint32_t offset, double vol, double price) override;
 
@@ -171,19 +171,19 @@ public:
 	 */
 	virtual uint32_t	stra_exit_short(const char* stdCode, double price, double qty, bool isToday = false, int flag = 0) override;
 
-	virtual WTSCommodityInfo* stra_get_comminfo(const char* stdCode) override;
+	virtual VvTSCommodityInfo* stra_get_comminfo(const char* stdCode) override;
 
-	virtual WTSKlineSlice* stra_get_bars(const char* stdCode, const char* period, uint32_t count) override;
+	virtual VvTSKlineSlice* stra_get_bars(const char* stdCode, const char* period, uint32_t count) override;
 
-	virtual WTSTickSlice* stra_get_ticks(const char* stdCode, uint32_t count) override;
+	virtual VvTSTickSlice* stra_get_ticks(const char* stdCode, uint32_t count) override;
 
-	virtual WTSOrdDtlSlice*	stra_get_order_detail(const char* stdCode, uint32_t count) override;
+	virtual VvTSOrdDtlSlice*	stra_get_order_detail(const char* stdCode, uint32_t count) override;
 
-	virtual WTSOrdQueSlice*	stra_get_order_queue(const char* stdCode, uint32_t count) override;
+	virtual VvTSOrdQueSlice*	stra_get_order_queue(const char* stdCode, uint32_t count) override;
 
-	virtual WTSTransSlice*	stra_get_transaction(const char* stdCode, uint32_t count) override;
+	virtual VvTSTransSlice*	stra_get_transaction(const char* stdCode, uint32_t count) override;
 
-	virtual WTSTickData* stra_get_last_tick(const char* stdCode) override;
+	virtual VvTSTickData* stra_get_last_tick(const char* stdCode) override;
 
 	virtual void stra_log_info(const char* message) override;
 	virtual void stra_log_debug(const char* message) override;

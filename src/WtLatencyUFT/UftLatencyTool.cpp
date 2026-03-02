@@ -10,10 +10,10 @@
 #include "UftLatencyTool.h"
 #include "../WtUftCore/UftStraContext.h"
 
-#include "../Includes/VVTSVariant.hpp"
+#include "../Includes/VvTSVariant.hpp"
 #include "../Includes/IParserApi.h"
 #include "../Includes/ITraderApi.h"
-#include "../Includes/WTSContractInfo.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
 
 #include "../WTSTools/WTSLogger.h"
 #include "../WTSUtils/WTSCfgLoader.h"
@@ -72,18 +72,18 @@ namespace uft
 				uint32_t actDate = 20220303;// strtoul("20220303", NULL, 10);
 				uint32_t actTime = 100523 * 1000 + 500; //strToTime("10:05:23") * 1000 + 500;
 
-				WTSContractInfo* contract = _bd_mgr->getContract("rb2205", "SHFE");
+				VvTSContractInfo* contract = _bd_mgr->getContract("rb2205", "SHFE");
 				if (contract == NULL)
 					return;
 
 				double x = rand();
 
-				WTSCommodityInfo* pCommInfo = contract->getCommInfo();
+				VvTSCommodityInfo* pCommInfo = contract->getCommInfo();
 
-				WTSTickData* tick = WTSTickData::create("rb2205");
+				VvTSTickData* tick = VvTSTickData::create("rb2205");
 				tick->setContractInfo(contract);
 
-				WTSTickStruct& quote = tick->getTickStruct();
+				VvTSTickStruct& quote = tick->getTickStruct();
 				vvt_strcpy(quote.exchg, pCommInfo->getExchg());
 
 				quote.action_date = actDate;
@@ -171,7 +171,7 @@ namespace uft
 			return true;
 		}
 
-		virtual int orderInsert(WTSEntrust* eutrust) override
+		virtual int orderInsert(VvTSEntrust* eutrust) override
 		{
 			//WTSLogger::debug("{}", __FUNCTION__);
 			return 0;
@@ -202,7 +202,7 @@ namespace uft
 			ctx->stra_sub_ticks("SHFE.rb2205");
 		}
 
-		virtual void on_tick(IUftStraCtx* ctx, const char* code, WTSTickData* newTick)
+		virtual void on_tick(IUftStraCtx* ctx, const char* code, VvTSTickData* newTick)
 		{
 			//WTSLogger::debug("{}", __FUNCTION__);
 			ctx->stra_enter_long("SHFE.rb2205", 2300, 1, 0);
@@ -226,7 +226,7 @@ namespace uft
 
 		std::string cfgFile = "config.yaml";
 
-		VVTSVariant* _config = WTSCfgLoader::load_from_file(cfgFile);
+		VvTSVariant* _config = WTSCfgLoader::load_from_file(cfgFile);
 		if (_config == NULL)
 		{
 			WTSLogger::error("Loading config file {} failed", cfgFile);
@@ -234,18 +234,18 @@ namespace uft
 		}
 
 		//基础数据文件
-		VVTSVariant* cfgBF = _config->get("basefiles");
+		VvTSVariant* cfgBF = _config->get("basefiles");
 		if (cfgBF->get("session"))
 			_bd_mgr.loadSessions(cfgBF->getCString("session"));
 
-		VVTSVariant* cfgItem = cfgBF->get("commodity");
+		VvTSVariant* cfgItem = cfgBF->get("commodity");
 		if (cfgItem)
 		{
-			if (cfgItem->type() == VVTSVariant::VT_String)
+			if (cfgItem->type() == VvTSVariant::VT_String)
 			{
 				_bd_mgr.loadCommodities(cfgItem->asCString());
 			}
-			else if (cfgItem->type() == VVTSVariant::VT_Array)
+			else if (cfgItem->type() == VvTSVariant::VT_Array)
 			{
 				for (uint32_t i = 0; i < cfgItem->size(); i++)
 				{
@@ -257,11 +257,11 @@ namespace uft
 		cfgItem = cfgBF->get("contract");
 		if (cfgItem)
 		{
-			if (cfgItem->type() == VVTSVariant::VT_String)
+			if (cfgItem->type() == VvTSVariant::VT_String)
 			{
 				_bd_mgr.loadContracts(cfgItem->asCString());
 			}
-			else if (cfgItem->type() == VVTSVariant::VT_Array)
+			else if (cfgItem->type() == VvTSVariant::VT_Array)
 			{
 				for (uint32_t i = 0; i < cfgItem->size(); i++)
 				{
@@ -298,7 +298,7 @@ namespace uft
 		return true;
 	}
 
-	bool UftLatencyTool::initEngine(VVTSVariant* cfg)
+	bool UftLatencyTool::initEngine(VvTSVariant* cfg)
 	{
 		WTSLogger::warn("Trading enviroment initialzied with engine: UFT");
 		_engine.init(cfg, &_bd_mgr, NULL, NULL);

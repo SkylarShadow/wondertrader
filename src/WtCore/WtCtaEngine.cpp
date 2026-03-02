@@ -17,12 +17,12 @@
 #include "EventNotifier.h"
 
 #include "../Share/CodeHelper.hpp"
-#include "../Includes/VVTSVariant.hpp"
+#include "../Includes/VvTSVariant.hpp"
 #include "../Share/TimeUtils.hpp"
 #include "../Includes/IBaseDataMgr.h"
 #include "../Includes/IHotMgr.h"
-#include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSRiskDef.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/VvTSRiskDef.hpp"
 #include "../Share/decimal.h"
 
 #include "../WTSTools/WTSLogger.h"
@@ -53,7 +53,7 @@ WtCtaEngine::~WtCtaEngine()
 void WtCtaEngine::run()
 {
 	_tm_ticker = new WtCtaRtTicker(this);
-	VVTSVariant* cfgProd = _cfg->get("product");
+	VvTSVariant* cfgProd = _cfg->get("product");
 	_tm_ticker->init(_data_mgr->reader(), cfgProd->getCString("session"));
 
 	//启动之前,先把运行中的策略落地
@@ -105,7 +105,7 @@ void WtCtaEngine::run()
 
 }
 
-void WtCtaEngine::init(VVTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHotMgr* hotMgr, EventNotifier* notifier /* = NULL */)
+void WtCtaEngine::init(VvTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHotMgr* hotMgr, EventNotifier* notifier /* = NULL */)
 {
 	WtEngine::init(cfg, bdMgr, dataMgr, hotMgr, notifier);
 
@@ -412,7 +412,7 @@ void WtCtaEngine::on_schedule(uint32_t curDate, uint32_t curTime)
 }
 
 
-void WtCtaEngine::handle_push_quote(WTSTickData* newTick)
+void WtCtaEngine::handle_push_quote(VvTSTickData* newTick)
 {
 	if (_tm_ticker)
 		_tm_ticker->on_tick(newTick);
@@ -472,7 +472,7 @@ void WtCtaEngine::handle_pos_change(const char* straName, const char* stdCode, d
 		_exec_mgr.handle_pos_change(realCode.c_str(), targetPos, diffPos, execid.c_str());
 }
 
-void WtCtaEngine::on_tick(const char* stdCode, WTSTickData* curTick)
+void WtCtaEngine::on_tick(const char* stdCode, VvTSTickData* curTick)
 {
 	WtEngine::on_tick(stdCode, curTick);
 
@@ -503,7 +503,7 @@ void WtCtaEngine::on_tick(const char* stdCode, WTSTickData* curTick)
 			return;
 
 		uint32_t flag = get_adjusting_flag();
-		WTSTickData* adjTick = nullptr;
+		VvTSTickData* adjTick = nullptr;
 
 		//By Wesley
 		//这里做一个拷贝，虽然有点开销，但是可以规避掉一些问题，比如ontick的时候订阅tick
@@ -553,8 +553,8 @@ void WtCtaEngine::on_tick(const char* stdCode, WTSTickData* curTick)
 					{
 						if (adjTick == nullptr)
 						{
-							WTSTickData* adjTick = WTSTickData::create(curTick->getTickStruct());
-							WTSTickStruct& adjTS = adjTick->getTickStruct();
+							VvTSTickData* adjTick = VvTSTickData::create(curTick->getTickStruct());
+							VvTSTickStruct& adjTS = adjTick->getTickStruct();
 							adjTick->setContractInfo(curTick->getContractInfo());
 
 							//这里做一个复权因子的处理
@@ -621,7 +621,7 @@ void WtCtaEngine::on_tick(const char* stdCode, WTSTickData* curTick)
 	
 }
 
-void WtCtaEngine::on_bar(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar)
+void WtCtaEngine::on_bar(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar)
 {
 	thread_local static char key[64] = { 0 };
 	fmtutil::format_to(key, "{}-{}-{}", stdCode, period, times);
@@ -665,16 +665,16 @@ uint32_t WtCtaEngine::transTimeToMin(uint32_t uTime)
 	return _tm_ticker->time_to_mins(uTime);
 }
 
-WTSCommodityInfo* WtCtaEngine::get_comm_info(const char* stdCode)
+VvTSCommodityInfo* WtCtaEngine::get_comm_info(const char* stdCode)
 {
 	CodeHelper::CodeInfo codeInfo = CodeHelper::extractStdCode(stdCode, _hot_mgr);
 	return _base_data_mgr->getCommodity(codeInfo._exchg, codeInfo._product);
 }
 
-WTSSessionInfo* WtCtaEngine::get_sess_info(const char* stdCode)
+VvTSSessionInfo* WtCtaEngine::get_sess_info(const char* stdCode)
 {
 	CodeHelper::CodeInfo codeInfo = CodeHelper::extractStdCode(stdCode, _hot_mgr);
-	WTSCommodityInfo* cInfo = _base_data_mgr->getCommodity(codeInfo._exchg, codeInfo._product);
+	VvTSCommodityInfo* cInfo = _base_data_mgr->getCommodity(codeInfo._exchg, codeInfo._product);
 	if (cInfo == NULL)
 		return NULL;
 

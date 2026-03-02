@@ -1,11 +1,11 @@
 ﻿#include "ShmCaster.h"
-#include "../Includes/VVTSVariant.hpp"
-#include "../Includes/WTSDataDef.hpp"
+#include "../Includes/VvTSVariant.hpp"
+#include "../Includes/VvTSDataDef.hpp"
 #include "../Share/StdUtils.hpp"
 #include "../Share/BoostFile.hpp"
 #include "../WTSTools/WTSLogger.h"
 
-bool ShmCaster::init(VVTSVariant* cfg)
+bool ShmCaster::init(VvTSVariant* cfg)
 {
 	if (cfg == NULL)
 		return false;
@@ -40,7 +40,7 @@ bool ShmCaster::init(VVTSVariant* cfg)
 	return true;
 }
 
-void ShmCaster::broadcast(WTSTickData* curTick)
+void ShmCaster::broadcast(VvTSTickData* curTick)
 {
 	if (curTick == NULL || _queue == NULL || !_inited)
 		return;
@@ -52,11 +52,11 @@ void ShmCaster::broadcast(WTSTickData* curTick)
 	uint64_t wIdx = _queue->_writable++;
 	uint64_t realIdx = wIdx % _queue->_capacity;
 	_queue->_items[realIdx]._type = 0;
-	memcpy(&_queue->_items[realIdx]._tick, &curTick->getTickStruct(), sizeof(WTSTickStruct));
+	memcpy(&_queue->_items[realIdx]._tick, &curTick->getTickStruct(), sizeof(VvTSTickStruct));
 	_queue->_readable = wIdx;
 }
 
-void ShmCaster::broadcast(WTSOrdQueData* curOrdQue)
+void ShmCaster::broadcast(VvTSOrdQueData* curOrdQue)
 {
 	if (curOrdQue == NULL || _queue == NULL || !_inited)
 		return;
@@ -68,11 +68,11 @@ void ShmCaster::broadcast(WTSOrdQueData* curOrdQue)
 	uint64_t wIdx = _queue->_writable++;
 	uint64_t realIdx = wIdx % _queue->_capacity;
 	_queue->_items[realIdx]._type = 1;
-	memcpy(&_queue->_items[realIdx]._queue, &curOrdQue->getOrdQueStruct(), sizeof(WTSOrdQueStruct));
+	memcpy(&_queue->_items[realIdx]._queue, &curOrdQue->getOrdQueStruct(), sizeof(VvTSOrdQueStruct));
 	_queue->_readable = wIdx;
 }
 
-void ShmCaster::broadcast(WTSOrdDtlData* curOrdDtl)
+void ShmCaster::broadcast(VvTSOrdDtlData* curOrdDtl)
 {
 	if (curOrdDtl == NULL || _queue == NULL || !_inited)
 		return;
@@ -84,11 +84,11 @@ void ShmCaster::broadcast(WTSOrdDtlData* curOrdDtl)
 	uint64_t wIdx = _queue->_writable++;
 	uint64_t realIdx = wIdx % _queue->_capacity;
 	_queue->_items[realIdx]._type = 2;
-	memcpy(&_queue->_items[realIdx]._order, &curOrdDtl->getOrdDtlStruct(), sizeof(WTSOrdDtlStruct));
+	memcpy(&_queue->_items[realIdx]._order, &curOrdDtl->getOrdDtlStruct(), sizeof(VvTSOrdDtlStruct));
 	_queue->_readable = wIdx;
 }
 
-void ShmCaster::broadcast(WTSTransData* curTrans)
+void ShmCaster::broadcast(VvTSTransData* curTrans)
 {
 	if (curTrans == NULL || _queue == NULL || !_inited)
 		return;
@@ -100,6 +100,6 @@ void ShmCaster::broadcast(WTSTransData* curTrans)
 	uint64_t wIdx = _queue->_writable++;
 	uint64_t realIdx = wIdx % _queue->_capacity;
 	_queue->_items[realIdx]._type = 3;
-	memcpy(&_queue->_items[realIdx]._trans, &curTrans->getTransStruct(), sizeof(WTSTransStruct));
+	memcpy(&_queue->_items[realIdx]._trans, &curTrans->getTransStruct(), sizeof(VvTSTransStruct));
 	_queue->_readable = wIdx;
 }

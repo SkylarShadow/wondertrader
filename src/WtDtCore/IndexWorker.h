@@ -1,6 +1,6 @@
 ﻿#pragma once
-#include "../Includes/VVTSMarcos.h"
-#include "../Includes/WTSStruct.h"
+#include "../Includes/VvTSMarcos.h"
+#include "../Includes/VvTSStruct.h"
 #include "../Includes/FasterDefs.h"
 
 #include "../Share/StdUtils.hpp"
@@ -8,11 +8,11 @@
 #include "../Share/SpinMutex.hpp"
 
 NS_VVTP_BEGIN
-class VVTSVariant;
-class WTSTickData;
+class VvTSVariant;
+class VvTSTickData;
 class IHotMgr;
 class IBaseDataMgr;
-class WTSContractInfo;
+class VvTSContractInfo;
 NS_VVTP_END
 
 USING_NS_VVTP;
@@ -25,8 +25,8 @@ public:
 	IndexWorker(IndexFactory* factor):_factor(factor), _stopped(false), _process(false) {}
 
 public:
-	bool	init(VVTSVariant* config);
-	void	handle_quote(WTSTickData* newTick);
+	bool	init(VvTSVariant* config);
+	void	handle_quote(VvTSTickData* newTick);
 
 private:
 	void	generate_tick();
@@ -39,13 +39,13 @@ protected:
 	uint32_t		_timeout;
 	uint64_t		_recalc_time;
 	double			_stand_scale;
-	WTSTickStruct	_cache;
-	WTSContractInfo*	_cInfo;
+	VvTSTickStruct	_cache;
+	VvTSContractInfo*	_cInfo;
 
 	typedef struct _WeightFactor
 	{
 		double			_weight;
-		WTSTickStruct	_tick;
+		VvTSTickStruct	_tick;
 		_WeightFactor()
 		{
 			memset(this, 0, sizeof(_WeightFactor));

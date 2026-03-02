@@ -16,17 +16,17 @@
 #include "../WTSTools/WTSLogger.h"
 
 #include "../Share/CodeHelper.hpp"
-#include "../Includes/WTSError.hpp"
-#include "../Includes/VVTSVariant.hpp"
-#include "../Includes/WTSTradeDef.hpp"
-#include "../Includes/WTSRiskDef.hpp"
+#include "../Includes/VvTSError.hpp"
+#include "../Includes/VvTSVariant.hpp"
+#include "../Includes/VvTSTradeDef.hpp"
+#include "../Includes/VvTSRiskDef.hpp"
 #include "../Share/StrUtil.hpp"
 #include "../Share/StdUtils.hpp"
 #include "../Share/TimeUtils.hpp"
 #include "../Share/decimal.h"
-#include "../Includes/WTSSessionInfo.hpp"
+#include "../Includes/VvTSSessionInfo.hpp"
 
-#include "../Includes/WTSContractInfo.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
 #include "../Includes/IBaseDataMgr.h"
 #include "../Share/DLLHelper.hpp"
 #include "../Share/StdUtils.hpp"
@@ -50,7 +50,7 @@ TraderAdapter::~TraderAdapter()
 {
 }
 
-bool TraderAdapter::init(const char* id, VVTSVariant* params, IBaseDataMgr* bdMgr)
+bool TraderAdapter::init(const char* id, VvTSVariant* params, IBaseDataMgr* bdMgr)
 {
 	if (params == NULL)
 		return false;
@@ -135,9 +135,9 @@ void TraderAdapter::release()
 }
 
 #pragma region "ITraderSpi接口"
-void TraderAdapter::handleEvent(WTSTraderEvent e, int32_t ec)
+void TraderAdapter::handleEvent(VvTSTraderEvent e, int32_t ec)
 {
-	if(e == WTE_Connect)
+	if(e == VvTE_Connect)
 	{
 		if(ec == 0)
 		{
@@ -150,7 +150,7 @@ void TraderAdapter::handleEvent(WTSTraderEvent e, int32_t ec)
 			_done = true;
 		}
 	}
-	else if(e == WTE_Close)
+	else if(e == VvTE_Close)
 	{
 		WTSLogger::error("[{}]交易账号连接已断开: {}", _id.c_str(), ec);
 	}
@@ -194,13 +194,13 @@ void TraderAdapter::queryPosition()
 	_trader_api->queryPositions();
 }
 
-void TraderAdapter::onRspAccount(WTSArray* ayAccounts)
+void TraderAdapter::onRspAccount(VvTSArray* ayAccounts)
 {
 	if(ayAccounts && ayAccounts->size() > 0)
 	{
 		for (std::size_t idx = 0; idx < ayAccounts->size(); idx++)
 		{
-			WTSAccountInfo* accInfo = (WTSAccountInfo*)ayAccounts->at(idx);
+			VvTSAccountInfo* accInfo = (VvTSAccountInfo*)ayAccounts->at(idx);
 
 			getDumper().on_account(_id.c_str(), _date, accInfo->getCurrency(), accInfo->getPreBalance(), accInfo->getBalance(), accInfo->getBalance() + accInfo->getDynProfit(),
 				accInfo->getCloseProfit(), accInfo->getDynProfit(), accInfo->getCommission(), accInfo->getMargin(), accInfo->getDeposit(), accInfo->getWithdraw(), idx == ayAccounts->size()-1);
@@ -213,9 +213,9 @@ void TraderAdapter::onRspAccount(WTSArray* ayAccounts)
 		_trader_api->queryTrades();
 }
 
-void TraderAdapter::onPushTrade(WTSTradeInfo* tInfo)
+void TraderAdapter::onPushTrade(VvTSTradeInfo* tInfo)
 {
-	WTSContractInfo* cInfo = _bd_mgr->getContract(tInfo->getCode(), tInfo->getExchg());
+	VvTSContractInfo* cInfo = _bd_mgr->getContract(tInfo->getCode(), tInfo->getExchg());
 	if (cInfo == NULL)
 		return;
 
@@ -224,14 +224,14 @@ void TraderAdapter::onPushTrade(WTSTradeInfo* tInfo)
 		(uint32_t)tInfo->getOrderType(), (uint32_t)tInfo->getTradeType(), tInfo->getTradeTime(), true);
 }
 
-void TraderAdapter::onRspTrades(const WTSArray* ayTrades)
+void TraderAdapter::onRspTrades(const VvTSArray* ayTrades)
 {
 	if (ayTrades && ayTrades->size() > 0)
 	{
 		for (std::size_t idx = 0; idx < ayTrades->size(); idx++)
 		{
-			WTSTradeInfo* pItem = (WTSTradeInfo*)((WTSArray*)ayTrades)->at(idx);
-			WTSContractInfo* cInfo = _bd_mgr->getContract(pItem->getCode(), pItem->getExchg());
+			VvTSTradeInfo* pItem = (VvTSTradeInfo*)((VvTSArray*)ayTrades)->at(idx);
+			VvTSContractInfo* cInfo = _bd_mgr->getContract(pItem->getCode(), pItem->getExchg());
 			if (cInfo == NULL)
 				continue;
 
@@ -246,14 +246,14 @@ void TraderAdapter::onRspTrades(const WTSArray* ayTrades)
 	_trader_api->queryOrders();
 }
 
-void TraderAdapter::onRspOrders(const WTSArray* ayOrders)
+void TraderAdapter::onRspOrders(const VvTSArray* ayOrders)
 {
 	if (ayOrders && ayOrders->size() > 0)
 	{
 		for (std::size_t idx = 0; idx < ayOrders->size(); idx++)
 		{
-			WTSOrderInfo* pItem = (WTSOrderInfo*)((WTSArray*)ayOrders)->at(idx);
-			WTSContractInfo* cInfo = _bd_mgr->getContract(pItem->getCode(), pItem->getExchg());
+			VvTSOrderInfo* pItem = (VvTSOrderInfo*)((VvTSArray*)ayOrders)->at(idx);
+			VvTSContractInfo* cInfo = _bd_mgr->getContract(pItem->getCode(), pItem->getExchg());
 			if (cInfo == NULL)
 				continue;
 
@@ -268,9 +268,9 @@ void TraderAdapter::onRspOrders(const WTSArray* ayOrders)
 	_done = true;
 }
 
-void TraderAdapter::onPushOrder(WTSOrderInfo* oInfo)
+void TraderAdapter::onPushOrder(VvTSOrderInfo* oInfo)
 {
-	WTSContractInfo* cInfo = _bd_mgr->getContract(oInfo->getCode(), oInfo->getExchg());
+	VvTSContractInfo* cInfo = _bd_mgr->getContract(oInfo->getCode(), oInfo->getExchg());
 	if (cInfo == NULL)
 		return;
 
@@ -286,17 +286,17 @@ void TraderAdapter::onPushOrder(WTSOrderInfo* oInfo)
 		oInfo->getOrderType(), oInfo->getPriceType(), oInfo->getOrderTime(), oInfo->getOrderState(), oInfo->getStateMsg(), true);
 }
 
-void TraderAdapter::onRspPosition(const WTSArray* ayPositions)
+void TraderAdapter::onRspPosition(const VvTSArray* ayPositions)
 {
 	if (ayPositions && ayPositions->size() > 0)
 	{
-		for (std::size_t idx = 0; idx < ((WTSArray*)ayPositions)->size(); idx++)
+		for (std::size_t idx = 0; idx < ((VvTSArray*)ayPositions)->size(); idx++)
 		{
-			WTSPositionItem* pItem = (WTSPositionItem*)(((WTSArray*)ayPositions)->at(idx));
-			WTSContractInfo* cInfo = _bd_mgr->getContract(pItem->getCode());
+			VvTSPositionItem* pItem = (VvTSPositionItem*)(((VvTSArray*)ayPositions)->at(idx));
+			VvTSContractInfo* cInfo = _bd_mgr->getContract(pItem->getCode());
 			if (cInfo == NULL)
 				continue;
-			WTSCommodityInfo* commInfo = cInfo->getCommInfo();
+			VvTSCommodityInfo* commInfo = cInfo->getCommInfo();
 
 			getDumper().on_position(_id.c_str(), cInfo->getExchg(), cInfo->getCode(), _date, (pItem->getDirection() == WDT_LONG ? 0 : 1),
 				pItem->getTotalPosition(), pItem->getPositionCost(), pItem->getMargin(), pItem->getAvgPrice(),
@@ -310,7 +310,7 @@ void TraderAdapter::onRspPosition(const WTSArray* ayPositions)
 		_trader_api->queryAccount();
 }
 
-void TraderAdapter::onTraderError(WTSError* err, void* pData /* = NULL */)
+void TraderAdapter::onTraderError(VvTSError* err, void* pData /* = NULL */)
 {
 	if(err)
 		WTSLogger::error("[{}]交易通道出现错误: {}", _id.c_str(), err->getMessage());
@@ -321,7 +321,7 @@ IBaseDataMgr* TraderAdapter::getBaseDataMgr()
 	return _bd_mgr;
 }
 
-void TraderAdapter::handleTraderLog(WTSLogLevel ll, const char* message)
+void TraderAdapter::handleTraderLog(VvTSLogLevel ll, const char* message)
 {
 	WTSLogger::log_raw(ll, message);
 }

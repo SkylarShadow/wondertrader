@@ -12,8 +12,8 @@
 #include "../Includes/IDataReader.h"
 
 #include "../Share/TimeUtils.hpp"
-#include "../Includes/WTSSessionInfo.hpp"
-#include "../Includes/WTSContractInfo.hpp"
+#include "../Includes/VvTSSessionInfo.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
 #include "../Includes/IBaseDataMgr.h"
 #include "../Includes/IHotMgr.h"
 #include "../Share/CodeHelper.hpp"
@@ -47,17 +47,17 @@ void WtHftRtTicker::init(IDataReader* store, const char* sessionID)
 	TimeUtils::getDateTime(_date, _time);
 }
 
-void WtHftRtTicker::trigger_price(WTSTickData* curTick)
+void WtHftRtTicker::trigger_price(VvTSTickData* curTick)
 {
 	if (_engine)
 	{
-		WTSContractInfo* cInfo = curTick->getContractInfo();
+		VvTSContractInfo* cInfo = curTick->getContractInfo();
 		std::string stdCode = curTick->code();
 		_engine->on_tick(stdCode.c_str(), curTick);
 
 		if (!cInfo->isFlat())
 		{
-			WTSTickData* hotTick = WTSTickData::create(curTick->getTickStruct());
+			VvTSTickData* hotTick = VvTSTickData::create(curTick->getTickStruct());
 			const char* hotCode = cInfo->getHotCode();
 			hotTick->setCode(hotCode);
 			_engine->on_tick(hotCode, hotTick);
@@ -66,7 +66,7 @@ void WtHftRtTicker::trigger_price(WTSTickData* curTick)
 	}
 }
 
-void WtHftRtTicker::on_tick(WTSTickData* curTick)
+void WtHftRtTicker::on_tick(VvTSTickData* curTick)
 {
 	if (_thrd == NULL)
 	{

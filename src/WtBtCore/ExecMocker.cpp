@@ -10,7 +10,7 @@
 #include "ExecMocker.h"
 #include "WtHelper.h"
 
-#include "../Includes/VVTSVariant.hpp"
+#include "../Includes/VvTSVariant.hpp"
 #include "../Share/TimeUtils.hpp"
 #include "../Share/decimal.h"
 #include "../WTSTools/WTSLogger.h"
@@ -44,7 +44,7 @@ ExecMocker::~ExecMocker()
 		_last_tick->release();
 }
 
-bool ExecMocker::init(VVTSVariant* cfg)
+bool ExecMocker::init(VvTSVariant* cfg)
 {
 	const char* module = cfg->getCString("module");
 	_code = cfg->getCString("code");
@@ -72,7 +72,7 @@ bool ExecMocker::init(VVTSVariant* cfg)
 	_factory._remover = (FuncDeleteExeFact)DLLHelper::get_symbol(hInst, "deleteExecFact");
 	_factory._fact = _factory._creator();
 
-	VVTSVariant* cfgExec = cfg->get("executer");
+	VvTSVariant* cfgExec = cfg->get("executer");
 	if (cfgExec)
 	{
 		_exec_unit = _factory._fact->createExeUnit(cfgExec->getCString("name"));
@@ -83,12 +83,12 @@ bool ExecMocker::init(VVTSVariant* cfg)
 	return true;
 }
 
-WTSCommodityInfo* ExecMocker::getCommodityInfo(const char* stdCode)
+VvTSCommodityInfo* ExecMocker::getCommodityInfo(const char* stdCode)
 {
 	return _replayer->get_commodity_info(stdCode);
 }
 
-WTSSessionInfo* ExecMocker::getSessionInfo(const char* stdCode)
+VvTSSessionInfo* ExecMocker::getSessionInfo(const char* stdCode)
 {
 	return _replayer->get_session_info(stdCode, true);
 }
@@ -98,7 +98,7 @@ uint64_t ExecMocker::getCurTime()
 	return TimeUtils::makeTime(_replayer->get_date(), _replayer->get_raw_time() * 100000 + _replayer->get_secs());
 }
 
-void ExecMocker::handle_bar_close(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar)
+void ExecMocker::handle_bar_close(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar)
 {
 	//throw std::logic_error("The method or operation is not implemented.");
 }
@@ -117,7 +117,7 @@ void ExecMocker::handle_session_end(uint32_t curTDate)
 		_ord_cnt, _ord_qty, _cacl_cnt, _cacl_qty, _sig_cnt);
 }
 
-void ExecMocker::handle_tick(const char* stdCode, WTSTickData* curTick, uint32_t pxType)
+void ExecMocker::handle_tick(const char* stdCode, VvTSTickData* curTick, uint32_t pxType)
 {
  	if (_last_tick)
 	{
@@ -142,7 +142,7 @@ void ExecMocker::handle_init()
 	if (_period.size() > 1)
 		times = strtoul(_period.c_str() + 1, NULL, 10);
 
-	WTSKlineSlice* kline = _replayer->get_kline_slice(_code.c_str(), basePeriod,  10, times, true);
+	VvTSKlineSlice* kline = _replayer->get_kline_slice(_code.c_str(), basePeriod,  10, times, true);
 	if (kline)
 		kline->release();
 
@@ -189,12 +189,12 @@ void ExecMocker::handle_schedule(uint32_t uDate, uint32_t uTime)
 	_sig_cnt++;
 }
 
-WTSTickSlice* ExecMocker::getTicks(const char* stdCode, uint32_t count, uint64_t etime /*= 0*/)
+VvTSTickSlice* ExecMocker::getTicks(const char* stdCode, uint32_t count, uint64_t etime /*= 0*/)
 {
 	return _replayer->get_tick_slice(stdCode, count, etime);
 }
 
-WTSTickData* ExecMocker::grabLastTick(const char* stdCode)
+VvTSTickData* ExecMocker::grabLastTick(const char* stdCode)
 {
 	return _replayer->get_last_tick(stdCode);
 }

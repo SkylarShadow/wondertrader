@@ -12,7 +12,7 @@
 #include "../Includes/IDataReader.h"
 
 #include "../Share/TimeUtils.hpp"
-#include "../Includes/WTSSessionInfo.hpp"
+#include "../Includes/VvTSSessionInfo.hpp"
 #include "../Includes/IBaseDataMgr.h"
 
 #include "../WTSTools/WTSLogger.h"
@@ -43,7 +43,7 @@ void WtUftRtTicker::init(const char* sessionID)
 	TimeUtils::getDateTime(_date, _time);
 }
 
-void WtUftRtTicker::on_tick(WTSTickData* curTick)
+void WtUftRtTicker::on_tick(VvTSTickData* curTick)
 {
 	if (_thrd == NULL)
 	{

@@ -15,7 +15,7 @@
 
 NS_VVTP_BEGIN
 
-class VVTSVariant;
+class VvTSVariant;
 class WtHftRtTicker;
 
 typedef std::shared_ptr<IHftStraCtx> HftContextPtr;
@@ -29,27 +29,27 @@ public:
 public:
 	//////////////////////////////////////////////////////////////////////////
 	//WtEngine 接口
-	virtual void init(VVTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHotMgr* hotMgr, EventNotifier* notifier) override;
+	virtual void init(VvTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHotMgr* hotMgr, EventNotifier* notifier) override;
 
 	virtual void run() override;
 
-	virtual void handle_push_quote(WTSTickData* newTick) override;
-	virtual void handle_push_order_detail(WTSOrdDtlData* curOrdDtl) override;
-	virtual void handle_push_order_queue(WTSOrdQueData* curOrdQue) override;
-	virtual void handle_push_transaction(WTSTransData* curTrans) override;
+	virtual void handle_push_quote(VvTSTickData* newTick) override;
+	virtual void handle_push_order_detail(VvTSOrdDtlData* curOrdDtl) override;
+	virtual void handle_push_order_queue(VvTSOrdQueData* curOrdQue) override;
+	virtual void handle_push_transaction(VvTSTransData* curTrans) override;
 
-	virtual void on_tick(const char* stdCode, WTSTickData* curTick) override;
+	virtual void on_tick(const char* stdCode, VvTSTickData* curTick) override;
 
-	virtual void on_bar(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar) override;
+	virtual void on_bar(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar) override;
 
 	virtual void on_session_begin() override;
 
 	virtual void on_session_end() override;
 
 public:
-	WTSOrdQueSlice* get_order_queue_slice(uint32_t sid, const char* stdCode, uint32_t count);
-	WTSOrdDtlSlice* get_order_detail_slice(uint32_t sid, const char* stdCode, uint32_t count);
-	WTSTransSlice* get_transaction_slice(uint32_t sid, const char* stdCode, uint32_t count);
+	VvTSOrdQueSlice* get_order_queue_slice(uint32_t sid, const char* stdCode, uint32_t count);
+	VvTSOrdDtlSlice* get_order_detail_slice(uint32_t sid, const char* stdCode, uint32_t count);
+	VvTSTransSlice* get_transaction_slice(uint32_t sid, const char* stdCode, uint32_t count);
 
 public:
 	void on_minute_end(uint32_t curDate, uint32_t curTime);
@@ -67,7 +67,7 @@ private:
 	ContextMap		_ctx_map;
 
 	WtHftRtTicker*	_tm_ticker;
-	VVTSVariant*		_cfg;
+	VvTSVariant*		_cfg;
 
 
 	StraSubMap		_ordque_sub_map;	//委托队列订阅表

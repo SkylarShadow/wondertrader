@@ -32,7 +32,7 @@
 #include "../WTSTools/WTSBaseDataMgr.h"
 
 NS_VVTP_BEGIN
-class VVTSVariant;
+class VvTSVariant;
 class WtDataStorage;
 NS_VVTP_END
 
@@ -52,9 +52,9 @@ public:
 	void run(bool bAsync = false);
 
 private:
-	bool initTraders(VVTSVariant* cfgTrader);
-	bool initParsers(VVTSVariant* cfgParser);
-	bool initExecuters(VVTSVariant* cfgExecuter);
+	bool initTraders(VvTSVariant* cfgTrader);
+	bool initParsers(VvTSVariant* cfgParser);
+	bool initExecuters(VvTSVariant* cfgExecuter);
 	bool initDataMgr();
 	bool initEvtNotifier();
 	bool initCtaStrategies();
@@ -66,10 +66,10 @@ private:
 //////////////////////////////////////////////////////////////////////////
 //ILogHandler
 public:
-	virtual void handleLogAppend(WTSLogLevel ll, const char* msg) override;
+	virtual void handleLogAppend(VvTSLogLevel ll, const char* msg) override;
 
 private:
-	VVTSVariant*			_config;
+	VvTSVariant*			_config;
 	TraderAdapterMgr	_traders;
 	ParserAdapterMgr	_parsers;
 	WtExecuterFactory	_exe_factory;

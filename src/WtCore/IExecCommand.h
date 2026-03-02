@@ -3,17 +3,17 @@
 #include <stdint.h>
 
 NS_VVTP_BEGIN
-class WTSCommodityInfo;
-class WTSSessionInfo;
+class VvTSCommodityInfo;
+class VvTSSessionInfo;
 class IHotMgr;
-class WTSTickData;
+class VvTSTickData;
 
 class IExecuterStub
 {
 public:
 	virtual uint64_t get_real_time() = 0;
-	virtual WTSCommodityInfo* get_comm_info(const char* stdCode) = 0;
-	virtual WTSSessionInfo* get_sess_info(const char* stdCode) = 0;
+	virtual VvTSCommodityInfo* get_comm_info(const char* stdCode) = 0;
+	virtual VvTSSessionInfo* get_sess_info(const char* stdCode) = 0;
 	virtual IHotMgr* get_hot_mon() = 0;
 	virtual uint32_t get_trading_day() = 0;
 };
@@ -35,7 +35,7 @@ public:
 	/*
 	 *	实时行情回调
 	 */
-	virtual void on_tick(const char* stdCode, WTSTickData* newTick) {}
+	virtual void on_tick(const char* stdCode, VvTSTickData* newTick) {}
 
 
 	inline void setStub(IExecuterStub* stub) { _stub = stub; }

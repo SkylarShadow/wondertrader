@@ -10,7 +10,7 @@
 #pragma once
 #include "../Includes/ICtaStraCtx.h"
 #include "../Includes/FasterDefs.h"
-#include "../Includes/WTSDataDef.hpp"
+#include "../Includes/VvTSDataDef.hpp"
 
 #include "../Share/BoostFile.hpp"
 #include "../Share/fmtlib.h"
@@ -32,8 +32,8 @@ const char COND_ACTION_SP = 4;	//直接设置仓位
 
 typedef struct _CondEntrust
 {
-	WTSCompareField _field;
-	WTSCompareType	_alg;
+	VvTSCompareField _field;
+	VvTSCompareType	_alg;
 	double			_target;
 
 	double			_qty;
@@ -112,8 +112,8 @@ public:
 	virtual void on_init() override;
 	virtual void on_session_begin(uint32_t uTDate) override;
 	virtual void on_session_end(uint32_t uTDate) override;
-	virtual void on_tick(const char* stdCode, WTSTickData* newTick, bool bEmitStrategy = true) override;
-	virtual void on_bar(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar) override;
+	virtual void on_tick(const char* stdCode, VvTSTickData* newTick, bool bEmitStrategy = true) override;
+	virtual void on_bar(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar) override;
 	virtual bool on_schedule(uint32_t curDate, uint32_t curTime) override;
 
 	virtual void enum_position(FuncEnumCtaPosCallBack cb, bool bForExecute = false) override;
@@ -152,10 +152,10 @@ public:
 	virtual double stra_get_detail_cost(const char* stdCode, const char* userTag) override;
 	virtual double stra_get_detail_profit(const char* stdCode, const char* userTag, int flag = 0) override;
 
-	virtual WTSCommodityInfo* stra_get_comminfo(const char* stdCode) override;
-	virtual WTSKlineSlice*	stra_get_bars(const char* stdCode, const char* period, uint32_t count, bool isMain = false) override;
-	virtual WTSTickSlice*	stra_get_ticks(const char* stdCode, uint32_t count) override;
-	virtual WTSTickData*	stra_get_last_tick(const char* stdCode) override;
+	virtual VvTSCommodityInfo* stra_get_comminfo(const char* stdCode) override;
+	virtual VvTSKlineSlice*	stra_get_bars(const char* stdCode, const char* period, uint32_t count, bool isMain = false) override;
+	virtual VvTSTickSlice*	stra_get_ticks(const char* stdCode, uint32_t count) override;
+	virtual VvTSTickData*	stra_get_last_tick(const char* stdCode) override;
 
 	/*
 	 *	获取分月合约代码
@@ -342,8 +342,8 @@ protected:
 	StraFundInfo		_fund_info;
 
 	//tick订阅列表
-	wt_hashset<std::string> _tick_subs;
-	wt_hashset<std::string> _barevt_subs;
+	vvt_hashset<std::string> _tick_subs;
+	vvt_hashset<std::string> _barevt_subs;
 
 	//////////////////////////////////////////////////////////////////////////
 	//图表相关

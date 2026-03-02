@@ -35,7 +35,7 @@
 #include "../WTSTools/WTSBaseDataMgr.h"
 
 NS_VVTP_BEGIN
-class VVTSVariant;
+class VvTSVariant;
 class WtDataStorage;
 NS_VVTP_END
 
@@ -57,15 +57,15 @@ public:
 public:
 	//////////////////////////////////////////////////////////////////////////
 	//IBtDataLoader
-	virtual bool loadFinalHisBars(void* obj, const char* stdCode, WTSKlinePeriod period, FuncReadBars cb) override;
+	virtual bool loadFinalHisBars(void* obj, const char* stdCode, VvTSKlinePeriod period, FuncReadBars cb) override;
 
-	virtual bool loadRawHisBars(void* obj, const char* stdCode, WTSKlinePeriod period, FuncReadBars cb) override;
+	virtual bool loadRawHisBars(void* obj, const char* stdCode, VvTSKlinePeriod period, FuncReadBars cb) override;
 
 	virtual bool loadAllAdjFactors(void* obj, FuncReadFactors cb) override;
 
 	virtual bool loadAdjFactors(void* obj, const char* stdCode, FuncReadFactors cb) override;
 
-	void feedRawBars(WTSBarStruct* bars, uint32_t count);
+	void feedRawBars(VvTSBarStruct* bars, uint32_t count);
 
 	void feedAdjFactors(const char* stdCode, uint32_t* dates, double* factors, uint32_t count);
 
@@ -117,7 +117,7 @@ public:
 //////////////////////////////////////////////////////////////////////////
 //ILogHandler
 public:
-	virtual void handleLogAppend(WTSLogLevel ll, const char* msg) override;
+	virtual void handleLogAppend(VvTSLogLevel ll, const char* msg) override;
 
 //////////////////////////////////////////////////////////////////////////
 //扩展Parser
@@ -129,7 +129,7 @@ public:
 	void parser_subscribe(const char* id, const char* code);
 	void parser_unsubscribe(const char* id, const char* code);
 
-	void on_ext_parser_quote(const char* id, WTSTickStruct* curTick, uint32_t uProcFlag);
+	void on_ext_parser_quote(const char* id, VvTSTickStruct* curTick, uint32_t uProcFlag);
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -162,21 +162,21 @@ public:
 public:
 	void ctx_on_init(uint32_t id, EngineType eType = ET_CTA);
 	void ctx_on_session_event(uint32_t id, uint32_t curTDate, bool isBegin = true, EngineType eType = ET_CTA);
-	void ctx_on_tick(uint32_t id, const char* stdCode, WTSTickData* newTick, EngineType eType = ET_CTA);
+	void ctx_on_tick(uint32_t id, const char* stdCode, VvTSTickData* newTick, EngineType eType = ET_CTA);
 	void ctx_on_calc(uint32_t id, uint32_t curDate, uint32_t curTime, EngineType eType = ET_CTA);
-	void ctx_on_bar(uint32_t id, const char* stdCode, const char* period, WTSBarStruct* newBar, EngineType eType = ET_CTA);
+	void ctx_on_bar(uint32_t id, const char* stdCode, const char* period, VvTSBarStruct* newBar, EngineType eType = ET_CTA);
 	void ctx_on_cond_triggered(uint32_t id, const char* stdCode, double target, double price, const char* usertag, EngineType eType = ET_CTA);
 
 	void hft_on_channel_ready(uint32_t cHandle, const char* trader);
 	void hft_on_channel_lost(uint32_t cHandle, const char* trader);
-	void hft_on_order(uint32_t cHandle, VvtUInt32 localid, const char* stdCode, bool isBuy, double totalQty, double leftQty, double price, bool isCanceled, const char* userTag);
-	void hft_on_trade(uint32_t cHandle, VvtUInt32 localid, const char* stdCode, bool isBuy, double vol, double price, const char* userTag);
-	void hft_on_entrust(uint32_t cHandle, VvtUInt32 localid, const char* stdCode, bool bSuccess, const char* message, const char* userTag);
+	void hft_on_order(uint32_t cHandle, VvTUInt32 localid, const char* stdCode, bool isBuy, double totalQty, double leftQty, double price, bool isCanceled, const char* userTag);
+	void hft_on_trade(uint32_t cHandle, VvTUInt32 localid, const char* stdCode, bool isBuy, double vol, double price, const char* userTag);
+	void hft_on_entrust(uint32_t cHandle, VvTUInt32 localid, const char* stdCode, bool bSuccess, const char* message, const char* userTag);
 	void hft_on_position(uint32_t cHandle, const char* stdCode, bool isLong, double prevol, double preavail, double newvol, double newavail);
 
-	void hft_on_order_queue(uint32_t id, const char* stdCode, WTSOrdQueData* newOrdQue);
-	void hft_on_order_detail(uint32_t id, const char* stdCode, WTSOrdDtlData* newOrdDtl);
-	void hft_on_transaction(uint32_t id, const char* stdCode, WTSTransData* newTranns);
+	void hft_on_order_queue(uint32_t id, const char* stdCode, VvTSOrdQueData* newOrdQue);
+	void hft_on_order_detail(uint32_t id, const char* stdCode, VvTSOrdDtlData* newOrdDtl);
+	void hft_on_transaction(uint32_t id, const char* stdCode, VvTSTransData* newTranns);
 
 	bool addExeFactories(const char* folder);
 	bool addCtaFactories(const char* folder);
@@ -184,9 +184,9 @@ public:
 	bool addSelFactories(const char* folder);
 
 private:
-	bool initTraders(VVTSVariant* cfgTrader);
-	bool initParsers(VVTSVariant* cfgParser);
-	bool initExecuters(VVTSVariant* cfgExecuter);
+	bool initTraders(VvTSVariant* cfgTrader);
+	bool initParsers(VvTSVariant* cfgParser);
+	bool initExecuters(VvTSVariant* cfgExecuter);
 	bool initDataMgr();
 	bool initEvtNotifier();
 	bool initCtaStrategies();
@@ -232,7 +232,7 @@ private:
 	FuncExecCmdCallback		_cb_exec_cmd;
 	FuncExecInitCallback	_cb_exec_init;
 
-	VVTSVariant*			_config;
+	VvTSVariant*			_config;
 	TraderAdapterMgr	_traders;
 	ParserAdapterMgr	_parsers;
 	WtExecuterFactory	_exe_factory;

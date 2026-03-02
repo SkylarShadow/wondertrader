@@ -1,5 +1,5 @@
 ﻿/*!
- * \file WTSCollection.hpp
+ * \file VvTSCollection.hpp
  * \project	WonderTrader
  *
  * \author Wesley
@@ -8,7 +8,7 @@
  * \brief Wt集合组件定义文件
  */
 #pragma once
-#include "WTSObject.hpp"
+#include "VvTSObject.hpp"
 #include <vector>
 #include <map>
 #include <functional>
@@ -20,35 +20,35 @@
 NS_VVTP_BEGIN
 
 //////////////////////////////////////////////////////////////////////////
-//WTSArray
+//VvTSArray
 
 /*
  *	平台数组容器
  *	内部使用vector实现
- *	数据使用WTSObject指针对象
- *	所有WTSObject的派生类都可以使用
+ *	数据使用VvTSObject指针对象
+ *	所有VvTSObject的派生类都可以使用
  *	用于平台内使用
  */
-class WTSArray : public WTSObject
+class VvTSArray : public VvTSObject
 {
 public:
 	/*
 	 *	数组迭代器
 	 */
-	typedef std::vector<WTSObject*>::iterator Iterator;
-	typedef std::vector<WTSObject*>::const_iterator ConstIterator;
+	typedef std::vector<VvTSObject*>::iterator Iterator;
+	typedef std::vector<VvTSObject*>::const_iterator ConstIterator;
 
-	typedef std::vector<WTSObject*>::reverse_iterator ReverseIterator;
-	typedef std::vector<WTSObject*>::const_reverse_iterator ConstReverseIterator;
+	typedef std::vector<VvTSObject*>::reverse_iterator ReverseIterator;
+	typedef std::vector<VvTSObject*>::const_reverse_iterator ConstReverseIterator;
 
-	typedef std::function<bool(WTSObject*, WTSObject*)>	SortFunc;
+	typedef std::function<bool(VvTSObject*, VvTSObject*)>	SortFunc;
 
 	/*
 	 *	创建数组对象
 	 */
-	static WTSArray* create()
+	static VvTSArray* create()
 	{
-		WTSArray* pRet = new WTSArray();
+		VvTSArray* pRet = new VvTSArray();
 		return pRet;
 	}
 
@@ -78,17 +78,17 @@ public:
 	 *	grab接口读取数据以后,增加引用计数
 	 */
 	inline
-	WTSObject* at(uint32_t idx)
+	VvTSObject* at(uint32_t idx)
 	{
 		if(idx <0 || idx >= _vec.size())
 			return NULL;
 
-		WTSObject* pRet = _vec.at(idx);
+		VvTSObject* pRet = _vec.at(idx);
 		return pRet;
 	}
 
 	inline
-	uint32_t idxOf(WTSObject* obj)
+	uint32_t idxOf(VvTSObject* obj)
 	{
 		if (obj == NULL)
 			return -1;
@@ -110,7 +110,7 @@ public:
 		if(idx <0 || idx >= _vec.size())
 			return NULL;
 
-		WTSObject* pRet = _vec.at(idx);
+		VvTSObject* pRet = _vec.at(idx);
 		return static_cast<T*>(pRet);
 	}
 
@@ -119,12 +119,12 @@ public:
 	 *	用法同at函数
 	 */
 	inline
-	WTSObject* operator [](uint32_t idx)
+	VvTSObject* operator [](uint32_t idx)
 	{
 		if(idx <0 || idx >= _vec.size())
 			return NULL;
 
-		WTSObject* pRet = _vec.at(idx);
+		VvTSObject* pRet = _vec.at(idx);
 		return pRet;
 	}
 
@@ -133,12 +133,12 @@ public:
 	 *	增加引用计数
 	 */
 	inline
-	WTSObject*	grab(uint32_t idx)
+	VvTSObject*	grab(uint32_t idx)
 	{
 		if(idx <0 || idx >= _vec.size())
 			return NULL;
 
-		WTSObject* pRet = _vec.at(idx);
+		VvTSObject* pRet = _vec.at(idx);
 		if (pRet)
 			pRet->retain();
 
@@ -150,7 +150,7 @@ public:
 	 *	数据自动增加引用计数
 	 */
 	inline
-	void append(WTSObject* obj, bool bAutoRetain = true)
+	void append(VvTSObject* obj, bool bAutoRetain = true)
 	{
 		if (bAutoRetain && obj)
 			obj->retain();
@@ -164,7 +164,7 @@ public:
 	 *	新数据引用计数增加
 	 */
 	inline
-	void set(uint32_t idx, WTSObject* obj, bool bAutoRetain = true)
+	void set(uint32_t idx, VvTSObject* obj, bool bAutoRetain = true)
 	{
 		if(idx >= _vec.size() || obj == NULL)
 			return;
@@ -172,7 +172,7 @@ public:
 		if(bAutoRetain)
 			obj->retain();
 
-		WTSObject* oldObj = _vec.at(idx);
+		VvTSObject* oldObj = _vec.at(idx);
 		if(oldObj)
 			oldObj->release();
 
@@ -180,7 +180,7 @@ public:
 	}
 
 	inline
-	void append(WTSArray* ay)
+	void append(VvTSArray* ay)
 	{
 		if(ay == NULL)
 			return;
@@ -196,10 +196,10 @@ public:
 	void clear()
 	{
 		{
-			std::vector<WTSObject*>::iterator it = _vec.begin();
+			std::vector<VvTSObject*>::iterator it = _vec.begin();
 			for (; it != _vec.end(); it++)
 			{
-				WTSObject* obj = (*it);
+				VvTSObject* obj = (*it);
 				if (obj)
 					obj->release();
 			}
@@ -209,7 +209,7 @@ public:
 	}
 
 	/*
-	 *	释放数组对象,用法如WTSObject
+	 *	释放数组对象,用法如VvTSObject
 	 *	不同的是,如果引用计数为1时
 	 *	释放所有数据
 	 */
@@ -295,10 +295,10 @@ public:
 	}
 
 protected:
-	WTSArray():_holding(false){}
-	virtual ~WTSArray(){}
+	VvTSArray():_holding(false){}
+	virtual ~VvTSArray(){}
 
-	std::vector<WTSObject*>	_vec;
+	std::vector<VvTSObject*>	_vec;
 	std::atomic<bool>		_holding;
 };
 
@@ -307,17 +307,17 @@ protected:
  *	map容器
  *	内部采用std:map实现
  *	模版类型为key类型
- *	数据使用WTSObject指针对象
- *	所有WTSObject的派生类都适用
+ *	数据使用VvTSObject指针对象
+ *	所有VvTSObject的派生类都适用
  */
 template <class T>
-class WTSMap : public WTSObject
+class VvTSMap : public VvTSObject
 {
 public:
 	/*
 	 *	容器迭代器的定义
 	 */
-	typedef typename std::map<T, WTSObject*>	_MyType;
+	typedef typename std::map<T, VvTSObject*>	_MyType;
 	typedef typename _MyType::iterator			Iterator;
 	typedef typename _MyType::const_iterator	ConstIterator;
 	typedef typename _MyType::reverse_iterator			ReverseIterator;
@@ -326,9 +326,9 @@ public:
 	/*
 	 *	创建map容器
 	 */
-	static WTSMap<T>*	create()
+	static VvTSMap<T>*	create()
 	{
-		WTSMap<T>* pRet = new WTSMap<T>();
+		VvTSMap<T>* pRet = new VvTSMap<T>();
 		return pRet;
 	}
 
@@ -344,13 +344,13 @@ public:
 	 *	没有则返回NULL
 	 */
 	inline
-	WTSObject* get(const T &_key)
+	VvTSObject* get(const T &_key)
 	{
 		Iterator it = _map.find(_key);
 		if(it == _map.end())
 			return NULL;
 
-		WTSObject* pRet = it->second;
+		VvTSObject* pRet = it->second;
 		return pRet;
 	}
 
@@ -359,13 +359,13 @@ public:
 	 *	用法同get函数
 	 */
 	inline
-	WTSObject* operator[](const T &_key)
+	VvTSObject* operator[](const T &_key)
 	{
 		Iterator it = _map.find(_key);
 		if(it == _map.end())
 			return NULL;
 
-		WTSObject* pRet = it->second;
+		VvTSObject* pRet = it->second;
 		return pRet;
 	}
 
@@ -375,13 +375,13 @@ public:
 	 *	没有则返回NULL
 	 */
 	inline
-	WTSObject* grab(const T &_key)
+	VvTSObject* grab(const T &_key)
 	{
 		Iterator it = _map.find(_key);
 		if(it == _map.end())
 			return NULL;
 
-		WTSObject* pRet = it->second;
+		VvTSObject* pRet = it->second;
 		if (pRet)
 			pRet->retain();
 
@@ -393,12 +393,12 @@ public:
 	 *	如果key存在,则将原有数据释放
 	 */
 	inline
-	void add(T _key, WTSObject* obj, bool bAutoRetain = true)
+	void add(T _key, VvTSObject* obj, bool bAutoRetain = true)
 	{
 		if(bAutoRetain && obj)
 			obj->retain();
 
-		WTSObject* pOldObj = NULL;
+		VvTSObject* pOldObj = NULL;
 		Iterator it = _map.find(_key);
 		if(it != _map.end())
 		{
@@ -420,7 +420,7 @@ public:
 		Iterator it = _map.find(_key);
 		if(it != _map.end())
 		{
-			WTSObject* obj = it->second;
+			VvTSObject* obj = it->second;
 			_map.erase(it);
 			if (obj) obj->release();
 		}
@@ -529,7 +529,7 @@ public:
 	}
 
 	inline
-	WTSObject* last() 
+	VvTSObject* last() 
 	{
 		if(_map.empty())
 			return NULL;
@@ -577,42 +577,42 @@ public:
 	}
 
 protected:
-	WTSMap(){}
-	~WTSMap(){}
+	VvTSMap(){}
+	~VvTSMap(){}
 
-	std::map<T, WTSObject*>	_map;
+	std::map<T, VvTSObject*>	_map;
 };
 
 /*
  *	map容器
  *	内部采用std:map实现
  *	模版类型为key类型
- *	数据使用WTSObject指针对象
- *	所有WTSObject的派生类都适用
+ *	数据使用VvTSObject指针对象
+ *	所有VvTSObject的派生类都适用
  */
 template <typename T, class Hash = std::hash<T>>
-class WTSHashMap : public WTSObject
+class VvTSHashMap : public VvTSObject
 {
 protected:
-	WTSHashMap() {}
-	virtual ~WTSHashMap() {}
+	VvTSHashMap() {}
+	virtual ~VvTSHashMap() {}
 
-	//std::unordered_map<T, WTSObject*>	_map;
-	vvt_hashmap<T, WTSObject*, Hash>	_map;
+	//std::unordered_map<T, VvTSObject*>	_map;
+	vvt_hashmap<T, VvTSObject*, Hash>	_map;
 
 public:
 	/*
 	 *	容器迭代器的定义
 	 */
-	typedef vvt_hashmap<T, WTSObject*, Hash>		_MyType;
+	typedef vvt_hashmap<T, VvTSObject*, Hash>		_MyType;
 	typedef typename _MyType::const_iterator	ConstIterator;
 
 	/*
 	 *	创建map容器
 	 */
-	static WTSHashMap<T, Hash>*	create() noexcept
+	static VvTSHashMap<T, Hash>*	create() noexcept
 	{
-		WTSHashMap<T, Hash>* pRet = new WTSHashMap<T, Hash>();
+		VvTSHashMap<T, Hash>* pRet = new VvTSHashMap<T, Hash>();
 		return pRet;
 	}
 
@@ -626,13 +626,13 @@ public:
 	 *	不增加数据的引用计数
 	 *	没有则返回NULL
 	 */
-	inline WTSObject* get(const T &_key) noexcept
+	inline VvTSObject* get(const T &_key) noexcept
 	{
 		auto it = _map.find(_key);
 		if(it == _map.end())
 			return NULL;
 
-		WTSObject* pRet = it->second;
+		VvTSObject* pRet = it->second;
 		return pRet;
 	}
 
@@ -641,13 +641,13 @@ public:
 	 *	增加数据的引用计数
 	 *	没有则返回NULL
 	 */
-	inline WTSObject* grab(const T &_key) noexcept
+	inline VvTSObject* grab(const T &_key) noexcept
 	{
 		auto it = _map.find(_key);
 		if(it == _map.end())
 			return NULL;
 
-		WTSObject* pRet = it->second;
+		VvTSObject* pRet = it->second;
 		pRet->retain();
 		return pRet;
 	}
@@ -656,12 +656,12 @@ public:
 	 *	新增一个数据,并增加数据引用计数
 	 *	如果key存在,则将原有数据释放
 	 */
-	inline void add(const T &_key, WTSObject* obj, bool bAutoRetain = true) noexcept
+	inline void add(const T &_key, VvTSObject* obj, bool bAutoRetain = true) noexcept
 	{
 		if (bAutoRetain && obj)
 			obj->retain();
 
-		WTSObject* pOldObj = NULL;
+		VvTSObject* pOldObj = NULL;
 		auto it = _map.find(_key);
 		if (it != _map.end())
 		{
@@ -682,7 +682,7 @@ public:
 		auto it = _map.find(_key);
 		if (it != _map.end())
 		{
-			WTSObject* obj = it->second;
+			VvTSObject* obj = it->second;
 			_map.erase(it);
 			if (obj) obj->release();
 		}
@@ -750,16 +750,16 @@ public:
 };
 
 //////////////////////////////////////////////////////////////////////////
-//WTSQueue
-class WTSQueue : public WTSObject
+//VvTSQueue
+class VvTSQueue : public VvTSObject
 {
 public:
-	typedef std::deque<WTSObject*>::iterator Iterator;
-	typedef std::deque<WTSObject*>::const_iterator ConstIterator;
+	typedef std::deque<VvTSObject*>::iterator Iterator;
+	typedef std::deque<VvTSObject*>::const_iterator ConstIterator;
 
-	static WTSQueue* create()
+	static VvTSQueue* create()
 	{
-		WTSQueue* pRet = new WTSQueue();
+		VvTSQueue* pRet = new VvTSQueue();
 		return pRet;
 	}
 
@@ -768,7 +768,7 @@ public:
 		_queue.pop_front();
 	}
 
-	void push(WTSObject* obj, bool bAutoRetain = true)
+	void push(VvTSObject* obj, bool bAutoRetain = true)
 	{
 		if (obj && bAutoRetain)
 			obj->retain();
@@ -776,24 +776,24 @@ public:
 		_queue.emplace_back(obj);
 	}
 
-	WTSObject* front(bool bRetain = true)
+	VvTSObject* front(bool bRetain = true)
 	{
 		if(_queue.empty())
 			return NULL;
 
-		WTSObject* obj = _queue.front();
+		VvTSObject* obj = _queue.front();
 		if(bRetain)
 			obj->retain();
 
 		return obj;
 	}
 
-	WTSObject* back(bool bRetain = true)
+	VvTSObject* back(bool bRetain = true)
 	{
 		if(_queue.empty())
 			return NULL;
 
-		WTSObject* obj = _queue.back();
+		VvTSObject* obj = _queue.back();
 		if(bRetain)
 			obj->retain();
 
@@ -847,7 +847,7 @@ public:
 		return _queue.begin();
 	}
 
-	void swap(WTSQueue* right)
+	void swap(VvTSQueue* right)
 	{
 		_queue.swap(right->_queue);
 	}
@@ -866,10 +866,10 @@ public:
 	}
 
 protected:
-	WTSQueue(){}
-	virtual ~WTSQueue(){}
+	VvTSQueue(){}
+	virtual ~VvTSQueue(){}
 
-	std::deque<WTSObject*>	_queue;
+	std::deque<VvTSObject*>	_queue;
 };
 
 NS_VVTP_END

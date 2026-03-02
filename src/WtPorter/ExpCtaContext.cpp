@@ -50,7 +50,7 @@ void ExpCtaContext::on_session_end(uint32_t uDate)
 	CtaStraBaseCtx::on_session_end(uDate);
 }
 
-void ExpCtaContext::on_tick_updated(const char* stdCode, WTSTickData* newTick)
+void ExpCtaContext::on_tick_updated(const char* stdCode, VvTSTickData* newTick)
 {
 	auto it = _tick_subs.find(stdCode);
 	if (it == _tick_subs.end())
@@ -59,7 +59,7 @@ void ExpCtaContext::on_tick_updated(const char* stdCode, WTSTickData* newTick)
 	getRunner().ctx_on_tick(_context_id, stdCode, newTick, ET_CTA);
 }
 
-void ExpCtaContext::on_bar_close(const char* stdCode, const char* period, WTSBarStruct* newBar)
+void ExpCtaContext::on_bar_close(const char* stdCode, const char* period, VvTSBarStruct* newBar)
 {
 	//要向外部回调
 	getRunner().ctx_on_bar(_context_id, stdCode, period, newBar, ET_CTA);

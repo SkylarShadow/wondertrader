@@ -1,4 +1,4 @@
-﻿#include "../Share/WtKVCache.hpp"
+﻿#include "../Share/VvtKVCache.hpp"
 #include "../Share/IniHelper.hpp"
 #include "../Share/TimeUtils.hpp"
 #include "../Share/fmtlib.h"
@@ -9,7 +9,7 @@ USING_NS_VVTP;
 TEST(test_kvcache, test_usage)
 {
 	{
-		WtKVCache cache;
+		VvtKVCache cache;
 		EXPECT_TRUE(cache.init("./simplecache.dat", 20220325, [](const char* msg) {
 			printf(msg);
 			printf("\n");
@@ -29,7 +29,7 @@ TEST(test_kvcache, test_usage)
 	}
 
 	{
-		WtKVCache cache;
+		VvtKVCache cache;
 		EXPECT_TRUE(cache.init("./simplecache.dat", 20220326, [](const char* msg) {
 			printf(msg);
 			printf("\n");
@@ -40,7 +40,7 @@ TEST(test_kvcache, test_usage)
 
 TEST(test_kvcache, test_perform)
 {
-	WtKVCache cache;
+	VvtKVCache cache;
 	cache.init("./scperform.dat", 20220325, [](const char* msg) {
 		printf(msg);
 		printf("\n");

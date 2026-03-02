@@ -9,9 +9,9 @@
  */
 #include "ParserYD.h"
 
-#include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/VVTSVariant.hpp"
+#include "../Includes/VvTSDataDef.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/VvTSVariant.hpp"
 #include "../Includes/IBaseDataMgr.h"
 
 #include "../Share/ModuleHelper.hpp"
@@ -23,7 +23,7 @@
  //By Wesley @ 2022.01.05
 #include "../Share/fmtlib.h"
 template<typename... Args>
-inline void write_log(IParserSpi* sink, WTSLogLevel ll, const char* format, const Args&... args)
+inline void write_log(IParserSpi* sink, VvTSLogLevel ll, const char* format, const Args&... args)
 {
 	if (sink == NULL)
 		return;
@@ -72,7 +72,7 @@ void ParserYD::notifyReadyForLogin(bool hasLoginFailed)
 	if (m_sink)
 	{
 		write_log(m_sink, LL_INFO, "[ParserYD] Market data server connected");
-		m_sink->handleEvent(WPE_Connect, 0);
+		m_sink->handleEvent(VvPE_Connect, 0);
 	}
 
 	DoLogin();
@@ -88,7 +88,7 @@ void ParserYD::notifyLogin(int errorNo, int maxOrderRef, bool isMonitor)
 		m_uTradingDate = m_pUserAPI->getTradingDay();
 		if (m_sink)
 		{
-			m_sink->handleEvent(WPE_Login, 0);
+			m_sink->handleEvent(VvPE_Login, 0);
 		}
 
 		//如果API初始化过了，就直接订阅
@@ -132,12 +132,12 @@ void ParserYD::notifyMarketData(const YDMarketData *pDepthMarketData)
 	uint32_t actTime = pDepthMarketData->TimeStamp;
 	uint32_t actHour = actTime / 10000000;
 
-	WTSContractInfo* contract = m_pBaseDataMgr->getContract(instInfo->InstrumentID, exchgInfo->ExchangeID);
+	VvTSContractInfo* contract = m_pBaseDataMgr->getContract(instInfo->InstrumentID, exchgInfo->ExchangeID);
 	if (contract == NULL)
 		return;
 
-	WTSTickData* tick = WTSTickData::create(instInfo->InstrumentID);
-	WTSTickStruct& quote = tick->getTickStruct();
+	VvTSTickData* tick = VvTSTickData::create(instInfo->InstrumentID);
+	VvTSTickStruct& quote = tick->getTickStruct();
 	vvt_strcpy(quote.exchg, contract->getExchg());
 	tick->setContractInfo(contract);
 
@@ -173,7 +173,7 @@ void ParserYD::notifyMarketData(const YDMarketData *pDepthMarketData)
 	tick->release();
 }
 
-bool ParserYD::init(VVTSVariant* config)
+bool ParserYD::init(VvTSVariant* config)
 {
 	m_strCfgFile = config->getCString("config");
 	m_strUserID = config->getCString("user");

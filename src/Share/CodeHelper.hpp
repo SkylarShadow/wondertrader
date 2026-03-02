@@ -10,7 +10,7 @@
 #pragma once
 #include "fmtlib.h"
 #include "StrUtil.hpp"
-#include "../Includes/WTSTypes.h"
+#include "../Includes/VvTSTypes.h"
 #include "../Includes/IHotMgr.h"
 
 #include <boost/xpressive/xpressive_dynamic.hpp>

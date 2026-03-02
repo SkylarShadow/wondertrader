@@ -12,13 +12,13 @@
 #include <stdint.h>
 #include <atomic>
 
-#include "../Includes/VVTSMarcos.h"
+#include "../Includes/VvTSMarcos.h"
 #include "../Share/StdUtils.hpp"
 
 NS_VVTP_BEGIN
-class WTSSessionInfo;
+class VvTSSessionInfo;
 class IDataReader;
-class WTSTickData;
+class VvTSTickData;
 
 class WtSelEngine;
 
@@ -30,16 +30,16 @@ public:
 
 public:
 	void	init(IDataReader* store, const char* sessionID);
-	void	on_tick(WTSTickData* curTick, uint32_t hotFlag = 0);
+	void	on_tick(VvTSTickData* curTick, uint32_t hotFlag = 0);
 
 	void	run();
 	void	stop();
 
 private:
-	void	trigger_price(WTSTickData* curTick, uint32_t hotFlag = 0);
+	void	trigger_price(VvTSTickData* curTick, uint32_t hotFlag = 0);
 
 private:
-	WTSSessionInfo*	_s_info;
+	VvTSSessionInfo*	_s_info;
 	WtSelEngine*	_engine;
 	IDataReader*		_store;
 

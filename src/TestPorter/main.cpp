@@ -2,7 +2,7 @@
 #include "../WtPorter/WtPorter.h"
 //#include "../WtExecMon/WtExecPorter.h"
 
-#include "../Includes/WTSStruct.h"
+#include "../Includes/VvTSStruct.h"
 #include "../Share/DLLHelper.hpp"
 #include "../Share/CodeHelper.hpp"
 #include "../Share/fmtlib.h"
@@ -13,22 +13,22 @@ void PORTER_FLAG on_init(CtxHandler ctxid)
 	hft_sub_ticks(ctxid, "CFFEX.IF.HOT");
 }
 
-void PORTER_FLAG on_tick(CtxHandler ctxid, const char* stdCode, WTSTickStruct* newTick)
+void PORTER_FLAG on_tick(CtxHandler ctxid, const char* stdCode, VvTSTickStruct* newTick)
 {
 	fmt::print("on_tick\n");
 }
 
-void PORTER_FLAG on_calc(CtxHandler ctxid, VvtUInt32 uDate, VvtUInt32 uTime)
+void PORTER_FLAG on_calc(CtxHandler ctxid, VvTUInt32 uDate, VvTUInt32 uTime)
 {
 	fmt::print("on_calc\n");
 }
 
-void PORTER_FLAG on_bar(CtxHandler ctxid, const char* code, const char* period, WTSBarStruct* newBar)
+void PORTER_FLAG on_bar(CtxHandler ctxid, const char* code, const char* period, VvTSBarStruct* newBar)
 {
 	fmt::print("on_bar\n");
 }
 
-void PORTER_FLAG on_getbar(CtxHandler ctxid, const char* code, const char* period, WTSBarStruct* bar, bool isLast)
+void PORTER_FLAG on_getbar(CtxHandler ctxid, const char* code, const char* period, VvTSBarStruct* bar, bool isLast)
 {
 	if (bar)
 		fmt::print("on_getbar: {}\n", bar->time);
@@ -36,48 +36,48 @@ void PORTER_FLAG on_getbar(CtxHandler ctxid, const char* code, const char* perio
 		int x = 1;
 }
 
-void PORTER_FLAG on_getticks(CtxHandler cHandle, const char* code, WTSTickStruct* tick, bool isLast)
+void PORTER_FLAG on_getticks(CtxHandler cHandle, const char* code, VvTSTickStruct* tick, bool isLast)
 {
 	fmt::print("on_getticks\n");
 }
 
-void PORTER_FLAG on_event(VvtUInt32 evtId, VvtUInt32 curDate, VvtUInt32 curTime)
+void PORTER_FLAG on_event(VvTUInt32 evtId, VvTUInt32 curDate, VvTUInt32 curTime)
 {
 	fmt::print("on_event\n");
 }
 
-void PORTER_FLAG on_channel_evt(CtxHandler cHandle, const char* trader, VvtUInt32 evtid)
+void PORTER_FLAG on_channel_evt(CtxHandler cHandle, const char* trader, VvTUInt32 evtid)
 {
 	fmt::print("on_channel_evt\n");
 	double undone = hft_get_undone(cHandle, "CFFEX.IF.HOT");
 }
 
-void PORTER_FLAG on_order(CtxHandler cHandle, VvtUInt32 localid, const char* stdCode, bool isBuy, double totalQty, double leftQty, double price, bool isCanceled, const char* userTag)
+void PORTER_FLAG on_order(CtxHandler cHandle, VvTUInt32 localid, const char* stdCode, bool isBuy, double totalQty, double leftQty, double price, bool isCanceled, const char* userTag)
 {
 
 }
 
-void PORTER_FLAG on_trade(CtxHandler cHandle, VvtUInt32 localid, const char* stdCode, bool isBuy, double vol, double price, const char* userTag)
+void PORTER_FLAG on_trade(CtxHandler cHandle, VvTUInt32 localid, const char* stdCode, bool isBuy, double vol, double price, const char* userTag)
 {
 
 }
 
-void PORTER_FLAG on_entrust(CtxHandler cHandle, VvtUInt32 localid, const char* stdCode, bool bSuccess, const char* message, const char* userTag)
+void PORTER_FLAG on_entrust(CtxHandler cHandle, VvTUInt32 localid, const char* stdCode, bool bSuccess, const char* message, const char* userTag)
 {
 
 }
 
-void PORTER_FLAG on_order_queue(CtxHandler cHandle, const char* stdCode, WTSOrdQueStruct* ordQue)
+void PORTER_FLAG on_order_queue(CtxHandler cHandle, const char* stdCode, VvTSOrdQueStruct* ordQue)
 {
 
 }
 
-void PORTER_FLAG on_order_detail(CtxHandler cHandle, const char* stdCode, WTSOrdDtlStruct* ordDtl)
+void PORTER_FLAG on_order_detail(CtxHandler cHandle, const char* stdCode, VvTSOrdDtlStruct* ordDtl)
 {
 
 }
 
-void PORTER_FLAG on_transaction(CtxHandler cHandle, const char* stdCode, WTSTransStruct* trans)
+void PORTER_FLAG on_transaction(CtxHandler cHandle, const char* stdCode, VvTSTransStruct* trans)
 {
 
 }

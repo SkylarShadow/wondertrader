@@ -16,7 +16,7 @@
 
 
 NS_VVTP_BEGIN
-class VVTSVariant;
+class VvTSVariant;
 
 typedef enum tagActionType
 {

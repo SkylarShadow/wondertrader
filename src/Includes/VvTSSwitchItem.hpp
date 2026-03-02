@@ -1,5 +1,5 @@
 ﻿/*!
- * \file WTSSwitchItem.hpp
+ * \file VvTSSwitchItem.hpp
  * \project	WonderTrader
  *
  * \author Wesley
@@ -8,19 +8,19 @@
  * \brief Wt主力切换规则对象定义文件
  */
 #pragma once
-#include "WTSObject.hpp"
+#include "VvTSObject.hpp"
 
 NS_VVTP_BEGIN
-class WTSSwitchItem : public WTSObject
+class VvTSSwitchItem : public VvTSObject
 {
 protected:
-	WTSSwitchItem():_factor(1.0){}
-	virtual ~WTSSwitchItem(){}
+	VvTSSwitchItem():_factor(1.0){}
+	virtual ~VvTSSwitchItem(){}
 
 public:
-	static WTSSwitchItem* create(const char* exchg, const char* product, const char* from, const char* to, uint32_t dt)
+	static VvTSSwitchItem* create(const char* exchg, const char* product, const char* from, const char* to, uint32_t dt)
 	{
-		WTSSwitchItem* pRet = new WTSSwitchItem();
+		VvTSSwitchItem* pRet = new VvTSSwitchItem();
 		pRet->_exchg = exchg;
 		pRet->_product = product;
 		pRet->_from = from;

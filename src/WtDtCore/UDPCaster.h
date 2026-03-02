@@ -9,14 +9,14 @@
  */
 #pragma once
 #include "IDataCaster.h"
-#include "../Includes/WTSObject.hpp"
+#include "../Includes/VvTSObject.hpp"
 #include "../Share/StdUtils.hpp"
 
 #include <boost/asio.hpp>
 #include <queue>
 
 NS_VVTP_BEGIN
-	class VVTSVariant;
+	class VvTSVariant;
 NS_VVTP_END
 
 USING_NS_VVTP;
@@ -53,10 +53,10 @@ private:
 
 	void	do_receive();
 
-	void	do_broadcast(WTSObject* data, uint32_t dataType);
+	void	do_broadcast(VvTSObject* data, uint32_t dataType);
 
 public:
-	bool	init(VVTSVariant* cfg, WTSBaseDataMgr* bdMgr, DataManager* dtMgr);
+	bool	init(VvTSVariant* cfg, WTSBaseDataMgr* bdMgr, DataManager* dtMgr);
 	void	start(int bport);
 	void	stop();
 
@@ -64,10 +64,10 @@ public:
 	bool	addMRecver(const char* remote, int port, int sendport, int type = 0);
 
 public:
-	virtual void	broadcast(WTSTickData* curTick) override;
-	virtual void	broadcast(WTSOrdQueData* curOrdQue) override;
-	virtual void	broadcast(WTSOrdDtlData* curOrdDtl) override;
-	virtual void	broadcast(WTSTransData* curTrans) override;
+	virtual void	broadcast(VvTSTickData* curTick) override;
+	virtual void	broadcast(VvTSOrdQueData* curOrdQue) override;
+	virtual void	broadcast(VvTSOrdDtlData* curOrdDtl) override;
+	virtual void	broadcast(VvTSTransData* curTrans) override;
 
 private:
 	typedef boost::asio::ip::udp::socket	UDPSocket;
@@ -107,9 +107,9 @@ private:
 	typedef struct _CastData
 	{
 		uint32_t	_datatype;
-		WTSObject*	_data;
+		VvTSObject*	_data;
 
-		_CastData(WTSObject* obj = NULL, uint32_t dataType = 0)
+		_CastData(VvTSObject* obj = NULL, uint32_t dataType = 0)
 			: _data(obj), _datatype(dataType)
 		{
 			if (_data)

@@ -10,11 +10,11 @@
 #include "TraderOES.h"
 
 #include "../Includes/IBaseDataMgr.h"
-#include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSSessionInfo.hpp"
-#include "../Includes/WTSTradeDef.hpp"
-#include "../Includes/WTSError.hpp"
-#include "../Includes/VVTSVariant.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/VvTSSessionInfo.hpp"
+#include "../Includes/VvTSTradeDef.hpp"
+#include "../Includes/VvTSError.hpp"
+#include "../Includes/VvTSVariant.hpp"
 
 #include "../Share/ModuleHelper.hpp"
 
@@ -31,7 +31,7 @@
  //By Wesley @ 2022.01.05
 #include "../Share/fmtlib.h"
 template<typename... Args>
-inline void write_log(ITraderSpi* sink, WTSLogLevel ll, const char* format, const Args&... args)
+inline void write_log(ITraderSpi* sink, VvTSLogLevel ll, const char* format, const Args&... args)
 {
 	if (sink == NULL)
 		return;
@@ -59,7 +59,7 @@ extern "C"
 	}
 }
 
-inline WTSOrderState wrapOrderState(int8 orderState)
+inline VvTSOrderState wrapOrderState(int8 orderState)
 {
 	switch (orderState)
 	{
@@ -217,7 +217,7 @@ TraderOES::~TraderOES()
 }
 
 #pragma region "ITraderApi"
-bool TraderOES::init(VVTSVariant *params)
+bool TraderOES::init(VvTSVariant *params)
 {
 	_config = params->getCString("config");
 
@@ -312,7 +312,7 @@ void TraderOES::reconnect()
 
 	_asyncio.post([this] {
 		if (_sink)
-			_sink->handleEvent(WTE_Connect, 0);
+			_sink->handleEvent(VvTE_Connect, 0);
 	});
 }
 
@@ -409,7 +409,7 @@ int TraderOES::logout()
 	return 0;
 }
 
-int TraderOES::orderInsert(WTSEntrust* entrust)
+int TraderOES::orderInsert(VvTSEntrust* entrust)
 {
 	if (_context == NULL || _state != TS_ALLREADY)
 	{
@@ -436,7 +436,7 @@ int TraderOES::orderInsert(WTSEntrust* entrust)
 	return 0;
 }
 
-int TraderOES::orderAction(WTSEntrustAction* action)
+int TraderOES::orderAction(VvTSEntrustAction* action)
 {
 	if (_context == NULL || _state != TS_ALLREADY)
 	{
@@ -591,7 +591,7 @@ void TraderOES::handle_ord_connected(OesAsyncApiChannelT *pAsyncChannel)
 void TraderOES::handle_ord_disconnected(OesAsyncApiChannelT *pAsyncChannel)
 {
 	if (_sink)
-		_sink->handleEvent(WTE_Close, 0);
+		_sink->handleEvent(VvTE_Close, 0);
 
 	write_log(_sink, LL_DEBUG, "[TraderOES] Order channel disconnected");
 }
@@ -610,14 +610,14 @@ void TraderOES::handle_rpt_disconnected(OesAsyncApiChannelT *pAsyncChannel)
 	write_log(_sink, LL_DEBUG, "[TraderOES] Report channel disconnected");
 }
 
-WTSOrderInfo* TraderOES::makeOrderInfo(OesOrdCnfmT* pOrdItem)
+VvTSOrderInfo* TraderOES::makeOrderInfo(OesOrdCnfmT* pOrdItem)
 {
 	const char* exchg = (OES_MKT_SH_ASHARE == pOrdItem->mktId) ? "SSE" : "SZSE";
-	WTSContractInfo* cInfo = _bd_mgr->getContract(pOrdItem->securityId, exchg);
+	VvTSContractInfo* cInfo = _bd_mgr->getContract(pOrdItem->securityId, exchg);
 	if (cInfo == NULL)
 		return NULL;
 
-	WTSOrderInfo* pRet = WTSOrderInfo::create();
+	VvTSOrderInfo* pRet = VvTSOrderInfo::create();
 	pRet->setContractInfo(cInfo);
 	pRet->setPrice(pOrdItem->ordPrice / 10000.0);
 	pRet->setVolume(pOrdItem->ordQty);
@@ -667,14 +667,14 @@ WTSOrderInfo* TraderOES::makeOrderInfo(OesOrdCnfmT* pOrdItem)
 	return pRet;
 }
 
-WTSTradeInfo* TraderOES::makeTradeInfo(OesTrdCnfmT *pTrdItem)
+VvTSTradeInfo* TraderOES::makeTradeInfo(OesTrdCnfmT *pTrdItem)
 {
 	const char* exchg = (OES_MKT_SH_ASHARE == pTrdItem->mktId) ? "SSE" : "SZSE";
-	WTSContractInfo* cInfo = _bd_mgr->getContract(pTrdItem->securityId, exchg);
+	VvTSContractInfo* cInfo = _bd_mgr->getContract(pTrdItem->securityId, exchg);
 	if (cInfo == NULL)
 		return NULL;
 
-	WTSTradeInfo *pRet = WTSTradeInfo::create(pTrdItem->securityId, cInfo->getExchg());
+	VvTSTradeInfo *pRet = VvTSTradeInfo::create(pTrdItem->securityId, cInfo->getExchg());
 	pRet->setVolume(pTrdItem->trdQty);
 	pRet->setPrice(pTrdItem->trdPrice / 10000.0);
 	pRet->setTradeID(fmt::format("{}", pTrdItem->exchTrdNum).c_str());
@@ -686,7 +686,7 @@ WTSTradeInfo* TraderOES::makeTradeInfo(OesTrdCnfmT *pTrdItem)
 	pRet->setDirection(WDT_LONG);
 	pRet->setOffsetType(pTrdItem->trdSide == OES_BS_TYPE_BUY ? WOT_OPEN : WOT_CLOSE);
 	pRet->setRefOrder(fmt::format("{}", pTrdItem->clOrdId).c_str());
-	pRet->setTradeType(WTT_Common);
+	pRet->setTradeType(VvTT_Common);
 
 	pRet->setAmount(pTrdItem->trdAmt / 10000.0);
 
@@ -697,14 +697,14 @@ WTSTradeInfo* TraderOES::makeTradeInfo(OesTrdCnfmT *pTrdItem)
 	return pRet;
 }
 
-WTSEntrust* TraderOES::makeEntrust(OesOrdRejectT *entrustField)
+VvTSEntrust* TraderOES::makeEntrust(OesOrdRejectT *entrustField)
 {
 	const char* exchg = (OES_MKT_SH_ASHARE == entrustField->mktId) ? "SSE" : "SZSE";
-	WTSContractInfo* ct = _bd_mgr->getContract(entrustField->securityId, exchg);
+	VvTSContractInfo* ct = _bd_mgr->getContract(entrustField->securityId, exchg);
 	if (ct == NULL)
 		return NULL;
 
-	WTSEntrust* pRet = WTSEntrust::create(
+	VvTSEntrust* pRet = VvTSEntrust::create(
 		entrustField->securityId,
 		entrustField->ordQty,
 		entrustField->ordPrice/10000.0,
@@ -740,7 +740,7 @@ void TraderOES::handle_rpt_message(SMsgHeadT *pMsgHead, void *pMsgItem)
 		//	pRptMsg->rptBody.ordInsertRsp.clEnvId,
 		//	pRptMsg->rptBody.ordInsertRsp.clOrdId);
 		{
-			WTSOrderInfo* ordInfo = makeOrderInfo(&pRptMsg->rptBody.ordInsertRsp);
+			VvTSOrderInfo* ordInfo = makeOrderInfo(&pRptMsg->rptBody.ordInsertRsp);
 			if(ordInfo)
 			{
 				if (_sink)
@@ -761,10 +761,10 @@ void TraderOES::handle_rpt_message(SMsgHeadT *pMsgHead, void *pMsgItem)
 		//	pRptMsg->rptHead.ordRejReason);
 		if(pRptMsg->rptBody.ordRejectRsp.origClOrdId == 0)
 		{
-			WTSEntrust* entrustInfo = makeEntrust(&pRptMsg->rptBody.ordRejectRsp);
+			VvTSEntrust* entrustInfo = makeEntrust(&pRptMsg->rptBody.ordRejectRsp);
 			if (entrustInfo)
 			{
-				WTSError* error = WTSError::create(WEC_ORDERINSERT, fmt::format("Rejected: {}", pRptMsg->rptHead.ordRejReason).c_str());
+				VvTSError* error = VvTSError::create(WEC_ORDERINSERT, fmt::format("Rejected: {}", pRptMsg->rptHead.ordRejReason).c_str());
 				if (_sink)
 					_sink->onRspEntrust(entrustInfo, error);
 				entrustInfo->release();
@@ -773,7 +773,7 @@ void TraderOES::handle_rpt_message(SMsgHeadT *pMsgHead, void *pMsgItem)
 		}
 		else
 		{
-			WTSError* error = WTSError::create(WEC_ORDERCANCEL, fmt::format("Rejected: {}", pRptMsg->rptHead.ordRejReason).c_str());
+			VvTSError* error = VvTSError::create(WEC_ORDERCANCEL, fmt::format("Rejected: {}", pRptMsg->rptHead.ordRejReason).c_str());
 			if (_sink)
 				_sink->onTraderError(error);
 		}
@@ -791,7 +791,7 @@ void TraderOES::handle_rpt_message(SMsgHeadT *pMsgHead, void *pMsgItem)
 		//	pRptMsg->rptBody.ordCnfm.clOrdId,
 		//	pRptMsg->rptBody.ordCnfm.ordStatus);
 		{
-			WTSOrderInfo* ordInfo = makeOrderInfo(&pRptMsg->rptBody.ordCnfm);
+			VvTSOrderInfo* ordInfo = makeOrderInfo(&pRptMsg->rptBody.ordCnfm);
 			if (ordInfo)
 			{
 				if (_sink)
@@ -816,7 +816,7 @@ void TraderOES::handle_rpt_message(SMsgHeadT *pMsgHead, void *pMsgItem)
 			OesOrdCnfmT ordReport = { NULLOBJ_OES_ORD_CNFM };
 			OesHelper_ExtractOrdReportFromTrd(&pRptMsg->rptBody.trdCnfm, &ordReport);
 
-			WTSOrderInfo* ordInfo = makeOrderInfo(&ordReport);
+			VvTSOrderInfo* ordInfo = makeOrderInfo(&ordReport);
 			if (ordInfo)
 			{
 				if (_sink)
@@ -824,7 +824,7 @@ void TraderOES::handle_rpt_message(SMsgHeadT *pMsgHead, void *pMsgItem)
 				ordInfo->release();
 			}
 
-			WTSTradeInfo* trdInfo = makeTradeInfo(&pRptMsg->rptBody.trdCnfm);
+			VvTSTradeInfo* trdInfo = makeTradeInfo(&pRptMsg->rptBody.trdCnfm);
 			if (trdInfo)
 			{
 				if (_sink)
@@ -872,9 +872,9 @@ void TraderOES::handle_rsp_account(SMsgHeadT *pMsgHead, void *pMsgItem, OesQryCu
 {
 	OesCashAssetItemT   *pCashAssetItem = (OesCashAssetItemT *)pMsgItem;
 	if (NULL == _funds)
-		_funds = WTSArray::create();
+		_funds = VvTSArray::create();
 
-	WTSAccountInfo* accountInfo = WTSAccountInfo::create();
+	VvTSAccountInfo* accountInfo = VvTSAccountInfo::create();
 	accountInfo->setPreBalance(pCashAssetItem->beginningBal/10000.0);
 	accountInfo->setCloseProfit(0);
 	accountInfo->setDynProfit(0);
@@ -912,9 +912,9 @@ void TraderOES::handle_rsp_orders(SMsgHeadT *pMsgHead, void *pMsgItem, OesQryCur
 {
 	OesOrdItemT* pOrdItem = (OesOrdItemT *)pMsgItem;
 	if (NULL == _orders)
-		_orders = WTSArray::create();
+		_orders = VvTSArray::create();
 
-	WTSOrderInfo* pRet = makeOrderInfo(pOrdItem);
+	VvTSOrderInfo* pRet = makeOrderInfo(pOrdItem);
 	if (pRet == NULL)
 		return;
 
@@ -936,14 +936,14 @@ void TraderOES::handle_rsp_positions(SMsgHeadT *pMsgHead, void *pMsgItem, OesQry
 {
 	OesStkHoldingItemT* pStkHolding = (OesStkHoldingItemT *)pMsgItem;
 	if (NULL == _positions)
-		_positions = WTSArray::create();
+		_positions = VvTSArray::create();
 
 	const char* exchg = (OES_MKT_SH_ASHARE == pStkHolding->mktId) ? "SSE" : "SZSE";
-	WTSContractInfo* cInfo = _bd_mgr->getContract(pStkHolding->securityId, exchg);
+	VvTSContractInfo* cInfo = _bd_mgr->getContract(pStkHolding->securityId, exchg);
 	if (cInfo != NULL)
 	{
-		WTSCommodityInfo* commInfo = cInfo->getCommInfo();
-		WTSPositionItem* pos = WTSPositionItem::create(pStkHolding->securityId, commInfo->getCurrency(), commInfo->getExchg());
+		VvTSCommodityInfo* commInfo = cInfo->getCommInfo();
+		VvTSPositionItem* pos = VvTSPositionItem::create(pStkHolding->securityId, commInfo->getCurrency(), commInfo->getExchg());
 		pos->setContractInfo(cInfo);
 		pos->setDirection(WDT_LONG);
 
@@ -981,9 +981,9 @@ void TraderOES::handle_rsp_trades(SMsgHeadT *pMsgHead, void *pMsgItem, OesQryCur
 {
 	OesTrdItemT* pTrdItem = (OesTrdItemT *)pMsgItem;
 	if (NULL == _trades)
-		_trades = WTSArray::create();
+		_trades = VvTSArray::create();
 
-	WTSTradeInfo* pRet = makeTradeInfo(pTrdItem);
+	VvTSTradeInfo* pRet = makeTradeInfo(pTrdItem);
 	if (pRet == NULL)
 		return;
 

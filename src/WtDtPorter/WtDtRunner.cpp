@@ -12,10 +12,10 @@
 
 #include "../WtDtCore/WtHelper.h"
 
-#include "../Includes/WTSSessionInfo.hpp"
-#include "../Includes/VVTSVariant.hpp"
-#include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSContractInfo.hpp"
+#include "../Includes/VvTSSessionInfo.hpp"
+#include "../Includes/VvTSVariant.hpp"
+#include "../Includes/VvTSDataDef.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
 
 #include "../Share/StrUtil.hpp"
 
@@ -88,7 +88,7 @@ void WtDtRunner::initialize(const char* cfgFile, const char* logCfg, const char*
 	WTSLogger::init(logCfg, bLogCfgFile);
 	WtHelper::set_module_dir(modDir);
 
-	VVTSVariant* config = NULL;
+	VvTSVariant* config = NULL;
 	if (bCfgFile)
 		config = WTSCfgLoader::load_from_file(cfgFile);
 	else
@@ -101,21 +101,21 @@ void WtDtRunner::initialize(const char* cfgFile, const char* logCfg, const char*
 	}
 
 	//基础数据文件
-	VVTSVariant* cfgBF = config->get("basefiles");
+	VvTSVariant* cfgBF = config->get("basefiles");
 	if (cfgBF->get("session"))
 	{
 		_bd_mgr.loadSessions(cfgBF->getCString("session"));
 		WTSLogger::info("Trading sessions loaded");
 	}
 
-	VVTSVariant* cfgItem = cfgBF->get("commodity");
+	VvTSVariant* cfgItem = cfgBF->get("commodity");
 	if (cfgItem)
 	{
-		if (cfgItem->type() == VVTSVariant::VT_String)
+		if (cfgItem->type() == VvTSVariant::VT_String)
 		{
 			_bd_mgr.loadCommodities(cfgItem->asCString());
 		}
-		else if (cfgItem->type() == VVTSVariant::VT_Array)
+		else if (cfgItem->type() == VvTSVariant::VT_Array)
 		{
 			for (uint32_t i = 0; i < cfgItem->size(); i++)
 			{
@@ -127,11 +127,11 @@ void WtDtRunner::initialize(const char* cfgFile, const char* logCfg, const char*
 	cfgItem = cfgBF->get("contract");
 	if (cfgItem)
 	{
-		if (cfgItem->type() == VVTSVariant::VT_String)
+		if (cfgItem->type() == VvTSVariant::VT_String)
 		{
 			_bd_mgr.loadContracts(cfgItem->asCString());
 		}
-		else if (cfgItem->type() == VVTSVariant::VT_Array)
+		else if (cfgItem->type() == VvTSVariant::VT_Array)
 		{
 			for (uint32_t i = 0; i < cfgItem->size(); i++)
 			{
@@ -201,7 +201,7 @@ void WtDtRunner::initialize(const char* cfgFile, const char* logCfg, const char*
 		//如果存在指数模块要，配置指数
 		const char* filename = config->getCString("index");
 		WTSLogger::info("Reading index config from {}...", filename);
-		VVTSVariant* var = WTSCfgLoader::load_from_file(filename);
+		VvTSVariant* var = WTSCfgLoader::load_from_file(filename);
 		if (var)
 		{
 			_idx_factory.init(var, &_hot_mgr, &_bd_mgr, &_data_mgr);
@@ -213,16 +213,16 @@ void WtDtRunner::initialize(const char* cfgFile, const char* logCfg, const char*
 		}
 	}
 
-	VVTSVariant* cfgParser = config->get("parsers");
+	VvTSVariant* cfgParser = config->get("parsers");
 	if (cfgParser)
 	{
-		if (cfgParser->type() == VVTSVariant::VT_String)
+		if (cfgParser->type() == VvTSVariant::VT_String)
 		{
 			const char* filename = cfgParser->asCString();
 			if (StdFile::exists(filename))
 			{
 				WTSLogger::info("Reading parser config from {}...", filename);
-				VVTSVariant* var = WTSCfgLoader::load_from_file(filename);
+				VvTSVariant* var = WTSCfgLoader::load_from_file(filename);
 				if (var)
 				{
 					initParsers(var->get("parsers"));
@@ -238,7 +238,7 @@ void WtDtRunner::initialize(const char* cfgFile, const char* logCfg, const char*
 				WTSLogger::error("Parser configuration {} not exists", filename);
 			}
 		}
-		else if (cfgParser->type() == VVTSVariant::VT_Array)
+		else if (cfgParser->type() == VvTSVariant::VT_Array)
 		{
 			initParsers(cfgParser);
 		}
@@ -249,16 +249,16 @@ void WtDtRunner::initialize(const char* cfgFile, const char* logCfg, const char*
 	config->release();
 }
 
-void WtDtRunner::initDataMgr(VVTSVariant* config, bool bAlldayMode /* = false */)
+void WtDtRunner::initDataMgr(VvTSVariant* config, bool bAlldayMode /* = false */)
 {
 	_data_mgr.init(config, &_bd_mgr, bAlldayMode ? NULL : &_state_mon);
 }
 
-void WtDtRunner::initParsers(VVTSVariant* cfg)
+void WtDtRunner::initParsers(VvTSVariant* cfg)
 {
 	for (uint32_t idx = 0; idx < cfg->size(); idx++)
 	{
-		VVTSVariant* cfgItem = cfg->get(idx);
+		VvTSVariant* cfgItem = cfg->get(idx);
 		if (!cfgItem->getBoolean("active"))
 			continue;
 
@@ -326,12 +326,12 @@ void WtDtRunner::parser_unsubscribe(const char* id, const char* code)
 		_cb_parser_sub(id, code, false);
 }
 
-void WtDtRunner::on_ext_parser_quote(const char* id, WTSTickStruct* curTick, uint32_t uProcFlag)
+void WtDtRunner::on_ext_parser_quote(const char* id, VvTSTickStruct* curTick, uint32_t uProcFlag)
 {
 	ParserAdapterPtr adapter = _parsers.getAdapter(id);
 	if (adapter)
 	{
-		WTSTickData* newTick = WTSTickData::create(*curTick);
+		VvTSTickData* newTick = VvTSTickData::create(*curTick);
 		adapter->handleQuote(newTick, uProcFlag);
 		newTick->release();
 	}
@@ -377,7 +377,7 @@ void WtDtRunner::registerExtHftDataDumper(FuncDumpOrdQue ordQueDumper, FuncDumpO
 	_dumper_for_trans = transDumper;
 }
 
-bool WtDtRunner::dumpHisTicks(const char* id, const char* stdCode, uint32_t uDate, WTSTickStruct* ticks, uint32_t count)
+bool WtDtRunner::dumpHisTicks(const char* id, const char* stdCode, uint32_t uDate, VvTSTickStruct* ticks, uint32_t count)
 {
 	if (NULL == _dumper_for_ticks)
 	{
@@ -388,7 +388,7 @@ bool WtDtRunner::dumpHisTicks(const char* id, const char* stdCode, uint32_t uDat
 	return _dumper_for_ticks(id, stdCode, uDate, ticks, count);
 }
 
-bool WtDtRunner::dumpHisBars(const char* id, const char* stdCode, const char* period, WTSBarStruct* bars, uint32_t count)
+bool WtDtRunner::dumpHisBars(const char* id, const char* stdCode, const char* period, VvTSBarStruct* bars, uint32_t count)
 {
 	if (NULL == _dumper_for_bars)
 	{
@@ -399,7 +399,7 @@ bool WtDtRunner::dumpHisBars(const char* id, const char* stdCode, const char* pe
 	return _dumper_for_bars(id, stdCode, period, bars, count);
 }
 
-bool WtDtRunner::dumpHisOrdDtl(const char* id, const char* stdCode, uint32_t uDate, WTSOrdDtlStruct* items, uint32_t count)
+bool WtDtRunner::dumpHisOrdDtl(const char* id, const char* stdCode, uint32_t uDate, VvTSOrdDtlStruct* items, uint32_t count)
 {
 	if (NULL == _dumper_for_orddtl)
 	{
@@ -410,7 +410,7 @@ bool WtDtRunner::dumpHisOrdDtl(const char* id, const char* stdCode, uint32_t uDa
 	return _dumper_for_orddtl(id, stdCode, uDate, items, count);
 }
 
-bool WtDtRunner::dumpHisOrdQue(const char* id, const char* stdCode, uint32_t uDate, WTSOrdQueStruct* items, uint32_t count)
+bool WtDtRunner::dumpHisOrdQue(const char* id, const char* stdCode, uint32_t uDate, VvTSOrdQueStruct* items, uint32_t count)
 {
 	if (NULL == _dumper_for_ordque)
 	{
@@ -421,7 +421,7 @@ bool WtDtRunner::dumpHisOrdQue(const char* id, const char* stdCode, uint32_t uDa
 	return _dumper_for_ordque(id, stdCode, uDate, items, count);
 }
 
-bool WtDtRunner::dumpHisTrans(const char* id, const char* stdCode, uint32_t uDate, WTSTransStruct* items, uint32_t count)
+bool WtDtRunner::dumpHisTrans(const char* id, const char* stdCode, uint32_t uDate, VvTSTransStruct* items, uint32_t count)
 {
 	if (NULL == _dumper_for_trans)
 	{

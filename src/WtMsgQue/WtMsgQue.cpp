@@ -29,38 +29,38 @@ void regiter_callbacks(FuncLogCallback cbLog)
 	getMgr().regiter_callbacks(cbLog);
 }
 
-VvtUInt32 create_server(const char* url, bool confirm)
+VvTUInt32 create_server(const char* url, bool confirm)
 {
 	printf("create server\r\n");
 	return getMgr().create_server(url, confirm);
 }
 
-void destroy_server(VvtUInt32 id)
+void destroy_server(VvTUInt32 id)
 {
 	getMgr().destroy_server(id);
 }
 
-void publish_message(VvtUInt32 id, const char* topic, const char* data, VvtUInt32 dataLen)
+void publish_message(VvTUInt32 id, const char* topic, const char* data, VvTUInt32 dataLen)
 {
 	getMgr().publish_message(id, topic, data, dataLen);
 }
 
-VvtUInt32 create_client(const char* url, FuncMQCallback cb)
+VvTUInt32 create_client(const char* url, FuncMQCallback cb)
 {
 	return getMgr().create_client(url, cb);
 }
 
-void destroy_client(VvtUInt32 id)
+void destroy_client(VvTUInt32 id)
 {
 	getMgr().destroy_client(id);
 }
 
-void subscribe_topic(VvtUInt32 id, const char* topic)
+void subscribe_topic(VvTUInt32 id, const char* topic)
 {
 	return getMgr().sub_topic(id, topic);
 }
 
-void start_client(VvtUInt32 id)
+void start_client(VvTUInt32 id)
 {
 	getMgr().start_client(id);
 }

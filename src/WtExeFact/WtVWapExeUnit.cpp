@@ -4,11 +4,11 @@
 #include "WtVWapExeUnit.h"
 
 #include "../Share/TimeUtils.hpp"
-#include "../Includes/VVTSVariant.hpp"
-#include "../Includes/WTSContractInfo.hpp"
+#include "../Includes/VvTSVariant.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
 #include "../Share/decimal.h"
 #include "../Share/fmtlib.h"
-#include "../Includes/WTSSessionInfo.hpp"
+#include "../Includes/VvTSSessionInfo.hpp"
 
 
 extern const char* FACT_NAME;
@@ -94,7 +94,7 @@ const char * WtVWapExeUnit::getName()
 	return "WtVWapExeUnit";
 }
 
-void WtVWapExeUnit::init(ExecuteContext * ctx, const char * stdCode, VVTSVariant * cfg)
+void WtVWapExeUnit::init(ExecuteContext * ctx, const char * stdCode, VvTSVariant * cfg)
 {
 	ExecuteUnit::init(ctx, stdCode, cfg);
 
@@ -221,7 +221,7 @@ void WtVWapExeUnit::on_channel_ready()
 }
 
 
-void WtVWapExeUnit::on_tick(WTSTickData * newTick)
+void WtVWapExeUnit::on_tick(VvTSTickData * newTick)
 {
 	if (newTick == NULL || _code.compare(newTick->code()) != 0)
 		return;
@@ -385,7 +385,7 @@ void WtVWapExeUnit::do_calc()
 	//设定本轮目标仓位
 	_this_target = realPos + curQty;
 
-	WTSTickData* curTick = _last_tick;
+	VvTSTickData* curTick = _last_tick;
 	uint64_t now = TimeUtils::getLocalTimeNow();
 	bool isBuy = decimal::gt(diffQty, 0);
 	double targetPx = 0;
@@ -448,7 +448,7 @@ void WtVWapExeUnit::fire_at_once(double qty)
 	if (decimal::eq(qty, 0))
 		return;
 	_last_tick->retain();
-	WTSTickData* curTick = _last_tick;
+	VvTSTickData* curTick = _last_tick;
 	const char* code = _code.c_str();
 	uint64_t now = TimeUtils::getLocalTimeNow();
 	bool isBuy = decimal::gt(qty, 0);

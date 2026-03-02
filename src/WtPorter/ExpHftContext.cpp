@@ -4,7 +4,7 @@
 
 extern WtRtRunner& getRunner();
 
-void ExpHftContext::on_bar(const char* code, const char* period, uint32_t times, WTSBarStruct* newBar)
+void ExpHftContext::on_bar(const char* code, const char* period, uint32_t times, VvTSBarStruct* newBar)
 {
 	if (newBar == NULL)
 		return;
@@ -74,7 +74,7 @@ void ExpHftContext::on_position(const char* stdCode, bool isLong, double prevol,
 	getRunner().hft_on_position(_context_id, stdCode, isLong, prevol, preavail, newvol, newavail);
 }
 
-void ExpHftContext::on_tick(const char* code, WTSTickData* newTick)
+void ExpHftContext::on_tick(const char* code, VvTSTickData* newTick)
 {
 	update_dyn_profit(code, newTick);
 
@@ -87,17 +87,17 @@ void ExpHftContext::on_tick(const char* code, WTSTickData* newTick)
 	HftStraBaseCtx::on_tick(code, newTick);
 }
 
-void ExpHftContext::on_order_queue(const char* stdCode, WTSOrdQueData* newOrdQue)
+void ExpHftContext::on_order_queue(const char* stdCode, VvTSOrdQueData* newOrdQue)
 {
 	getRunner().hft_on_order_queue(_context_id, stdCode, newOrdQue);
 }
 
-void ExpHftContext::on_order_detail(const char* stdCode, WTSOrdDtlData* newOrdDtl)
+void ExpHftContext::on_order_detail(const char* stdCode, VvTSOrdDtlData* newOrdDtl)
 {
 	getRunner().hft_on_order_detail(_context_id, stdCode, newOrdDtl);
 }
 
-void ExpHftContext::on_transaction(const char* stdCode, WTSTransData* newTrans)
+void ExpHftContext::on_transaction(const char* stdCode, VvTSTransData* newTrans)
 {
 	getRunner().hft_on_transaction(_context_id, stdCode, newTrans);
 }

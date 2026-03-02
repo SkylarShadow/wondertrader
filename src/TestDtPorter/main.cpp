@@ -1,15 +1,15 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS
 #include "../WtDtHelper/WtDtHelper.h"
 #include "../WtDtPorter/WtDtPorter.h"
-#include "../Includes/WTSDataDef.hpp"
+#include "../Includes/VvTSDataDef.hpp"
 #include "../Share/fmtlib.h"
 
-void on_get_bar(WTSBarStruct* bar, VvtUInt32 count, bool isLast)
+void on_get_bar(VvTSBarStruct* bar, VvTUInt32 count, bool isLast)
 {
 	fmt::print("{}.{}\n", bar->date, bar->time);
 }
 
-void on_bar_cnt(VvtUInt32 dataCnt)
+void on_bar_cnt(VvTUInt32 dataCnt)
 {
 	fmt::print("共{}条K线\n", dataCnt);
 }

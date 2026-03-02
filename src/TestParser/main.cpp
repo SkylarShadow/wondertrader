@@ -2,9 +2,9 @@
 #include <boost/filesystem.hpp>
 
 #include "../Includes/IParserApi.h"
-#include "../Includes/VVTSVariant.hpp"
-#include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSDataDef.hpp"
+#include "../Includes/VvTSVariant.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/VvTSDataDef.hpp"
 
 #include "../Share/DLLHelper.hpp"
 #include "../Share/StrUtil.hpp"
@@ -22,7 +22,7 @@ class ParserSpi : public IParserSpi
 public:
 	ParserSpi(){}
 
-	bool init(VVTSVariant* params, const char* ttype)
+	bool init(VvTSVariant* params, const char* ttype)
 	{
 		m_pParams = params;
 		if (m_pParams)
@@ -55,11 +55,11 @@ public:
 		}
 
 		ContractSet contractSet;
-		WTSArray* ayContract = g_bdMgr.getContracts();
-		WTSArray::Iterator it = ayContract->begin();
+		VvTSArray* ayContract = g_bdMgr.getContracts();
+		VvTSArray::Iterator it = ayContract->begin();
 		for (; it != ayContract->end(); it++)
 		{
-			WTSContractInfo* contract = STATIC_CONVERT(*it, WTSContractInfo*);
+			VvTSContractInfo* contract = STATIC_CONVERT(*it, VvTSContractInfo*);
 			contractSet.insert(contract->getFullCode());
 		}
 
@@ -96,17 +96,17 @@ public:
 	}
 
 public:
-	virtual void handleParserLog(WTSLogLevel ll, const char* message) override
+	virtual void handleParserLog(VvTSLogLevel ll, const char* message) override
 	{
 		WTSLogger::log_raw(ll, message);
 	}
 
-	virtual void handleQuote(WTSTickData *quote, uint32_t procFlag) override
+	virtual void handleQuote(VvTSTickData *quote, uint32_t procFlag) override
 	{
 		WTSLogger::info("{}@{}.{}, price:{}, voume:{}", quote->code(), quote->actiondate(), quote->actiontime(), quote->price(), quote->totalvolume());
 	}
 
-	virtual void handleSymbolList(const WTSArray* aySymbols) override
+	virtual void handleSymbolList(const VvTSArray* aySymbols) override
 	{
 
 	}
@@ -122,7 +122,7 @@ private:
 	IParserApi*			_api;
 	FuncDeleteParser	m_funcRemover;
 	std::string			m_strModule;
-	VVTSVariant*			m_pParams;
+	VvTSVariant*			m_pParams;
 };
 
 std::string getBaseFolder()
@@ -142,14 +142,14 @@ int main()
 {
 	WTSLogger::init("logcfg.yaml");
 
-	VVTSVariant* root = WTSCfgLoader::load_from_file("config.yaml");
+	VvTSVariant* root = WTSCfgLoader::load_from_file("config.yaml");
 	if (root == NULL)
 	{
 		WTSLogger::log_raw(LL_ERROR, "Loading config.yaml failed");
 		return 0;
 	}
 
-	VVTSVariant* cfg = root->get("config");
+	VvTSVariant* cfg = root->get("config");
 	if (cfg->has("session"))
 		g_bdMgr.loadSessions(cfg->getCString("session"));
 
@@ -161,7 +161,7 @@ int main()
 
 	std::string module = cfg->getCString("parser");
 	std::string profile = cfg->getCString("profile");
-	VVTSVariant* params = root->get(profile.c_str());
+	VvTSVariant* params = root->get(profile.c_str());
 	if (params == NULL)
 	{
 		WTSLogger::error("Configure {} not exist", profile);

@@ -13,9 +13,9 @@
 #include "../Share/TimeUtils.hpp"
 #include "../Share/DLLHelper.hpp"
 
-#include "../Includes/WTSTradeDef.hpp"
-#include "../Includes/WTSCollection.hpp"
-#include "../Includes/VVTSVariant.hpp"
+#include "../Includes/VvTSTradeDef.hpp"
+#include "../Includes/VvTSCollection.hpp"
+#include "../Includes/VvTSVariant.hpp"
 
 #include "../WTSTools/WTSLogger.h"
 
@@ -52,7 +52,7 @@ EventNotifier::~EventNotifier()
 		_remover(_mq_sid);
 }
 
-bool EventNotifier::init(VVTSVariant* cfg)
+bool EventNotifier::init(VvTSVariant* cfg)
 {
 	if (!cfg->getBoolean("active"))
 		return false;
@@ -191,7 +191,7 @@ void EventNotifier::notify(const char* trader, const char* message)
 	});
 }
 
-void EventNotifier::notify(const char* trader, uint32_t localid, const char* stdCode, WTSTradeInfo* trdInfo)
+void EventNotifier::notify(const char* trader, uint32_t localid, const char* stdCode, VvTSTradeInfo* trdInfo)
 {
 	if (trdInfo == NULL || _mq_sid == 0)
 		return;
@@ -208,7 +208,7 @@ void EventNotifier::notify(const char* trader, uint32_t localid, const char* std
 	});
 }
 
-void EventNotifier::notify(const char* trader, uint32_t localid, const char* stdCode, WTSOrderInfo* ordInfo)
+void EventNotifier::notify(const char* trader, uint32_t localid, const char* stdCode, VvTSOrderInfo* ordInfo)
 {
 	if (ordInfo == NULL || _mq_sid == 0)
 		return;
@@ -226,7 +226,7 @@ void EventNotifier::notify(const char* trader, uint32_t localid, const char* std
 	
 }
 
-void EventNotifier::tradeToJson(const char* trader, uint32_t localid, const char* stdCode, WTSTradeInfo* trdInfo, std::string& output)
+void EventNotifier::tradeToJson(const char* trader, uint32_t localid, const char* stdCode, VvTSTradeInfo* trdInfo, std::string& output)
 {
 	if(trdInfo == NULL)
 	{
@@ -261,7 +261,7 @@ void EventNotifier::tradeToJson(const char* trader, uint32_t localid, const char
 	}
 }
 
-void EventNotifier::orderToJson(const char* trader, uint32_t localid, const char* stdCode, WTSOrderInfo* ordInfo, std::string& output)
+void EventNotifier::orderToJson(const char* trader, uint32_t localid, const char* stdCode, VvTSOrderInfo* ordInfo, std::string& output)
 {
 	if (ordInfo == NULL)
 	{

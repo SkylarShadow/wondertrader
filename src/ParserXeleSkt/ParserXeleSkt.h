@@ -9,7 +9,7 @@
  */
 #pragma once
 #include "../Includes/IParserApi.h"
-#include "../Includes/WTSCollection.hpp"
+#include "../Includes/VvTSCollection.hpp"
 #include "../Share/StdUtils.hpp"
 
 #include <queue>
@@ -29,7 +29,7 @@ public:
 
 	//IQuoteParser ½Ó¿Ú
 public:
-	virtual bool init(VVTSVariant* config) override;
+	virtual bool init(VvTSVariant* config) override;
 
 	virtual void release() override;
 
@@ -85,7 +85,7 @@ private:
 	CodeSet			_set_subs;
 	StdThreadPtr	_thrd_parser;
 
-	typedef WTSHashMap<int>	TickCache;
+	typedef VvTSHashMap<int>	TickCache;
 	TickCache*		_tick_cache;
 
 	vvt_hashmap<int, double> _price_scales;

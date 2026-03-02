@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <string>
 #include "../Includes/FasterDefs.h"
-#include "../Includes/VVTSMarcos.h"
+#include "../Includes/VvTSMarcos.h"
 
 NS_VVTP_BEGIN
 

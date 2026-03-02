@@ -10,18 +10,18 @@
 #pragma once
 #include <stdint.h>
 
-#include "../Includes/VVTSMarcos.h"
-#include "../Includes/WTSTypes.h"
+#include "../Includes/VvTSMarcos.h"
+#include "../Includes/VvTSTypes.h"
 
 NS_VVTP_BEGIN
-class WTSKlineSlice;
-class WTSTickSlice;
-class WTSOrdQueSlice;
-class WTSOrdDtlSlice;
-class WTSTransSlice;
+class VvTSKlineSlice;
+class VvTSTickSlice;
+class VvTSOrdQueSlice;
+class VvTSOrdDtlSlice;
+class VvTSTransSlice;
 class IBaseDataMgr;
 class IHotMgr;
-class VVTSVariant;
+class VvTSVariant;
 
 
 /*
@@ -44,7 +44,7 @@ public:
 	/*
 	 *	@brief	输出数据读取模块的日志
 	 */
-	virtual void		reader_log(WTSLogLevel ll, const char* message) = 0;
+	virtual void		reader_log(VvTSLogLevel ll, const char* message) = 0;
 };
 
 /*
@@ -59,19 +59,19 @@ public:
 	virtual ~IRdmDtReader(){}
 
 public:
-	virtual void init(VVTSVariant* cfg, IRdmDtReaderSink* sink) { _sink = sink; }
+	virtual void init(VvTSVariant* cfg, IRdmDtReaderSink* sink) { _sink = sink; }
 
-	virtual WTSOrdDtlSlice*	readOrdDtlSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime = 0) = 0;
-	virtual WTSOrdQueSlice*	readOrdQueSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime = 0) = 0;
-	virtual WTSTransSlice*	readTransSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime = 0) = 0;
+	virtual VvTSOrdDtlSlice*	readOrdDtlSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime = 0) = 0;
+	virtual VvTSOrdQueSlice*	readOrdQueSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime = 0) = 0;
+	virtual VvTSTransSlice*	readTransSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime = 0) = 0;
 
-	virtual WTSTickSlice*	readTickSliceByDate(const char* stdCode, uint32_t uDate = 0) = 0;
+	virtual VvTSTickSlice*	readTickSliceByDate(const char* stdCode, uint32_t uDate = 0) = 0;
 
-	virtual WTSTickSlice*	readTickSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime = 0) = 0;
-	virtual WTSKlineSlice*	readKlineSliceByRange(const char* stdCode, WTSKlinePeriod period, uint64_t stime, uint64_t etime = 0) = 0;
+	virtual VvTSTickSlice*	readTickSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime = 0) = 0;
+	virtual VvTSKlineSlice*	readKlineSliceByRange(const char* stdCode, VvTSKlinePeriod period, uint64_t stime, uint64_t etime = 0) = 0;
 
-	virtual WTSTickSlice*	readTickSliceByCount(const char* stdCode, uint32_t count, uint64_t etime = 0) = 0;
-	virtual WTSKlineSlice*	readKlineSliceByCount(const char* stdCode, WTSKlinePeriod period, uint32_t count, uint64_t etime = 0) = 0;
+	virtual VvTSTickSlice*	readTickSliceByCount(const char* stdCode, uint32_t count, uint64_t etime = 0) = 0;
+	virtual VvTSKlineSlice*	readKlineSliceByCount(const char* stdCode, VvTSKlinePeriod period, uint32_t count, uint64_t etime = 0) = 0;
 
 	/*
 	 *	@brief 获取个股指定日期的复权因子

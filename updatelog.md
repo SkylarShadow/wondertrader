@@ -92,7 +92,7 @@
 * UFT引擎集成ActionPolicy机制，开放buy和sell两个下单接口，简化下单接口调用方式
 * TraderAdapter订单统计，区分FAK/FOK撤单和普通撤单
 * 完善了回测引擎中处理动态订阅K线的一些细节
-* 新增一个基于mmap的快速kv缓存模块WtKVCache
+* 新增一个基于mmap的快速kv缓存模块VvtKVCache
 * TimeUtils中重写了getLocalTimeNow函数，win下读取时间的速度提升两三个量级
 * 实现了一个SpinLock，以后会逐步全面运用起来
 * 其他细节优化和bug修正
@@ -101,10 +101,10 @@
 ### 0.9.0(重大版本)
 * 将数据读写模块WtDataReader和WtDataWriter统一整合为WtDataStorage，并将回测框架和WtDtServo中的随机读取模块整合到该模块中
 * （**重要**）新增一个基于LMDB实现的数据存储引擎WtDataStorageAD，主要针对7*24小时交易品种的存储场景
-* （**重要**）重构了底层数据结构WTSTickStruct和WTSBarStruct，修改了数据结构对齐方式以及部分字段类型，以兼容更多的交易品种，并且将所有读写的地方做了新老数据结构的兼容处理
-* 重构了CodeHelper模块，不再通过CodeHelper解析代码来判断合约类型，全部改成从WTSCommodityInfo来判断，并且将代码中按照种类处理代码格式的逻辑全部改成从一些文本规则转换标准代码，以兼容更多的代码规则
+* （**重要**）重构了底层数据结构VvTSTickStruct和VvTSBarStruct，修改了数据结构对齐方式以及部分字段类型，以兼容更多的交易品种，并且将所有读写的地方做了新老数据结构的兼容处理
+* 重构了CodeHelper模块，不再通过CodeHelper解析代码来判断合约类型，全部改成从VvTSCommodityInfo来判断，并且将代码中按照种类处理代码格式的逻辑全部改成从一些文本规则转换标准代码，以兼容更多的代码规则
 * （**重要**）优化了WTSBaseDataMgr加载合约的流程，支持将合约直接当成品种进行处理，主要为了适应一些每个合约的交易规则都不同的场景
-* 修改了WTSKlineSlice和WTSTickSlice，改为多数据块的模式，使用更加灵活
+* 修改了VvTSKlineSlice和VvTSTickSlice，改为多数据块的模式，使用更加灵活
 * 重构WTSLogger，全面改成兼容fmtlib的格式化语法
 * （**重要**）配置文件全面兼容yaml和json两种格式，并实现了一个WTSCfgLoader模块自动处理
 * 完善了对股票复权数据的处理
@@ -240,7 +240,7 @@
 * 回测引擎中，针对`CTA`策略`交易未订阅K线的品种`的需求做了一些优化
 * 全平台中，将能部分`boost`库改成`std`的库，减少对`boost`的依赖
 * 新增一个`WtDtHelper`模块，主要提供数据辅助功能，目前主要是提供`csv`和二进制文件的互转，后面还会加入数据库、二进制、`csv`的互转接口
-* 将平台版本号从`VVTSMarcos.h`迁移到`WTSVersion.h`中，减少修改版本号引起的重编译
+* 将平台版本号从`VvTSMarcos.h`迁移到`VvTSRiskDef.hpp`中，减少修改版本号引起的重编译
 
 ### 0.5.3
 * 回测引擎增加了设置成交滑点的参数选项，不设置则为0
@@ -257,7 +257,7 @@
 * 修正了股票`Level2`数据落地的一些细节问题
 * 修正了风控触发时，限制手数比例为小数时，没有进行四舍五入导致的问题
 * 历史数据新增了对`Mysql`数据库的支持，涉及到的模块包括数据读取模块`WtDataReader`、数据落地模块`WtDataWriter`、回测框架`WtBtCore`，`Mysql`库版本为`6.11`
-* 修正了`UDP`广播模块中，中转的广播消息对象对`WTSObject`的处理的`bug`
+* 修正了`UDP`广播模块中，中转的广播消息对象对`VvTSObject`的处理的`bug`
 
 ### 0.5.1
 * 实盘引擎（`CTA`、`HFT`、`SEL`）在启动的时候，将策略列表和交易通道列表输出到一个配置文件中，方便监控服务读取查看

@@ -8,15 +8,15 @@
  * \brief 
  */
 #include "ParserUDP.h"
-#include "../Includes/VVTSVariant.hpp"
-#include "../Includes/WTSDataDef.hpp"
+#include "../Includes/VvTSVariant.hpp"
+#include "../Includes/VvTSDataDef.hpp"
 
 #include <boost/bind.hpp>
 
  //By Wesley @ 2022.01.05
 #include "../Share/fmtlib.h"
 template<typename... Args>
-inline void write_log(IParserSpi* sink, WTSLogLevel ll, const char* format, const Args&... args)
+inline void write_log(IParserSpi* sink, VvTSLogLevel ll, const char* format, const Args&... args)
 {
 	if (sink == NULL)
 		return;
@@ -52,10 +52,10 @@ struct UDPDataPacket : UDPPacketHead
 	T			_data;
 };
 #pragma pack(pop)
-typedef UDPDataPacket<WTSTickStruct>	UDPTickPacket;
-typedef UDPDataPacket<WTSOrdQueStruct>	UDPOrdQuePacket;
-typedef UDPDataPacket<WTSOrdDtlStruct>	UDPOrdDtlPacket;
-typedef UDPDataPacket<WTSTransStruct>	UDPTransPacket;
+typedef UDPDataPacket<VvTSTickStruct>	UDPTickPacket;
+typedef UDPDataPacket<VvTSOrdQueStruct>	UDPOrdQuePacket;
+typedef UDPDataPacket<VvTSOrdDtlStruct>	UDPOrdDtlPacket;
+typedef UDPDataPacket<VvTSTransStruct>	UDPTransPacket;
 
 
 extern "C"
@@ -94,7 +94,7 @@ ParserUDP::~ParserUDP()
 {
 }
 
-bool ParserUDP::init( VVTSVariant* config )
+bool ParserUDP::init( VvTSVariant* config )
 {
 	_hots = config->getCString("host");
 	_bport = config->getInt32("bport");
@@ -310,7 +310,7 @@ void ParserUDP::handle_read(const boost::system::error_code& e, std::size_t byte
 	if(e)
 	{
 		if(_sink)
-			_sink->handleEvent(WPE_Close, 0);
+			_sink->handleEvent(VvPE_Close, 0);
 
 		write_log(_sink, LL_ERROR, "[ParserUDP] Error occured while receiving from {}: {}({})", isBroad?"broad port":"subscribe port", e.message().c_str(), e.value());
 
@@ -359,7 +359,7 @@ void ParserUDP::extract_buffer(uint32_t length, bool isBroad /* = true */)
 		auto it = _set_subs.find(fullCode);
 		if (it != _set_subs.end())
 		{
-			WTSTickData* curTick = WTSTickData::create(packet->_data);
+			VvTSTickData* curTick = VvTSTickData::create(packet->_data);
 			if (_sink)
 				_sink->handleQuote(curTick, 0);
 
@@ -378,7 +378,7 @@ void ParserUDP::extract_buffer(uint32_t length, bool isBroad /* = true */)
 		auto it = _set_subs.find(fullCode);
 		if (it != _set_subs.end())
 		{
-			WTSOrdDtlData* curData = WTSOrdDtlData::create(packet->_data);
+			VvTSOrdDtlData* curData = VvTSOrdDtlData::create(packet->_data);
 			if (_sink)
 				_sink->handleOrderDetail(curData);
 
@@ -397,7 +397,7 @@ void ParserUDP::extract_buffer(uint32_t length, bool isBroad /* = true */)
 		auto it = _set_subs.find(fullCode);
 		if (it != _set_subs.end())
 		{
-			WTSOrdQueData* curData = WTSOrdQueData::create(packet->_data);
+			VvTSOrdQueData* curData = VvTSOrdQueData::create(packet->_data);
 			if (_sink)
 				_sink->handleOrderQueue(curData);
 
@@ -416,7 +416,7 @@ void ParserUDP::extract_buffer(uint32_t length, bool isBroad /* = true */)
 		auto it = _set_subs.find(fullCode);
 		if (it != _set_subs.end())
 		{
-			WTSTransData* curData = WTSTransData::create(packet->_data);
+			VvTSTransData* curData = VvTSTransData::create(packet->_data);
 			if (_sink)
 				_sink->handleTransaction(curData);
 
@@ -434,8 +434,8 @@ void ParserUDP::doOnConnected()
 {
 	if(_sink)
 	{
-		_sink->handleEvent(WPE_Connect, 0);
-		_sink->handleEvent(WPE_Login, 0);
+		_sink->handleEvent(VvPE_Connect, 0);
+		_sink->handleEvent(VvPE_Login, 0);
 	}
 }
 
@@ -443,6 +443,6 @@ void ParserUDP::doOnDisconnected()
 {
 	if(_sink)
 	{
-		_sink->handleEvent(WPE_Close, 0);
+		_sink->handleEvent(VvPE_Close, 0);
 	}
 }

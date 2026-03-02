@@ -13,11 +13,11 @@
 
 #include <fstream>
 
-#include "../Includes/VVTSVariant.hpp"
-#include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSSessionInfo.hpp"
-#include "../Includes/VVTSVariant.hpp"
+#include "../Includes/VvTSVariant.hpp"
+#include "../Includes/VvTSDataDef.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/VvTSSessionInfo.hpp"
+#include "../Includes/VvTSVariant.hpp"
 
 #include "../Share/decimal.h"
 #include "../Share/StrUtil.hpp"
@@ -92,10 +92,10 @@ bool proc_block_data(const char* tag, std::string& content, bool isBar, bool bKe
 		if (isBar)
 		{
 			std::string bufV2;
-			uint32_t barcnt = buffer.size() / sizeof(WTSBarStructOld);
-			bufV2.resize(barcnt * sizeof(WTSBarStruct));
-			WTSBarStruct* newBar = (WTSBarStruct*)bufV2.data();
-			WTSBarStructOld* oldBar = (WTSBarStructOld*)buffer.data();
+			uint32_t barcnt = buffer.size() / sizeof(VvTSBarStructOld);
+			bufV2.resize(barcnt * sizeof(VvTSBarStruct));
+			VvTSBarStruct* newBar = (VvTSBarStruct*)bufV2.data();
+			VvTSBarStructOld* oldBar = (VvTSBarStructOld*)buffer.data();
 			for (uint32_t idx = 0; idx < barcnt; idx++)
 			{
 				newBar[idx] = oldBar[idx];
@@ -106,11 +106,11 @@ bool proc_block_data(const char* tag, std::string& content, bool isBar, bool bKe
 		}
 		else
 		{
-			uint32_t tick_cnt = buffer.size() / sizeof(WTSTickStructOld);
+			uint32_t tick_cnt = buffer.size() / sizeof(VvTSTickStructOld);
 			std::string bufv2;
-			bufv2.resize(sizeof(WTSTickStruct)*tick_cnt);
-			WTSTickStruct* newTick = (WTSTickStruct*)bufv2.data();
-			WTSTickStructOld* oldTick = (WTSTickStructOld*)buffer.data();
+			bufv2.resize(sizeof(VvTSTickStruct)*tick_cnt);
+			VvTSTickStruct* newTick = (VvTSTickStruct*)bufv2.data();
+			VvTSTickStructOld* oldTick = (VvTSTickStructOld*)buffer.data();
 			for (uint32_t i = 0; i < tick_cnt; i++)
 			{
 				newTick[i] = oldTick[i];
@@ -166,7 +166,7 @@ HisDataReplayer::~HisDataReplayer()
 }
 
 
-bool HisDataReplayer::init(VVTSVariant* cfg, EventNotifier* notifier /* = NULL */, IBtDataLoader* dataLoader /* = NULL */)
+bool HisDataReplayer::init(VvTSVariant* cfg, EventNotifier* notifier /* = NULL */, IBtDataLoader* dataLoader /* = NULL */)
 {
 	_notifier = notifier;
 	_bt_loader = dataLoader;
@@ -194,7 +194,7 @@ bool HisDataReplayer::init(VVTSVariant* cfg, EventNotifier* notifier /* = NULL *
 		}
 		else
 		{
-			VVTSVariant* item = VVTSVariant::createObject();
+			VvTSVariant* item = VvTSVariant::createObject();
 			item->append("path", _base_dir.c_str());
 			_his_dt_mgr.init(item);
 			item->release();
@@ -226,18 +226,18 @@ bool HisDataReplayer::init(VVTSVariant* cfg, EventNotifier* notifier /* = NULL *
 	WTSLogger::info("nosim_if_notrade is {}", _nosim_if_notrade);
 
 	//基础数据文件
-	VVTSVariant* cfgBF = cfg->get("basefiles");
+	VvTSVariant* cfgBF = cfg->get("basefiles");
 	if (cfgBF->get("session"))
 		_bd_mgr.loadSessions(cfgBF->getCString("session"));
 
-	VVTSVariant* cfgItem = cfgBF->get("commodity");
+	VvTSVariant* cfgItem = cfgBF->get("commodity");
 	if (cfgItem)
 	{
-		if (cfgItem->type() == VVTSVariant::VT_String)
+		if (cfgItem->type() == VvTSVariant::VT_String)
 		{
 			_bd_mgr.loadCommodities(cfgItem->asCString());
 		}
-		else if (cfgItem->type() == VVTSVariant::VT_Array)
+		else if (cfgItem->type() == VvTSVariant::VT_Array)
 		{
 			for(uint32_t i = 0; i < cfgItem->size(); i ++)
 			{
@@ -249,11 +249,11 @@ bool HisDataReplayer::init(VVTSVariant* cfg, EventNotifier* notifier /* = NULL *
 	cfgItem = cfgBF->get("contract");
 	if (cfgItem)
 	{
-		if (cfgItem->type() == VVTSVariant::VT_String)
+		if (cfgItem->type() == VvTSVariant::VT_String)
 		{
 			_bd_mgr.loadContracts(cfgItem->asCString());
 		}
-		else if (cfgItem->type() == VVTSVariant::VT_Array)
+		else if (cfgItem->type() == VvTSVariant::VT_Array)
 		{
 			for (uint32_t i = 0; i < cfgItem->size(); i++)
 			{
@@ -341,7 +341,7 @@ bool HisDataReplayer::loadStkAdjFactorsFromFile(const char* adjfile)
 	std::string content;
 	StdFile::read_file_content(adjfile, content);
 
-	VVTSVariant* doc = WTSCfgLoader::load_from_file(adjfile);
+	VvTSVariant* doc = WTSCfgLoader::load_from_file(adjfile);
 	if (doc == NULL)
 	{
 		WTSLogger::error("Parsing adjust factor file {} faield", adjfile);
@@ -352,10 +352,10 @@ bool HisDataReplayer::loadStkAdjFactorsFromFile(const char* adjfile)
 	uint32_t fct_cnt = 0;
 	for (const std::string& exchg : doc->memberNames())
 	{
-		VVTSVariant* itemExchg = doc->get(exchg);
+		VvTSVariant* itemExchg = doc->get(exchg);
 		for (const std::string& code : itemExchg->memberNames())
 		{
-			VVTSVariant* ayFacts = itemExchg->get(code);
+			VvTSVariant* ayFacts = itemExchg->get(code);
 			if (!ayFacts->isArray())
 				continue;
 
@@ -376,7 +376,7 @@ bool HisDataReplayer::loadStkAdjFactorsFromFile(const char* adjfile)
 			AdjFactorList& fctrLst = _adj_factors[key];
 			for (uint32_t i = 0; i < ayFacts->size(); i++)
 			{
-				VVTSVariant* fItem = ayFacts->get(i);
+				VvTSVariant* fItem = ayFacts->get(i);
 				AdjFactor adjFact;
 				adjFact._date = fItem->getUInt32("date");
 				adjFact._factor = fItem->getDouble("factor");
@@ -459,25 +459,25 @@ void HisDataReplayer::reset()
 	//重置不会清除掉缓存，而是将读取的标记还原，这样不用重复加载主句
 	for(auto& m : _ticks_cache)
 	{
-		HftDataList<WTSTickStruct>& cacheItem = (HftDataList<WTSTickStruct>&)m.second;
+		HftDataList<VvTSTickStruct>& cacheItem = (HftDataList<VvTSTickStruct>&)m.second;
 		cacheItem._cursor = UINT_MAX;
 	}
 
 	for (auto& m : _orddtl_cache)
 	{
-		HftDataList<WTSOrdDtlStruct>& cacheItem = (HftDataList<WTSOrdDtlStruct>&)m.second;
+		HftDataList<VvTSOrdDtlStruct>& cacheItem = (HftDataList<VvTSOrdDtlStruct>&)m.second;
 		cacheItem._cursor = UINT_MAX;
 	}
 
 	for (auto& m : _ordque_cache)
 	{
-		HftDataList<WTSOrdQueStruct>& cacheItem = (HftDataList<WTSOrdQueStruct>&)m.second;
+		HftDataList<VvTSOrdQueStruct>& cacheItem = (HftDataList<VvTSOrdQueStruct>&)m.second;
 		cacheItem._cursor = UINT_MAX;
 	}
 
 	for (auto& m : _trans_cache)
 	{
-		HftDataList<WTSTransStruct>& cacheItem = (HftDataList<WTSTransStruct>&)m.second;
+		HftDataList<VvTSTransStruct>& cacheItem = (HftDataList<VvTSTransStruct>&)m.second;
 		cacheItem._cursor = UINT_MAX;
 	}
 
@@ -513,7 +513,7 @@ void HisDataReplayer::reset()
 	_tick_simulated = true;
 }
 
-void HisDataReplayer::dump_btstate(const char* stdCode, WTSKlinePeriod period, uint32_t times, uint64_t stime, uint64_t etime, double progress, int64_t elapse)
+void HisDataReplayer::dump_btstate(const char* stdCode, VvTSKlinePeriod period, uint32_t times, uint64_t stime, uint64_t etime, double progress, int64_t elapse)
 {
 	std::string output;
 	{
@@ -552,7 +552,7 @@ void HisDataReplayer::dump_btstate(const char* stdCode, WTSKlinePeriod period, u
 	StdFile::write_file_content(filename.c_str(), output.c_str(), output.size());
 }
 
-void HisDataReplayer::notify_state(const char* stdCode, WTSKlinePeriod period, uint32_t times, uint64_t stime, uint64_t etime, double progress)
+void HisDataReplayer::notify_state(const char* stdCode, VvTSKlinePeriod period, uint32_t times, uint64_t stime, uint64_t etime, double progress)
 {
 	if (!_notifier)
 		return;
@@ -600,10 +600,10 @@ uint32_t HisDataReplayer::locate_barindex(const std::string& key, uint64_t now, 
 
 	bool isDay = (barsList->_period == KP_DAY);
 
-	WTSBarStruct bar;
+	VvTSBarStruct bar;
 	bar.date = curDate;
 	bar.time = (curDate - 19900000) * 10000 + curTime;
-	auto it = std::lower_bound(barsList->_bars.begin(), barsList->_bars.end(), bar, [isDay](const WTSBarStruct& a, const WTSBarStruct& b) {
+	auto it = std::lower_bound(barsList->_bars.begin(), barsList->_bars.end(), bar, [isDay](const VvTSBarStruct& a, const VvTSBarStruct& b) {
 		if (isDay)
 			return a.date < b.date;
 		else
@@ -681,7 +681,7 @@ void HisDataReplayer::run(bool bNeedDump/* = false*/)
 		//如果没有确定主K线,则确定一个周期最短的主K线
 		if (_main_key.empty() && !_bars_cache.empty())
 		{
-			WTSKlinePeriod minPeriod = KP_DAY;
+			VvTSKlinePeriod minPeriod = KP_DAY;
 			uint32_t minTimes = 1;
 			for(auto& m : _bars_cache)
 			{
@@ -771,7 +771,7 @@ void HisDataReplayer::run_by_bars(bool bNeedDump /* = false */)
 	TimeUtils::Ticker ticker;
 
 	BarsListPtr barsList = _bars_cache[_main_key];
-	WTSSessionInfo* sInfo = get_session_info(barsList->_code.c_str(), true);
+	VvTSSessionInfo* sInfo = get_session_info(barsList->_code.c_str(), true);
 	CodeHelper::CodeInfo codeInfo = CodeHelper::extractStdCode(barsList->_code.c_str(), NULL);
 	std::string commId = codeInfo.stdCommID();
 
@@ -938,7 +938,7 @@ void HisDataReplayer::run_by_bars(bool bNeedDump /* = false */)
 void HisDataReplayer::run_by_tasks(bool bNeedDump /* = false */)
 {
 	//时间调度任务不为空,则按照时间调度任务回放
-	WTSSessionInfo* sInfo = NULL;
+	VvTSSessionInfo* sInfo = NULL;
 	const char* DEF_SESS = (strlen(_task->_session) == 0) ? DEFAULT_SESSIONID : _task->_session;
 	sInfo = _bd_mgr.getSession(DEF_SESS);
 	WTSLogger::info("Start to backtest with task frequency from {}...", _begin_time);
@@ -1233,7 +1233,7 @@ void HisDataReplayer::simTicks(uint32_t uDate, uint32_t uTime, uint32_t endTDate
 			{
 				for(;;)
 				{
-					WTSBarStruct& nextBar = barsList->_bars[barsList->_cursor];
+					VvTSBarStruct& nextBar = barsList->_bars[barsList->_cursor];
 
 					/*
 					 *	By Wesley @ 2023.05.05
@@ -1248,7 +1248,7 @@ void HisDataReplayer::simTicks(uint32_t uDate, uint32_t uTime, uint32_t endTDate
 						if (ticker == it->first)
 						{
 							//开高低收
-							WTSTickStruct& curTS = _day_cache[barsList->_code];
+							VvTSTickStruct& curTS = _day_cache[barsList->_code];
 							strcpy(curTS.code, barsList->_code.c_str());
 							curTS.action_date = _cur_date;
 							curTS.action_time = _cur_time * 100000;
@@ -1277,7 +1277,7 @@ void HisDataReplayer::simTicks(uint32_t uDate, uint32_t uTime, uint32_t endTDate
 								curTS.low = min(curTS.price, curTS.low);
 
 							update_price(barsList->_code.c_str(), curTS.price);
-							WTSTickData* curTick = WTSTickData::create(curTS);
+							VvTSTickData* curTick = VvTSTickData::create(curTS);
 							_listener->handle_tick(barsList->_code.c_str(), curTick, pxType);
 							curTick->release();
 						}
@@ -1306,7 +1306,7 @@ void HisDataReplayer::simTicks(uint32_t uDate, uint32_t uTime, uint32_t endTDate
 			{
 				for (;;)
 				{
-					WTSBarStruct& nextBar = barsList->_bars[barsList->_cursor];
+					VvTSBarStruct& nextBar = barsList->_bars[barsList->_cursor];
 
 					if (nextBar.date == endTDate)
 					{
@@ -1314,16 +1314,16 @@ void HisDataReplayer::simTicks(uint32_t uDate, uint32_t uTime, uint32_t endTDate
 						if (ticker == it->first)
 						{
 							CodeHelper::CodeInfo cInfo = CodeHelper::extractStdCode(barsList->_code.c_str(), &_hot_mgr);
-							WTSCommodityInfo* commInfo = _bd_mgr.getCommodity(cInfo._exchg, cInfo._product);
+							VvTSCommodityInfo* commInfo = _bd_mgr.getCommodity(cInfo._exchg, cInfo._product);
 
 							std::string realCode = barsList->_code;
 							if (cInfo.isExright())
 								realCode = realCode.substr(0, realCode.size() - 1);
 
-							WTSSessionInfo* sInfo = get_session_info(realCode.c_str(), true);
+							VvTSSessionInfo* sInfo = get_session_info(realCode.c_str(), true);
 							uint32_t curTime = sInfo->getCloseTime();
 							//开高低收
-							WTSTickStruct curTS;
+							VvTSTickStruct curTS;
 							strcpy(curTS.code, realCode.c_str());
 							curTS.action_date = _cur_date;
 							curTS.action_time = curTime * 100000;
@@ -1341,7 +1341,7 @@ void HisDataReplayer::simTicks(uint32_t uDate, uint32_t uTime, uint32_t endTDate
 							curTS.price = newPx;
 							curTS.volume = nextBar.vol;
 							update_price(barsList->_code.c_str(), curTS.price);
-							WTSTickData* curTick = WTSTickData::create(curTS);
+							VvTSTickData* curTick = VvTSTickData::create(curTS);
 							_listener->handle_tick(realCode.c_str(), curTick, pxType);
 							curTick->release();
 						}
@@ -1380,7 +1380,7 @@ void HisDataReplayer::simTickWithUnsubBars(uint64_t stime, uint64_t nowTime, uin
 			{
 				for (;;)
 				{
-					WTSBarStruct& nextBar = barsList->_bars[barsList->_cursor];
+					VvTSBarStruct& nextBar = barsList->_bars[barsList->_cursor];
 
 					/*
 					 *	By Wesley @ 2023.05.05
@@ -1392,7 +1392,7 @@ void HisDataReplayer::simTickWithUnsubBars(uint64_t stime, uint64_t nowTime, uin
 					if (barTime == nowTime && bCanSim)
 					{
 						//开高低收
-						WTSTickStruct& curTS = _day_cache[barsList->_code];
+						VvTSTickStruct& curTS = _day_cache[barsList->_code];
 						strcpy(curTS.code, barsList->_code.c_str());
 						curTS.action_date = _cur_date;
 						curTS.action_time = _cur_time * 100000;
@@ -1419,7 +1419,7 @@ void HisDataReplayer::simTickWithUnsubBars(uint64_t stime, uint64_t nowTime, uin
 							curTS.low = min(curTS.price, curTS.low);
 
 
-						WTSTickData* curTick = WTSTickData::create(curTS);
+						VvTSTickData* curTick = VvTSTickData::create(curTS);
 						_listener->handle_tick(barsList->_code.c_str(), curTick, pxType);
 						curTick->release();
 						break;
@@ -1446,21 +1446,21 @@ void HisDataReplayer::simTickWithUnsubBars(uint64_t stime, uint64_t nowTime, uin
 			{
 				for (;;)
 				{
-					WTSBarStruct& nextBar = barsList->_bars[barsList->_cursor];
+					VvTSBarStruct& nextBar = barsList->_bars[barsList->_cursor];
 
 					if (nextBar.date == endTDate)
 					{
 						CodeHelper::CodeInfo cInfo = CodeHelper::extractStdCode(barsList->_code.c_str(), &_hot_mgr);
-						WTSCommodityInfo* commInfo = _bd_mgr.getCommodity(cInfo._exchg, cInfo._product);
+						VvTSCommodityInfo* commInfo = _bd_mgr.getCommodity(cInfo._exchg, cInfo._product);
 
 						std::string realCode = barsList->_code;
 						if (commInfo->isStock() && cInfo.isExright())
 							realCode = realCode.substr(0, realCode.size() - 1);
 
-						WTSSessionInfo* sInfo = get_session_info(realCode.c_str(), true);
+						VvTSSessionInfo* sInfo = get_session_info(realCode.c_str(), true);
 						uint32_t curTime = sInfo->getOpenTime();
 						//开高低收
-						WTSTickStruct curTS;
+						VvTSTickStruct curTS;
 						strcpy(curTS.code, realCode.c_str());
 						curTS.action_date = _cur_date;
 						curTS.action_time = curTime * 100000;
@@ -1486,7 +1486,7 @@ void HisDataReplayer::simTickWithUnsubBars(uint64_t stime, uint64_t nowTime, uin
 						else
 							curTS.low = min(curTS.price, curTS.low);
 
-						WTSTickData* curTick = WTSTickData::create(curTS);
+						VvTSTickData* curTick = VvTSTickData::create(curTS);
 						_listener->handle_tick(realCode.c_str(), curTick, pxType);
 						curTick->release();
 
@@ -1521,7 +1521,7 @@ uint64_t HisDataReplayer::getNextTickTime(uint32_t curTDate, uint64_t stime /* =
 		if (!checkTicks(stdCode, curTDate))
 			continue;
 
-		WTSSessionInfo* sInfo = get_session_info(stdCode, true);
+		VvTSSessionInfo* sInfo = get_session_info(stdCode, true);
 
 		auto& tickList = _ticks_cache[stdCode];
 		if (tickList._cursor == UINT_MAX)
@@ -1551,11 +1551,11 @@ uint64_t HisDataReplayer::getNextTickTime(uint32_t curTDate, uint64_t stime /* =
 				uint32_t uDate = (uint32_t)(stime / 10000);
 				uint32_t uTime = (uint32_t)(stime % 10000);
 
-				WTSTickStruct curTick;
+				VvTSTickStruct curTick;
 				curTick.action_date = uDate;
 				curTick.action_time = uTime * 100000;
 
-				auto tit = std::lower_bound(tickList._items.begin(), tickList._items.end(), curTick, [](const WTSTickStruct& a, const WTSTickStruct& b) {
+				auto tit = std::lower_bound(tickList._items.begin(), tickList._items.end(), curTick, [](const VvTSTickStruct& a, const VvTSTickStruct& b) {
 					if (a.action_date != b.action_date)
 						return a.action_date < b.action_date;
 					else
@@ -1592,7 +1592,7 @@ uint64_t HisDataReplayer::getNextTickTime(uint32_t curTDate, uint64_t stime /* =
 			nextActionTime = tickList._items[tickList._cursor - 1].action_time;
 		}
 
-		const WTSTickStruct& nextTick = tickList._items[tickList._cursor - 1];
+		const VvTSTickStruct& nextTick = tickList._items[tickList._cursor - 1];
 		uint64_t lastTime = (uint64_t)nextTick.action_date * 1000000000 + nextTick.action_time;
 
 		nextTime = min(lastTime, nextTime);
@@ -1621,11 +1621,11 @@ uint64_t HisDataReplayer::getNextTransTime(uint32_t curTDate, uint64_t stime /* 
 				uint32_t uDate = (uint32_t)(stime / 10000);
 				uint32_t uTime = (uint32_t)(stime % 10000);
 
-				WTSTransStruct curItem;
+				VvTSTransStruct curItem;
 				curItem.action_date = uDate;
 				curItem.action_time = uTime * 100000;
 
-				auto tit = std::lower_bound(itemList._items.begin(), itemList._items.end(), curItem, [](const WTSTransStruct& a, const WTSTransStruct& b) {
+				auto tit = std::lower_bound(itemList._items.begin(), itemList._items.end(), curItem, [](const VvTSTransStruct& a, const VvTSTransStruct& b) {
 					if (a.action_date != b.action_date)
 						return a.action_date < b.action_date;
 					else
@@ -1669,11 +1669,11 @@ uint64_t HisDataReplayer::getNextOrdDtlTime(uint32_t curTDate, uint64_t stime /*
 				uint32_t uDate = (uint32_t)(stime / 10000);
 				uint32_t uTime = (uint32_t)(stime % 10000);
 
-				WTSOrdDtlStruct curItem;
+				VvTSOrdDtlStruct curItem;
 				curItem.action_date = uDate;
 				curItem.action_time = uTime * 100000;
 
-				auto tit = std::lower_bound(itemList._items.begin(), itemList._items.end(), curItem, [](const WTSOrdDtlStruct& a, const WTSOrdDtlStruct& b) {
+				auto tit = std::lower_bound(itemList._items.begin(), itemList._items.end(), curItem, [](const VvTSOrdDtlStruct& a, const VvTSOrdDtlStruct& b) {
 					if (a.action_date != b.action_date)
 						return a.action_date < b.action_date;
 					else
@@ -1717,11 +1717,11 @@ uint64_t HisDataReplayer::getNextOrdQueTime(uint32_t curTDate, uint64_t stime /*
 				uint32_t uDate = (uint32_t)(stime / 10000);
 				uint32_t uTime = (uint32_t)(stime % 10000);
 
-				WTSOrdQueStruct curItem;
+				VvTSOrdQueStruct curItem;
 				curItem.action_date = uDate;
 				curItem.action_time = uTime * 100000;
 
-				auto tit = std::lower_bound(itemList._items.begin(), itemList._items.end(), curItem, [](const WTSOrdQueStruct& a, const WTSOrdQueStruct& b) {
+				auto tit = std::lower_bound(itemList._items.begin(), itemList._items.end(), curItem, [](const VvTSOrdQueStruct& a, const VvTSOrdQueStruct& b) {
 					if (a.action_date != b.action_date)
 						return a.action_date < b.action_date;
 					else
@@ -1787,7 +1787,7 @@ uint64_t HisDataReplayer::replayHftDatasByDay(uint32_t curTDate)
 			{
 				itemList._cursor++;
 
-				WTSOrdDtlData* newData = WTSOrdDtlData::create(nextItem);
+				VvTSOrdDtlData* newData = VvTSOrdDtlData::create(nextItem);
 				newData->setCode(stdCode);
 				_listener->handle_order_detail(stdCode, newData);
 				newData->release();
@@ -1813,7 +1813,7 @@ uint64_t HisDataReplayer::replayHftDatasByDay(uint32_t curTDate)
 			{
 				itemList._cursor++;
 
-				WTSTransData* newData = WTSTransData::create(nextItem);
+				VvTSTransData* newData = VvTSTransData::create(nextItem);
 				newData->setCode(stdCode);
 				_listener->handle_transaction(stdCode, newData);
 				newData->release();
@@ -1827,21 +1827,21 @@ uint64_t HisDataReplayer::replayHftDatasByDay(uint32_t curTDate)
 		{
 			//std::string stdCode = v.first;
 			const char* stdCode = v.first.c_str();
-			HftDataList<WTSTickStruct>& tickList = _ticks_cache[stdCode];
+			HftDataList<VvTSTickStruct>& tickList = _ticks_cache[stdCode];
 			//By Wesley @ 2022.03.06 
 			//这里加了一个数据的判断
 			//如果数据为空，则不再进行回放
 			if(tickList._items.empty() || tickList._cursor > tickList._count)
 				continue;
 
-			WTSTickStruct& nextTick = tickList._items[tickList._cursor - 1];
+			VvTSTickStruct& nextTick = tickList._items[tickList._cursor - 1];
 			uint64_t lastTime = (uint64_t)nextTick.action_date * 1000000000 + nextTick.action_time;
 			if (lastTime <= nextTime)
 			{
 				tickList._cursor++;
 
 				update_price(stdCode, nextTick.price);
-				WTSTickData* newTick = WTSTickData::create(nextTick);
+				VvTSTickData* newTick = VvTSTickData::create(nextTick);
 				newTick->setCode(stdCode);
 				_listener->handle_tick(stdCode, newTick, 0);
 				newTick->release();
@@ -1867,7 +1867,7 @@ uint64_t HisDataReplayer::replayHftDatasByDay(uint32_t curTDate)
 			{
 				itemList._cursor++;
 
-				WTSOrdQueData* newData = WTSOrdQueData::create(nextItem);
+				VvTSOrdQueData* newData = VvTSOrdQueData::create(nextItem);
 				newData->setCode(stdCode);
 				_listener->handle_order_queue(stdCode, newData);
 				newData->release();
@@ -1912,7 +1912,7 @@ bool HisDataReplayer::replayHftDatas(uint64_t stime, uint64_t etime)
 			uint64_t lastTime = (uint64_t)nextItem.action_date * 1000000000 + nextItem.action_time;
 			if (lastTime <= nextTime)
 			{
-				WTSOrdDtlData* newData = WTSOrdDtlData::create(nextItem);
+				VvTSOrdDtlData* newData = VvTSOrdDtlData::create(nextItem);
 				newData->setCode(stdCode);
 				_listener->handle_order_detail(stdCode, newData);
 				newData->release();
@@ -1933,7 +1933,7 @@ bool HisDataReplayer::replayHftDatas(uint64_t stime, uint64_t etime)
 			uint64_t lastTime = (uint64_t)nextItem.action_date * 1000000000 + nextItem.action_time;
 			if (lastTime <= nextTime)
 			{
-				WTSTransData* newData = WTSTransData::create(nextItem);
+				VvTSTransData* newData = VvTSTransData::create(nextItem);
 				newData->setCode(stdCode);
 				_listener->handle_transaction(stdCode, newData);
 				newData->release();
@@ -1955,7 +1955,7 @@ bool HisDataReplayer::replayHftDatas(uint64_t stime, uint64_t etime)
 			if (lastTime <= nextTime)
 			{
 				update_price(stdCode, nextItem.price);
-				WTSTickData* newData = WTSTickData::create(nextItem);
+				VvTSTickData* newData = VvTSTickData::create(nextItem);
 				newData->setCode(stdCode);
 				_listener->handle_tick(stdCode, newData, 0);
 				newData->release();
@@ -1976,7 +1976,7 @@ bool HisDataReplayer::replayHftDatas(uint64_t stime, uint64_t etime)
 			uint64_t lastTime = (uint64_t)nextItem.action_date * 1000000000 + nextItem.action_time;
 			if (lastTime <= nextTime)
 			{
-				WTSOrdQueData* newData = WTSOrdQueData::create(nextItem);
+				VvTSOrdQueData* newData = VvTSOrdQueData::create(nextItem);
 				newData->setCode(stdCode);
 				_listener->handle_order_queue(stdCode, newData);
 				newData->release();
@@ -2005,7 +2005,7 @@ void HisDataReplayer::onMinuteEnd(uint32_t uDate, uint32_t uTime, uint32_t endTD
 			{
 				for (;;)
 				{
-					WTSBarStruct& nextBar = barsList->_bars[barsList->_cursor];
+					VvTSBarStruct& nextBar = barsList->_bars[barsList->_cursor];
 
 					uint64_t barTime = 199000000000 + nextBar.time;
 					if (barTime <= nowTime)
@@ -2033,7 +2033,7 @@ void HisDataReplayer::onMinuteEnd(uint32_t uDate, uint32_t uTime, uint32_t endTD
 			{
 				for (;;)
 				{
-					WTSBarStruct& nextBar = barsList->_bars[barsList->_cursor];
+					VvTSBarStruct& nextBar = barsList->_bars[barsList->_cursor];
 
 					if (nextBar.date <= endTDate)
 					{
@@ -2063,7 +2063,7 @@ void HisDataReplayer::onMinuteEnd(uint32_t uDate, uint32_t uTime, uint32_t endTD
 			{
 				for (;;)
 				{
-					WTSBarStruct& nextBar = barsList->_bars[barsList->_cursor];
+					VvTSBarStruct& nextBar = barsList->_bars[barsList->_cursor];
 
 					uint64_t barTime = 199000000000 + nextBar.time;
 					if (barTime > nowTime)
@@ -2082,7 +2082,7 @@ void HisDataReplayer::onMinuteEnd(uint32_t uDate, uint32_t uTime, uint32_t endTD
 			{
 				for (;;)
 				{
-					WTSBarStruct& nextBar = barsList->_bars[barsList->_cursor];
+					VvTSBarStruct& nextBar = barsList->_bars[barsList->_cursor];
 
 					if (nextBar.date > endTDate)
 						break;
@@ -2100,7 +2100,7 @@ void HisDataReplayer::onMinuteEnd(uint32_t uDate, uint32_t uTime, uint32_t endTD
 		_listener->handle_schedule(uDate, uTime);
 }
 
-WTSKlineSlice* HisDataReplayer::get_kline_slice(const char* stdCode, const char* period, uint32_t count, uint32_t times /* = 1 */, bool isMain /* = false */)
+VvTSKlineSlice* HisDataReplayer::get_kline_slice(const char* stdCode, const char* period, uint32_t count, uint32_t times /* = 1 */, bool isMain /* = false */)
 {
 	thread_local static char key[64] = { 0 };
 	fmtutil::format_to(key, "{}#{}#{}", stdCode, period, times);
@@ -2142,7 +2142,7 @@ WTSKlineSlice* HisDataReplayer::get_kline_slice(const char* stdCode, const char*
 		}
 	}
 
-	WTSKlinePeriod kp;
+	VvTSKlinePeriod kp;
 	uint32_t realTimes = times;
 	uint32_t baseTimes = 1;
 	if (strcmp(period, "m") == 0)
@@ -2231,7 +2231,7 @@ WTSKlineSlice* HisDataReplayer::get_kline_slice(const char* stdCode, const char*
 	if (!bHasHisData)
 		return NULL;
 
-	WTSSessionInfo* sInfo = get_session_info(stdCode, true);
+	VvTSSessionInfo* sInfo = get_session_info(stdCode, true);
 	if(sInfo == NULL)
 	{
 		WTSLogger::error("Cannot find corresponding session of {}", stdCode);
@@ -2243,11 +2243,11 @@ WTSKlineSlice* HisDataReplayer::get_kline_slice(const char* stdCode, const char*
 	{	
 		std::string rawKey = StrUtil::printf("%s#%s#%u", stdCode, period, baseTimes);
 		BarsListPtr& rawBars = _bars_cache[rawKey];
-		WTSKlineSlice* rawKline = WTSKlineSlice::create(stdCode, kp, realTimes, &rawBars->_bars[0], rawBars->_bars.size());
+		VvTSKlineSlice* rawKline = VvTSKlineSlice::create(stdCode, kp, realTimes, &rawBars->_bars[0], rawBars->_bars.size());
 		rawKline->setCode(stdCode);
 
 		static WTSDataFactory dataFact;
-		WTSKlineData* kData = dataFact.extractKlineData(rawKline, kp, realTimes, sInfo, true, _align_by_section);
+		VvTSKlineData* kData = dataFact.extractKlineData(rawKline, kp, realTimes, sInfo, true, _align_by_section);
 		rawKline->release();
 
 		if(kData)
@@ -2280,12 +2280,12 @@ WTSKlineSlice* HisDataReplayer::get_kline_slice(const char* stdCode, const char*
 	if (kBlkPair->_cursor == UINT_MAX)
 	{
 		//还没有经过初始定位
-		WTSBarStruct bar;
+		VvTSBarStruct bar;
 		bar.date = _cur_tdate;
 		if(kp != KP_DAY)
 			bar.time = (_cur_date - 19900000) * 10000 + _cur_time;
 		
-		auto it = std::lower_bound(kBlkPair->_bars.begin(), kBlkPair->_bars.end(), bar, [isDay, isClosed](const WTSBarStruct& a, const WTSBarStruct& b){
+		auto it = std::lower_bound(kBlkPair->_bars.begin(), kBlkPair->_bars.end(), bar, [isDay, isClosed](const VvTSBarStruct& a, const VvTSBarStruct& b){
 			if (isDay)
 				if (!isClosed)
 					return a.date < b.date;
@@ -2299,7 +2299,7 @@ WTSKlineSlice* HisDataReplayer::get_kline_slice(const char* stdCode, const char*
 
 		if (it != kBlkPair->_bars.end())
 		{
-			WTSBarStruct& curBar = *it;
+			VvTSBarStruct& curBar = *it;
 			if (isDay)
 			{
 				if (curBar.date >= _cur_tdate && !isClosed)
@@ -2404,11 +2404,11 @@ WTSKlineSlice* HisDataReplayer::get_kline_slice(const char* stdCode, const char*
 		sIdx = kBlkPair->_cursor - count;
 
 	uint32_t realCnt = kBlkPair->_cursor - sIdx;
-	WTSKlineSlice* kline = WTSKlineSlice::create(stdCode, kp, 1, kBlkPair->_bars.data() + sIdx, realCnt);
+	VvTSKlineSlice* kline = VvTSKlineSlice::create(stdCode, kp, 1, kBlkPair->_bars.data() + sIdx, realCnt);
 	return kline;
 }
 
-WTSTickSlice* HisDataReplayer::get_tick_slice(const char* stdCode, uint32_t count, uint64_t etime)
+VvTSTickSlice* HisDataReplayer::get_tick_slice(const char* stdCode, uint32_t count, uint64_t etime)
 {
 	if (!_tick_enabled)
 		return NULL;
@@ -2431,11 +2431,11 @@ WTSTickSlice* HisDataReplayer::get_tick_slice(const char* stdCode, uint32_t coun
 			uTime = (uint32_t)(etime % 10000 * 100000);
 		}
 
-		WTSTickStruct curTick;
+		VvTSTickStruct curTick;
 		curTick.action_date = uDate;
 		curTick.action_time = uTime;
 
-		auto tit = std::lower_bound(tickList._items.begin(), tickList._items.end(), curTick, [](const WTSTickStruct& a, const WTSTickStruct& b){
+		auto tit = std::lower_bound(tickList._items.begin(), tickList._items.end(), curTick, [](const VvTSTickStruct& a, const VvTSTickStruct& b){
 			if (a.action_date != b.action_date)
 				return a.action_date < b.action_date;
 			else
@@ -2450,7 +2450,7 @@ WTSTickSlice* HisDataReplayer::get_tick_slice(const char* stdCode, uint32_t coun
 		{
 			
 			std::size_t idx = tit - tickList._items.begin();
-			const WTSTickStruct& thisTick = *tit;
+			const VvTSTickStruct& thisTick = *tit;
 			if (thisTick.action_date > uDate || (thisTick.action_date == uDate && thisTick.action_time > uTime))
 			{
 				if(idx > 0)
@@ -2481,11 +2481,11 @@ WTSTickSlice* HisDataReplayer::get_tick_slice(const char* stdCode, uint32_t coun
 	if (realCnt == 0)
 		return NULL;
 
-	WTSTickSlice* ticks = WTSTickSlice::create(stdCode, tickList._items.data() + sIdx, realCnt);
+	VvTSTickSlice* ticks = VvTSTickSlice::create(stdCode, tickList._items.data() + sIdx, realCnt);
 	return ticks;
 }
 
-WTSOrdDtlSlice* HisDataReplayer::get_order_detail_slice(const char* stdCode, uint32_t count, uint64_t etime /* = 0 */)
+VvTSOrdDtlSlice* HisDataReplayer::get_order_detail_slice(const char* stdCode, uint32_t count, uint64_t etime /* = 0 */)
 {
 	if (!checkOrderDetails(stdCode, _cur_tdate))
 		return NULL;
@@ -2505,11 +2505,11 @@ WTSOrdDtlSlice* HisDataReplayer::get_order_detail_slice(const char* stdCode, uin
 			uTime = (uint32_t)(etime % 10000 * 100000);
 		}
 
-		WTSOrdDtlStruct curItem;
+		VvTSOrdDtlStruct curItem;
 		curItem.action_date = uDate;
 		curItem.action_time = uTime;
 
-		auto tit = std::lower_bound(dataList._items.begin(), dataList._items.end(), curItem, [](const WTSOrdDtlStruct& a, const WTSOrdDtlStruct& b) {
+		auto tit = std::lower_bound(dataList._items.begin(), dataList._items.end(), curItem, [](const VvTSOrdDtlStruct& a, const VvTSOrdDtlStruct& b) {
 			if (a.action_date != b.action_date)
 				return a.action_date < b.action_date;
 			else
@@ -2529,11 +2529,11 @@ WTSOrdDtlSlice* HisDataReplayer::get_order_detail_slice(const char* stdCode, uin
 	if (realCnt == 0)
 		return NULL;
 
-	WTSOrdDtlSlice* ticks = WTSOrdDtlSlice::create(stdCode, dataList._items.data() + sIdx, realCnt);
+	VvTSOrdDtlSlice* ticks = VvTSOrdDtlSlice::create(stdCode, dataList._items.data() + sIdx, realCnt);
 	return ticks;
 }
 
-WTSOrdQueSlice* HisDataReplayer::get_order_queue_slice(const char* stdCode, uint32_t count, uint64_t etime /* = 0 */)
+VvTSOrdQueSlice* HisDataReplayer::get_order_queue_slice(const char* stdCode, uint32_t count, uint64_t etime /* = 0 */)
 {
 	if (!checkOrderQueues(stdCode, _cur_tdate))
 		return NULL;
@@ -2553,11 +2553,11 @@ WTSOrdQueSlice* HisDataReplayer::get_order_queue_slice(const char* stdCode, uint
 			uTime = (uint32_t)(etime % 10000 * 100000);
 		}
 
-		WTSOrdQueStruct curItem;
+		VvTSOrdQueStruct curItem;
 		curItem.action_date = uDate;
 		curItem.action_time = uTime;
 
-		auto tit = std::lower_bound(dataList._items.begin(), dataList._items.end(), curItem, [](const WTSOrdQueStruct& a, const WTSOrdQueStruct& b) {
+		auto tit = std::lower_bound(dataList._items.begin(), dataList._items.end(), curItem, [](const VvTSOrdQueStruct& a, const VvTSOrdQueStruct& b) {
 			if (a.action_date != b.action_date)
 				return a.action_date < b.action_date;
 			else
@@ -2577,11 +2577,11 @@ WTSOrdQueSlice* HisDataReplayer::get_order_queue_slice(const char* stdCode, uint
 	if (realCnt == 0)
 		return NULL;
 
-	WTSOrdQueSlice* ticks = WTSOrdQueSlice::create(stdCode, dataList._items.data() + sIdx, realCnt);
+	VvTSOrdQueSlice* ticks = VvTSOrdQueSlice::create(stdCode, dataList._items.data() + sIdx, realCnt);
 	return ticks;
 }
 
-WTSTransSlice* HisDataReplayer::get_transaction_slice(const char* stdCode, uint32_t count, uint64_t etime /* = 0 */)
+VvTSTransSlice* HisDataReplayer::get_transaction_slice(const char* stdCode, uint32_t count, uint64_t etime /* = 0 */)
 {
 	if (!checkTransactions(stdCode, _cur_tdate))
 		return NULL;
@@ -2601,11 +2601,11 @@ WTSTransSlice* HisDataReplayer::get_transaction_slice(const char* stdCode, uint3
 			uTime = (uint32_t)(etime % 10000 * 100000);
 		}
 
-		WTSTransStruct curItem;
+		VvTSTransStruct curItem;
 		curItem.action_date = uDate;
 		curItem.action_time = uTime;
 
-		auto tit = std::lower_bound(dataList._items.begin(), dataList._items.end(), curItem, [](const WTSTransStruct& a, const WTSTransStruct& b) {
+		auto tit = std::lower_bound(dataList._items.begin(), dataList._items.end(), curItem, [](const VvTSTransStruct& a, const VvTSTransStruct& b) {
 			if (a.action_date != b.action_date)
 				return a.action_date < b.action_date;
 			else
@@ -2625,7 +2625,7 @@ WTSTransSlice* HisDataReplayer::get_transaction_slice(const char* stdCode, uint3
 	if (realCnt == 0)
 		return NULL;
 
-	WTSTransSlice* ticks = WTSTransSlice::create(stdCode, dataList._items.data() + sIdx, realCnt);
+	VvTSTransSlice* ticks = VvTSTransSlice::create(stdCode, dataList._items.data() + sIdx, realCnt);
 	return ticks;
 }
 
@@ -2777,7 +2777,7 @@ bool HisDataReplayer::checkTicks(const char* stdCode, uint32_t uDate)
 		bNeedCache = true;
 	else
 	{
-		HftDataList<WTSTickStruct>& tickList = (HftDataList<WTSTickStruct>&)it->second;
+		HftDataList<VvTSTickStruct>& tickList = (HftDataList<VvTSTickStruct>&)it->second;
 		if (tickList._date != uDate)
 		{
 			tickList._items.clear();
@@ -2819,7 +2819,7 @@ bool HisDataReplayer::checkTicks(const char* stdCode, uint32_t uDate)
 	return true;
 }
 
-WTSTickData* HisDataReplayer::get_last_tick(const char* stdCode)
+VvTSTickData* HisDataReplayer::get_last_tick(const char* stdCode)
 {
 	if (!checkTicks(stdCode, _cur_tdate))
 		return NULL;
@@ -2833,11 +2833,11 @@ WTSTickData* HisDataReplayer::get_last_tick(const char* stdCode)
 		uint32_t uDate = _cur_date;
 		uint32_t uTime = _cur_time * 100000 + _cur_secs;
 
-		WTSTickStruct curTick;
+		VvTSTickStruct curTick;
 		curTick.action_date = uDate;
 		curTick.action_time = uTime;
 
-		auto tit = std::lower_bound(tickList._items.begin(), tickList._items.end(), curTick, [](const WTSTickStruct& a, const WTSTickStruct& b){
+		auto tit = std::lower_bound(tickList._items.begin(), tickList._items.end(), curTick, [](const VvTSTickStruct& a, const VvTSTickStruct& b){
 			if (a.action_date != b.action_date)
 				return a.action_date < b.action_date;
 			else
@@ -2850,10 +2850,10 @@ WTSTickData* HisDataReplayer::get_last_tick(const char* stdCode)
 	else if (tickList._cursor > tickList._count)
 		return NULL;
 
-	return WTSTickData::create(tickList._items[tickList._cursor - 1]);
+	return VvTSTickData::create(tickList._items[tickList._cursor - 1]);
 }
 
-WTSCommodityInfo* HisDataReplayer::get_commodity_info(const char* stdCode)
+VvTSCommodityInfo* HisDataReplayer::get_commodity_info(const char* stdCode)
 {
 	CodeHelper::CodeInfo codeInfo = CodeHelper::extractStdCode(stdCode, &_hot_mgr);
 	return _bd_mgr.getCommodity(codeInfo._exchg, codeInfo._product);
@@ -2871,13 +2871,13 @@ std::string HisDataReplayer::get_rawcode(const char* stdCode)
 	return "";
 }
 
-WTSSessionInfo* HisDataReplayer::get_session_info(const char* sid, bool isCode /* = false */)
+VvTSSessionInfo* HisDataReplayer::get_session_info(const char* sid, bool isCode /* = false */)
 {
 	if (!isCode)
 		return _bd_mgr.getSession(sid);
 
 	CodeHelper::CodeInfo codeInfo = CodeHelper::extractStdCode(sid, &_hot_mgr);
-	WTSCommodityInfo* cInfo = _bd_mgr.getCommodity(codeInfo._exchg, codeInfo._product);
+	VvTSCommodityInfo* cInfo = _bd_mgr.getCommodity(codeInfo._exchg, codeInfo._product);
 	if (cInfo == NULL)
 		return NULL;
 
@@ -2895,7 +2895,7 @@ void HisDataReplayer::loadFees(const char* filename)
 		return;
 	}
 
-	VVTSVariant* cfg = WTSCfgLoader::load_from_file(filename);
+	VvTSVariant* cfg = WTSCfgLoader::load_from_file(filename);
 	if (cfg == NULL)
 	{
 		WTSLogger::error("Converting fees template file {} failed", filename);
@@ -2905,7 +2905,7 @@ void HisDataReplayer::loadFees(const char* filename)
 	auto keys = cfg->memberNames();
 	for (const std::string& key : keys)
 	{
-		VVTSVariant* cfgItem = cfg->get(key.c_str());
+		VvTSVariant* cfgItem = cfg->get(key.c_str());
 		FeeItem& fItem = _fee_map[key];
 		fItem._by_volume = cfgItem->getBoolean("byvolume");
 		fItem._open = cfgItem->getDouble("open");
@@ -2928,7 +2928,7 @@ double HisDataReplayer::calc_fee(const char* stdCode, double price, double qty, 
 		return 0.0;
 
 	double ret = 0.0;
-	WTSCommodityInfo* commInfo = _bd_mgr.getCommodity(stdPID);
+	VvTSCommodityInfo* commInfo = _bd_mgr.getCommodity(stdPID);
 	const FeeItem& fItem = it->second;
 	if (fItem._by_volume)
 	{
@@ -2972,10 +2972,10 @@ double HisDataReplayer::get_day_price(const char* stdCode, int flag /* = 0 */)
 {
 	if(_tick_enabled)
 	{
-		WTSTickData* lastTick = get_last_tick(stdCode);
+		VvTSTickData* lastTick = get_last_tick(stdCode);
 		if(lastTick != NULL)
 		{
-			const WTSTickStruct& curTs = lastTick->getTickStruct();
+			const VvTSTickStruct& curTs = lastTick->getTickStruct();
 
 			double price = 0.0;
 			switch (flag)
@@ -3006,7 +3006,7 @@ double HisDataReplayer::get_day_price(const char* stdCode, int flag /* = 0 */)
 	if (it == _day_cache.end())
 		return 0.0;
 
-	const WTSTickStruct& curTs = it->second;
+	const VvTSTickStruct& curTs = it->second;
 	double price = 0.0;
 	switch (flag)
 	{
@@ -3119,7 +3119,7 @@ void HisDataReplayer::checkUnbars()
 		bool bHasHisData = false;
 		std::string key = fmt::format("{}#{}", stdCode, _main_period);
 
-		WTSKlinePeriod kp;
+		VvTSKlinePeriod kp;
 		uint32_t realTimes = strtoul(_main_period.c_str() + 2, NULL, 10);
 		if (_main_period[0] == 'm')
 		{
@@ -3160,18 +3160,18 @@ void HisDataReplayer::checkUnbars()
 		if (!bHasHisData)
 			continue;
 
-		WTSSessionInfo* sInfo = get_session_info(stdCode.c_str(), true);
+		VvTSSessionInfo* sInfo = get_session_info(stdCode.c_str(), true);
 
 		BarsListPtr& kBlkPair = _unbars_cache[key];
 
 		_codes_in_unsubbed.insert(stdCode);
 		
 		//还没有经过初始定位
-		WTSBarStruct bar;
+		VvTSBarStruct bar;
 		bar.date = _cur_tdate;
 		bar.time = (_cur_date - 19900000) * 10000 + _cur_time;
 
-		auto it = std::lower_bound(kBlkPair->_bars.begin(), kBlkPair->_bars.end(), bar, [](const WTSBarStruct& a, const WTSBarStruct& b) {
+		auto it = std::lower_bound(kBlkPair->_bars.begin(), kBlkPair->_bars.end(), bar, [](const VvTSBarStruct& a, const VvTSBarStruct& b) {
 			return a.time < b.time;
 		});
 
@@ -3179,7 +3179,7 @@ void HisDataReplayer::checkUnbars()
 
 		if (it != kBlkPair->_bars.end())
 		{
-			WTSBarStruct& curBar = *it;
+			VvTSBarStruct& curBar = *it;
 			if (curBar.time > bar.time)
 			{
 				if (eIdx > 0)
@@ -3278,7 +3278,7 @@ bool HisDataReplayer::cacheRawTicksFromBin(const std::string& key, const char* s
 
 	auto& ticksList = _ticks_cache[key];
 	uint32_t tickcnt = 0;
-	tickcnt = content.size() / sizeof(WTSTickStruct);
+	tickcnt = content.size() / sizeof(VvTSTickStruct);
 	ticksList._items.resize(tickcnt);
 	memcpy(ticksList._items.data(), content.data(), content.size());
 	
@@ -3307,7 +3307,7 @@ bool HisDataReplayer::cacheRawOrdDtlFromBin(const std::string& key, const char* 
 
 	auto& dataList = _orddtl_cache[key];
 	uint32_t dataCnt = 0;
-	dataCnt = content.size() / sizeof(WTSOrdDtlStruct);
+	dataCnt = content.size() / sizeof(VvTSOrdDtlStruct);
 	dataList._items.resize(dataCnt);
 	memcpy(dataList._items.data(), content.data(), content.size());
 
@@ -3336,7 +3336,7 @@ bool HisDataReplayer::cacheRawOrdQueFromBin(const std::string& key, const char* 
 
 	auto& dataList = _ordque_cache[key];
 	uint32_t dataCnt = 0;
-	dataCnt = content.size() / sizeof(WTSOrdQueStruct);
+	dataCnt = content.size() / sizeof(VvTSOrdQueStruct);
 	dataList._items.resize(dataCnt);
 	memcpy(dataList._items.data(), content.data(), content.size());
 
@@ -3365,7 +3365,7 @@ bool HisDataReplayer::cacheRawTransFromBin(const std::string& key, const char* s
 
 	auto& dataList = _trans_cache[key];
 	uint32_t dataCnt = 0;
-	dataCnt = content.size() / sizeof(WTSTransStruct);
+	dataCnt = content.size() / sizeof(VvTSTransStruct);
 	dataList._items.resize(dataCnt);
 	memcpy(dataList._items.data(), content.data(), content.size());
 
@@ -3388,11 +3388,11 @@ bool HisDataReplayer::cacheRawTicksFromLoader(const std::string& key, const char
 	dataList._date = uDate;
 	dataList._count = 0;
 
-	bool bSucc = _bt_loader->loadRawHisTicks(&dataList, stdCode, uDate, [](void* obj, WTSTickStruct* firstItem, uint32_t count) {
-		HftDataList<WTSTickStruct>* ticks = (HftDataList<WTSTickStruct>*)obj;
+	bool bSucc = _bt_loader->loadRawHisTicks(&dataList, stdCode, uDate, [](void* obj, VvTSTickStruct* firstItem, uint32_t count) {
+		HftDataList<VvTSTickStruct>* ticks = (HftDataList<VvTSTickStruct>*)obj;
 		ticks->_items.resize(count);
 		ticks->_count = count;
-		memcpy(ticks->_items.data(), firstItem, sizeof(WTSTickStruct)*count);
+		memcpy(ticks->_items.data(), firstItem, sizeof(VvTSTickStruct)*count);
 	});
 
 	if (!bSucc)
@@ -3430,7 +3430,7 @@ bool HisDataReplayer::cacheRawTicksFromCSV(const std::string& key, const char* s
 
 		WTSLogger::info("Processing file content of {}...", filename);
 		proc_block_data(filename.c_str(), content, false, false);
-		uint32_t tickcnt = content.size() / sizeof(WTSTickStruct);
+		uint32_t tickcnt = content.size() / sizeof(VvTSTickStruct);
 		auto& ticksList = _ticks_cache[key];
 		ticksList._items.resize(tickcnt);
 		memcpy(ticksList._items.data(), content.data(), content.size());
@@ -3485,7 +3485,7 @@ bool HisDataReplayer::cacheRawTicksFromCSV(const std::string& key, const char* s
 
 		//	//逐行读取
 		//	StringVector ay = StrUtil::split(buffer, ",");
-		//	WTSTickStruct ticks;
+		//	VvTSTickStruct ticks;
 		//	ticks.action_date = strToDate(ay[0].c_str());
 		//	ticks.action_time = strToTime(ay[1].c_str(), true) * 1000;
 		//	ticks.price = strtod(ay[2].c_str(), NULL);
@@ -3512,7 +3512,7 @@ bool HisDataReplayer::cacheRawTicksFromCSV(const std::string& key, const char* s
 		//pBlk->_type = BT_HIS_Ticks;
 		//pBlk->_version = BLOCK_VERSION_CMP_V2;
 
-		//std::string cmpData = WTSCmpHelper::compress_data(tickList._items.data(), sizeof(WTSTickStruct)*tickList._count);
+		//std::string cmpData = WTSCmpHelper::compress_data(tickList._items.data(), sizeof(VvTSTickStruct)*tickList._count);
 		//pBlk->_size = cmpData.size();
 		//content.append(cmpData);
 
@@ -3523,13 +3523,13 @@ bool HisDataReplayer::cacheRawTicksFromCSV(const std::string& key, const char* s
 	return true;
 }
 
-bool HisDataReplayer::cacheFinalBarsFromLoader(const std::string& key, const char* stdCode, WTSKlinePeriod period, bool bSubbed /* = true */)
+bool HisDataReplayer::cacheFinalBarsFromLoader(const std::string& key, const char* stdCode, VvTSKlinePeriod period, bool bSubbed /* = true */)
 {
 	if (NULL == _bt_loader)
 		return false;
 
 	CodeHelper::CodeInfo cInfo = CodeHelper::extractStdCode(stdCode, &_hot_mgr);
-	WTSCommodityInfo* commInfo = _bd_mgr.getCommodity(cInfo._exchg, cInfo._product);
+	VvTSCommodityInfo* commInfo = _bd_mgr.getCommodity(cInfo._exchg, cInfo._product);
 	const char* stdPID = cInfo.stdCommID();
 
 	std::string pname;
@@ -3581,7 +3581,7 @@ bool HisDataReplayer::cacheFinalBarsFromLoader(const std::string& key, const cha
 		{
 			HisKlineBlockV2* kBlock = (HisKlineBlockV2*)content.c_str();
 			std::string rawData = WTSCmpHelper::uncompress_data(kBlock->_data, kBlock->_size);
-			uint32_t barcnt = rawData.size() / sizeof(WTSBarStruct);
+			uint32_t barcnt = rawData.size() / sizeof(VvTSBarStruct);
 
 			if (bSubbed)
 				_bars_cache[key].reset(new BarsList);
@@ -3621,11 +3621,11 @@ bool HisDataReplayer::cacheFinalBarsFromLoader(const std::string& key, const cha
 		barsList->_count = 0;
 
 		std::string buffer;
-		bool bSucc = _bt_loader->loadFinalHisBars(barsList.get(), stdCode, period, [](void* obj, WTSBarStruct* firstBar, uint32_t count) {
+		bool bSucc = _bt_loader->loadFinalHisBars(barsList.get(), stdCode, period, [](void* obj, VvTSBarStruct* firstBar, uint32_t count) {
 			BarsList* bars = (BarsList*)obj;
 			bars->_count = count;
 			bars->_bars.resize(count);
-			memcpy((void*)bars->_bars.data(), firstBar, sizeof(WTSBarStruct)*count);
+			memcpy((void*)bars->_bars.data(), firstBar, sizeof(VvTSBarStruct)*count);
 		});
 
 		if (!bSucc)
@@ -3659,7 +3659,7 @@ bool HisDataReplayer::cacheFinalBarsFromLoader(const std::string& key, const cha
 			kBlock->_type = btype;
 			kBlock->_version = BLOCK_VERSION_CMP_V2;
 
-			std::string cmpData = WTSCmpHelper::compress_data(barsList->_bars.data(), sizeof(WTSBarStruct)*barsList->_count);
+			std::string cmpData = WTSCmpHelper::compress_data(barsList->_bars.data(), sizeof(VvTSBarStruct)*barsList->_count);
 			kBlock->_size = cmpData.size();
 			content.append(cmpData);
 
@@ -3671,10 +3671,10 @@ bool HisDataReplayer::cacheFinalBarsFromLoader(const std::string& key, const cha
 	return true;
 }
 
-bool HisDataReplayer::cacheRawBarsFromCSV(const std::string& key, const char* stdCode, WTSKlinePeriod period, bool bSubbed/* = true*/)
+bool HisDataReplayer::cacheRawBarsFromCSV(const std::string& key, const char* stdCode, VvTSKlinePeriod period, bool bSubbed/* = true*/)
 {
 	CodeHelper::CodeInfo cInfo = CodeHelper::extractStdCode(stdCode, &_hot_mgr);
-	WTSCommodityInfo* commInfo = _bd_mgr.getCommodity(cInfo._exchg, cInfo._product);
+	VvTSCommodityInfo* commInfo = _bd_mgr.getCommodity(cInfo._exchg, cInfo._product);
 	std::string stdPID = StrUtil::printf("%s.%s", cInfo._exchg, cInfo._product);
 
 	std::string p_suffix;
@@ -3728,7 +3728,7 @@ bool HisDataReplayer::cacheRawBarsFromCSV(const std::string& key, const char* st
 		//By Wesley @ 2021.12.30
 		//转储的数据不做检查，直接重新生成即可
 		proc_block_data(filename.c_str(), content, true, false);
-		uint32_t barcnt = content.size() / sizeof(WTSBarStruct);
+		uint32_t barcnt = content.size() / sizeof(VvTSBarStruct);
 
 		if (bSubbed)
 			_bars_cache[key].reset(new BarsList);
@@ -3777,7 +3777,7 @@ bool HisDataReplayer::cacheRawBarsFromCSV(const std::string& key, const char* st
 		while (reader.next_row())
 		{
 			//逐行读取
-			WTSBarStruct bs;
+			VvTSBarStruct bs;
 			bs.date = strToDate(reader.get_string("date"));
 			if (period != KP_DAY)
 				bs.time = TimeUtils::timeToMinBar(bs.date, strToTime(reader.get_string("time")));
@@ -3823,7 +3823,7 @@ bool HisDataReplayer::cacheRawBarsFromCSV(const std::string& key, const char* st
 		kBlock->_type = btype;
 		kBlock->_version = BLOCK_VERSION_CMP_V2;
 
-		std::string cmpData = WTSCmpHelper::compress_data(barsList->_bars.data(), sizeof(WTSBarStruct)*barsList->_count);
+		std::string cmpData = WTSCmpHelper::compress_data(barsList->_bars.data(), sizeof(VvTSBarStruct)*barsList->_count);
 		kBlock->_size = cmpData.size();
 		content.append(cmpData);
 
@@ -3834,7 +3834,7 @@ bool HisDataReplayer::cacheRawBarsFromCSV(const std::string& key, const char* st
 	return true;
 }
 
-bool HisDataReplayer::cacheIntegratedFutBarsFromBin(void* codeInfo, const std::string& key, const char* stdCode, WTSKlinePeriod period, bool bSubbed /* = true */)
+bool HisDataReplayer::cacheIntegratedFutBarsFromBin(void* codeInfo, const std::string& key, const char* stdCode, VvTSKlinePeriod period, bool bSubbed /* = true */)
 {
 	CodeHelper::CodeInfo* cInfo = (CodeHelper::CodeInfo*)codeInfo;
 	const char* stdPID = cInfo->stdCommID();
@@ -3860,7 +3860,7 @@ bool HisDataReplayer::cacheIntegratedFutBarsFromBin(void* codeInfo, const std::s
 	barsList->_code = stdCode;
 	barsList->_period = period;
 
-	std::vector<std::vector<WTSBarStruct>*> barsSections;
+	std::vector<std::vector<VvTSBarStruct>*> barsSections;
 
 	uint32_t realCnt = 0;
 	bool isDay = (period == KP_DAY);
@@ -3868,7 +3868,7 @@ bool HisDataReplayer::cacheIntegratedFutBarsFromBin(void* codeInfo, const std::s
 	//const char* hot_flag = cInfo.isHot() ? FILE_SUF_HOT : FILE_SUF_2ND;
 	const char* ruleTag = cInfo->_ruletag;
 
-	std::vector<WTSBarStruct>* hotAy = NULL;
+	std::vector<VvTSBarStruct>* hotAy = NULL;
 	uint64_t lastHotTime = 0;
 	do
 	{
@@ -3894,11 +3894,11 @@ bool HisDataReplayer::cacheIntegratedFutBarsFromBin(void* codeInfo, const std::s
 			break;
 		}
 
-		uint32_t barcnt = content.size() / sizeof(WTSBarStruct);
+		uint32_t barcnt = content.size() / sizeof(VvTSBarStruct);
 		if (barcnt <= 0)
 			break;
 
-		hotAy = new std::vector<WTSBarStruct>();
+		hotAy = new std::vector<VvTSBarStruct>();
 		hotAy->resize(barcnt);
 		memcpy(hotAy->data(), content.data(), content.size());
 
@@ -3949,7 +3949,7 @@ bool HisDataReplayer::cacheIntegratedFutBarsFromBin(void* codeInfo, const std::s
 		uint32_t leftDt = hotSec._s_date;
 
 		//要先将日期转换为边界时间
-		WTSBarStruct sBar, eBar;
+		VvTSBarStruct sBar, eBar;
 		if (period != KP_DAY)
 		{
 			uint64_t sTime = _bd_mgr.getBoundaryTime(stdPID, leftDt, false, true);
@@ -3996,10 +3996,10 @@ bool HisDataReplayer::cacheIntegratedFutBarsFromBin(void* codeInfo, const std::s
 		{
 			//分月合约代码
 			std::string wCode = StrUtil::printf("%s.%s.%s", cInfo->_exchg, cInfo->_product, (char*)curCode + strlen(cInfo->_product));
-			bLoaded = _bt_loader->loadRawHisBars(&buffer, wCode.c_str(), period, [](void* obj, WTSBarStruct* bars, uint32_t count) {
+			bLoaded = _bt_loader->loadRawHisBars(&buffer, wCode.c_str(), period, [](void* obj, VvTSBarStruct* bars, uint32_t count) {
 				std::string* buff = (std::string*)obj;
-				buff->resize(sizeof(WTSBarStruct)*count);
-				memcpy((void*)buff->c_str(), bars, sizeof(WTSBarStruct)*count);
+				buff->resize(sizeof(VvTSBarStruct)*count);
+				memcpy((void*)buff->c_str(), bars, sizeof(VvTSBarStruct)*count);
 			});
 
 		}
@@ -4020,11 +4020,11 @@ bool HisDataReplayer::cacheIntegratedFutBarsFromBin(void* codeInfo, const std::s
 		if (buffer.empty())
 			break;
 
-		uint32_t barcnt = buffer.size() / sizeof(WTSBarStruct);
+		uint32_t barcnt = buffer.size() / sizeof(VvTSBarStruct);
 
-		WTSBarStruct* firstBar = (WTSBarStruct*)buffer.data();
+		VvTSBarStruct* firstBar = (VvTSBarStruct*)buffer.data();
 
-		WTSBarStruct* pBar = std::lower_bound(firstBar, firstBar + (barcnt - 1), sBar, [period](const WTSBarStruct& a, const WTSBarStruct& b) {
+		VvTSBarStruct* pBar = std::lower_bound(firstBar, firstBar + (barcnt - 1), sBar, [period](const VvTSBarStruct& a, const VvTSBarStruct& b) {
 			if (period == KP_DAY)
 			{
 				return a.date < b.date;
@@ -4042,7 +4042,7 @@ bool HisDataReplayer::cacheIntegratedFutBarsFromBin(void* codeInfo, const std::s
 			continue;
 		}
 
-		pBar = std::lower_bound(firstBar + sIdx, firstBar + (barcnt - 1), eBar, [period](const WTSBarStruct& a, const WTSBarStruct& b) {
+		pBar = std::lower_bound(firstBar + sIdx, firstBar + (barcnt - 1), eBar, [period](const VvTSBarStruct& a, const VvTSBarStruct& b) {
 			if (period == KP_DAY)
 			{
 				return a.date < b.date;
@@ -4089,9 +4089,9 @@ bool HisDataReplayer::cacheIntegratedFutBarsFromBin(void* codeInfo, const std::s
 			}
 		}
 
-		std::vector<WTSBarStruct>* tempAy = new std::vector<WTSBarStruct>();
+		std::vector<VvTSBarStruct>* tempAy = new std::vector<VvTSBarStruct>();
 		tempAy->resize(curCnt);
-		memcpy(tempAy->data(), &firstBar[sIdx], sizeof(WTSBarStruct)*curCnt);
+		memcpy(tempAy->data(), &firstBar[sIdx], sizeof(VvTSBarStruct)*curCnt);
 		realCnt += curCnt;
 
 		barsSections.emplace_back(tempAy);
@@ -4113,8 +4113,8 @@ bool HisDataReplayer::cacheIntegratedFutBarsFromBin(void* codeInfo, const std::s
 		uint32_t curIdx = 0;
 		for (auto it = barsSections.rbegin(); it != barsSections.rend(); it++)
 		{
-			std::vector<WTSBarStruct>* tempAy = *it;
-			memcpy(barsList->_bars.data() + curIdx, tempAy->data(), tempAy->size() * sizeof(WTSBarStruct));
+			std::vector<VvTSBarStruct>* tempAy = *it;
+			memcpy(barsList->_bars.data() + curIdx, tempAy->data(), tempAy->size() * sizeof(VvTSBarStruct));
 			curIdx += tempAy->size();
 			delete tempAy;
 		}
@@ -4170,7 +4170,7 @@ const HisDataReplayer::AdjFactorList& HisDataReplayer::getAdjFactors(const char*
 	return _adj_factors[key];
 }
 
-bool HisDataReplayer::cacheAdjustedStkBarsFromBin(void* codeInfo, const std::string& key, const char* stdCode, WTSKlinePeriod period, bool bSubbed /* = true */)
+bool HisDataReplayer::cacheAdjustedStkBarsFromBin(void* codeInfo, const std::string& key, const char* stdCode, VvTSKlinePeriod period, bool bSubbed /* = true */)
 {
 	CodeHelper::CodeInfo* cInfo = (CodeHelper::CodeInfo*)codeInfo;
 	const char* stdPID = cInfo->stdCommID();
@@ -4185,11 +4185,11 @@ bool HisDataReplayer::cacheAdjustedStkBarsFromBin(void* codeInfo, const std::str
 	barsList->_code = stdCode;
 	barsList->_period = period;
 
-	std::vector<std::vector<WTSBarStruct>*> barsSections;
+	std::vector<std::vector<VvTSBarStruct>*> barsSections;
 
 	uint32_t realCnt = 0;
 
-	std::vector<WTSBarStruct>* adjustedBars = NULL;
+	std::vector<VvTSBarStruct>* adjustedBars = NULL;
 	uint64_t lastQTime = 0;
 
 	WTSLogger::info("Loading adjusted bars of {}...", stdCode);
@@ -4217,11 +4217,11 @@ bool HisDataReplayer::cacheAdjustedStkBarsFromBin(void* codeInfo, const std::str
 			break;
 		}
 
-		uint32_t barcnt = content.size() / sizeof(WTSBarStruct);
+		uint32_t barcnt = content.size() / sizeof(VvTSBarStruct);
 		if (barcnt <= 0)
 			break;
 
-		adjustedBars = new std::vector<WTSBarStruct>();
+		adjustedBars = new std::vector<VvTSBarStruct>();
 		adjustedBars->resize(barcnt);
 		memcpy(adjustedBars->data(), content.data(), content.size());
 
@@ -4239,7 +4239,7 @@ bool HisDataReplayer::cacheAdjustedStkBarsFromBin(void* codeInfo, const std::str
 		const char* curCode = cInfo->_code;
 
 		//要先将日期转换为边界时间
-		WTSBarStruct sBar;
+		VvTSBarStruct sBar;
 		if (period != KP_DAY)
 		{
 			sBar.date = TimeUtils::minBarToDate(lastQTime);
@@ -4261,10 +4261,10 @@ bool HisDataReplayer::cacheAdjustedStkBarsFromBin(void* codeInfo, const std::str
 		if (NULL != _bt_loader)
 		{
 			std::string wCode = StrUtil::printf("%s.%s.%s", cInfo->_exchg, cInfo->_product, curCode);
-			bLoaded = _bt_loader->loadRawHisBars(&buffer, wCode.c_str(), period, [](void* obj, WTSBarStruct* bars, uint32_t count) {
+			bLoaded = _bt_loader->loadRawHisBars(&buffer, wCode.c_str(), period, [](void* obj, VvTSBarStruct* bars, uint32_t count) {
 				std::string* buff = (std::string*)obj;
-				buff->resize(sizeof(WTSBarStruct)*count);
-				memcpy((void*)buff->c_str(), bars, sizeof(WTSBarStruct)*count);
+				buff->resize(sizeof(VvTSBarStruct)*count);
+				memcpy((void*)buff->c_str(), bars, sizeof(VvTSBarStruct)*count);
 			});
 
 			if (bLoaded)
@@ -4291,11 +4291,11 @@ bool HisDataReplayer::cacheAdjustedStkBarsFromBin(void* codeInfo, const std::str
 		if (buffer.empty())
 			break;
 		
-		std::size_t barcnt = buffer.size() / sizeof(WTSBarStruct);
+		std::size_t barcnt = buffer.size() / sizeof(VvTSBarStruct);
 
-		WTSBarStruct* firstBar = (WTSBarStruct*)buffer.data();
+		VvTSBarStruct* firstBar = (VvTSBarStruct*)buffer.data();
 
-		WTSBarStruct* pBar = std::lower_bound(firstBar, firstBar + (barcnt - 1), sBar, [period](const WTSBarStruct& a, const WTSBarStruct& b) {
+		VvTSBarStruct* pBar = std::lower_bound(firstBar, firstBar + (barcnt - 1), sBar, [period](const VvTSBarStruct& a, const VvTSBarStruct& b) {
 			if (period == KP_DAY)
 			{
 				return a.date < b.date;
@@ -4310,9 +4310,9 @@ bool HisDataReplayer::cacheAdjustedStkBarsFromBin(void* codeInfo, const std::str
 		{
 			std::size_t sIdx = pBar - firstBar;
 			std::size_t curCnt = barcnt - sIdx;
-			std::vector<WTSBarStruct>* tempAy = new std::vector<WTSBarStruct>();
+			std::vector<VvTSBarStruct>* tempAy = new std::vector<VvTSBarStruct>();
 			tempAy->resize(curCnt);
-			memcpy(tempAy->data(), &firstBar[sIdx], sizeof(WTSBarStruct)*curCnt);
+			memcpy(tempAy->data(), &firstBar[sIdx], sizeof(VvTSBarStruct)*curCnt);
 			realCnt += curCnt;
 
 			auto& ayFactors = getAdjFactors(cInfo->_code, cInfo->_exchg, cInfo->_product);
@@ -4321,7 +4321,7 @@ bool HisDataReplayer::cacheAdjustedStkBarsFromBin(void* codeInfo, const std::str
 				WTSLogger::info("Adjusting bars of {} with adjusting factors...", stdCode);
 				//做复权处理
 				std::size_t lastIdx = curCnt;
-				WTSBarStruct bar;
+				VvTSBarStruct bar;
 				firstBar = tempAy->data();
 
 				//根据复权类型确定基础因子
@@ -4341,15 +4341,15 @@ bool HisDataReplayer::cacheAdjustedStkBarsFromBin(void* codeInfo, const std::str
 					//调整因子
 					double factor = adjFact._factor / baseFactor;
 
-					WTSBarStruct* pBar = NULL;
-					pBar = std::lower_bound(firstBar, firstBar + lastIdx - 1, bar, [period](const WTSBarStruct& a, const WTSBarStruct& b) {
+					VvTSBarStruct* pBar = NULL;
+					pBar = std::lower_bound(firstBar, firstBar + lastIdx - 1, bar, [period](const VvTSBarStruct& a, const VvTSBarStruct& b) {
 						return a.date < b.date;
 					});
 
 					if (pBar->date < bar.date)
 						continue;
 
-					WTSBarStruct* endBar = pBar;
+					VvTSBarStruct* endBar = pBar;
 					if (pBar != NULL)
 					{
 						std::size_t curIdx = pBar - firstBar;
@@ -4404,8 +4404,8 @@ bool HisDataReplayer::cacheAdjustedStkBarsFromBin(void* codeInfo, const std::str
 		uint32_t curIdx = 0;
 		for (auto it = barsSections.rbegin(); it != barsSections.rend(); it++)
 		{
-			std::vector<WTSBarStruct>* tempAy = *it;
-			memcpy(barsList->_bars.data() + curIdx, tempAy->data(), tempAy->size() * sizeof(WTSBarStruct));
+			std::vector<VvTSBarStruct>* tempAy = *it;
+			memcpy(barsList->_bars.data() + curIdx, tempAy->data(), tempAy->size() * sizeof(VvTSBarStruct));
 			curIdx += tempAy->size();
 			delete tempAy;
 		}
@@ -4418,10 +4418,10 @@ bool HisDataReplayer::cacheAdjustedStkBarsFromBin(void* codeInfo, const std::str
 }
 
 
-bool HisDataReplayer::cacheRawBarsFromBin(const std::string& key, const char* stdCode, WTSKlinePeriod period, bool bSubbed/* = true*/)
+bool HisDataReplayer::cacheRawBarsFromBin(const std::string& key, const char* stdCode, VvTSKlinePeriod period, bool bSubbed/* = true*/)
 {
 	CodeHelper::CodeInfo cInfo = CodeHelper::extractStdCode(stdCode, &_hot_mgr);
-	WTSCommodityInfo* commInfo = _bd_mgr.getCommodity(cInfo._exchg, cInfo._product);
+	VvTSCommodityInfo* commInfo = _bd_mgr.getCommodity(cInfo._exchg, cInfo._product);
 	const char* stdPID = cInfo.stdCommID();
 
 	uint32_t curDate = TimeUtils::getCurDate();
@@ -4440,7 +4440,7 @@ bool HisDataReplayer::cacheRawBarsFromBin(const std::string& key, const char* st
 	barsList->_code = stdCode;
 	barsList->_period = period;
 
-	std::vector<std::vector<WTSBarStruct>*> barsSections;
+	std::vector<std::vector<VvTSBarStruct>*> barsSections;
 
 	uint32_t realCnt = 0;
 	const char* ruleTag = cInfo._ruletag;
@@ -4463,10 +4463,10 @@ bool HisDataReplayer::cacheRawBarsFromBin(const std::string& key, const char* st
 	std::string buffer;
 	if (NULL != _bt_loader)
 	{
-		bLoaded = _bt_loader->loadRawHisBars(&buffer, stdCode, period, [](void* obj, WTSBarStruct* bars, uint32_t count) {
+		bLoaded = _bt_loader->loadRawHisBars(&buffer, stdCode, period, [](void* obj, VvTSBarStruct* bars, uint32_t count) {
 			std::string* buff = (std::string*)obj;
-			buff->resize(sizeof(WTSBarStruct)*count);
-			memcpy((void*)buff->c_str(), bars, sizeof(WTSBarStruct)*count);
+			buff->resize(sizeof(VvTSBarStruct)*count);
+			memcpy((void*)buff->c_str(), bars, sizeof(VvTSBarStruct)*count);
 		});
 	}
 
@@ -4503,9 +4503,9 @@ bool HisDataReplayer::cacheRawBarsFromBin(const std::string& key, const char* st
 	if (buffer.empty())
 		return false;
 
-	uint32_t barcnt = buffer.size() / sizeof(WTSBarStruct);
+	uint32_t barcnt = buffer.size() / sizeof(VvTSBarStruct);
 
-	WTSBarStruct* firstBar = (WTSBarStruct*)buffer.data();
+	VvTSBarStruct* firstBar = (VvTSBarStruct*)buffer.data();
 	if (barcnt > 0)
 	{
 
@@ -4513,9 +4513,9 @@ bool HisDataReplayer::cacheRawBarsFromBin(const std::string& key, const char* st
 		uint32_t idx = barcnt - 1;
 		uint32_t curCnt = (idx - sIdx + 1);
 
-		std::vector<WTSBarStruct>* tempAy = new std::vector<WTSBarStruct>();
+		std::vector<VvTSBarStruct>* tempAy = new std::vector<VvTSBarStruct>();
 		tempAy->resize(curCnt);
-		memcpy(tempAy->data(), &firstBar[sIdx], sizeof(WTSBarStruct)*curCnt);
+		memcpy(tempAy->data(), &firstBar[sIdx], sizeof(VvTSBarStruct)*curCnt);
 		realCnt += curCnt;
 
 		barsSections.emplace_back(tempAy);
@@ -4528,8 +4528,8 @@ bool HisDataReplayer::cacheRawBarsFromBin(const std::string& key, const char* st
 		uint32_t curIdx = 0;
 		for (auto it = barsSections.rbegin(); it != barsSections.rend(); it++)
 		{
-			std::vector<WTSBarStruct>* tempAy = *it;
-			memcpy(barsList->_bars.data() + curIdx, tempAy->data(), tempAy->size()*sizeof(WTSBarStruct));
+			std::vector<VvTSBarStruct>* tempAy = *it;
+			memcpy(barsList->_bars.data() + curIdx, tempAy->data(), tempAy->size()*sizeof(VvTSBarStruct));
 			curIdx += tempAy->size();
 			delete tempAy;
 		}

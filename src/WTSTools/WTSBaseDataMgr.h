@@ -9,19 +9,19 @@
  */
 #pragma once
 #include "../Includes/IBaseDataMgr.h"
-#include "../Includes/WTSCollection.hpp"
+#include "../Includes/VvTSCollection.hpp"
 #include "../Includes/FasterDefs.h"
 
 USING_NS_VVTP;
 
 typedef vvt_hashmap<std::string, TradingDayTpl>	TradingDayTplMap;
 
-typedef WTSHashMap<std::string>		WTSContractList;
-typedef WTSHashMap<std::string>		WTSExchgContract;
-typedef WTSHashMap<std::string>		WTSContractMap;
+typedef VvTSHashMap<std::string>		WTSContractList;
+typedef VvTSHashMap<std::string>		WTSExchgContract;
+typedef VvTSHashMap<std::string>		WTSContractMap;
 
-typedef WTSHashMap<std::string>		WTSSessionMap;
-typedef WTSHashMap<std::string>		WTSCommodityMap;
+typedef VvTSHashMap<std::string>		WTSSessionMap;
+typedef VvTSHashMap<std::string>		WTSCommodityMap;
 
 typedef vvt_hashmap<std::string, CodeSet> SessionCodeMap;
 
@@ -32,15 +32,15 @@ public:
 	~WTSBaseDataMgr();
 
 public:
-	virtual WTSCommodityInfo*	getCommodity(const char* stdPID) override;
-	virtual WTSCommodityInfo*	getCommodity(const char* exchg, const char* pid) override;
+	virtual VvTSCommodityInfo*	getCommodity(const char* stdPID) override;
+	virtual VvTSCommodityInfo*	getCommodity(const char* exchg, const char* pid) override;
 
-	virtual WTSContractInfo*	getContract(const char* code, const char* exchg = "", uint32_t uDate = 0) override;
-	virtual WTSArray*			getContracts(const char* exchg = "", uint32_t uDate = 0) override;
+	virtual VvTSContractInfo*	getContract(const char* code, const char* exchg = "", uint32_t uDate = 0) override;
+	virtual VvTSArray*			getContracts(const char* exchg = "", uint32_t uDate = 0) override;
 
-	virtual WTSSessionInfo*		getSession(const char* sid) override;
-	virtual WTSSessionInfo*		getSessionByCode(const char* code, const char* exchg = "") override;
-	virtual WTSArray*			getAllSessions() override;
+	virtual VvTSSessionInfo*		getSession(const char* sid) override;
+	virtual VvTSSessionInfo*		getSessionByCode(const char* code, const char* exchg = "") override;
+	virtual VvTSArray*			getAllSessions() override;
 	virtual bool				isHoliday(const char* stdPID, uint32_t uDate, bool isTpl = false) override;
 
 	virtual uint32_t			calcTradingDate(const char* stdPID, uint32_t uDate, uint32_t uTime, bool isSession = false) override;

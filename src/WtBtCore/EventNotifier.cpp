@@ -13,7 +13,7 @@
 #include "../Share/TimeUtils.hpp"
 #include "../Share/DLLHelper.hpp"
 
-#include "../Includes/VVTSVariant.hpp"
+#include "../Includes/VvTSVariant.hpp"
 #include "../WTSTools/WTSLogger.h"
 
 #include <rapidjson/document.h>
@@ -40,7 +40,7 @@ EventNotifier::~EventNotifier()
 		_remover(_mq_sid);
 }
 
-bool EventNotifier::init(VVTSVariant* cfg)
+bool EventNotifier::init(VvTSVariant* cfg)
 {
 	if (!cfg->getBoolean("active"))
 		return false;

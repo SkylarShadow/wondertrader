@@ -17,10 +17,10 @@
 #include "WtDataManager.h"
 
 NS_VVTP_BEGIN
-class VVTSVariant;
+class VvTSVariant;
 class WtDataStorage;
-class WTSKlineSlice;
-class WTSTickSlice;
+class VvTSKlineSlice;
+class VvTSTickSlice;
 NS_VVTP_END
 
 class WtDtRunner
@@ -38,32 +38,32 @@ public:
 	inline WTSHotMgr& getHotMgr() { return _hot_mgr; }
 
 public:
-	void	proc_tick(WTSTickData* curTick);
-	void	trigger_tick(const char* stdCode, WTSTickData* curTick);
-	void	trigger_bar(const char* stdCode, const char* period, WTSBarStruct* lastBar);
+	void	proc_tick(VvTSTickData* curTick);
+	void	trigger_tick(const char* stdCode, VvTSTickData* curTick);
+	void	trigger_bar(const char* stdCode, const char* period, VvTSBarStruct* lastBar);
 	void	sub_tick(const char* stdCode, bool bReplace, bool bInner = false);
 	void	sub_bar(const char* stdCode, const char* period);
 
 	void	clear_cache();
 
 public:
-	WTSKlineSlice*	get_bars_by_range(const char* stdCode, const char* period, uint64_t beginTime, uint64_t endTime = 0);
+	VvTSKlineSlice*	get_bars_by_range(const char* stdCode, const char* period, uint64_t beginTime, uint64_t endTime = 0);
 
-	WTSKlineSlice*	get_bars_by_date(const char* stdCode, const char* period, uint32_t uDate = 0);
+	VvTSKlineSlice*	get_bars_by_date(const char* stdCode, const char* period, uint32_t uDate = 0);
 
-	WTSTickSlice*	get_ticks_by_range(const char* stdCode, uint64_t beginTime, uint64_t endTime = 0);
+	VvTSTickSlice*	get_ticks_by_range(const char* stdCode, uint64_t beginTime, uint64_t endTime = 0);
 
-	WTSKlineSlice*	get_bars_by_count(const char* stdCode, const char* period, uint32_t count, uint64_t endTime = 0);
+	VvTSKlineSlice*	get_bars_by_count(const char* stdCode, const char* period, uint32_t count, uint64_t endTime = 0);
 
-	WTSTickSlice*	get_ticks_by_count(const char* stdCode, uint32_t count, uint64_t endTime = 0);
+	VvTSTickSlice*	get_ticks_by_count(const char* stdCode, uint32_t count, uint64_t endTime = 0);
 
-	WTSTickSlice*	get_ticks_by_date(const char* stdCode, uint32_t uDate = 0);
+	VvTSTickSlice*	get_ticks_by_date(const char* stdCode, uint32_t uDate = 0);
 
-	WTSKlineSlice*	get_sbars_by_date(const char* stdCode, uint32_t secs, uint32_t uDate = 0);
+	VvTSKlineSlice*	get_sbars_by_date(const char* stdCode, uint32_t secs, uint32_t uDate = 0);
 
 private:
-	void	initDataMgr(VVTSVariant* config);
-	void	initParsers(VVTSVariant* cfg);
+	void	initDataMgr(VvTSVariant* config);
+	void	initParsers(VvTSVariant* cfg);
 
 private:
 	FuncOnTickCallback	_cb_tick;

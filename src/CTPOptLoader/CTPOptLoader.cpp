@@ -13,7 +13,7 @@
 #include <boost/filesystem.hpp>
 
 #include "../WTSUtils/WTSCfgLoader.h"
-#include "../Includes/VVTSVariant.hpp"
+#include "../Includes/VvTSVariant.hpp"
 USING_NS_VVTP;
 
 #include "../Share/charconv.hpp"
@@ -68,11 +68,11 @@ int run(const char* cfgfile, bool bAsync = false, bool isFile = true)
 
 	if (!isFile)
 	{
-		VVTSVariant* root = WTSCfgLoader::load_from_content(cfgfile, true);
+		VvTSVariant* root = WTSCfgLoader::load_from_content(cfgfile, true);
 		if (root == NULL)
 			return 0;
 
-		VVTSVariant* ctp = root->get("ctp");
+		VvTSVariant* ctp = root->get("ctp");
 		FRONT_ADDR = ctp->getCString("front");
 		BROKER_ID = ctp->getCString("broker");
 		INVESTOR_ID = ctp->getCString("user");
@@ -80,7 +80,7 @@ int run(const char* cfgfile, bool bAsync = false, bool isFile = true)
 		APPID = ctp->getCString("appid");
 		AUTHCODE = ctp->getCString("authcode");
 
-		VVTSVariant* cfg = root->get("config");
+		VvTSVariant* cfg = root->get("config");
 		SAVEPATH = cfg->getCString("path");
 		CLASSMASK = cfg->getUInt32("mask"); //1-期货,2-期权,4-股票
 
@@ -137,11 +137,11 @@ int run(const char* cfgfile, bool bAsync = false, bool isFile = true)
 	}
 	else
 	{
-		VVTSVariant* root = WTSCfgLoader::load_from_file(cfgfile);
+		VvTSVariant* root = WTSCfgLoader::load_from_file(cfgfile);
 		if (root == NULL)
 			return 0;
 
-		VVTSVariant* ctp = root->get("ctp");
+		VvTSVariant* ctp = root->get("ctp");
 		FRONT_ADDR = ctp->getCString("front");
 		BROKER_ID = ctp->getCString("broker");
 		INVESTOR_ID = ctp->getCString("user");
@@ -149,7 +149,7 @@ int run(const char* cfgfile, bool bAsync = false, bool isFile = true)
 		APPID = ctp->getCString("appid");
 		AUTHCODE = ctp->getCString("authcode");
 
-		VVTSVariant* cfg = root->get("config");
+		VvTSVariant* cfg = root->get("config");
 		SAVEPATH = cfg->getCString("path");
 		CLASSMASK = cfg->getUInt32("mask"); //1-期货,2-期权,4-股票
 

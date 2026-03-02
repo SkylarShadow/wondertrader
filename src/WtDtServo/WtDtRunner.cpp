@@ -10,10 +10,10 @@
 #include "WtDtRunner.h"
 
 #include "../WtDtCore/WtHelper.h"
-#include "../Includes/WTSSessionInfo.hpp"
-#include "../Includes/VVTSVariant.hpp"
-#include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSContractInfo.hpp"
+#include "../Includes/VvTSSessionInfo.hpp"
+#include "../Includes/VvTSVariant.hpp"
+#include "../Includes/VvTSDataDef.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
 
 #include "../WTSUtils/SignalHook.hpp"
 #include "../WTSUtils/WTSCfgLoader.h"
@@ -58,7 +58,7 @@ void WtDtRunner::initialize(const char* cfgFile, bool isFile /* = true */, const
 	WTSLogger::init(logCfg);
 	WtHelper::set_module_dir(modDir);
 
-	VVTSVariant* config = isFile ? WTSCfgLoader::load_from_file(cfgFile) : WTSCfgLoader::load_from_content(cfgFile, false);
+	VvTSVariant* config = isFile ? WTSCfgLoader::load_from_file(cfgFile) : WTSCfgLoader::load_from_content(cfgFile, false);
 	if(config == NULL)
 	{
 		WTSLogger::error("Loading config failed");
@@ -73,21 +73,21 @@ void WtDtRunner::initialize(const char* cfgFile, bool isFile /* = true */, const
 #endif
 	}
 	//基础数据文件
-	VVTSVariant* cfgBF = config->get("basefiles");
+	VvTSVariant* cfgBF = config->get("basefiles");
 	if (cfgBF->get("session"))
 	{
 		_bd_mgr.loadSessions(cfgBF->getCString("session"));
 		WTSLogger::info("Trading sessions loaded");
 	}
 
-	VVTSVariant* cfgItem = cfgBF->get("commodity");
+	VvTSVariant* cfgItem = cfgBF->get("commodity");
 	if (cfgItem)
 	{
-		if (cfgItem->type() == VVTSVariant::VT_String)
+		if (cfgItem->type() == VvTSVariant::VT_String)
 		{
 			_bd_mgr.loadCommodities(cfgItem->asCString());
 		}
-		else if (cfgItem->type() == VVTSVariant::VT_Array)
+		else if (cfgItem->type() == VvTSVariant::VT_Array)
 		{
 			for (uint32_t i = 0; i < cfgItem->size(); i++)
 			{
@@ -99,11 +99,11 @@ void WtDtRunner::initialize(const char* cfgFile, bool isFile /* = true */, const
 	cfgItem = cfgBF->get("contract");
 	if (cfgItem)
 	{
-		if (cfgItem->type() == VVTSVariant::VT_String)
+		if (cfgItem->type() == VvTSVariant::VT_String)
 		{
 			_bd_mgr.loadContracts(cfgItem->asCString());
 		}
-		else if (cfgItem->type() == VVTSVariant::VT_Array)
+		else if (cfgItem->type() == VvTSVariant::VT_Array)
 		{
 			for (uint32_t i = 0; i < cfgItem->size(); i++)
 			{
@@ -130,10 +130,10 @@ void WtDtRunner::initialize(const char* cfgFile, bool isFile /* = true */, const
 		WTSLogger::info("Second rules loaded");
 	}
 
-	WTSArray* ayContracts = _bd_mgr.getContracts();
+	VvTSArray* ayContracts = _bd_mgr.getContracts();
 	for (auto it = ayContracts->begin(); it != ayContracts->end(); it++)
 	{
-		WTSContractInfo* cInfo = (WTSContractInfo*)(*it);
+		VvTSContractInfo* cInfo = (VvTSContractInfo*)(*it);
 		bool isHot = _hot_mgr.isHot(cInfo->getExchg(), cInfo->getCode());
 		bool isSecond = _hot_mgr.isSecond(cInfo->getExchg(), cInfo->getCode());
 
@@ -151,16 +151,16 @@ void WtDtRunner::initialize(const char* cfgFile, bool isFile /* = true */, const
 
 	initDataMgr(config->get("data"));
 
-	VVTSVariant* cfgParser = config->get("parsers");
+	VvTSVariant* cfgParser = config->get("parsers");
 	if (cfgParser)
 	{
-		if (cfgParser->type() == VVTSVariant::VT_String)
+		if (cfgParser->type() == VvTSVariant::VT_String)
 		{
 			const char* filename = cfgParser->asCString();
 			if (StdFile::exists(filename))
 			{
 				WTSLogger::info("Reading parser config from {}...", filename);
-				VVTSVariant* var = WTSCfgLoader::load_from_file(filename);
+				VvTSVariant* var = WTSCfgLoader::load_from_file(filename);
 				if (var)
 				{
 					initParsers(var->get("parsers"));
@@ -176,7 +176,7 @@ void WtDtRunner::initialize(const char* cfgFile, bool isFile /* = true */, const
 				WTSLogger::error("Parser configuration {} not exists", filename);
 			}
 		}
-		else if (cfgParser->type() == VVTSVariant::VT_Array)
+		else if (cfgParser->type() == VvTSVariant::VT_Array)
 		{
 			initParsers(cfgParser);
 		}
@@ -191,7 +191,7 @@ void WtDtRunner::initialize(const char* cfgFile, bool isFile /* = true */, const
 	_is_inited = true;
 }
 
-void WtDtRunner::initDataMgr(VVTSVariant* config)
+void WtDtRunner::initDataMgr(VvTSVariant* config)
 {
 	if (config == NULL)
 		return;
@@ -201,7 +201,7 @@ void WtDtRunner::initDataMgr(VVTSVariant* config)
 	WTSLogger::info("Data manager initialized");
 }
 
-WTSKlineSlice* WtDtRunner::get_bars_by_range(const char* stdCode, const char* period, uint64_t beginTime, uint64_t endTime /* = 0 */)
+VvTSKlineSlice* WtDtRunner::get_bars_by_range(const char* stdCode, const char* period, uint64_t beginTime, uint64_t endTime /* = 0 */)
 {
 	if(!_is_inited)
 	{
@@ -215,7 +215,7 @@ WTSKlineSlice* WtDtRunner::get_bars_by_range(const char* stdCode, const char* pe
 	if (strlen(period) > 1)
 		times = strtoul(period + 1, NULL, 10);
 
-	WTSKlinePeriod kp;
+	VvTSKlinePeriod kp;
 	uint32_t realTimes = times;
 	if (basePeriod[0] == 'm')
 	{
@@ -241,7 +241,7 @@ WTSKlineSlice* WtDtRunner::get_bars_by_range(const char* stdCode, const char* pe
 	return _data_mgr.get_kline_slice_by_range(stdCode, kp, realTimes, beginTime, endTime);
 }
 
-WTSKlineSlice* WtDtRunner::get_bars_by_date(const char* stdCode, const char* period, uint32_t uDate /* = 0 */)
+VvTSKlineSlice* WtDtRunner::get_bars_by_date(const char* stdCode, const char* period, uint32_t uDate /* = 0 */)
 {
 	if (!_is_inited)
 	{
@@ -255,7 +255,7 @@ WTSKlineSlice* WtDtRunner::get_bars_by_date(const char* stdCode, const char* per
 	if (strlen(period) > 1)
 		times = strtoul(period + 1, NULL, 10);
 
-	WTSKlinePeriod kp;
+	VvTSKlinePeriod kp;
 	uint32_t realTimes = times;
 	if (basePeriod[0] == 'm')
 	{
@@ -283,7 +283,7 @@ WTSKlineSlice* WtDtRunner::get_bars_by_date(const char* stdCode, const char* per
 	return _data_mgr.get_kline_slice_by_date(stdCode, kp, realTimes, uDate);
 }
 
-WTSTickSlice* WtDtRunner::get_ticks_by_range(const char* stdCode, uint64_t beginTime, uint64_t endTime /* = 0 */)
+VvTSTickSlice* WtDtRunner::get_ticks_by_range(const char* stdCode, uint64_t beginTime, uint64_t endTime /* = 0 */)
 {
 	if (!_is_inited)
 	{
@@ -299,7 +299,7 @@ WTSTickSlice* WtDtRunner::get_ticks_by_range(const char* stdCode, uint64_t begin
 	return _data_mgr.get_tick_slices_by_range(stdCode, beginTime, endTime);
 }
 
-WTSTickSlice* WtDtRunner::get_ticks_by_date(const char* stdCode, uint32_t uDate /* = 0 */)
+VvTSTickSlice* WtDtRunner::get_ticks_by_date(const char* stdCode, uint32_t uDate /* = 0 */)
 {
 	if (!_is_inited)
 	{
@@ -310,7 +310,7 @@ WTSTickSlice* WtDtRunner::get_ticks_by_date(const char* stdCode, uint32_t uDate 
 	return _data_mgr.get_tick_slice_by_date(stdCode, uDate);
 }
 
-WTSKlineSlice* WtDtRunner::get_bars_by_count(const char* stdCode, const char* period, uint32_t count, uint64_t endTime /* = 0 */)
+VvTSKlineSlice* WtDtRunner::get_bars_by_count(const char* stdCode, const char* period, uint32_t count, uint64_t endTime /* = 0 */)
 {
 	if (!_is_inited)
 	{
@@ -324,7 +324,7 @@ WTSKlineSlice* WtDtRunner::get_bars_by_count(const char* stdCode, const char* pe
 	if (strlen(period) > 1)
 		times = strtoul(period + 1, NULL, 10);
 
-	WTSKlinePeriod kp;
+	VvTSKlinePeriod kp;
 	uint32_t realTimes = times;
 	if (basePeriod[0] == 'm')
 	{
@@ -350,7 +350,7 @@ WTSKlineSlice* WtDtRunner::get_bars_by_count(const char* stdCode, const char* pe
 	return _data_mgr.get_kline_slice_by_count(stdCode, kp, realTimes, count, endTime);
 }
 
-WTSTickSlice* WtDtRunner::get_ticks_by_count(const char* stdCode, uint32_t count, uint64_t endTime /* = 0 */)
+VvTSTickSlice* WtDtRunner::get_ticks_by_count(const char* stdCode, uint32_t count, uint64_t endTime /* = 0 */)
 {
 	if (!_is_inited)
 	{
@@ -366,7 +366,7 @@ WTSTickSlice* WtDtRunner::get_ticks_by_count(const char* stdCode, uint32_t count
 	return _data_mgr.get_tick_slice_by_count(stdCode, count, endTime);
 }
 
-WTSKlineSlice* WtDtRunner::get_sbars_by_date(const char* stdCode, uint32_t secs, uint32_t uDate /* = 0 */)
+VvTSKlineSlice* WtDtRunner::get_sbars_by_date(const char* stdCode, uint32_t secs, uint32_t uDate /* = 0 */)
 {
 	if (!_is_inited)
 	{
@@ -377,11 +377,11 @@ WTSKlineSlice* WtDtRunner::get_sbars_by_date(const char* stdCode, uint32_t secs,
 	return _data_mgr.get_skline_slice_by_date(stdCode, secs, uDate);
 }
 
-void WtDtRunner::initParsers(VVTSVariant* cfg)
+void WtDtRunner::initParsers(VvTSVariant* cfg)
 {
 	for (uint32_t idx = 0; idx < cfg->size(); idx++)
 	{
-		VVTSVariant* cfgItem = cfg->get(idx);
+		VvTSVariant* cfgItem = cfg->get(idx);
 		if (!cfgItem->getBoolean("active"))
 			continue;
 
@@ -409,9 +409,9 @@ void WtDtRunner::start()
 	_parsers.run();
 }
 
-void WtDtRunner::proc_tick(WTSTickData* curTick)
+void WtDtRunner::proc_tick(VvTSTickData* curTick)
 {
-	WTSContractInfo* cInfo = curTick->getContractInfo();
+	VvTSContractInfo* cInfo = curTick->getContractInfo();
 	if (cInfo == NULL)
 	{
 		cInfo = _bd_mgr.getContract(curTick->code(), curTick->exchg());
@@ -421,8 +421,8 @@ void WtDtRunner::proc_tick(WTSTickData* curTick)
 	if (cInfo == NULL)
 		return;
 
-	WTSCommodityInfo* commInfo = cInfo->getCommInfo();
-	WTSSessionInfo* sInfo = commInfo->getSessionInfo();
+	VvTSCommodityInfo* commInfo = cInfo->getCommInfo();
+	VvTSSessionInfo* sInfo = commInfo->getSessionInfo();
 
 	uint32_t hotflag = 0;
 
@@ -447,7 +447,7 @@ void WtDtRunner::proc_tick(WTSTickData* curTick)
 	if (!cInfo->isFlat())
 	{
 		const char* hotCode = cInfo->getHotCode();
-		WTSTickData* hotTick = WTSTickData::create(curTick->getTickStruct());
+		VvTSTickData* hotTick = VvTSTickData::create(curTick->getTickStruct());
 		hotTick->setCode(hotCode);
 		hotTick->setContractInfo(curTick->getContractInfo());
 
@@ -458,7 +458,7 @@ void WtDtRunner::proc_tick(WTSTickData* curTick)
 	//else if (hotflag == 2)
 	//{
 	//	std::string scndCode = CodeHelper::stdCodeToStd2ndCode(stdCode.c_str());
-	//	WTSTickData* scndTick = WTSTickData::create(curTick->getTickStruct());
+	//	VvTSTickData* scndTick = VvTSTickData::create(curTick->getTickStruct());
 	//	scndTick->setCode(scndCode.c_str());
 	//	scndTick->setContractInfo(curTick->getContractInfo());
 
@@ -468,7 +468,7 @@ void WtDtRunner::proc_tick(WTSTickData* curTick)
 	//}
 }
 
-void WtDtRunner::trigger_tick(const char* stdCode, WTSTickData* curTick)
+void WtDtRunner::trigger_tick(const char* stdCode, VvTSTickData* curTick)
 {
 	if (_cb_tick != NULL)
 	{
@@ -492,8 +492,8 @@ void WtDtRunner::trigger_tick(const char* stdCode, WTSTickData* curTick)
 					}
 					else //(flag == 2)
 					{
-						WTSTickData* newTick = WTSTickData::create(curTick->getTickStruct());
-						WTSTickStruct& newTS = newTick->getTickStruct();
+						VvTSTickData* newTick = VvTSTickData::create(curTick->getTickStruct());
+						VvTSTickStruct& newTS = newTick->getTickStruct();
 						newTick->setContractInfo(curTick->getContractInfo());
 
 						//这里做一个复权因子的处理
@@ -540,8 +540,8 @@ void WtDtRunner::trigger_tick(const char* stdCode, WTSTickData* curTick)
 				}
 				else //(flag == 2)
 				{
-					WTSTickData* newTick = WTSTickData::create(curTick->getTickStruct());
-					WTSTickStruct& newTS = newTick->getTickStruct();
+					VvTSTickData* newTick = VvTSTickData::create(curTick->getTickStruct());
+					VvTSTickStruct& newTS = newTick->getTickStruct();
 					newTick->setContractInfo(curTick->getContractInfo());
 
 					//这里做一个复权因子的处理
@@ -622,7 +622,7 @@ void WtDtRunner::sub_bar(const char* stdCode, const char* period)
 	if (strlen(period) > 1)
 		times = strtoul(period + 1, NULL, 10);
 
-	WTSKlinePeriod kp;
+	VvTSKlinePeriod kp;
 	uint32_t realTimes = times;
 	if (basePeriod[0] == 'm')
 	{
@@ -644,7 +644,7 @@ void WtDtRunner::sub_bar(const char* stdCode, const char* period)
 	sub_tick(stdCode, true, true);
 }
 
-void WtDtRunner::trigger_bar(const char* stdCode, const char* period, WTSBarStruct* lastBar)
+void WtDtRunner::trigger_bar(const char* stdCode, const char* period, VvTSBarStruct* lastBar)
 {
 	if (_cb_bar == NULL)
 		return;

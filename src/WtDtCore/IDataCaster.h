@@ -1,20 +1,20 @@
 #pragma once
-#include "../Includes/VVTSMarcos.h"
+#include "../Includes/VvTSMarcos.h"
 
 NS_VVTP_BEGIN
-class WTSTickData;
-class VVTSVariant;
-class WTSOrdDtlData;
-class WTSOrdQueData;
-class WTSTransData;
+class VvTSTickData;
+class VvTSVariant;
+class VvTSOrdDtlData;
+class VvTSOrdQueData;
+class VvTSTransData;
 
 class IDataCaster
 {
 public:
-	virtual void	broadcast(WTSTickData* curTick) = 0;
-	virtual void	broadcast(WTSOrdQueData* curOrdQue){}
-	virtual void	broadcast(WTSOrdDtlData* curOrdDtl){}
-	virtual void	broadcast(WTSTransData* curTrans){}
+	virtual void	broadcast(VvTSTickData* curTick) = 0;
+	virtual void	broadcast(VvTSOrdQueData* curOrdQue){}
+	virtual void	broadcast(VvTSOrdDtlData* curOrdDtl){}
+	virtual void	broadcast(VvTSTransData* curTrans){}
 };
 
 NS_VVTP_END

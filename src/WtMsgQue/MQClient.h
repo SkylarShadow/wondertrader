@@ -11,7 +11,7 @@
 #include "PorterDefs.h"
 #include <queue>
 
-#include "../Includes/VVTSMarcos.h"
+#include "../Includes/VvTSMarcos.h"
 #include "../Includes/FasterDefs.h"
 #include "../Share/StdUtils.hpp"
 
@@ -66,7 +66,7 @@ private:
 	std::string		_buffer;
 	FuncMQCallback	_cb_message;
 
-	wt_hashset<std::string> _topics;
+	vvt_hashset<std::string> _topics;
 	char			_recv_buf[1024 * 1024];
 };
 

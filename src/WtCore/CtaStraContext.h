@@ -10,7 +10,7 @@
 #pragma once
 #include "CtaStraBaseCtx.h"
 
-#include "../Includes/WTSDataDef.hpp"
+#include "../Includes/VvTSDataDef.hpp"
 
 NS_VVTP_BEGIN
 class WtCtaEngine;
@@ -34,8 +34,8 @@ public:
 	virtual void on_init() override;
 	virtual void on_session_begin(uint32_t uTDate) override;
 	virtual void on_session_end(uint32_t uTDate) override;
-	virtual void on_tick_updated(const char* stdCode, WTSTickData* newTick) override;
-	virtual void on_bar_close(const char* stdCode, const char* period, WTSBarStruct* newBar) override;
+	virtual void on_tick_updated(const char* stdCode, VvTSTickData* newTick) override;
+	virtual void on_bar_close(const char* stdCode, const char* period, VvTSBarStruct* newBar) override;
 	virtual void on_calculate(uint32_t curDate, uint32_t curTime) override;
 	virtual void on_condition_triggered(const char* stdCode, double target, double price, const char* usertag) override;
 

@@ -14,19 +14,19 @@
 #include <boost/asio/io_service.hpp>
 
 #include "../Includes/ITraderApi.h"
-#include "../Includes/WTSCollection.hpp"
+#include "../Includes/VvTSCollection.hpp"
 
 #include "../Share/StdUtils.hpp"
 #include "../Share/DLLHelper.hpp"
-#include "../Share/WtKVCache.hpp"
+#include "../Share/VvtKVCache.hpp"
 
 #include "../Includes/IBaseDataMgr.h"
-#include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSSessionInfo.hpp"
-#include "../Includes/WTSTradeDef.hpp"
-#include "../Includes/WTSError.hpp"
-#include "../Includes/VVTSVariant.hpp"
-#include "../Includes/WTSCollection.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/VvTSSessionInfo.hpp"
+#include "../Includes/VvTSTradeDef.hpp"
+#include "../Includes/VvTSError.hpp"
+#include "../Includes/VvTSVariant.hpp"
+#include "../Includes/VvTSCollection.hpp"
 #include "../Share/TimeUtils.hpp"
 #include "../Share/ModuleHelper.hpp"
 
@@ -107,7 +107,7 @@ public:
 public:
 	//////////////////////////////////////////////////////////////////////////
 	//ITraderApi 接口
-	virtual bool init(VVTSVariant *params) override;
+	virtual bool init(VvTSVariant *params) override;
 
 	virtual void release() override;
 
@@ -125,9 +125,9 @@ public:
 
 	virtual int logout() override;
 
-	virtual int orderInsert(WTSEntrust* eutrust) override;
+	virtual int orderInsert(VvTSEntrust* eutrust) override;
 
-	virtual int orderAction(WTSEntrustAction* action) override;
+	virtual int orderAction(VvTSEntrustAction* action) override;
 
 	virtual int queryAccount() override;
 
@@ -142,15 +142,15 @@ private:
 	inline uint32_t			genRequestID();
 	void					doLogin();
 
-	inline WTSOrderInfo*	makeOrderInfo(CTORATstpOrderField* orderField);
-	inline WTSEntrust*		makeEntrust(CTORATstpInputOrderField* entrustField);
-	inline WTSTradeInfo*	makeTradeInfo(CTORATstpTradeField*tradeField);
-	inline WTSPositionItem* makePositionItem(CTORATstpPositionField* positionField);
-	inline WTSAccountInfo*	makeAccountInfo(CTORATstpTradingAccountField* accountField);
+	inline VvTSOrderInfo*	makeOrderInfo(CTORATstpOrderField* orderField);
+	inline VvTSEntrust*		makeEntrust(CTORATstpInputOrderField* entrustField);
+	inline VvTSTradeInfo*	makeTradeInfo(CTORATstpTradeField*tradeField);
+	inline VvTSPositionItem* makePositionItem(CTORATstpPositionField* positionField);
+	inline VvTSAccountInfo*	makeAccountInfo(CTORATstpTradingAccountField* accountField);
 
-	inline WTSDirectionType wrapDirectionType(TTORATstpDirectionType dirType);
-	inline WTSPriceType wrapPriceType(TTORATstpDirectionType priceType);
-	inline WTSOrderState wrapOrderState(TTORATstpOrderStatusType orderState);
+	inline VvTSDirectionType wrapDirectionType(TTORATstpDirectionType dirType);
+	inline VvTSPriceType wrapPriceType(TTORATstpDirectionType priceType);
+	inline VvTSOrderState wrapOrderState(TTORATstpOrderStatusType orderState);
 
 
 	inline bool	extractEntrustID(const char* entrustid, int &orderRef);
@@ -160,11 +160,11 @@ private:
 	HuaXTraderApi*	_api;
 	ITraderSpi*		_sink;
 
-	typedef WTSHashMap<std::string> PositionMap;
-	WTSArray*				_positions;
-	WTSArray*				_trades;
-	WTSArray*				_orders;
-	WTSArray*				_accounts;
+	typedef VvTSHashMap<std::string> PositionMap;
+	VvTSArray*				_positions;
+	VvTSArray*				_trades;
+	VvTSArray*				_orders;
+	VvTSArray*				_accounts;
 
 	IBaseDataMgr*			_bd_mgr;
 
@@ -203,8 +203,8 @@ private:
 	HuaXCreator		_funcCreator;
 
 	//委托单标记缓存器
-	WtKVCache		_eidCache;
+	VvtKVCache		_eidCache;
 	//订单标记缓存器
-	WtKVCache		_oidCache;
+	VvtKVCache		_oidCache;
 };
 

@@ -46,7 +46,7 @@ void HftStraContext::on_session_end(uint32_t uTDate)
 	HftStraBaseCtx::on_session_end(uTDate);
 }
 
-void HftStraContext::on_tick(const char* stdCode, WTSTickData* newTick)
+void HftStraContext::on_tick(const char* stdCode, VvTSTickData* newTick)
 {
 	update_dyn_profit(stdCode, newTick);
 
@@ -60,7 +60,7 @@ void HftStraContext::on_tick(const char* stdCode, WTSTickData* newTick)
 	HftStraBaseCtx::on_tick(stdCode, newTick);
 }
 
-void HftStraContext::on_order_queue(const char* stdCode, WTSOrdQueData* newOrdQue)
+void HftStraContext::on_order_queue(const char* stdCode, VvTSOrdQueData* newOrdQue)
 {
 	if (_strategy)
 		_strategy->on_order_queue(this, stdCode, newOrdQue);
@@ -68,7 +68,7 @@ void HftStraContext::on_order_queue(const char* stdCode, WTSOrdQueData* newOrdQu
 	HftStraBaseCtx::on_order_queue(stdCode, newOrdQue);
 }
 
-void HftStraContext::on_order_detail(const char* stdCode, WTSOrdDtlData* newOrdDtl)
+void HftStraContext::on_order_detail(const char* stdCode, VvTSOrdDtlData* newOrdDtl)
 {
 	if (_strategy)
 		_strategy->on_order_detail(this, stdCode, newOrdDtl);
@@ -76,7 +76,7 @@ void HftStraContext::on_order_detail(const char* stdCode, WTSOrdDtlData* newOrdD
 	HftStraBaseCtx::on_order_detail(stdCode, newOrdDtl);
 }
 
-void HftStraContext::on_transaction(const char* stdCode, WTSTransData* newTrans)
+void HftStraContext::on_transaction(const char* stdCode, VvTSTransData* newTrans)
 {
 	if (_strategy)
 		_strategy->on_transaction(this, stdCode, newTrans);
@@ -84,7 +84,7 @@ void HftStraContext::on_transaction(const char* stdCode, WTSTransData* newTrans)
 	HftStraBaseCtx::on_transaction(stdCode, newTrans);
 }
 
-void HftStraContext::on_bar(const char* code, const char* period, uint32_t times, WTSBarStruct* newBar)
+void HftStraContext::on_bar(const char* code, const char* period, uint32_t times, VvTSBarStruct* newBar)
 {
 	if (_strategy)
 		_strategy->on_bar(this, code, period, times, newBar);

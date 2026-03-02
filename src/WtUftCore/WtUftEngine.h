@@ -26,20 +26,20 @@
 #include "../Includes/IUftStraCtx.h"
 
 NS_VVTP_BEGIN
-class WTSSessionInfo;
-class WTSCommodityInfo;
-class WTSContractInfo;
+class VvTSSessionInfo;
+class VvTSCommodityInfo;
+class VvTSContractInfo;
 
 class IBaseDataMgr;
 class IHotMgr;
 
-class VVTSVariant;
+class VvTSVariant;
 
-class WTSTickData;
-struct WTSBarStruct;
-class WTSTickSlice;
-class WTSKlineSlice;
-class WTSPortFundInfo;
+class VvTSTickData;
+struct VvTSBarStruct;
+class VvTSTickSlice;
+class VvTSKlineSlice;
+class VvTSPortFundInfo;
 
 class WtUftDtMgr;
 class TraderAdapterMgr;
@@ -49,7 +49,7 @@ class EventNotifier;
 typedef std::function<void()>	TaskItem;
 
 
-class VVTSVariant;
+class VvTSVariant;
 class WtUftRtTicker;
 class EventNotifier;
 
@@ -75,13 +75,13 @@ public:
 	inline uint32_t get_trading_date() { return _cur_tdate; }
 
 	inline IBaseDataMgr*		get_basedata_mgr() { return _base_data_mgr; }
-	WTSSessionInfo*		get_session_info(const char* sid, bool isCode = false);
-	WTSCommodityInfo*	get_commodity_info(const char* stdCode);
-	WTSContractInfo*	get_contract_info(const char* stdCode);
+	VvTSSessionInfo*		get_session_info(const char* sid, bool isCode = false);
+	VvTSCommodityInfo*	get_commodity_info(const char* stdCode);
+	VvTSContractInfo*	get_contract_info(const char* stdCode);
 
-	WTSTickData*	get_last_tick(uint32_t sid, const char* stdCode);
-	WTSTickSlice*	get_tick_slice(uint32_t sid, const char* stdCode, uint32_t count);
-	WTSKlineSlice*	get_kline_slice(uint32_t sid, const char* stdCode, const char* period, uint32_t count, uint32_t times = 1, uint64_t etime = 0);
+	VvTSTickData*	get_last_tick(uint32_t sid, const char* stdCode);
+	VvTSTickSlice*	get_tick_slice(uint32_t sid, const char* stdCode, uint32_t count);
+	VvTSKlineSlice*	get_kline_slice(uint32_t sid, const char* stdCode, const char* period, uint32_t count, uint32_t times = 1, uint64_t etime = 0);
 
 	void sub_tick(uint32_t sid, const char* code);
 
@@ -90,13 +90,13 @@ public:
 	void notify_params_update(const char* name);
 
 public:
-	void init(VVTSVariant* cfg, IBaseDataMgr* bdMgr, WtUftDtMgr* dataMgr, EventNotifier* notifier);
+	void init(VvTSVariant* cfg, IBaseDataMgr* bdMgr, WtUftDtMgr* dataMgr, EventNotifier* notifier);
 
 	void run();
 
-	void on_tick(const char* stdCode, WTSTickData* curTick);
+	void on_tick(const char* stdCode, VvTSTickData* curTick);
 
-	void on_bar(const char* stdCode, const char* period, uint32_t times, WTSBarStruct* newBar);
+	void on_bar(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar);
 
 	void on_init(){}
 
@@ -104,15 +104,15 @@ public:
 
 	void on_session_end();
 
-	virtual void handle_push_quote(WTSTickData* newTick) override;
-	virtual void handle_push_order_detail(WTSOrdDtlData* curOrdDtl) override;
-	virtual void handle_push_order_queue(WTSOrdQueData* curOrdQue) override;
-	virtual void handle_push_transaction(WTSTransData* curTrans) override;
+	virtual void handle_push_quote(VvTSTickData* newTick) override;
+	virtual void handle_push_order_detail(VvTSOrdDtlData* curOrdDtl) override;
+	virtual void handle_push_order_queue(VvTSOrdQueData* curOrdQue) override;
+	virtual void handle_push_transaction(VvTSTransData* curTrans) override;
 
 public:
-	WTSOrdQueSlice* get_order_queue_slice(uint32_t sid, const char* stdCode, uint32_t count);
-	WTSOrdDtlSlice* get_order_detail_slice(uint32_t sid, const char* stdCode, uint32_t count);
-	WTSTransSlice* get_transaction_slice(uint32_t sid, const char* stdCode, uint32_t count);
+	VvTSOrdQueSlice* get_order_queue_slice(uint32_t sid, const char* stdCode, uint32_t count);
+	VvTSOrdDtlSlice* get_order_detail_slice(uint32_t sid, const char* stdCode, uint32_t count);
+	VvTSTransSlice* get_transaction_slice(uint32_t sid, const char* stdCode, uint32_t count);
 
 public:
 	void on_minute_end(uint32_t curDate, uint32_t curTime);
@@ -137,7 +137,7 @@ private:
 
 	//By Wesley @ 2022.02.07
 	//tick数据订阅项，first是contextid，second是订阅选项，0-原始订阅，1-前复权，2-后复权
-	typedef wt_hashset<uint32_t> SubList;
+	typedef vvt_hashset<uint32_t> SubList;
 	typedef vvt_hashmap<std::string, SubList>	StraSubMap;
 	StraSubMap		_tick_sub_map;	//tick数据订阅表
 	StraSubMap		_ordque_sub_map;	//委托队列订阅表
@@ -151,7 +151,7 @@ private:
 	ContextMap		_ctx_map;
 
 	WtUftRtTicker*	_tm_ticker;
-	VVTSVariant*		_cfg;
+	VvTSVariant*		_cfg;
 
 	bool			_dependent;	//子策略独立记账
 

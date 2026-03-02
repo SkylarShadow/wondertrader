@@ -3,20 +3,20 @@
 #include "../Includes/IDataReader.h"
 #include "../Includes/IDataManager.h"
 
-#include "../Includes/WTSCollection.hpp"
+#include "../Includes/VvTSCollection.hpp"
 
 class WtExecRunner;
 
 NS_VVTP_BEGIN
-class VVTSVariant;
-class WTSHisTickData;
-class WTSKlineData;
-class WTSTickData;
-class WTSKlineSlice;
-class WTSTickSlice;
+class VvTSVariant;
+class VvTSHisTickData;
+class VvTSKlineData;
+class VvTSTickData;
+class VvTSKlineSlice;
+class VvTSTickSlice;
 class IBaseDataMgr;
 class IBaseDataMgr;
-class WTSSessionInfo;
+class VvTSSessionInfo;
 
 class WtSimpDataMgr : public IDataReaderSink, public IDataManager
 {
@@ -25,22 +25,22 @@ public:
 	~WtSimpDataMgr();
 
 private:
-	bool	initStore(VVTSVariant* cfg);
+	bool	initStore(VvTSVariant* cfg);
 
 public:
-	bool	init(VVTSVariant* cfg, WtExecRunner* runner);
+	bool	init(VvTSVariant* cfg, WtExecRunner* runner);
 
-	void	handle_push_quote(const char* stdCode, WTSTickData* newTick);
+	void	handle_push_quote(const char* stdCode, VvTSTickData* newTick);
 
 	//////////////////////////////////////////////////////////////////////////
 	//IDataManager
-	WTSTickSlice* get_tick_slice(const char* code, uint32_t count, uint64_t etime = 0) override;
-	WTSKlineSlice* get_kline_slice(const char* code, WTSKlinePeriod period, uint32_t times, uint32_t count, uint64_t etime = 0) override;
-	WTSTickData* grab_last_tick(const char* code) override;
+	VvTSTickSlice* get_tick_slice(const char* code, uint32_t count, uint64_t etime = 0) override;
+	VvTSKlineSlice* get_kline_slice(const char* code, VvTSKlinePeriod period, uint32_t times, uint32_t count, uint64_t etime = 0) override;
+	VvTSTickData* grab_last_tick(const char* code) override;
 
 	//////////////////////////////////////////////////////////////////////////
 	//IDataStoreListener
-	virtual void	on_bar(const char* code, WTSKlinePeriod period, WTSBarStruct* newBar) override;
+	virtual void	on_bar(const char* code, VvTSKlinePeriod period, VvTSBarStruct* newBar) override;
 	virtual void	on_all_bar_updated(uint32_t updateTime) override;
 
 	virtual IBaseDataMgr* get_basedata_mgr() override;
@@ -49,7 +49,7 @@ public:
 	virtual uint32_t	get_min_time()override;
 	virtual uint32_t	get_secs() override;
 
-	virtual void		reader_log(WTSLogLevel ll, const char* message) override;
+	virtual void		reader_log(VvTSLogLevel ll, const char* message) override;
 
 	inline IDataReader* reader() { return _reader; }
 
@@ -59,9 +59,9 @@ public:
 private:
 	IDataReader*	_reader;
 	WtExecRunner*	_runner;
-	WTSSessionInfo*	_s_info;
+	VvTSSessionInfo*	_s_info;
 
-	typedef WTSHashMap<std::string> DataCacheMap;
+	typedef VvTSHashMap<std::string> DataCacheMap;
 	DataCacheMap* _bars_cache;	//K线缓存
 	DataCacheMap* _rt_tick_map;	//实时tick缓存
 

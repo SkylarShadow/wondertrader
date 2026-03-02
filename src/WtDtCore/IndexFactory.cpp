@@ -1,11 +1,11 @@
 ﻿#include "IndexFactory.h"
 #include "DataManager.h"
-#include "../Includes/VVTSVariant.hpp"
-#include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSContractInfo.hpp"
+#include "../Includes/VvTSVariant.hpp"
+#include "../Includes/VvTSDataDef.hpp"
+#include "../Includes/VvTSContractInfo.hpp"
 #include "../Share/StrUtil.hpp"
 
-bool IndexFactory::init(VVTSVariant* config, IHotMgr* hotMgr, IBaseDataMgr* bdMgr, DataManager* dataMgr)
+bool IndexFactory::init(VvTSVariant* config, IHotMgr* hotMgr, IBaseDataMgr* bdMgr, DataManager* dataMgr)
 {
 	_hot_mgr = hotMgr;
 	_bd_mgr = bdMgr;
@@ -17,7 +17,7 @@ bool IndexFactory::init(VVTSVariant* config, IHotMgr* hotMgr, IBaseDataMgr* bdMg
 		_pool.reset(new boost::threadpool::pool(poolsize));
 	}
 
-	VVTSVariant* cfgIdx = config->get("indice");
+	VvTSVariant* cfgIdx = config->get("indice");
 	if(cfgIdx == NULL || !cfgIdx->isArray())
 	{
 		return false;
@@ -26,7 +26,7 @@ bool IndexFactory::init(VVTSVariant* config, IHotMgr* hotMgr, IBaseDataMgr* bdMg
 	auto cnt = cfgIdx->size();
 	for(std::size_t i = 0; i < cnt; i++)
 	{
-		VVTSVariant* cfgItem = cfgIdx->get(i);
+		VvTSVariant* cfgItem = cfgIdx->get(i);
 		if(!cfgItem->getBoolean("active"))
 			continue;
 
@@ -40,7 +40,7 @@ bool IndexFactory::init(VVTSVariant* config, IHotMgr* hotMgr, IBaseDataMgr* bdMg
 	return true;
 }
 
-void IndexFactory::handle_quote(WTSTickData* newTick)
+void IndexFactory::handle_quote(VvTSTickData* newTick)
 {
 	if (newTick == NULL)
 		return;
@@ -73,12 +73,12 @@ void IndexFactory::handle_quote(WTSTickData* newTick)
 	}
 }
 
-void IndexFactory::push_tick(WTSTickData* newTick)
+void IndexFactory::push_tick(VvTSTickData* newTick)
 {
 	_data_mgr->writeTick(newTick, 1);
 }
 
-WTSTickData* IndexFactory::sub_ticks(const char* fullCode)
+VvTSTickData* IndexFactory::sub_ticks(const char* fullCode)
 {
 	_subbed.insert(fullCode);
 	
