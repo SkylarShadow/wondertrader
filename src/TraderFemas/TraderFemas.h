@@ -25,14 +25,14 @@
 #include "../Includes/WTSTypes.h"
 #include "../Includes/ITraderApi.h"
 #include "../Share/StdUtils.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 
 //Femas v3.02
 #include "../API/Femas3.02/USTPFtdcTraderApi.h"
 
 #include "../Share/DLLHelper.hpp"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 typedef std::unordered_map<std::string, std::string>	StringMap;
 
@@ -65,7 +65,7 @@ private:
 //////////////////////////////////////////////////////////////////////////
 //ITraderApi接口
 public:
-	virtual bool init(WTSVariant* params);
+	virtual bool init(VVTSVariant* params);
 
 	virtual void release();
 

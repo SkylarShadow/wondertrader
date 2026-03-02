@@ -12,9 +12,9 @@
 #include "../Includes/WTSCollection.hpp"
 #include "../Includes/FasterDefs.h"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
-typedef wt_hashmap<std::string, TradingDayTpl>	TradingDayTplMap;
+typedef vvt_hashmap<std::string, TradingDayTpl>	TradingDayTplMap;
 
 typedef WTSHashMap<std::string>		WTSContractList;
 typedef WTSHashMap<std::string>		WTSExchgContract;
@@ -23,7 +23,7 @@ typedef WTSHashMap<std::string>		WTSContractMap;
 typedef WTSHashMap<std::string>		WTSSessionMap;
 typedef WTSHashMap<std::string>		WTSCommodityMap;
 
-typedef wt_hashmap<std::string, CodeSet> SessionCodeMap;
+typedef vvt_hashmap<std::string, CodeSet> SessionCodeMap;
 
 class WTSBaseDataMgr : public IBaseDataMgr
 {

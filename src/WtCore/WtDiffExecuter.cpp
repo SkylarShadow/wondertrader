@@ -14,7 +14,7 @@
 
 #include "../Share/CodeHelper.hpp"
 #include "../Includes/IDataManager.h"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/IHotMgr.h"
 #include "../Includes/IBaseDataMgr.h"
 #include "../Share/decimal.h"
@@ -25,7 +25,7 @@
 #include <rapidjson/prettywriter.h>
 namespace rj = rapidjson;
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 
 WtDiffExecuter::WtDiffExecuter(WtExecuterFactory* factory, const char* name, IDataManager* dataMgr, IBaseDataMgr* bdMgr)
@@ -54,7 +54,7 @@ void WtDiffExecuter::setTrader(TraderAdapter* adapter)
 		_channel_ready = _trader->isReady();
 }
 
-bool WtDiffExecuter::init(WTSVariant* params)
+bool WtDiffExecuter::init(VVTSVariant* params)
 {
 	if (params == NULL)
 		return false;
@@ -197,7 +197,7 @@ ExecuteUnitPtr WtDiffExecuter::getUnit(const char* stdCode, bool bAutoCreate /* 
 	CodeHelper::CodeInfo codeInfo = CodeHelper::extractStdCode(stdCode, NULL);
 	std::string commID = codeInfo.stdCommID();
 
-	WTSVariant* policy = _config->get("policy");
+	VVTSVariant* policy = _config->get("policy");
 	std::string des = commID;
 	if (!policy->has(commID.c_str()))
 		des = "default";
@@ -212,7 +212,7 @@ ExecuteUnitPtr WtDiffExecuter::getUnit(const char* stdCode, bool bAutoCreate /* 
 
 	if (bAutoCreate)
 	{
-		WTSVariant* cfg = policy->get(des.c_str());
+		VVTSVariant* cfg = policy->get(des.c_str());
 
 		const char* name = cfg->getCString("name");
 		ExecuteUnitPtr unit = _factory->createDiffExeUnit(name);
@@ -388,7 +388,7 @@ void WtDiffExecuter::on_position_changed(const char* stdCode, double diffPos)
 	}
 }
 
-void WtDiffExecuter::set_position(const wt_hashmap<std::string, double>& targets)
+void WtDiffExecuter::set_position(const vvt_hashmap<std::string, double>& targets)
 {
 	for (auto it = targets.begin(); it != targets.end(); it++)
 	{

@@ -16,7 +16,7 @@
 #include "../Share/DLLHelper.hpp"
 #include "MatchEngine.h"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class ExecMocker : public ExecuteContext, public IDataSink, public IMatchSink
 {
@@ -73,7 +73,7 @@ public:
 	virtual uint64_t getCurTime() override;
 
 public:
-	bool	init(WTSVariant* cfg);
+	bool	init(VVTSVariant* cfg);
 
 private:
 	HisDataReplayer*	_replayer;

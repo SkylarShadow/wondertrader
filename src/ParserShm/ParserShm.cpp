@@ -8,7 +8,7 @@
  * \brief 
  */
 #include "ParserShm.h"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/WTSDataDef.hpp"
 
 #include <boost/bind.hpp>
@@ -69,7 +69,7 @@ ParserShm::~ParserShm()
 {
 }
 
-bool ParserShm::init( WTSVariant* config )
+bool ParserShm::init( VVTSVariant* config )
 {
 	_path = config->getCString("path");
 	_gpsize = config->getUInt32("gpsize");

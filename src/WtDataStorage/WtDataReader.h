@@ -9,7 +9,7 @@
 
 #include "../Share/BoostMappingFile.hpp"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 
 typedef std::shared_ptr<BoostMappingFile> BoostMFPtr;
 
@@ -34,7 +34,7 @@ private:
 		}
 
 	} RTKlineBlockPair;
-	typedef wt_hashmap<std::string, RTKlineBlockPair>	RTKBlockFilesMap;
+	typedef vvt_hashmap<std::string, RTKlineBlockPair>	RTKBlockFilesMap;
 
 	typedef struct _TBlockPair
 	{
@@ -49,7 +49,7 @@ private:
 			_last_cap = 0;
 		}
 	} TickBlockPair;
-	typedef wt_hashmap<std::string, TickBlockPair>	TBlockFilesMap;
+	typedef vvt_hashmap<std::string, TickBlockPair>	TBlockFilesMap;
 
 	typedef struct _TransBlockPair
 	{
@@ -66,7 +66,7 @@ private:
 			_last_cap = 0;
 		}
 	} TransBlockPair;
-	typedef wt_hashmap<std::string, TransBlockPair>	TransBlockFilesMap;
+	typedef vvt_hashmap<std::string, TransBlockPair>	TransBlockFilesMap;
 
 	typedef struct _OdrDtlBlockPair
 	{
@@ -83,7 +83,7 @@ private:
 			_last_cap = 0;
 		}
 	} OrdDtlBlockPair;
-	typedef wt_hashmap<std::string, OrdDtlBlockPair>	OrdDtlBlockFilesMap;
+	typedef vvt_hashmap<std::string, OrdDtlBlockPair>	OrdDtlBlockFilesMap;
 
 	typedef struct _OdrQueBlockPair
 	{
@@ -100,7 +100,7 @@ private:
 			_last_cap = 0;
 		}
 	} OrdQueBlockPair;
-	typedef wt_hashmap<std::string, OrdQueBlockPair>	OrdQueBlockFilesMap;
+	typedef vvt_hashmap<std::string, OrdQueBlockPair>	OrdQueBlockFilesMap;
 
 	RTKBlockFilesMap	_rt_min1_map;
 	RTKBlockFilesMap	_rt_min5_map;
@@ -124,7 +124,7 @@ private:
 		}
 	} HisTBlockPair;
 
-	typedef wt_hashmap<std::string, HisTBlockPair>	HisTickBlockMap;
+	typedef vvt_hashmap<std::string, HisTBlockPair>	HisTickBlockMap;
 
 	typedef struct _HisTransBlockPair
 	{
@@ -140,7 +140,7 @@ private:
 		}
 	} HisTransBlockPair;
 
-	typedef wt_hashmap<std::string, HisTransBlockPair>	HisTransBlockMap;
+	typedef vvt_hashmap<std::string, HisTransBlockPair>	HisTransBlockMap;
 
 	typedef struct _HisOrdDtlBlockPair
 	{
@@ -156,7 +156,7 @@ private:
 		}
 	} HisOrdDtlBlockPair;
 
-	typedef wt_hashmap<std::string, HisOrdDtlBlockPair>	HisOrdDtlBlockMap;
+	typedef vvt_hashmap<std::string, HisOrdDtlBlockPair>	HisOrdDtlBlockMap;
 
 	typedef struct _HisOrdQueBlockPair
 	{
@@ -172,7 +172,7 @@ private:
 		}
 	} HisOrdQueBlockPair;
 
-	typedef wt_hashmap<std::string, HisOrdQueBlockPair>	HisOrdQueBlockMap;
+	typedef vvt_hashmap<std::string, HisOrdQueBlockPair>	HisOrdQueBlockMap;
 
 	HisTickBlockMap		_his_tick_map;
 	HisOrdDtlBlockMap	_his_orddtl_map;
@@ -200,7 +200,7 @@ private:
 	bool	loadStkAdjFactorsFromLoader();
 
 public:
-	virtual void init(WTSVariant* cfg, IDataReaderSink* sink, IHisDataLoader* loader = NULL) override;
+	virtual void init(VVTSVariant* cfg, IDataReaderSink* sink, IHisDataLoader* loader = NULL) override;
 
 	virtual void onMinuteEnd(uint32_t uDate, uint32_t uTime, uint32_t endTDate = 0) override;
 
@@ -238,7 +238,7 @@ private:
 		_BarsList() :_rt_cursor(UINT_MAX), _factor(DBL_MAX){}
 	} BarsList;
 
-	typedef wt_hashmap<std::string, BarsList> BarsCache;
+	typedef vvt_hashmap<std::string, BarsList> BarsCache;
 	BarsCache	_bars_cache;
 
 	uint64_t	_last_time;
@@ -250,11 +250,11 @@ private:
 		double		_factor;
 	} AdjFactor;
 	typedef std::vector<AdjFactor> AdjFactorList;
-	typedef wt_hashmap<std::string, AdjFactorList>	AdjFactorMap;
+	typedef vvt_hashmap<std::string, AdjFactorList>	AdjFactorMap;
 	AdjFactorMap	_adj_factors;
 
 	const AdjFactorList& getAdjFactors(const char* code, const char* exchg, const char* pid);
 	
 };
 
-NS_WTP_END
+NS_VVTP_END

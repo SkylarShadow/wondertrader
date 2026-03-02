@@ -60,11 +60,11 @@ private:
 		FuncCreateStraFact	_creator;
 		FuncDeleteStraFact	_remover;
 	} StraFactInfo;
-	typedef wt_hashmap<std::string, StraFactInfo> StraFactMap;
+	typedef vvt_hashmap<std::string, StraFactInfo> StraFactMap;
 
 	StraFactMap	_factories;
 
-	typedef wt_hashmap<std::string, CtaStrategyPtr> StrategyMap;
+	typedef vvt_hashmap<std::string, CtaStrategyPtr> StrategyMap;
 	StrategyMap	_strategies;
 };
 

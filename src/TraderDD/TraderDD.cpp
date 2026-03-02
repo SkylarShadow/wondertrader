@@ -18,7 +18,7 @@
 #include "../Includes/WTSSessionInfo.hpp"
 #include "../Includes/WTSTradeDef.hpp"
 #include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Share/StdUtils.hpp"
 #include "../Share/TimeUtils.hpp"
 #include "../Includes/IBaseDataMgr.h"
@@ -304,7 +304,7 @@ string GetItem(HANDLE_SESSION sess, int fid)
 	return "";
 }
 
-void InitializeFix(WTSVariant* params)
+void InitializeFix(VVTSVariant* params)
 {
 	static bool bInited = false;
 	if(!bInited)
@@ -343,7 +343,7 @@ TraderDD::~TraderDD()
 
 }
 
-bool TraderDD::init(WTSVariant* params)
+bool TraderDD::init(VVTSVariant* params)
 {
 	m_strFront = params->getCString("front");
 
@@ -356,7 +356,7 @@ bool TraderDD::init(WTSVariant* params)
 	m_strNode = params->getCString("node");
 	m_strTrust = params->getCString("trustmethod");
 
-	WTSVariant* param = params->get("ddmodule");
+	VVTSVariant* param = params->get("ddmodule");
 	if (param != NULL)
 	{
 		m_strModule = getBinDir() + param->asCString();

@@ -52,7 +52,7 @@ const char* WtStockMinImpactExeUnit::getName()
 	return "WtStockMinImpactExeUnit";
 }
 
-void WtStockMinImpactExeUnit::init(ExecuteContext* ctx, const char* stdCode, WTSVariant* cfg)
+void WtStockMinImpactExeUnit::init(ExecuteContext* ctx, const char* stdCode, VVTSVariant* cfg)
 {
 	ExecuteUnit::init(ctx, stdCode, cfg);
 	_comm_info = ctx->getCommodityInfo(stdCode);

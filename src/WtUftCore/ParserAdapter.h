@@ -15,8 +15,8 @@
 #include "../Includes/IParserApi.h"
 
 
-NS_WTP_BEGIN
-class WTSVariant;
+NS_VVTP_BEGIN
+class VVTSVariant;
 
 class IParserStub
 {
@@ -36,7 +36,7 @@ public:
 	~ParserAdapter();
 
 public:
-	bool	init(const char* id, WTSVariant* cfg, IParserStub* stub, IBaseDataMgr* bgMgr);
+	bool	init(const char* id, VVTSVariant* cfg, IParserStub* stub, IBaseDataMgr* bgMgr);
 	bool	initExt(const char* id, IParserApi* api, IParserStub* stub, IBaseDataMgr* bgMgr);
 
 	void	release();
@@ -89,12 +89,12 @@ private:
 	ExchgFilter			_code_filter;
 	IBaseDataMgr*		_bd_mgr;
 	IParserStub*		_stub;
-	WTSVariant*			_cfg;
+	VVTSVariant*			_cfg;
 	std::string			_id;
 };
 
 typedef std::shared_ptr<ParserAdapter>	ParserAdapterPtr;
-typedef wt_hashmap<std::string, ParserAdapterPtr>	ParserAdapterMap;
+typedef vvt_hashmap<std::string, ParserAdapterPtr>	ParserAdapterMap;
 
 class ParserAdapterMgr : private boost::noncopyable
 {
@@ -112,4 +112,4 @@ public:
 	ParserAdapterMap _adapters;
 };
 
-NS_WTP_END
+NS_VVTP_END

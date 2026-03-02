@@ -11,7 +11,7 @@
 
 #include "../Includes/WTSDataDef.hpp"
 #include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/IBaseDataMgr.h"
 
 #include "../Share/TimeUtils.hpp"
@@ -89,7 +89,7 @@ ParserXTP::~ParserXTP()
 	m_pUserAPI = NULL;
 }
 
-bool ParserXTP::init(WTSVariant* config)
+bool ParserXTP::init(VVTSVariant* config)
 {
 	m_strHost	= config->getCString("host");
 	m_iPort		= config->getInt32("port");

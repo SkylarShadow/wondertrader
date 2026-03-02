@@ -16,7 +16,7 @@
 #include <boost/xpressive/xpressive_dynamic.hpp>
 
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 //主力合约后缀
 static const char* SUFFIX_HOT = ".HOT";
@@ -311,7 +311,7 @@ public:
 			s += pid.size();
 			if (strlen(s) == 4)
 			{
-				wt_strcpy(buffer + len, s, 4);
+				vvt_strcpy(buffer + len, s, 4);
 				len += 4;
 			}
 			else
@@ -321,7 +321,7 @@ public:
 				else
 					buffer[len] = '2';
 				len += 1;
-				wt_strcpy(buffer + len, s, 3);
+				vvt_strcpy(buffer + len, s, 3);
 				len += 3;
 			}
 		}
@@ -484,7 +484,7 @@ public:
 		std::string stdWrappedCode;
 		stdWrappedCode.resize(idx + strlen(SUFFIX_HOT) + 1);
 		memcpy((char*)stdWrappedCode.data(), stdCode, idx);
-		wt_strcpy((char*)stdWrappedCode.data()+idx, SUFFIX_HOT);
+		vvt_strcpy((char*)stdWrappedCode.data()+idx, SUFFIX_HOT);
 		return stdWrappedCode;
 	}
 
@@ -500,7 +500,7 @@ public:
 		std::string stdWrappedCode;
 		stdWrappedCode.resize(idx + strlen(SUFFIX_2ND) + 1);
 		memcpy((char*)stdWrappedCode.data(), stdCode, idx);
-		wt_strcpy((char*)stdWrappedCode.data() + idx, SUFFIX_2ND);
+		vvt_strcpy((char*)stdWrappedCode.data() + idx, SUFFIX_2ND);
 		return stdWrappedCode;
 	}
 
@@ -545,7 +545,7 @@ public:
 		CodeInfo codeInfo;
 
 		StringVector ay = StrUtil::split(stdCode, ".");
-		wt_strcpy(codeInfo._exchg, ay[0].c_str());
+		vvt_strcpy(codeInfo._exchg, ay[0].c_str());
 		if(strcmp(codeInfo._exchg, "SHFE") == 0 || strcmp(codeInfo._exchg, "INE") == 0)
 		{
 			fmt::format_to(codeInfo._code, "{}{}{}", ay[1], ay[2], ay[3]);
@@ -602,21 +602,21 @@ public:
 			thread_local static CodeInfo codeInfo;
 			codeInfo.clear();
 			auto idx = StrUtil::findFirst(stdCode, '.');
-			wt_strcpy(codeInfo._exchg, stdCode, idx);
+			vvt_strcpy(codeInfo._exchg, stdCode, idx);
 
 			auto idx2 = StrUtil::findFirst(stdCode + idx + 1, '.');
 			if (idx2 == std::string::npos)
 			{
-				wt_strcpy(codeInfo._product, stdCode + idx + 1);
+				vvt_strcpy(codeInfo._product, stdCode + idx + 1);
 
 				//By Wesley @ 2021.12.29
 				//如果是两段的合约代码，如OKEX.BTC-USDT
 				//则品种代码和合约代码一致
-				wt_strcpy(codeInfo._code, stdCode + idx + 1);
+				vvt_strcpy(codeInfo._code, stdCode + idx + 1);
 			}
 			else
 			{
-				wt_strcpy(codeInfo._product, stdCode + idx + 1, idx2);
+				vvt_strcpy(codeInfo._product, stdCode + idx + 1, idx2);
 				const char* ext = stdCode + idx + idx2 + 2;
 				std::size_t extlen = strlen(ext);
 				char lastCh = ext[extlen - 1];
@@ -634,21 +634,21 @@ public:
 					//TODO: 这样的判断存在一个假设，最后一位是数字的一定是期货分月合约，以后可能会有问题，先注释一下
 					//那么code得加上品种id
 					//郑商所得单独处理一下，这个只能hardcode了
-					auto i = wt_strcpy(codeInfo._code, codeInfo._product);
+					auto i = vvt_strcpy(codeInfo._code, codeInfo._product);
 					if (memcmp(codeInfo._exchg, "CZCE", 4) == 0)
-						wt_strcpy(codeInfo._code + i, ext + 1, extlen-1);
+						vvt_strcpy(codeInfo._code + i, ext + 1, extlen-1);
 					else
-						wt_strcpy(codeInfo._code + i, ext, extlen);
+						vvt_strcpy(codeInfo._code + i, ext, extlen);
 				}
 				else
 				{
 					const char* ruleTag = (hotMgr != NULL) ? hotMgr->getRuleTag(ext) :"";
 					if (strlen(ruleTag) == 0)
-						wt_strcpy(codeInfo._code, ext, extlen);
+						vvt_strcpy(codeInfo._code, ext, extlen);
 					else
 					{
-						wt_strcpy(codeInfo._code, codeInfo._product);
-						wt_strcpy(codeInfo._ruletag, ruleTag);
+						vvt_strcpy(codeInfo._code, codeInfo._product);
+						vvt_strcpy(codeInfo._ruletag, ruleTag);
 					}
 				}
 			}			

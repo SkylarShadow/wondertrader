@@ -1,7 +1,7 @@
 ﻿#include "WtRdmDtReaderAD.h"
 #include "LMDBKeys.h"
 
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Share/TimeUtils.hpp"
 #include "../Share/CodeHelper.hpp"
 #include "../Share/StdUtils.hpp"
@@ -54,7 +54,7 @@ WtRdmDtReaderAD::~WtRdmDtReaderAD()
 {
 }
 
-void WtRdmDtReaderAD::init(WTSVariant* cfg, IRdmDtReaderSink* sink)
+void WtRdmDtReaderAD::init(VVTSVariant* cfg, IRdmDtReaderSink* sink)
 {
 	IRdmDtReader::init(cfg, sink);
 

@@ -4,7 +4,7 @@
 #include "../Includes/WTSSessionInfo.hpp"
 #include "../Includes/WTSContractInfo.hpp"
 #include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Share/BoostFile.hpp"
 #include "../Share/StrUtil.hpp"
 #include "../Share/decimal.h"
@@ -67,7 +67,7 @@ WtDataWriterAD::~WtDataWriterAD()
 {
 }
 
-bool WtDataWriterAD::init(WTSVariant* params, IDataWriterSink* sink)
+bool WtDataWriterAD::init(VVTSVariant* params, IDataWriterSink* sink)
 {
 	IDataWriter::init(params, sink);
 
@@ -354,7 +354,7 @@ bool WtDataWriterAD::writeTick(WTSTickData* curTick, uint32_t procFlag)
 
 			_sink->broadcastTick(curTick);
 
-			static wt_hashmap<std::string, uint64_t> _tcnt_map;
+			static vvt_hashmap<std::string, uint64_t> _tcnt_map;
 			_tcnt_map[curTick->exchg()]++;
 			if (_tcnt_map[curTick->exchg()] % _log_group_size == 0)
 			{

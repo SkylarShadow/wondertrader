@@ -4,7 +4,7 @@
 
 #include "../Includes/WTSContractInfo.hpp"
 #include "../Includes/WTSSessionInfo.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/WTSDataDef.hpp"
 #include "../Share/decimal.h"
 #include "../Share/StrUtil.hpp"
@@ -32,7 +32,7 @@ const char* WtStraDtSel::getFactName()
 	return FACT_NAME;
 }
 
-bool WtStraDtSel::init(WTSVariant* cfg)
+bool WtStraDtSel::init(VVTSVariant* cfg)
 {
 	if (cfg == NULL)
 		return false;

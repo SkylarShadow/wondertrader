@@ -21,7 +21,7 @@ public:
 
 	virtual const char* getFactName() override;
 
-	virtual bool init(WTSVariant* cfg) override;
+	virtual bool init(VVTSVariant* cfg) override;
 
 	virtual void on_init(IUftStraCtx* ctx) override;
 

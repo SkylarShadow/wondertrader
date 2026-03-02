@@ -13,7 +13,7 @@
 #include "../Share/StrUtil.hpp"
 #include "../Includes/WTSDataDef.hpp"
 #include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 
 #include "../WTSTools/WTSBaseDataMgr.h"
 #include "../WTSTools/WTSLogger.h"
@@ -59,7 +59,7 @@ UDPCaster::~UDPCaster()
 {
 }
 
-bool UDPCaster::init(WTSVariant* cfg, WTSBaseDataMgr* bdMgr, DataManager* dtMgr)
+bool UDPCaster::init(VVTSVariant* cfg, WTSBaseDataMgr* bdMgr, DataManager* dtMgr)
 {
 	m_bdMgr = bdMgr;
 	m_dtMgr = dtMgr;
@@ -67,22 +67,22 @@ bool UDPCaster::init(WTSVariant* cfg, WTSBaseDataMgr* bdMgr, DataManager* dtMgr)
 	if (!cfg->getBoolean("active"))
 		return false;
 
-	WTSVariant* cfgBC = cfg->get("broadcast");
+	VVTSVariant* cfgBC = cfg->get("broadcast");
 	if (cfgBC)
 	{
 		for (uint32_t idx = 0; idx < cfgBC->size(); idx++)
 		{
-			WTSVariant* cfgItem = cfgBC->get(idx);
+			VVTSVariant* cfgItem = cfgBC->get(idx);
 			addBRecver(cfgItem->getCString("host"), cfgItem->getInt32("port"), cfgItem->getUInt32("type"));
 		}
 	}
 
-	WTSVariant* cfgMC = cfg->get("multicast");
+	VVTSVariant* cfgMC = cfg->get("multicast");
 	if (cfgMC)
 	{
 		for (uint32_t idx = 0; idx < cfgMC->size(); idx++)
 		{
-			WTSVariant* cfgItem = cfgMC->get(idx);
+			VVTSVariant* cfgItem = cfgMC->get(idx);
 			addMRecver(cfgItem->getCString("host"), cfgItem->getInt32("port"), cfgItem->getInt32("sendport"), cfgItem->getUInt32("type"));
 		}
 	}

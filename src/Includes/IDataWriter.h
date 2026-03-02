@@ -12,12 +12,12 @@
 #include "WTSTypes.h"
 #include "FasterDefs.h"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 class WTSTickData;
 class WTSOrdQueData;
 class WTSOrdDtlData;
 class WTSTransData;
-class WTSVariant;
+class VVTSVariant;
 class IBaseDataMgr;
 struct WTSBarStruct;
 struct WTSTickStruct;
@@ -64,7 +64,7 @@ public:
 	virtual bool dumpHisTrans(const char* stdCode, uint32_t uDate, WTSTransStruct* items, uint32_t count) { return false; }
 };
 
-typedef wt_hashmap<std::string, IHisDataDumper*> ExtDumpers;
+typedef vvt_hashmap<std::string, IHisDataDumper*> ExtDumpers;
 
 /*
  *	数据落地接口
@@ -74,7 +74,7 @@ class IDataWriter
 public:
 	IDataWriter():_sink(NULL){}
 
-	virtual bool init(WTSVariant* params, IDataWriterSink* sink) { _sink = sink; return true; }
+	virtual bool init(VVTSVariant* params, IDataWriterSink* sink) { _sink = sink; return true; }
 
 	virtual void release() = 0;
 
@@ -100,9 +100,9 @@ protected:
 	IDataWriterSink*	_sink;
 };
 
-NS_WTP_END
+NS_VVTP_END
 
 
 //获取IDataWriter的函数指针类型
-typedef wtp::IDataWriter* (*FuncCreateWriter)();
-typedef void(*FuncDeleteWriter)(wtp::IDataWriter* &writer);
+typedef vvtp::IDataWriter* (*FuncCreateWriter)();
+typedef void(*FuncDeleteWriter)(vvtp::IDataWriter* &writer);

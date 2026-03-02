@@ -1,11 +1,11 @@
 ﻿#include "IndexFactory.h"
 #include "DataManager.h"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/WTSDataDef.hpp"
 #include "../Includes/WTSContractInfo.hpp"
 #include "../Share/StrUtil.hpp"
 
-bool IndexFactory::init(WTSVariant* config, IHotMgr* hotMgr, IBaseDataMgr* bdMgr, DataManager* dataMgr)
+bool IndexFactory::init(VVTSVariant* config, IHotMgr* hotMgr, IBaseDataMgr* bdMgr, DataManager* dataMgr)
 {
 	_hot_mgr = hotMgr;
 	_bd_mgr = bdMgr;
@@ -17,7 +17,7 @@ bool IndexFactory::init(WTSVariant* config, IHotMgr* hotMgr, IBaseDataMgr* bdMgr
 		_pool.reset(new boost::threadpool::pool(poolsize));
 	}
 
-	WTSVariant* cfgIdx = config->get("indice");
+	VVTSVariant* cfgIdx = config->get("indice");
 	if(cfgIdx == NULL || !cfgIdx->isArray())
 	{
 		return false;
@@ -26,7 +26,7 @@ bool IndexFactory::init(WTSVariant* config, IHotMgr* hotMgr, IBaseDataMgr* bdMgr
 	auto cnt = cfgIdx->size();
 	for(std::size_t i = 0; i < cnt; i++)
 	{
-		WTSVariant* cfgItem = cfgIdx->get(i);
+		VVTSVariant* cfgItem = cfgIdx->get(i);
 		if(!cfgItem->getBoolean("active"))
 			continue;
 

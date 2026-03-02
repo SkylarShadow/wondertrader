@@ -612,7 +612,7 @@ void TraderHuaX::OnFrontConnected()
 #pragma endregion "Huax::API:TraderSpi"
 
 #pragma region "ITraderApi"
-bool TraderHuaX::init(WTSVariant *params)
+bool TraderHuaX::init(VVTSVariant *params)
 {
 	_user = params->getCString("user");
 	_pass = params->getCString("pass");

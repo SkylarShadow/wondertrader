@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <stdint.h>
 #include <string.h>
-#include "../Includes/WTSMarcos.h"
+#include "../Includes/VVTSMarcos.h"
 
 static uint16_t reverseEndian(uint16_t src)
 {

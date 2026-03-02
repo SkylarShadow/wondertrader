@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "../WtCore/HftStraBaseCtx.h"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class ExpHftContext : public HftStraBaseCtx
 {

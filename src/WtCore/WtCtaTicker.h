@@ -11,10 +11,10 @@
 #include <stdint.h>
 #include <atomic>
 
-#include "../Includes/WTSMarcos.h"
+#include "../Includes/VVTSMarcos.h"
 #include "../Share/StdUtils.hpp"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 class WTSSessionInfo;
 class IDataReader;
 class WTSTickData;
@@ -67,4 +67,4 @@ private:
 	StdThreadPtr	_thrd;
 
 };
-NS_WTP_END
+NS_VVTP_END

@@ -17,7 +17,7 @@
 #pragma warning(disable:4200)
 #endif
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 
 #pragma pack(push, 1)
 
@@ -291,4 +291,4 @@ struct WTSTransStruct
 
 #pragma pack(pop)
 
-NS_WTP_END
+NS_VVTP_END

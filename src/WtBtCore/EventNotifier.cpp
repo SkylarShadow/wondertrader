@@ -13,14 +13,14 @@
 #include "../Share/TimeUtils.hpp"
 #include "../Share/DLLHelper.hpp"
 
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../WTSTools/WTSLogger.h"
 
 #include <rapidjson/document.h>
 #include <rapidjson/prettywriter.h>
 namespace rj = rapidjson;
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 void on_mq_log(unsigned long id, const char* message, bool bServer)
 {
@@ -40,7 +40,7 @@ EventNotifier::~EventNotifier()
 		_remover(_mq_sid);
 }
 
-bool EventNotifier::init(WTSVariant* cfg)
+bool EventNotifier::init(VVTSVariant* cfg)
 {
 	if (!cfg->getBoolean("active"))
 		return false;

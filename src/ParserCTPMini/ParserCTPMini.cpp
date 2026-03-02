@@ -15,7 +15,7 @@
 
 #include "../Includes/WTSDataDef.hpp"
 #include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/IBaseDataMgr.h"
 #include "../Includes/WTSVersion.h"
 
@@ -91,7 +91,7 @@ ParserCTPMini::~ParserCTPMini()
 	m_pUserAPI = NULL;
 }
 
-bool ParserCTPMini::init(WTSVariant* config)
+bool ParserCTPMini::init(VVTSVariant* config)
 {
 	m_strFrontAddr = config->getCString("front");
 	m_strBroker = config->getCString("broker");
@@ -363,7 +363,7 @@ void ParserCTPMini::ReqUserLogin()
 	strcpy(req.BrokerID, m_strBroker.c_str());
 	strcpy(req.UserID, m_strUserID.c_str());
 	strcpy(req.Password, m_strPassword.c_str());
-	strcpy(req.UserProductInfo, WT_PRODUCT);
+	strcpy(req.UserProductInfo, VVT_PRODUCT);
 	int iResult = m_pUserAPI->ReqUserLogin(&req, ++m_iRequestID);
 	if(iResult != 0)
 	{

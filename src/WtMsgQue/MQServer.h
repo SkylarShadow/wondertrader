@@ -11,10 +11,10 @@
 
 #include <queue>
 
-#include "../Includes/WTSMarcos.h"
+#include "../Includes/VVTSMarcos.h"
 #include "../Share/StdUtils.hpp"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 class MQManager;
 
 class MQServer
@@ -64,4 +64,4 @@ private:
 	std::string		m_sendBuf;
 };
 
-NS_WTP_END
+NS_VVTP_END

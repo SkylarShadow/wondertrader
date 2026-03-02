@@ -4,11 +4,11 @@
 #include "../Includes/WTSStruct.h"
 #include "../Share/BoostMappingFile.hpp"
 
-NS_WTP_BEGIN
-class WTSVariant;
-NS_WTP_END
+NS_VVTP_BEGIN
+class VVTSVariant;
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class ShmCaster : public IDataCaster
 {
@@ -47,7 +47,7 @@ public:
 public:
 	ShmCaster():_queue(NULL), _inited(false){}
 
-	bool	init(WTSVariant* cfg);
+	bool	init(VVTSVariant* cfg);
 
 	virtual void	broadcast(WTSTickData* curTick) override;
 	virtual void	broadcast(WTSOrdQueData* curOrdQue) override;

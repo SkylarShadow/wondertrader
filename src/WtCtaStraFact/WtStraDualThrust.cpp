@@ -3,7 +3,7 @@
 #include "../Includes/ICtaStraCtx.h"
 
 #include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/WTSDataDef.hpp"
 #include "../Share/decimal.h"
 
@@ -32,7 +32,7 @@ const char* WtStraDualThrust::getName()
 	return "DualThrust";
 }
 
-bool WtStraDualThrust::init(WTSVariant* cfg)
+bool WtStraDualThrust::init(VVTSVariant* cfg)
 {
 	if (cfg == NULL)
 		return false;

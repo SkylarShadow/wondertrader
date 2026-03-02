@@ -13,11 +13,11 @@
 #include "../Includes/WTSCollection.hpp"
 #include <string>
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 	class WTSSwitchItem;
-NS_WTP_END
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 //换月主力映射
 typedef WTSMap<uint32_t>			WTSDateHotMap;
@@ -88,7 +88,7 @@ private:
 	bool			m_bInitialized;
 
 	WTSCustomSwitchMap*	m_mapCustRules;
-	typedef wt_hashmap<std::string, wt_hashset<std::string>>	CustomSwitchCodes;
+	typedef vvt_hashmap<std::string, wt_hashset<std::string>>	CustomSwitchCodes;
 	CustomSwitchCodes	m_mapCustCodes;
 };
 

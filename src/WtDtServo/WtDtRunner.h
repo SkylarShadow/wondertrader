@@ -16,12 +16,12 @@
 #include "ParserAdapter.h"
 #include "WtDataManager.h"
 
-NS_WTP_BEGIN
-class WTSVariant;
+NS_VVTP_BEGIN
+class VVTSVariant;
 class WtDataStorage;
 class WTSKlineSlice;
 class WTSTickSlice;
-NS_WTP_END
+NS_VVTP_END
 
 class WtDtRunner
 {
@@ -62,8 +62,8 @@ public:
 	WTSKlineSlice*	get_sbars_by_date(const char* stdCode, uint32_t secs, uint32_t uDate = 0);
 
 private:
-	void	initDataMgr(WTSVariant* config);
-	void	initParsers(WTSVariant* cfg);
+	void	initDataMgr(VVTSVariant* config);
+	void	initParsers(VVTSVariant* cfg);
 
 private:
 	FuncOnTickCallback	_cb_tick;
@@ -78,7 +78,7 @@ private:
 	bool			_is_inited;
 
 	typedef std::set<uint32_t> SubFlags;
-	typedef wt_hashmap<std::string, SubFlags>	StraSubMap;
+	typedef vvt_hashmap<std::string, SubFlags>	StraSubMap;
 	StraSubMap		_tick_sub_map;	//tick数据订阅表
 	StdUniqueMutex	_mtx_subs;
 

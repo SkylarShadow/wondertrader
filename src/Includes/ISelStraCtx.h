@@ -10,9 +10,9 @@
 #pragma once
 #include <stdint.h>
 #include <functional>
-#include "../Includes/WTSMarcos.h"
+#include "../Includes/VVTSMarcos.h"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 class WTSCommodityInfo;
 class WTSSessionInfo;
 class WTSTickData;
@@ -117,4 +117,4 @@ protected:
 	std::string _name;
 };
 
-NS_WTP_END
+NS_VVTP_END

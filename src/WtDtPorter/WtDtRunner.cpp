@@ -13,7 +13,7 @@
 #include "../WtDtCore/WtHelper.h"
 
 #include "../Includes/WTSSessionInfo.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/WTSDataDef.hpp"
 #include "../Includes/WTSContractInfo.hpp"
 
@@ -88,7 +88,7 @@ void WtDtRunner::initialize(const char* cfgFile, const char* logCfg, const char*
 	WTSLogger::init(logCfg, bLogCfgFile);
 	WtHelper::set_module_dir(modDir);
 
-	WTSVariant* config = NULL;
+	VVTSVariant* config = NULL;
 	if (bCfgFile)
 		config = WTSCfgLoader::load_from_file(cfgFile);
 	else
@@ -101,21 +101,21 @@ void WtDtRunner::initialize(const char* cfgFile, const char* logCfg, const char*
 	}
 
 	//基础数据文件
-	WTSVariant* cfgBF = config->get("basefiles");
+	VVTSVariant* cfgBF = config->get("basefiles");
 	if (cfgBF->get("session"))
 	{
 		_bd_mgr.loadSessions(cfgBF->getCString("session"));
 		WTSLogger::info("Trading sessions loaded");
 	}
 
-	WTSVariant* cfgItem = cfgBF->get("commodity");
+	VVTSVariant* cfgItem = cfgBF->get("commodity");
 	if (cfgItem)
 	{
-		if (cfgItem->type() == WTSVariant::VT_String)
+		if (cfgItem->type() == VVTSVariant::VT_String)
 		{
 			_bd_mgr.loadCommodities(cfgItem->asCString());
 		}
-		else if (cfgItem->type() == WTSVariant::VT_Array)
+		else if (cfgItem->type() == VVTSVariant::VT_Array)
 		{
 			for (uint32_t i = 0; i < cfgItem->size(); i++)
 			{
@@ -127,11 +127,11 @@ void WtDtRunner::initialize(const char* cfgFile, const char* logCfg, const char*
 	cfgItem = cfgBF->get("contract");
 	if (cfgItem)
 	{
-		if (cfgItem->type() == WTSVariant::VT_String)
+		if (cfgItem->type() == VVTSVariant::VT_String)
 		{
 			_bd_mgr.loadContracts(cfgItem->asCString());
 		}
-		else if (cfgItem->type() == WTSVariant::VT_Array)
+		else if (cfgItem->type() == VVTSVariant::VT_Array)
 		{
 			for (uint32_t i = 0; i < cfgItem->size(); i++)
 			{
@@ -201,7 +201,7 @@ void WtDtRunner::initialize(const char* cfgFile, const char* logCfg, const char*
 		//如果存在指数模块要，配置指数
 		const char* filename = config->getCString("index");
 		WTSLogger::info("Reading index config from {}...", filename);
-		WTSVariant* var = WTSCfgLoader::load_from_file(filename);
+		VVTSVariant* var = WTSCfgLoader::load_from_file(filename);
 		if (var)
 		{
 			_idx_factory.init(var, &_hot_mgr, &_bd_mgr, &_data_mgr);
@@ -213,16 +213,16 @@ void WtDtRunner::initialize(const char* cfgFile, const char* logCfg, const char*
 		}
 	}
 
-	WTSVariant* cfgParser = config->get("parsers");
+	VVTSVariant* cfgParser = config->get("parsers");
 	if (cfgParser)
 	{
-		if (cfgParser->type() == WTSVariant::VT_String)
+		if (cfgParser->type() == VVTSVariant::VT_String)
 		{
 			const char* filename = cfgParser->asCString();
 			if (StdFile::exists(filename))
 			{
 				WTSLogger::info("Reading parser config from {}...", filename);
-				WTSVariant* var = WTSCfgLoader::load_from_file(filename);
+				VVTSVariant* var = WTSCfgLoader::load_from_file(filename);
 				if (var)
 				{
 					initParsers(var->get("parsers"));
@@ -238,7 +238,7 @@ void WtDtRunner::initialize(const char* cfgFile, const char* logCfg, const char*
 				WTSLogger::error("Parser configuration {} not exists", filename);
 			}
 		}
-		else if (cfgParser->type() == WTSVariant::VT_Array)
+		else if (cfgParser->type() == VVTSVariant::VT_Array)
 		{
 			initParsers(cfgParser);
 		}
@@ -249,16 +249,16 @@ void WtDtRunner::initialize(const char* cfgFile, const char* logCfg, const char*
 	config->release();
 }
 
-void WtDtRunner::initDataMgr(WTSVariant* config, bool bAlldayMode /* = false */)
+void WtDtRunner::initDataMgr(VVTSVariant* config, bool bAlldayMode /* = false */)
 {
 	_data_mgr.init(config, &_bd_mgr, bAlldayMode ? NULL : &_state_mon);
 }
 
-void WtDtRunner::initParsers(WTSVariant* cfg)
+void WtDtRunner::initParsers(VVTSVariant* cfg)
 {
 	for (uint32_t idx = 0; idx < cfg->size(); idx++)
 	{
-		WTSVariant* cfgItem = cfg->get(idx);
+		VVTSVariant* cfgItem = cfg->get(idx);
 		if (!cfgItem->getBoolean("active"))
 			continue;
 

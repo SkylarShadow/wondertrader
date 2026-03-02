@@ -10,14 +10,14 @@
 #pragma once
 #include "WTSObject.hpp"
 #include "WTSTypes.h"
-#include "WTSMarcos.h"
+#include "VVTSMarcos.h"
 
 #include <time.h>
 #include <string>
 #include <map>
 #include<chrono>
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 class WTSContractInfo;
 
 //////////////////////////////////////////////////////////////////////////
@@ -47,8 +47,8 @@ public:
 		WTSEntrust* pRet = WTSEntrust::allocate();
 		if(pRet)
 		{
-			//wt_strcpy(pRet->m_strExchg, exchg);
-			//wt_strcpy(pRet->m_strCode, code);
+			//vvt_strcpy(pRet->m_strExchg, exchg);
+			//vvt_strcpy(pRet->m_strCode, code);
 
 			auto len = strlen(exchg);
 			memcpy(pRet->m_strExchg, exchg, len);
@@ -70,11 +70,11 @@ public:
 public:
 	inline void setExchange(const char* exchg, std::size_t len = 0) noexcept
 	{
-		wt_strcpy(m_strExchg, exchg, len);
+		vvt_strcpy(m_strExchg, exchg, len);
     }
 	inline void setCode(const char* code, std::size_t len = 0) noexcept
 	{
-		wt_strcpy(m_strCode, code, len);
+		vvt_strcpy(m_strCode, code, len);
     }
 
 	inline void setDirection(WTSDirectionType dType)noexcept {m_direction = dType;}
@@ -99,11 +99,11 @@ public:
 	inline const char* getCode() const noexcept { return m_strCode; }
 	inline const char* getExchg() const  noexcept { return m_strExchg; }
 
-	inline void setEntrustID(const char* eid) noexcept { wt_strcpy(m_strEntrustID, eid); }
+	inline void setEntrustID(const char* eid) noexcept { vvt_strcpy(m_strEntrustID, eid); }
 	inline const char* getEntrustID() const  noexcept { return m_strEntrustID; }
 	inline char* getEntrustID() noexcept { return m_strEntrustID; }
 
-	inline void setUserTag(const char* tag)  noexcept { wt_strcpy(m_strUserTag, tag); }
+	inline void setUserTag(const char* tag)  noexcept { vvt_strcpy(m_strUserTag, tag); }
 	inline const char* getUserTag() const  noexcept { return m_strUserTag; }
 	inline char* getUserTag()  noexcept { return m_strUserTag; }
 
@@ -157,8 +157,8 @@ public:
 		WTSEntrustAction* pRet = WTSEntrustAction::allocate();
 		if(pRet)
 		{
-			wt_strcpy(pRet->m_strExchg, exchg);
-			wt_strcpy(pRet->m_strCode, code);
+			vvt_strcpy(pRet->m_strExchg, exchg);
+			vvt_strcpy(pRet->m_strCode, code);
 			pRet->m_businessType = bType;
 			return pRet;
 		}
@@ -171,8 +171,8 @@ public:
 		WTSEntrustAction* pRet = new WTSEntrustAction;
 		if(pRet)
 		{
-			wt_strcpy(pRet->m_strEnturstID, eid);
-			wt_strcpy(pRet->m_strOrderID, oid);
+			vvt_strcpy(pRet->m_strEnturstID, eid);
+			vvt_strcpy(pRet->m_strOrderID, oid);
 			return pRet;
 		}
 
@@ -185,13 +185,13 @@ public:
 
 	inline void setExchange(const char* exchg, std::size_t len = 0) noexcept {
 		if (len == 0)
-			wt_strcpy(m_strExchg, exchg);
+			vvt_strcpy(m_strExchg, exchg);
 		else
 			strncpy(m_strExchg, exchg, len);
 	}
 	inline void setCode(const char* code, std::size_t len = 0) noexcept {
 		if (len == 0)
-			wt_strcpy(m_strCode, code);
+			vvt_strcpy(m_strCode, code);
 		else
 			strncpy(m_strCode, code, len);
 	}
@@ -199,17 +199,17 @@ public:
 	inline void setActionFlag(WTSActionFlag af) noexcept {m_actionFlag = af;}
 	inline WTSActionFlag getActionFlag() const noexcept {return m_actionFlag;}
 
-	inline void setEntrustID(const char* eid) noexcept { wt_strcpy(m_strEnturstID, eid); }
+	inline void setEntrustID(const char* eid) noexcept { vvt_strcpy(m_strEnturstID, eid); }
 	inline const char* getEntrustID() const noexcept {return m_strEnturstID;}
 	inline char* getEntrustID() noexcept { return m_strEnturstID; }
 
-	inline void setOrderID(const char* oid) noexcept { wt_strcpy(m_strOrderID, oid); }
+	inline void setOrderID(const char* oid) noexcept { vvt_strcpy(m_strOrderID, oid); }
 	inline const char* getOrderID() const noexcept {return m_strOrderID;}
 
 	inline void setBusinessType(WTSBusinessType bType) noexcept { m_businessType = bType; }
 	inline WTSBusinessType	getBusinessType() const  noexcept { return m_businessType; }
 
-	inline void setUserTag(const char* tag)  noexcept { wt_strcpy(m_strUserTag, tag); }
+	inline void setUserTag(const char* tag)  noexcept { vvt_strcpy(m_strUserTag, tag); }
 	inline const char* getUserTag() const  noexcept { return m_strUserTag; }
 	inline char* getUserTag()  noexcept { return m_strUserTag; }
 
@@ -256,8 +256,8 @@ public:
 
 		if(entrust != NULL)
 		{
-			wt_strcpy(pRet->m_strCode, entrust->getCode());
-			wt_strcpy(pRet->m_strExchg,entrust->getExchg());
+			vvt_strcpy(pRet->m_strCode, entrust->getCode());
+			vvt_strcpy(pRet->m_strExchg,entrust->getExchg());
 			pRet->m_iPrice = entrust->getPrice();
 			pRet->m_dVolume = entrust->getVolume();
 
@@ -265,8 +265,8 @@ public:
 			pRet->m_offsetType = entrust->getOffsetType();
 			pRet->m_orderFlag = entrust->getOrderFlag();
 			pRet->m_priceType = entrust->getPriceType();
-			wt_strcpy(pRet->m_strEntrustID, entrust->getEntrustID());
-			wt_strcpy(pRet->m_strUserTag, entrust->getUserTag());
+			vvt_strcpy(pRet->m_strEntrustID, entrust->getEntrustID());
+			vvt_strcpy(pRet->m_strUserTag, entrust->getUserTag());
 
 			pRet->m_dVolLeft = entrust->getVolume();
 			pRet->m_businessType = entrust->getBusinessType();
@@ -279,13 +279,13 @@ public:
 	//这部分是和WTSEntrust同步的
 	inline void setExchange(const char* exchg, std::size_t len = 0)  noexcept {
 		if (len == 0)
-			wt_strcpy(m_strExchg, exchg);
+			vvt_strcpy(m_strExchg, exchg);
 		else
 			strncpy(m_strExchg, exchg, len);
 	}
 	inline void setCode(const char* code, std::size_t len = 0) noexcept {
 		if (len == 0)
-			wt_strcpy(m_strCode, code);
+			vvt_strcpy(m_strCode, code);
 		else
 			strncpy(m_strCode, code, len);
 	}
@@ -312,11 +312,11 @@ public:
 	inline const char* getCode() const noexcept { return m_strCode; }
 	inline const char* getExchg() const  noexcept { return m_strExchg; }
 
-	inline void setEntrustID(const char* eid)  noexcept { wt_strcpy(m_strEntrustID, eid); }
+	inline void setEntrustID(const char* eid)  noexcept { vvt_strcpy(m_strEntrustID, eid); }
 	inline const char* getEntrustID() const  noexcept { return m_strEntrustID; }
 	inline char* getEntrustID()  noexcept { return m_strEntrustID; }
 
-	inline void setUserTag(const char* tag)  noexcept { wt_strcpy(m_strUserTag, tag); }
+	inline void setUserTag(const char* tag)  noexcept { vvt_strcpy(m_strUserTag, tag); }
 	inline const char* getUserTag() const  noexcept { return m_strUserTag; }
 	inline char* getUserTag() noexcept { return m_strUserTag; }
 
@@ -333,7 +333,7 @@ public:
 	inline void	setVolTraded(double vol) noexcept { m_dVolTraded = vol; }
 	inline void	setVolLeft(double vol) noexcept { m_dVolLeft = vol; }
 	
-	inline void	setOrderID(const char* oid) noexcept { wt_strcpy(m_strOrderID, oid); }
+	inline void	setOrderID(const char* oid) noexcept { vvt_strcpy(m_strOrderID, oid); }
 	inline void	setOrderState(WTSOrderState os) noexcept {m_orderState = os;}
 	inline void	setOrderType(WTSOrderType ot) noexcept {m_orderType = ot;}
 
@@ -420,15 +420,15 @@ public:
 	static inline WTSTradeInfo* create(const char* code, const char* exchg = "", WTSBusinessType bType = BT_CASH)
 	{
 		WTSTradeInfo *pRet = WTSTradeInfo::allocate();
-		wt_strcpy(pRet->m_strExchg, exchg);
-		wt_strcpy(pRet->m_strCode, code);
+		vvt_strcpy(pRet->m_strExchg, exchg);
+		vvt_strcpy(pRet->m_strCode, code);
 		pRet->m_businessType = bType;
 
 		return pRet;
 	}
 
-	inline void setTradeID(const char* tradeid) noexcept { wt_strcpy(m_strTradeID, tradeid); }
-	inline void setRefOrder(const char* oid) noexcept { wt_strcpy(m_strRefOrder, oid); }
+	inline void setTradeID(const char* tradeid) noexcept { vvt_strcpy(m_strTradeID, tradeid); }
+	inline void setRefOrder(const char* oid) noexcept { vvt_strcpy(m_strRefOrder, oid); }
 	
 	inline void setDirection(WTSDirectionType dType)noexcept {m_direction = dType;}
 	inline void setOffsetType(WTSOffsetType oType)noexcept {m_offsetType = oType;}
@@ -464,7 +464,7 @@ public:
 
 	inline double getAmount() const noexcept { return m_uAmount; }
 
-	inline void setUserTag(const char* tag) noexcept { wt_strcpy(m_strUserTag, tag); }
+	inline void setUserTag(const char* tag) noexcept { vvt_strcpy(m_strUserTag, tag); }
 	inline const char* getUserTag() const noexcept { return m_strUserTag; }
 
 	inline void setBusinessType(WTSBusinessType bType) noexcept  { m_businessType = bType; }
@@ -511,9 +511,9 @@ public:
 	static inline WTSPositionItem* create(const char* code, const char* currency = "CNY", const char* exchg = "", WTSBusinessType bType = BT_CASH)
 	{
 		WTSPositionItem *pRet = WTSPositionItem::allocate();
-		wt_strcpy(pRet->m_strExchg, exchg);
-		wt_strcpy(pRet->m_strCode, code);
-		wt_strcpy(pRet->m_strCurrency, currency);
+		vvt_strcpy(pRet->m_strExchg, exchg);
+		vvt_strcpy(pRet->m_strCode, code);
+		vvt_strcpy(pRet->m_strCurrency, currency);
 		pRet->m_businessType = bType;
 
 		return pRet;
@@ -661,4 +661,4 @@ protected:
 };
 
 
-NS_WTP_END
+NS_VVTP_END

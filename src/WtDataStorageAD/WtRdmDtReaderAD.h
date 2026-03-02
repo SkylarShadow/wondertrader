@@ -12,7 +12,7 @@
 #include "../Share/StdUtils.hpp"
 #include "../Share/BoostMappingFile.hpp"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 
 typedef std::shared_ptr<BoostMappingFile> BoostMFPtr;
 
@@ -26,7 +26,7 @@ public:
 //////////////////////////////////////////////////////////////////////////
 //IRdmDtReader
 public:
-	virtual void init(WTSVariant* cfg, IRdmDtReaderSink* sink);
+	virtual void init(VVTSVariant* cfg, IRdmDtReaderSink* sink);
 
 	virtual WTSOrdDtlSlice*	readOrdDtlSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime = 0) override { return NULL; }
 	virtual WTSOrdQueSlice*	readOrdQueSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime = 0) override { return NULL; }
@@ -69,10 +69,10 @@ private:
 		_TicksList() :_last_tick_time(0), _first_tick_time(UINT64_MAX){}
 	} TicksList;
 
-	typedef wt_hashmap<std::string, BarsList> BarsCache;
+	typedef vvt_hashmap<std::string, BarsList> BarsCache;
 	BarsCache	_bars_cache;
 
-	typedef wt_hashmap<std::string, TicksList> TicksCache;
+	typedef vvt_hashmap<std::string, TicksList> TicksCache;
 	TicksCache	_ticks_cache;
 
 private:
@@ -83,7 +83,7 @@ private:
 	 *	Tick数据，每个合约一个数据库，路径如./ticks/CFFEX/IF2101
 	 */
 	typedef std::shared_ptr<WtLMDB> WtLMDBPtr;
-	typedef wt_hashmap<std::string, WtLMDBPtr> WtLMDBMap;
+	typedef vvt_hashmap<std::string, WtLMDBPtr> WtLMDBMap;
 
 	WtLMDBMap	_exchg_m1_dbs;
 	WtLMDBMap	_exchg_m5_dbs;
@@ -97,4 +97,4 @@ private:
 	WtLMDBPtr	get_t_db(const char* exchg, const char* code);
 };
 
-NS_WTP_END
+NS_VVTP_END

@@ -12,16 +12,16 @@
 #include <stdint.h>
 #include "../Includes/WTSTypes.h"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 struct WTSBarStruct;
 struct WTSTickStruct;
-NS_WTP_END
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
-typedef void(PORTER_FLAG *FuncGetBarsCallback)(WTSBarStruct* bar, WtUInt32 count, bool isLast);
-typedef void(PORTER_FLAG *FuncGetTicksCallback)(WTSTickStruct* tick, WtUInt32 count, bool isLast);
-typedef void(PORTER_FLAG *FuncCountDataCallback)(WtUInt32 dataCnt);
+typedef void(PORTER_FLAG *FuncGetBarsCallback)(WTSBarStruct* bar, VvtUInt32 count, bool isLast);
+typedef void(PORTER_FLAG *FuncGetTicksCallback)(WTSTickStruct* tick, VvtUInt32 count, bool isLast);
+typedef void(PORTER_FLAG *FuncCountDataCallback)(VvtUInt32 dataCnt);
 typedef void(PORTER_FLAG *FuncOnTickCallback)(const char* stdCode, WTSTickStruct* tick);
 typedef void(PORTER_FLAG *FuncOnBarCallback)(const char* stdCode, const char* period, WTSBarStruct* bar);
 

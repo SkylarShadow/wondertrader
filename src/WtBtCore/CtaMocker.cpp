@@ -16,7 +16,7 @@
 
 #include "../Includes/WTSContractInfo.hpp"
 #include "../Includes/WTSSessionInfo.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Share/CodeHelper.hpp"
 #include "../Share/decimal.h"
 #include "../Share/StrUtil.hpp"
@@ -410,7 +410,7 @@ void CtaMocker::log_close(const char* stdCode, bool isLong, uint64_t openTime, d
 		<< totalprofit << "," << enterTag << "," << exitTag << "," << openBarNo << "," << closeBarNo << "\n";
 }
 
-bool CtaMocker::init_cta_factory(WTSVariant* cfg)
+bool CtaMocker::init_cta_factory(VVTSVariant* cfg)
 {
 	if (cfg == NULL)
 		return false;
@@ -434,7 +434,7 @@ bool CtaMocker::init_cta_factory(WTSVariant* cfg)
 	_factory._remover = (FuncDeleteStraFact)DLLHelper::get_symbol(hInst, "deleteStrategyFact");
 	_factory._fact = _factory._creator();
 
-	WTSVariant* cfgStra = cfg->get("strategy");
+	VVTSVariant* cfgStra = cfg->get("strategy");
 	if (cfgStra)
 	{
 		_strategy = _factory._fact->createStrategy(cfgStra->getCString("name"), cfgStra->getCString("id"));
@@ -1238,7 +1238,7 @@ void CtaMocker::on_session_begin(uint32_t curTDate)
 
 void CtaMocker::enum_position(FuncEnumCtaPosCallBack cb, bool bForExecute)
 {
-	wt_hashmap<std::string, double> desPos;
+	vvt_hashmap<std::string, double> desPos;
 	for (auto& it : _pos_map)
 	{
 		const char* stdCode = it.first.c_str();

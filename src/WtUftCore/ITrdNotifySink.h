@@ -9,9 +9,9 @@
  */
 #pragma once
 #include <stdint.h>
-#include "../Includes/WTSMarcos.h"
+#include "../Includes/VVTSMarcos.h"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 
 class ITrdNotifySink
 {
@@ -47,4 +47,4 @@ public:
 	virtual void on_entrust(uint32_t localid, const char* stdCode, bool bSuccess, const char* message){}
 };
 
-NS_WTP_END
+NS_VVTP_END

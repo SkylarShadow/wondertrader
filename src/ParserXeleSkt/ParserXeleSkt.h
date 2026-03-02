@@ -18,7 +18,7 @@
 #include <boost/array.hpp>
 #include <boost/asio/io_service.hpp>
 
-USING_NS_WTP;
+USING_NS_VVTP;
 using namespace boost::asio;
 
 class ParserXeleSkt : public IParserApi
@@ -29,7 +29,7 @@ public:
 
 	//IQuoteParser ½Ó¿Ú
 public:
-	virtual bool init(WTSVariant* config) override;
+	virtual bool init(VVTSVariant* config) override;
 
 	virtual void release() override;
 
@@ -88,6 +88,6 @@ private:
 	typedef WTSHashMap<int>	TickCache;
 	TickCache*		_tick_cache;
 
-	wt_hashmap<int, double> _price_scales;
+	vvt_hashmap<int, double> _price_scales;
 };
 

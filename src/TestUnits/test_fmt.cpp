@@ -1,7 +1,7 @@
 ﻿#include "gtest/gtest/gtest.h"
 #include "../Share/fmtlib.h"
 #include "../Share/TimeUtils.hpp"
-#include "../Includes/WTSMarcos.h"
+#include "../Includes/VVTSMarcos.h"
 
 
 TEST(test_fmt, test_format)
@@ -21,7 +21,7 @@ TEST(test_fmt, test_format)
 	for( int i = 0; i < times; i++)
 	{
 		buffer[0] = '[';
-		wt_strcpy(buffer+1, tag);
+		vvt_strcpy(buffer+1, tag);
 		auto len = strlen(tag);
 		buffer[len + 1] = ']';
 	}
@@ -43,5 +43,5 @@ TEST(test_fmt, test_format)
 		fmt::format_to(buffer, "[{}]", tag);
 	}
 	uint64_t t3 = ticker.nano_seconds();
-	fmt::print("wt_strcpy: {} - strcpy: {} - format: {}\n", t1, t2, t3);
+	fmt::print("vvt_strcpy: {} - strcpy: {} - format: {}\n", t1, t2, t3);
 }

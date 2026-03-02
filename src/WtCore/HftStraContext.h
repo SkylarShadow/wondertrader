@@ -11,7 +11,7 @@
 #include "HftStraBaseCtx.h"
 
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class HftStrategy;
 

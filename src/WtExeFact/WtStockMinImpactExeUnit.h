@@ -9,14 +9,14 @@
 #pragma once
 #include "../Includes/ExecuteDefs.h"
 #include "WtOrdMon.h"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/WTSContractInfo.hpp"
 #include "../Includes/WTSSessionInfo.hpp"
 #include "../Share/decimal.h"
 #include "../Share/StrUtil.hpp"
 #include "../Share/fmtlib.h"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 #define BESTPX -1 // 己方最优
 #define LASTPX 0  // 最新价
@@ -69,7 +69,7 @@ public:
 	 *	ctx		执行单元运行环境
 	 *	code	管理的合约代码
 	 */
-	virtual void init(ExecuteContext* ctx, const char* stdCode, WTSVariant* cfg) override;
+	virtual void init(ExecuteContext* ctx, const char* stdCode, VVTSVariant* cfg) override;
 
 	/*
 	 *	订单回报
@@ -162,7 +162,7 @@ private:
 	double		_max_cancel_time{ 3 }; //最大撤单次数，如果超过这个次数仍然未撤单，则说明是错单
 	double		_total_money{ -1 }; // 总资本
 	double		_is_t0{ false }; // 对于转债等来说，这个需要是true，股票为false
-	wt_hashmap< uint32_t, uint32_t > _cancel_map{};
+	vvt_hashmap< uint32_t, uint32_t > _cancel_map{};
 
 	WtOrdMon	_orders_mon;
 	//uint32_t	_cancel_cnt;

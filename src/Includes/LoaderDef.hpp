@@ -3,7 +3,7 @@
 
 #include <map>
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 typedef struct _Contract
 {

@@ -5,7 +5,7 @@
 #include "../Share/BoostMappingFile.hpp"
 #include "../Includes/FasterDefs.h"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 typedef std::shared_ptr<BoostMappingFile> MappedFilePtr;
 
@@ -165,20 +165,20 @@ namespace shareblock
 			bool			_master;
 			uint64_t		_blocktime;
 
-			typedef wt_hashmap<std::string, KeyInfo*>	KVMap;
+			typedef vvt_hashmap<std::string, KeyInfo*>	KVMap;
 			typedef struct _KVPair
 			{
 				uint32_t	_index;
 				KVMap		_keys;
 			} KVPair;
-			typedef wt_hashmap<std::string, KVPair>	SectionMap;
+			typedef vvt_hashmap<std::string, KVPair>	SectionMap;
 			SectionMap	_sections;
 
 			_ShmPair() :_block(nullptr),_master(false)
 			{
 			}
 		}ShmPair;
-		typedef wt_hashmap<std::string, ShmPair>	ShmBlockMap;
+		typedef vvt_hashmap<std::string, ShmPair>	ShmBlockMap;
 		ShmBlockMap		_shm_blocks;
 
 		typedef struct _CmdPair
@@ -187,7 +187,7 @@ namespace shareblock
 			CmdBlock*		_block;
 			bool			_cmder;
 		} CmdPair;
-		typedef wt_hashmap<std::string, CmdPair>	CmdBlockMap;
+		typedef vvt_hashmap<std::string, CmdPair>	CmdBlockMap;
 		CmdBlockMap		_cmd_blocks;
 	};
 }

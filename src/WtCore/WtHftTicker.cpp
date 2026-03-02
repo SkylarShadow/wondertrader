@@ -20,7 +20,7 @@
 
 #include "../WTSTools/WTSLogger.h"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 
 WtHftRtTicker::WtHftRtTicker(WtHftEngine* engine)

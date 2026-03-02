@@ -16,7 +16,7 @@
 #pragma comment(lib, "nanomsg.lib")
 #endif
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 MQManager& getMgr()
 {
@@ -29,38 +29,38 @@ void regiter_callbacks(FuncLogCallback cbLog)
 	getMgr().regiter_callbacks(cbLog);
 }
 
-WtUInt32 create_server(const char* url, bool confirm)
+VvtUInt32 create_server(const char* url, bool confirm)
 {
 	printf("create server\r\n");
 	return getMgr().create_server(url, confirm);
 }
 
-void destroy_server(WtUInt32 id)
+void destroy_server(VvtUInt32 id)
 {
 	getMgr().destroy_server(id);
 }
 
-void publish_message(WtUInt32 id, const char* topic, const char* data, WtUInt32 dataLen)
+void publish_message(VvtUInt32 id, const char* topic, const char* data, VvtUInt32 dataLen)
 {
 	getMgr().publish_message(id, topic, data, dataLen);
 }
 
-WtUInt32 create_client(const char* url, FuncMQCallback cb)
+VvtUInt32 create_client(const char* url, FuncMQCallback cb)
 {
 	return getMgr().create_client(url, cb);
 }
 
-void destroy_client(WtUInt32 id)
+void destroy_client(VvtUInt32 id)
 {
 	getMgr().destroy_client(id);
 }
 
-void subscribe_topic(WtUInt32 id, const char* topic)
+void subscribe_topic(VvtUInt32 id, const char* topic)
 {
 	return getMgr().sub_topic(id, topic);
 }
 
-void start_client(WtUInt32 id)
+void start_client(VvtUInt32 id)
 {
 	getMgr().start_client(id);
 }

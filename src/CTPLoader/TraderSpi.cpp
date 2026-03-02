@@ -8,7 +8,7 @@
 #include "../Share/fmtlib.h"
 #include "../Share/charconv.hpp"
 #include "../Includes/LoaderDef.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 
 #include "../WTSUtils/WTSCfgLoader.h"
 
@@ -31,7 +31,7 @@ inline const char* encode_text(const char* s)
 
 
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 extern std::map<std::string, std::string>	MAP_NAME;
 extern std::map<std::string, std::string>	MAP_SESSION;
@@ -382,15 +382,15 @@ void CTraderSpi::LoadFromJson()
 {
 	std::string path = SAVEPATH;
 	path += COMM_FILE;
-	WTSVariant* root = WTSCfgLoader::load_from_file(path);
+	VVTSVariant* root = WTSCfgLoader::load_from_file(path);
 	if(root)
 	{
 		for(const auto& exchg : root->memberNames())
 		{
-			WTSVariant* jExchg = root->get(exchg.c_str());
+			VVTSVariant* jExchg = root->get(exchg.c_str());
 			for(const auto& pid : jExchg->memberNames())
 			{
-				WTSVariant* pComm = jExchg->get(pid.c_str());
+				VVTSVariant* pComm = jExchg->get(pid.c_str());
 				std::string key = fmt::format("{}.{}", exchg, pid);
 
 				Commodity& commInfo = _commodities[key];
@@ -422,13 +422,13 @@ void CTraderSpi::LoadFromJson()
 	root = WTSCfgLoader::load_from_file(path);
 	if (root)
 	{
-		WTSVariant* root = WTSCfgLoader::load_from_file(path);
+		VVTSVariant* root = WTSCfgLoader::load_from_file(path);
 		for (const auto& exchg_id : root->memberNames())
 		{
-			WTSVariant* jExchg = root->get(exchg_id.c_str());
+			VVTSVariant* jExchg = root->get(exchg_id.c_str());
 			for (const auto& inst_id : jExchg->memberNames())
 			{
-				WTSVariant* pCont = jExchg->get(inst_id.c_str());
+				VVTSVariant* pCont = jExchg->get(inst_id.c_str());
 				std::string key = fmt::format("{}.{}", exchg_id, inst_id);
 
 				Contract& contract = _contracts[key];

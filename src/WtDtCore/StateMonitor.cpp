@@ -13,7 +13,7 @@
 #include "../Share/TimeUtils.hpp"
 #include "../Includes/WTSContractInfo.hpp"
 #include "../Includes/WTSSessionInfo.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 
 #include "../WTSTools/WTSBaseDataMgr.h"
 #include "../WTSTools/WTSLogger.h"
@@ -43,7 +43,7 @@ bool StateMonitor::initialize(const char* filename, WTSBaseDataMgr* bdMgr, DataM
 		return false;
 	}
 
-	WTSVariant* config = WTSCfgLoader::load_from_file(filename);
+	VVTSVariant* config = WTSCfgLoader::load_from_file(filename);
 	if (config == NULL)
 	{
 		WTSLogger::error("Loading state config failed");
@@ -53,7 +53,7 @@ bool StateMonitor::initialize(const char* filename, WTSBaseDataMgr* bdMgr, DataM
 	auto keys = config->memberNames();
 	for (const std::string& sid : keys)
 	{
-		WTSVariant* jItem = config->get(sid.c_str());
+		VVTSVariant* jItem = config->get(sid.c_str());
 
 		WTSSessionInfo* ssInfo = _bd_mgr->getSession(sid.c_str());
 		if (ssInfo == NULL)

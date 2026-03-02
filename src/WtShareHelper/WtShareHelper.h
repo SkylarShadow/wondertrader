@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include <stdint.h>
-#include "../Includes/WTSMarcos.h"
+#include "../Includes/VVTSMarcos.h"
 
 typedef void(PORTER_FLAG *FuncGetSections)(const char*);
 

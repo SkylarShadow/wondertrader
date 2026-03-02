@@ -15,9 +15,9 @@
 
 #include "../WTSTools/WTSBaseDataMgr.h"
 
-NS_WTP_BEGIN
-class WTSVariant;
-NS_WTP_END
+NS_VVTP_BEGIN
+class VVTSVariant;
+NS_VVTP_END
 
 namespace uft
 {
@@ -39,7 +39,7 @@ namespace uft
 		bool initModules();
 		bool initStrategies();
 
-		bool initEngine(WTSVariant* cfg);
+		bool initEngine(VVTSVariant* cfg);
 
 	private:
 		TraderAdapterMgr	_traders;

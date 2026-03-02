@@ -13,14 +13,14 @@
 
 #include "../Includes/WTSContractInfo.hpp"
 #include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/IBaseDataMgr.h"
 
 #include "../Share/StrUtil.hpp"
 
 #include "../WTSTools/WTSLogger.h"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 //////////////////////////////////////////////////////////////////////////
 //ParserAdapter
@@ -39,7 +39,7 @@ ParserAdapter::~ParserAdapter()
 {
 }
 
-bool ParserAdapter::init(const char* id, WTSVariant* cfg, IParserStub* stub, IBaseDataMgr* bgMgr)
+bool ParserAdapter::init(const char* id, VVTSVariant* cfg, IParserStub* stub, IBaseDataMgr* bgMgr)
 {
 	if (cfg == NULL)
 		return false;

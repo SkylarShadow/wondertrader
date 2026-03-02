@@ -14,7 +14,7 @@
 #include "../Includes/WTSSessionInfo.hpp"
 #include "../Includes/WTSTradeDef.hpp"
 #include "../Includes/WTSError.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 
 #include "../Share/ModuleHelper.hpp"
 
@@ -217,7 +217,7 @@ TraderOES::~TraderOES()
 }
 
 #pragma region "ITraderApi"
-bool TraderOES::init(WTSVariant *params)
+bool TraderOES::init(VVTSVariant *params)
 {
 	_config = params->getCString("config");
 
@@ -420,12 +420,12 @@ int TraderOES::orderInsert(WTSEntrust* entrust)
 	extractEntrustID(entrust->getEntrustID(), ordref);
 	OesOrdReqT ordReq = { NULLOBJ_OES_ORD_REQ };
 	ordReq.clSeqNo = (int32)ordref;
-	ordReq.mktId = wt_stricmp(entrust->getExchg(), "SSE") == 0 ? OES_MKT_SH_ASHARE : OES_MKT_SZ_ASHARE;
+	ordReq.mktId = vvt_stricmp(entrust->getExchg(), "SSE") == 0 ? OES_MKT_SH_ASHARE : OES_MKT_SZ_ASHARE;
 	ordReq.ordType = OES_ORD_TYPE_LMT;
 	ordReq.bsType = (entrust->getOffsetType() == WOT_OPEN) ? OES_BS_TYPE_BUY : OES_BS_TYPE_SELL;
 	ordReq.ordQty = (int32)entrust->getVolume();
 	ordReq.ordPrice = (int32)round(entrust->getPrice()*10000.0);
-	wt_strcpy(ordReq.securityId, entrust->getCode());
+	vvt_strcpy(ordReq.securityId, entrust->getCode());
 
 	auto ret = OesAsyncApi_SendOrderReq(_channel, &ordReq);
 	if(ret < 0)
@@ -446,7 +446,7 @@ int TraderOES::orderAction(WTSEntrustAction* action)
 
 	OesOrdCancelReqT    cancelReq = { NULLOBJ_OES_ORD_CANCEL_REQ };
 	cancelReq.clSeqNo = (int32) ++_channel->lastOutMsgSeq;
-	cancelReq.mktId = wt_stricmp(action->getExchg(), "SSE") == 0 ? OES_MKT_SH_ASHARE : OES_MKT_SZ_ASHARE;
+	cancelReq.mktId = vvt_stricmp(action->getExchg(), "SSE") == 0 ? OES_MKT_SH_ASHARE : OES_MKT_SZ_ASHARE;
 	uint32_t ordref;
 	extractEntrustID(action->getEntrustID(), ordref);
 	cancelReq.origClSeqNo = ordref;

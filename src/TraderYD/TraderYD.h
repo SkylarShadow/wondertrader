@@ -24,7 +24,7 @@
 #include "../Share/DLLHelper.hpp"
 #include "../Share/WtKVCache.hpp"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class TraderYD : public ITraderApi, public YDListener
 {
@@ -77,7 +77,7 @@ private:
 	//////////////////////////////////////////////////////////////////////////
 	//ITraderApi接口
 public:
-	virtual bool init(WTSVariant* params) override;
+	virtual bool init(VVTSVariant* params) override;
 
 	virtual void release() override;
 

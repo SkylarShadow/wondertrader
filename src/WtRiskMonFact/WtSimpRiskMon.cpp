@@ -10,7 +10,7 @@
 #include "WtSimpRiskMon.h"
 
 #include "../Includes/WTSRiskDef.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Share/TimeUtils.hpp"
 #include "../Share/decimal.h"
 #include "../Share/fmtlib.h"
@@ -27,7 +27,7 @@ const char* WtSimpleRiskMon::getFactName()
 	return FACT_NAME;
 }
 
-void WtSimpleRiskMon::init(WtPortContext* ctx, WTSVariant* cfg)
+void WtSimpleRiskMon::init(WtPortContext* ctx, VVTSVariant* cfg)
 {
 	WtRiskMonitor::init(ctx, cfg);
 

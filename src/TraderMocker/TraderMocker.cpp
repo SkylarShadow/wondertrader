@@ -1,6 +1,6 @@
 ﻿#include "TraderMocker.h"
 
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/WTSDataDef.hpp"
 #include "../Includes/WTSTradeDef.hpp"
 #include "../Includes/WTSContractInfo.hpp"
@@ -515,7 +515,7 @@ int32_t TraderMocker::match_once()
 
 //////////////////////////////////////////////////////////////////////////
 
-bool TraderMocker::init(WTSVariant *params)
+bool TraderMocker::init(VVTSVariant *params)
 {
 	_millisecs = params->getUInt32("span");
 	_use_newpx = params->getBoolean("newpx");

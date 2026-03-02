@@ -4,11 +4,11 @@
 
 typedef std::function<void(std::string&)> FuncLoadDataCallback;
 
-NS_WTP_BEGIN
-class WTSVariant;
-NS_WTP_END
+NS_VVTP_BEGIN
+class VVTSVariant;
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class HisDataMgr : public IBtDtReaderSink
 {
@@ -20,7 +20,7 @@ public:
 	virtual void reader_log(WTSLogLevel ll, const char* message) override;
 
 public:
-	bool	init(WTSVariant* cfg);
+	bool	init(VVTSVariant* cfg);
 
 	bool	load_raw_bars(const char* exchg, const char* code, WTSKlinePeriod period, FuncLoadDataCallback cb);
 

@@ -15,8 +15,8 @@
 #include "../Includes/FasterDefs.h"
 
 
-NS_WTP_BEGIN
-class WTSVariant;
+NS_VVTP_BEGIN
+class VVTSVariant;
 
 typedef enum tagActionType
 {
@@ -55,10 +55,10 @@ public:
 	const ActionRuleGroup& getActionRules(const char* pid);
 
 private:
-	typedef wt_hashmap<std::string, ActionRuleGroup> RulesMap;
+	typedef vvt_hashmap<std::string, ActionRuleGroup> RulesMap;
 	RulesMap	_rules;	//规则表
 
-	wt_hashmap<std::string, std::string> _comm_rule_map;	//品种规则映射
+	vvt_hashmap<std::string, std::string> _comm_rule_map;	//品种规则映射
 };
 
-NS_WTP_END
+NS_VVTP_END

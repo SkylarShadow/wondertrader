@@ -10,7 +10,7 @@
 #include "ExecMocker.h"
 #include "WtHelper.h"
 
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Share/TimeUtils.hpp"
 #include "../Share/decimal.h"
 #include "../WTSTools/WTSLogger.h"
@@ -44,7 +44,7 @@ ExecMocker::~ExecMocker()
 		_last_tick->release();
 }
 
-bool ExecMocker::init(WTSVariant* cfg)
+bool ExecMocker::init(VVTSVariant* cfg)
 {
 	const char* module = cfg->getCString("module");
 	_code = cfg->getCString("code");
@@ -72,7 +72,7 @@ bool ExecMocker::init(WTSVariant* cfg)
 	_factory._remover = (FuncDeleteExeFact)DLLHelper::get_symbol(hInst, "deleteExecFact");
 	_factory._fact = _factory._creator();
 
-	WTSVariant* cfgExec = cfg->get("executer");
+	VVTSVariant* cfgExec = cfg->get("executer");
 	if (cfgExec)
 	{
 		_exec_unit = _factory._fact->createExeUnit(cfgExec->getCString("name"));

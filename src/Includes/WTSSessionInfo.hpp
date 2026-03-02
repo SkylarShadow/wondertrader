@@ -13,7 +13,7 @@
 #include "WTSObject.hpp"
 #include "../Share/TimeUtils.hpp"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 
 static const char* DEFAULT_SESSIONID = "TRADING";
 
@@ -543,4 +543,4 @@ public:
 	}
 };
 
-NS_WTP_END
+NS_VVTP_END

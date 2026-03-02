@@ -23,9 +23,9 @@
 
 #include <boost/asio.hpp>
 
-NS_WTP_BEGIN
-class WTSVariant;
-NS_WTP_END
+NS_VVTP_BEGIN
+class VVTSVariant;
+NS_VVTP_END
 
 class WtDtRunner
 {
@@ -74,8 +74,8 @@ public:
 	bool dumpHisTrans(const char* id, const char* stdCode, uint32_t uDate, WTSTransStruct* items, uint32_t count);
 
 private:
-	void initDataMgr(WTSVariant* config, bool bAlldayMode = false);
-	void initParsers(WTSVariant* cfg);
+	void initDataMgr(VVTSVariant* config, bool bAlldayMode = false);
+	void initParsers(VVTSVariant* cfg);
 
 private:
 

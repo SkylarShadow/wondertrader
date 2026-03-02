@@ -21,7 +21,7 @@
 
 #include "../Includes/WTSContractInfo.hpp"
 #include "../Includes/WTSSessionInfo.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 
 #include "../Includes/WTSDataDef.hpp"
 #include "../Includes/WTSRiskDef.hpp"
@@ -34,7 +34,7 @@
 namespace rj = rapidjson;
 
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 WtEngine::WtEngine()
 	: _port_fund(NULL)
@@ -235,8 +235,8 @@ void WtEngine::update_fund_dynprofit()
 void WtEngine::writeRiskLog(const char* message)
 {
 	static thread_local char szBuf[2048] = { 0 };
-	auto len = wt_strcpy(szBuf, "[RiskControl] ");
-	wt_strcpy(szBuf + len, message);
+	auto len = vvt_strcpy(szBuf, "[RiskControl] ");
+	vvt_strcpy(szBuf + len, message);
 	WTSLogger::log_raw_by_cat("risk", LL_INFO, szBuf);
 }
 
@@ -278,7 +278,7 @@ WTSPortFundInfo* WtEngine::getFundInfo()
 	return _port_fund;
 }
 
-void WtEngine::init(WTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHotMgr* hotMgr, EventNotifier* notifier)
+void WtEngine::init(VVTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHotMgr* hotMgr, EventNotifier* notifier)
 {
 	_base_data_mgr = bdMgr;
 	_data_mgr = dataMgr;
@@ -297,7 +297,7 @@ void WtEngine::init(WTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHot
 
 	init_outputs();
 
-	WTSVariant* cfgRisk = cfg->get("riskmon");
+	VVTSVariant* cfgRisk = cfg->get("riskmon");
 	if(cfgRisk)
 	{
 		init_riskmon(cfgRisk);
@@ -846,7 +846,7 @@ void WtEngine::load_fees(const char* filename)
 		return;
 	}
 
-	WTSVariant* cfg = WTSCfgLoader::load_from_file(filename);
+	VVTSVariant* cfg = WTSCfgLoader::load_from_file(filename);
 	if (cfg == NULL)
 	{
 		WTSLogger::error("Fee templates file {} loading failed", filename);
@@ -856,7 +856,7 @@ void WtEngine::load_fees(const char* filename)
 	auto keys = cfg->memberNames();
 	for (const std::string& fullPid : keys)
 	{
-		WTSVariant* cfgItem = cfg->get(fullPid.c_str());
+		VVTSVariant* cfgItem = cfg->get(fullPid.c_str());
 		const StringVector& ay = StrUtil::split(fullPid, ".");
 		WTSCommodityInfo* commInfo = _base_data_mgr->getCommodity(ay[0].c_str(), ay[1].c_str());
 		if (commInfo == NULL)
@@ -1117,7 +1117,7 @@ void WtEngine::task_loop()
 	}
 }
 
-bool WtEngine::init_riskmon(WTSVariant* cfg)
+bool WtEngine::init_riskmon(VVTSVariant* cfg)
 {
 	if (cfg == NULL)
 		return false;

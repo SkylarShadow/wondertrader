@@ -10,7 +10,7 @@
 #pragma once
 #include "WTSObject.hpp"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 typedef struct _TradeStatInfo
 {
 	char		_code[MAX_INSTRUMENT_LENGTH];
@@ -63,7 +63,7 @@ public:
 	static WTSTradeStateInfo* create(const char* code)
 	{
 		WTSTradeStateInfo* pRet = new WTSTradeStateInfo();
-		wt_strcpy(pRet->_trd_stat_info._code, code);
+		vvt_strcpy(pRet->_trd_stat_info._code, code);
 
 		return pRet;
 	}
@@ -180,4 +180,4 @@ private:
 	WTSFundStruct	_fund_info;
 };
 
-NS_WTP_END
+NS_VVTP_END

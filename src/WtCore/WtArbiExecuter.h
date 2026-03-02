@@ -15,8 +15,8 @@
 #include "../Share/threadpool.hpp"
 #include "../Share/SpinMutex.hpp"
 
-NS_WTP_BEGIN
-class WTSVariant;
+NS_VVTP_BEGIN
+class VVTSVariant;
 class IDataManager;
 class TraderAdapter;
 class IHotMgr;
@@ -34,7 +34,7 @@ public:
 	 *	初始化执行器
 	 *	传入初始化参数
 	 */
-	bool init(WTSVariant* params);
+	bool init(VVTSVariant* params);
 
 	void setTrader(TraderAdapter* adapter);
 
@@ -67,7 +67,7 @@ public:
 	/*
 	 *	设置目标仓位
 	 */
-	virtual void set_position(const wt_hashmap<std::string, double>& targets) override;
+	virtual void set_position(const vvt_hashmap<std::string, double>& targets) override;
 
 
 	/*
@@ -121,7 +121,7 @@ private:
 	TraderAdapter*		_trader;
 	WtExecuterFactory*	_factory;
 	IDataManager*		_data_mgr;
-	WTSVariant*			_config;
+	VVTSVariant*			_config;
 
 	double				_scale;				//放大倍数
 	bool				_auto_clear;		//是否自动清理上一期的主力合约头寸
@@ -133,10 +133,10 @@ private:
 	typedef struct _CodeGroup
 	{
 		char	_name[32] = { 0 };
-		wt_hashmap<std::string, double>	_items;
+		vvt_hashmap<std::string, double>	_items;
 	} CodeGroup;
 	typedef std::shared_ptr<CodeGroup> CodeGroupPtr;
-	typedef wt_hashmap<std::string, CodeGroupPtr>	CodeGroups;
+	typedef vvt_hashmap<std::string, CodeGroupPtr>	CodeGroups;
 	CodeGroups				_groups;			//合约组合（组合名称到组合的映射）
 	CodeGroups				_code_to_groups;	//合约代码到组合的映射
 
@@ -145,7 +145,7 @@ private:
 
 	wt_hashset<std::string> _channel_holds;		//通道持仓
 
-	wt_hashmap<std::string, double> _target_pos;
+	vvt_hashmap<std::string, double> _target_pos;
 
 	typedef std::shared_ptr<boost::threadpool::pool> ThreadPoolPtr;
 	ThreadPoolPtr		_pool;
@@ -153,4 +153,4 @@ private:
 
 typedef std::shared_ptr<IExecCommand> ExecCmdPtr;
 
-NS_WTP_END
+NS_VVTP_END

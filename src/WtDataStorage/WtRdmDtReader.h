@@ -12,8 +12,8 @@
 #include "../Share/StdUtils.hpp"
 #include "../Share/fmtlib.h"
 
-NS_WTP_BEGIN
-class WTSVariant;
+NS_VVTP_BEGIN
+class VVTSVariant;
 class WTSTickSlice;
 class WTSKlineSlice;
 class WTSOrdDtlSlice;
@@ -233,7 +233,7 @@ private:
 //////////////////////////////////////////////////////////////////////////
 //IRdmDtReader
 public:
-	virtual void init(WTSVariant* cfg, IRdmDtReaderSink* sink);
+	virtual void init(VVTSVariant* cfg, IRdmDtReaderSink* sink);
 
 	virtual WTSOrdDtlSlice*	readOrdDtlSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime = 0) override;
 	virtual WTSOrdQueSlice*	readOrdQueSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime = 0) override;
@@ -293,4 +293,4 @@ private:
 	}
 };
 
-NS_WTP_END
+NS_VVTP_END

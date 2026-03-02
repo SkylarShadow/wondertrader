@@ -15,8 +15,8 @@
 #include "../Includes/FasterDefs.h"
 #include "../Includes/WTSCollection.hpp"
 
-NS_WTP_BEGIN
-class WTSVariant;
+NS_VVTP_BEGIN
+class VVTSVariant;
 class WTSTickData;
 class WTSKlineSlice;
 class WTSTickSlice;
@@ -31,7 +31,7 @@ public:
 	~WtUftDtMgr();
 
 public:
-	bool	init(WTSVariant* cfg, WtUftEngine* engine);
+	bool	init(VVTSVariant* cfg, WtUftEngine* engine);
 
 	void	handle_push_quote(const char* stdCode, WTSTickData* newTick);
 
@@ -64,4 +64,4 @@ private:
 	std::vector<NotifyItem> _bar_notifies;
 };
 
-NS_WTP_END
+NS_VVTP_END

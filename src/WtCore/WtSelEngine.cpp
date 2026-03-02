@@ -9,7 +9,7 @@
 #include "../Includes/IBaseDataMgr.h"
 #include "../Includes/IHotMgr.h"
 #include "../Share/StrUtil.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/WTSSessionInfo.hpp"
 #include "../Includes/WTSContractInfo.hpp"
 #include "../Share/CodeHelper.hpp"
@@ -21,7 +21,7 @@ namespace rj = rapidjson;
 
 #include <atomic>
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 inline uint32_t makeTaskId()
 {
@@ -321,7 +321,7 @@ void WtSelEngine::on_minute_end(uint32_t curDate, uint32_t curTime)
 
 void WtSelEngine::run()
 {
-	WTSVariant* cfgProd = _cfg->get("product");
+	VVTSVariant* cfgProd = _cfg->get("product");
 	_tm_ticker = new WtSelRtTicker(this);
 	_tm_ticker->init(_data_mgr->reader(), cfgProd->getCString("session"));
 
@@ -362,7 +362,7 @@ void WtSelEngine::run()
 	_tm_ticker->run();
 }
 
-void WtSelEngine::init(WTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHotMgr* hotMgr, EventNotifier* notifier /* = NULL */)
+void WtSelEngine::init(VVTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHotMgr* hotMgr, EventNotifier* notifier /* = NULL */)
 {
 	WtEngine::init(cfg, bdMgr, dataMgr, hotMgr, notifier);
 
@@ -383,9 +383,9 @@ void WtSelEngine::addContext(SelContextPtr ctx, uint32_t date, uint32_t time, Ta
 	}
 
 	TaskInfoPtr tInfo(new TaskInfo);
-	wt_strcpy(tInfo->_name, ctx->name());
-	wt_strcpy(tInfo->_trdtpl, trdtpl);
-	wt_strcpy(tInfo->_session, sessionID);
+	vvt_strcpy(tInfo->_name, ctx->name());
+	vvt_strcpy(tInfo->_trdtpl, trdtpl);
+	vvt_strcpy(tInfo->_session, sessionID);
 	tInfo->_day = date;
 	tInfo->_time = time;
 	tInfo->_period = period;

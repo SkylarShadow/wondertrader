@@ -13,7 +13,7 @@
 #include "ActionPolicyMgr.h"
 
 #include "../Includes/WTSError.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/WTSTradeDef.hpp"
 #include "../Includes/WTSSessionInfo.hpp"
 #include "../Includes/WTSContractInfo.hpp"
@@ -93,14 +93,14 @@ bool TraderAdapter::initExt(const char* id, ITraderApi* api, IBaseDataMgr* bdMgr
 	_bd_mgr = bdMgr;
 	_id = id;
 
-	_order_pattern = StrUtil::printf("wtp.%s", id);
+	_order_pattern = StrUtil::printf("vvtp.%s", id);
 
 	api->init(NULL);
 	_trader_api = api;
 	return true;
 }
 
-bool TraderAdapter::init(const char* id, WTSVariant* params, IBaseDataMgr* bdMgr, ActionPolicyMgr* policyMgr)
+bool TraderAdapter::init(const char* id, VVTSVariant* params, IBaseDataMgr* bdMgr, ActionPolicyMgr* policyMgr)
 {
 	if (params == NULL)
 		return false;
@@ -109,7 +109,7 @@ bool TraderAdapter::init(const char* id, WTSVariant* params, IBaseDataMgr* bdMgr
 	_bd_mgr = bdMgr;
 	_id = id;
 
-	_order_pattern = StrUtil::printf("wtp.%s", id);
+	_order_pattern = StrUtil::printf("vvtp.%s", id);
 
 	if (_cfg != NULL)
 		return false;
@@ -118,19 +118,19 @@ bool TraderAdapter::init(const char* id, WTSVariant* params, IBaseDataMgr* bdMgr
 	_cfg->retain();
 
 	//这里解析流量风控参数
-	WTSVariant* cfgRisk = params->get("riskmon");
+	VVTSVariant* cfgRisk = params->get("riskmon");
 	if (cfgRisk)
 	{
 		if (cfgRisk->getBoolean("active"))
 		{
 			_risk_mon_enabled = true;
 
-			WTSVariant* cfgPolicy = cfgRisk->get("policy");
+			VVTSVariant* cfgPolicy = cfgRisk->get("policy");
 			auto keys = cfgPolicy->memberNames();
 			for (auto it = keys.begin(); it != keys.end(); it++)
 			{
 				const char* product = (*it).c_str();
-				WTSVariant*	vProdItem = cfgPolicy->get(product);
+				VVTSVariant*	vProdItem = cfgPolicy->get(product);
 				RiskParams& rParam = _risk_params_map[product];
 				rParam._cancel_total_limits = vProdItem->getUInt32("cancel_total_limits");
 				rParam._cancel_times_boundary = vProdItem->getUInt32("cancel_times_boundary");
@@ -324,7 +324,7 @@ uint32_t TraderAdapter::doEntrust(WTSEntrust* entrust)
 
 	uint32_t localid = makeLocalOrderID();
 	char* usertag = entrust->getUserTag();
-	wt_strcpy(usertag, _order_pattern.c_str(), _order_pattern.size());
+	vvt_strcpy(usertag, _order_pattern.c_str(), _order_pattern.size());
 	usertag[_order_pattern.size()] = '.';
 	fmtutil::format_to(usertag + _order_pattern.size() + 1, "{}", localid);
 	
@@ -345,7 +345,7 @@ uint32_t TraderAdapter::doEntrust(WTSEntrust* entrust)
 WTSContractInfo* TraderAdapter::getContract(const char* stdCode)
 {
 	char buf[64] = { 0 };
-	wt_strcpy(buf, stdCode);
+	vvt_strcpy(buf, stdCode);
 	auto idx = StrUtil::findFirst(buf, '.');
 	buf[idx] = '\0';
 	return _bd_mgr->getContract(buf + idx + 1, buf);

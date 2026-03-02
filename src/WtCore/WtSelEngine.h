@@ -7,7 +7,7 @@
 
 #include <memory>
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 
 typedef enum tagTaskPeriodType
 {
@@ -49,7 +49,7 @@ public:
 public:
 	//////////////////////////////////////////////////////////////////////////
 	//WtEngine接口
-	virtual void init(WTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHotMgr* hotMgr, EventNotifier* notifier) override;
+	virtual void init(VVTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHotMgr* hotMgr, EventNotifier* notifier) override;
 
 	virtual void run() override;
 
@@ -90,9 +90,9 @@ public:
 	void	handle_pos_change(const char* straName, const char* stdCode, double diffQty);
 
 private:
-	wt_hashmap<uint32_t, TaskInfoPtr>	_tasks;
+	vvt_hashmap<uint32_t, TaskInfoPtr>	_tasks;
 
-	typedef wt_hashmap<uint32_t, SelContextPtr> ContextMap;
+	typedef vvt_hashmap<uint32_t, SelContextPtr> ContextMap;
 	ContextMap		_ctx_map;
 
 	WtExecuterMgr	_exec_mgr;
@@ -100,7 +100,7 @@ private:
 	bool	_terminated;
 
 	WtSelRtTicker*	_tm_ticker;
-	WTSVariant*		_cfg;
+	VVTSVariant*		_cfg;
 };
 
-NS_WTP_END
+NS_VVTP_END

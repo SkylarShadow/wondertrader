@@ -12,10 +12,10 @@
 #include "../Share/StdUtils.hpp"
 #include "../WTSTools/WTSLogger.h"
 
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../WTSUtils/WTSCfgLoader.h"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 ActionPolicyMgr::ActionPolicyMgr()
 {
@@ -28,7 +28,7 @@ ActionPolicyMgr::~ActionPolicyMgr()
 
 bool ActionPolicyMgr::init(const char* filename)
 {
-	WTSVariant* cfg = WTSCfgLoader::load_from_file(filename);
+	VVTSVariant* cfg = WTSCfgLoader::load_from_file(filename);
 	if (cfg == NULL)
 		return false;
 
@@ -36,27 +36,27 @@ bool ActionPolicyMgr::init(const char* filename)
 	for (auto it = keys.begin(); it != keys.end(); it++)
 	{
 		const char* gpName = (*it).c_str();
-		WTSVariant*	vGpItem = cfg->get(gpName);
+		VVTSVariant*	vGpItem = cfg->get(gpName);
 		ActionRuleGroup& gp = _rules[gpName];
 
-		WTSVariant* vOrds = vGpItem->get("order");
+		VVTSVariant* vOrds = vGpItem->get("order");
 		if(vOrds != NULL && vOrds->isArray())
 		{
 			for (uint32_t i = 0; i < vOrds->size(); i++)
 			{
-				WTSVariant* vObj = vOrds->get(i);
+				VVTSVariant* vObj = vOrds->get(i);
 				ActionRule aRule;
 				const char* action = vObj->getCString("action");
 				uint32_t uLimit = vObj->getUInt32("limit");
 				uint32_t uLimitS = vObj->getUInt32("limit_s");
 				uint32_t uLimitL = vObj->getUInt32("limit_l");
-				if (wt_stricmp(action, "open") == 0)
+				if (vvt_stricmp(action, "open") == 0)
 					aRule._atype = AT_Open;
-				else if (wt_stricmp(action, "close") == 0)
+				else if (vvt_stricmp(action, "close") == 0)
 					aRule._atype = AT_Close;
-				else if (wt_stricmp(action, "closetoday") == 0)
+				else if (vvt_stricmp(action, "closetoday") == 0)
 					aRule._atype = AT_CloseToday;
-				else if (wt_stricmp(action, "closeyestoday") == 0)
+				else if (vvt_stricmp(action, "closeyestoday") == 0)
 					aRule._atype = AT_CloseYestoday;
 				else 
 				{
@@ -72,7 +72,7 @@ bool ActionPolicyMgr::init(const char* filename)
 			}
 		}
 
-		WTSVariant* filters = vGpItem->get("filters");
+		VVTSVariant* filters = vGpItem->get("filters");
 		if(filters!=NULL && filters->isArray() && filters->size()>0)
 		{
 			for (uint32_t i = 0; i < filters->size(); i++)

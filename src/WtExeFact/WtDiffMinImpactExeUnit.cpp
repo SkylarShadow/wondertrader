@@ -8,7 +8,7 @@
  */
 #include "WtDiffMinImpactExeUnit.h"
 
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/WTSContractInfo.hpp"
 #include "../Includes/WTSSessionInfo.hpp"
 #include "../Share/decimal.h"
@@ -54,7 +54,7 @@ const char* WtDiffMinImpactExeUnit::getName()
 	return "WtDiffMinImpactExeUnit";
 }
 
-void WtDiffMinImpactExeUnit::init(ExecuteContext* ctx, const char* stdCode, WTSVariant* cfg)
+void WtDiffMinImpactExeUnit::init(ExecuteContext* ctx, const char* stdCode, VVTSVariant* cfg)
 {
 	ExecuteUnit::init(ctx, stdCode, cfg);
 

@@ -13,7 +13,7 @@
 
 #include "../Includes/WTSContractInfo.hpp"
 #include "../Includes/WTSSessionInfo.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 
 #include "../Share/StrUtil.hpp"
 #include "../Share/StdUtils.hpp"
@@ -288,7 +288,7 @@ bool WTSBaseDataMgr::loadSessions(const char* filename)
 		return false;
 	}
 
-	WTSVariant* root = WTSCfgLoader::load_from_file(filename);
+	VVTSVariant* root = WTSCfgLoader::load_from_file(filename);
 	if (root == NULL)
 	{
 		WTSLogger::error("Loading session config file {} failed", filename);
@@ -297,7 +297,7 @@ bool WTSBaseDataMgr::loadSessions(const char* filename)
 
 	for(const std::string& id : root->memberNames())
 	{
-		WTSVariant* jVal = root->get(id);
+		VVTSVariant* jVal = root->get(id);
 
 		const char* name = jVal->getCString("name");
 		int32_t offset = jVal->getInt32("offset");
@@ -306,26 +306,26 @@ bool WTSBaseDataMgr::loadSessions(const char* filename)
 
 		if (jVal->has("auction"))
 		{
-			WTSVariant* jAuc = jVal->get("auction");
+			VVTSVariant* jAuc = jVal->get("auction");
 			sInfo->setAuctionTime(jAuc->getUInt32("from"), jAuc->getUInt32("to"));
 		}
 		else if (jVal->has("auctions"))
 		{
-			WTSVariant* jAucs = jVal->get("auctions");
+			VVTSVariant* jAucs = jVal->get("auctions");
 			for (uint32_t i = 0; i < jAucs->size(); i++)
 			{
-				WTSVariant* jSec = jAucs->get(i);
+				VVTSVariant* jSec = jAucs->get(i);
 				sInfo->addAuctionTime(jSec->getUInt32("from"), jSec->getUInt32("to"));
 			}
 		}
 
-		WTSVariant* jSecs = jVal->get("sections");
+		VVTSVariant* jSecs = jVal->get("sections");
 		if (jSecs == NULL || !jSecs->isArray())
 			continue;
 
 		for (uint32_t i = 0; i < jSecs->size(); i++)
 		{
-			WTSVariant* jSec = jSecs->get(i);
+			VVTSVariant* jSec = jSecs->get(i);
 			sInfo->addTradingSection(jSec->getUInt32("from"), jSec->getUInt32("to"));
 		}
 
@@ -337,7 +337,7 @@ bool WTSBaseDataMgr::loadSessions(const char* filename)
 	return true;
 }
 
-void parseCommodity(WTSCommodityInfo* pCommInfo, WTSVariant* jPInfo)
+void parseCommodity(WTSCommodityInfo* pCommInfo, VVTSVariant* jPInfo)
 {
 	pCommInfo->setPriceTick(jPInfo->getDouble("pricetick"));
 	pCommInfo->setVolScale(jPInfo->getUInt32("volscale"));
@@ -373,7 +373,7 @@ bool WTSBaseDataMgr::loadCommodities(const char* filename)
 		return false;
 	}
 
-	WTSVariant* root = WTSCfgLoader::load_from_file(filename);
+	VVTSVariant* root = WTSCfgLoader::load_from_file(filename);
 	if (root == NULL)
 	{
 		WTSLogger::error("Loading commodities config file {} failed", filename);
@@ -382,11 +382,11 @@ bool WTSBaseDataMgr::loadCommodities(const char* filename)
 
 	for(const std::string& exchg : root->memberNames())
 	{
-		WTSVariant* jExchg = root->get(exchg);
+		VVTSVariant* jExchg = root->get(exchg);
 
 		for (const std::string& pid : jExchg->memberNames())
 		{
-			WTSVariant* jPInfo = jExchg->get(pid);
+			VVTSVariant* jPInfo = jExchg->get(pid);
 
 			const char* name = jPInfo->getCString("name");
 			const char* sid = jPInfo->getCString("session");
@@ -427,7 +427,7 @@ bool WTSBaseDataMgr::loadContracts(const char* filename)
 		return false;
 	}
 
-	WTSVariant* root = WTSCfgLoader::load_from_file(filename);
+	VVTSVariant* root = WTSCfgLoader::load_from_file(filename);
 	if (root == NULL)
 	{
 		WTSLogger::error("Loading contracts config file {} failed", filename);
@@ -436,11 +436,11 @@ bool WTSBaseDataMgr::loadContracts(const char* filename)
 
 	for(const std::string& exchg : root->memberNames())
 	{
-		WTSVariant* jExchg = root->get(exchg);
+		VVTSVariant* jExchg = root->get(exchg);
 
 		for(const std::string& code : jExchg->memberNames())
 		{
-			WTSVariant* jcInfo = jExchg->get(code);
+			VVTSVariant* jcInfo = jExchg->get(code);
 
 			/*
 			 *	By Wesley @ 2021.12.28
@@ -457,7 +457,7 @@ bool WTSBaseDataMgr::loadContracts(const char* filename)
 			else if(jcInfo->has("rules"))
 			{
 				pid = code.c_str();
-				WTSVariant* jPInfo = jcInfo->get("rules");
+				VVTSVariant* jPInfo = jcInfo->get("rules");
 				const char* name = jcInfo->getCString("name");
 				std::string sid = jPInfo->getCString("session");
 				std::string hid;
@@ -562,7 +562,7 @@ bool WTSBaseDataMgr::loadHolidays(const char* filename)
 		return false;
 	}
 
-	WTSVariant* root = WTSCfgLoader::load_from_file(filename);
+	VVTSVariant* root = WTSCfgLoader::load_from_file(filename);
 	if (root == NULL)
 	{
 		WTSLogger::error("Loading holidays config file {} failed", filename);
@@ -571,14 +571,14 @@ bool WTSBaseDataMgr::loadHolidays(const char* filename)
 
 	for (const std::string& hid : root->memberNames())
 	{
-		WTSVariant* jHolidays = root->get(hid);
+		VVTSVariant* jHolidays = root->get(hid);
 		if(!jHolidays->isArray())
 			continue;
 
 		TradingDayTpl& trdDayTpl = m_mapTradingDay[hid];
 		for(uint32_t i = 0; i < jHolidays->size(); i++)
 		{
-			WTSVariant* hItem = jHolidays->get(i);
+			VVTSVariant* hItem = jHolidays->get(i);
 			trdDayTpl._holidays.insert(hItem->asUInt32());
 		}
 	}

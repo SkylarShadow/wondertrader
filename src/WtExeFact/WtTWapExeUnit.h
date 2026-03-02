@@ -3,7 +3,7 @@
 #include "../Includes/ExecuteDefs.h"
 #include "../Share/StdUtils.hpp"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class WtTWapExeUnit : public ExecuteUnit
 {
@@ -31,7 +31,7 @@ public:
 	*	ctx		执行单元运行环境
 	*	code	管理的合约代码
 	*/
-	virtual void init(ExecuteContext* ctx, const char* stdCode, WTSVariant* cfg) override;
+	virtual void init(ExecuteContext* ctx, const char* stdCode, VVTSVariant* cfg) override;
 
 	/*
 	*	订单回报

@@ -2,7 +2,7 @@
 #include "IndexFactory.h"
 
 #include "../Includes/IBaseDataMgr.h"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/WTSContractInfo.hpp"
 #include "../Includes/WTSDataDef.hpp"
 
@@ -19,7 +19,7 @@ const char* WEIGHT_ALGS[] =
 	"DynamicVolume"
 };
 
-bool IndexWorker::init(WTSVariant* config)
+bool IndexWorker::init(VVTSVariant* config)
 {
 	if (config == NULL)
 		return false;
@@ -49,8 +49,8 @@ bool IndexWorker::init(WTSVariant* config)
 	//权重算法
 	_weight_alg = config->getUInt32("weight_alg");
 
-	WTSVariant* cfgComms = config->get("commodities");
-	WTSVariant* cfgCodes = config->get("codes");
+	VVTSVariant* cfgComms = config->get("commodities");
+	VVTSVariant* cfgCodes = config->get("codes");
 	if (cfgComms != NULL && cfgComms->size() > 0)
 	{
 		IBaseDataMgr* bdMgr = _factor->get_bd_mgr();
@@ -58,7 +58,7 @@ bool IndexWorker::init(WTSVariant* config)
 		std::size_t cnt = cfgComms->size();
 		for (std::size_t i = 0; i < cnt; i++)
 		{
-			WTSVariant* cfgItem = cfgComms->get(i);
+			VVTSVariant* cfgItem = cfgComms->get(i);
 			std::string fullPid;
 			double weight = 1.0;
 
@@ -107,7 +107,7 @@ bool IndexWorker::init(WTSVariant* config)
 		std::size_t cnt = cfgCodes->size();
 		for (std::size_t i = 0; i < cnt; i++)
 		{
-			WTSVariant* cfgItem = cfgCodes->get(i);
+			VVTSVariant* cfgItem = cfgCodes->get(i);
 			std::string fullCode;
 			double weight = 1.0;
 

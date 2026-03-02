@@ -13,13 +13,13 @@
 
 #include "../Share/CodeHelper.hpp"
 #include "../Includes/IDataManager.h"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/IHotMgr.h"
 #include "../Share/decimal.h"
 
 #include "../WTSTools/WTSLogger.h"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 
 WtLocalExecuter::WtLocalExecuter(WtExecuterFactory* factory, const char* name, IDataManager* dataMgr)
@@ -48,7 +48,7 @@ void WtLocalExecuter::setTrader(TraderAdapter* adapter)
 		_channel_ready = _trader->isReady();
 }
 
-bool WtLocalExecuter::init(WTSVariant* params)
+bool WtLocalExecuter::init(VVTSVariant* params)
 {
 	if (params == NULL)
 		return false;
@@ -72,16 +72,16 @@ bool WtLocalExecuter::init(WTSVariant* params)
 	 *	includes: 包含列表，格式如CFFEX.IF
 	 *	excludes: 排除列表，格式如CFFEX.IF
 	 */
-	WTSVariant* cfgClear = params->get("clear");
+	VVTSVariant* cfgClear = params->get("clear");
 	if(cfgClear)
 	{
 		_auto_clear = cfgClear->getBoolean("active");
-		WTSVariant* cfgItem = cfgClear->get("includes");
+		VVTSVariant* cfgItem = cfgClear->get("includes");
 		if(cfgItem)
 		{
-			if (cfgItem->type() == WTSVariant::VT_String)
+			if (cfgItem->type() == VVTSVariant::VT_String)
 				_clear_includes.insert(cfgItem->asCString());
-			else if (cfgItem->type() == WTSVariant::VT_Array)
+			else if (cfgItem->type() == VVTSVariant::VT_Array)
 			{
 				for(uint32_t i = 0; i < cfgItem->size(); i++)
 					_clear_includes.insert(cfgItem->get(i)->asCString());
@@ -91,9 +91,9 @@ bool WtLocalExecuter::init(WTSVariant* params)
 		cfgItem = cfgClear->get("excludes");
 		if (cfgItem)
 		{
-			if (cfgItem->type() == WTSVariant::VT_String)
+			if (cfgItem->type() == VVTSVariant::VT_String)
 				_clear_excludes.insert(cfgItem->asCString());
-			else if (cfgItem->type() == WTSVariant::VT_Array)
+			else if (cfgItem->type() == VVTSVariant::VT_Array)
 			{
 				for (uint32_t i = 0; i < cfgItem->size(); i++)
 					_clear_excludes.insert(cfgItem->get(i)->asCString());
@@ -101,7 +101,7 @@ bool WtLocalExecuter::init(WTSVariant* params)
 		}
 	}
 
-	WTSVariant* cfgGroups = params->get("groups");
+	VVTSVariant* cfgGroups = params->get("groups");
 	if (cfgGroups)
 	{
 		auto names = cfgGroups->memberNames();
@@ -111,10 +111,10 @@ bool WtLocalExecuter::init(WTSVariant* params)
 			if (gpInfo == NULL)
 			{
 				gpInfo.reset(new CodeGroup);
-				wt_strcpy(gpInfo->_name, gpname.c_str(), gpname.size());
+				vvt_strcpy(gpInfo->_name, gpname.c_str(), gpname.size());
 			}
 
-			WTSVariant* cfgGrp = cfgGroups->get(gpname.c_str());
+			VVTSVariant* cfgGrp = cfgGroups->get(gpname.c_str());
 			auto codes = cfgGrp->memberNames();
 			for(const std::string& code : codes)
 			{
@@ -135,7 +135,7 @@ ExecuteUnitPtr WtLocalExecuter::getUnit(const char* stdCode, bool bAutoCreate /*
 	CodeHelper::CodeInfo codeInfo = CodeHelper::extractStdCode(stdCode, NULL);
 	std::string commID = codeInfo.stdCommID();
 
-	WTSVariant* policy = _config->get("policy");
+	VVTSVariant* policy = _config->get("policy");
 	std::string des = commID;
 	if (!policy->has(commID.c_str()))
 		des = "default";
@@ -150,7 +150,7 @@ ExecuteUnitPtr WtLocalExecuter::getUnit(const char* stdCode, bool bAutoCreate /*
 
 	if (bAutoCreate)
 	{
-		WTSVariant* cfg = policy->get(des.c_str());
+		VVTSVariant* cfg = policy->get(des.c_str());
 
 		const char* name = cfg->getCString("name");
 		ExecuteUnitPtr unit = _factory->createExeUnit(name);
@@ -303,7 +303,7 @@ void WtLocalExecuter::on_position_changed(const char* stdCode, double diffPos)
 	unit->self()->set_position(stdCode, traderTarget);
 }
 
-void WtLocalExecuter::set_position(const wt_hashmap<std::string, double>& targets)
+void WtLocalExecuter::set_position(const vvt_hashmap<std::string, double>& targets)
 {
 	/*
 	 *	先要把目标头寸进行组合匹配

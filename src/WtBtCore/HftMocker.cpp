@@ -14,7 +14,7 @@
 
 #include <boost/filesystem.hpp>
 
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/WTSContractInfo.hpp"
 #include "../Share/decimal.h"
 #include "../Share/TimeUtils.hpp"
@@ -210,7 +210,7 @@ void HftMocker::postTask(Task task)
 	//}
 }
 
-bool HftMocker::init_hft_factory(WTSVariant* cfg)
+bool HftMocker::init_hft_factory(VVTSVariant* cfg)
 {
 	if (cfg == NULL)
 		return false;
@@ -240,7 +240,7 @@ bool HftMocker::init_hft_factory(WTSVariant* cfg)
 	_factory._remover = (FuncDeleteHftStraFact)DLLHelper::get_symbol(hInst, "deleteStrategyFact");
 	_factory._fact = _factory._creator();
 
-	WTSVariant* cfgStra = cfg->get("strategy");
+	VVTSVariant* cfgStra = cfg->get("strategy");
 	if(cfgStra)
 	{
 		_strategy = _factory._fact->createStrategy(cfgStra->getCString("name"), cfgStra->getCString("id"));

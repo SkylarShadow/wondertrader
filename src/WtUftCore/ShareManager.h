@@ -6,10 +6,10 @@
 #include "../Includes/FasterDefs.h"
 #include "../Share/DLLHelper.hpp"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 class WtUftEngine;
-NS_WTP_END
-USING_NS_WTP;
+NS_VVTP_END
+USING_NS_VVTP;
 
 typedef bool (*func_init_master)(const char*, const char*);
 typedef uint64_t(*func_get_section_updatetime)(const char*, const char*);
@@ -100,7 +100,7 @@ private:
 	std::string		_exchg;	//交换区
 	std::string		_sync;
 
-	wt_hashmap<std::string, uint64_t>	_secnames;
+	vvt_hashmap<std::string, uint64_t>	_secnames;
 
 	bool			_stopped;
 	StdThreadPtr	_worker;

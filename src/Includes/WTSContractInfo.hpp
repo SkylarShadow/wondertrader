@@ -14,7 +14,7 @@
 #include <string>
 #include <sstream>
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 class WTSSessionInfo;
 
 class WTSCommodityInfo: public WTSObject
@@ -347,4 +347,4 @@ private:
 };
 
 
-NS_WTP_END
+NS_VVTP_END

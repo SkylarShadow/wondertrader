@@ -24,7 +24,7 @@ inline const char* encode_text(const char* s)
 #endif
 }
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 extern std::map<std::string, std::string>	MAP_NAME;
 extern std::map<std::string, std::string>	MAP_SESSION;

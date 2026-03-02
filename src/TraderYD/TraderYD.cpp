@@ -14,7 +14,7 @@
 #include "../Includes/WTSSessionInfo.hpp"
 #include "../Includes/WTSTradeDef.hpp"
 #include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/IBaseDataMgr.h"
 #include "../Includes/WTSCollection.hpp"
 
@@ -539,7 +539,7 @@ void TraderYD::notifyAccount(const YDAccount *accInfo)
 	accountInfo->setWithdraw(accInfo->Withdraw);
 }
 
-bool TraderYD::init(WTSVariant* config)
+bool TraderYD::init(VVTSVariant* config)
 {
 	m_strCfgFile = config->getCString("config");
 	m_strUser = config->getCString("user");

@@ -2,7 +2,7 @@
 #include <boost/filesystem.hpp>
 
 #include "../Includes/ITraderApi.h"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/WTSTradeDef.hpp"
 #include "../Includes/WTSError.hpp"
 #include "../Includes/WTSCollection.hpp"
@@ -37,14 +37,14 @@ inline void encoding_print(const char* format, const Args& ...args)
 //#endif
 }
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class TraderSpi : public ITraderSpi
 {
 public:
 	TraderSpi() :m_bLogined(false), m_mapOrds(NULL){}
 
-	bool init(WTSVariant* params, const char* ttype)
+	bool init(VVTSVariant* params, const char* ttype)
 	{
 		m_pParams = params;
 		if (m_pParams)
@@ -561,7 +561,7 @@ private:
 	ITraderApi*			m_pTraderApi;
 	FuncDeleteTrader	m_funcDelTrader;
 	std::string			m_strModule;
-	WTSVariant*			m_pParams;
+	VVTSVariant*			m_pParams;
 
 	typedef WTSHashMap<std::string>	WTSObjectMap;
 	WTSObjectMap*		m_mapOrds;
@@ -586,14 +586,14 @@ int main()
 {
 	WTSLogger::init("logcfg.yaml");
 
-	WTSVariant* root = WTSCfgLoader::load_from_file("config.yaml");
+	VVTSVariant* root = WTSCfgLoader::load_from_file("config.yaml");
 	if(root == NULL)
 	{
 		WTSLogger::log_raw(LL_ERROR, "配置文件config.yaml加载失败");
 		return 0;
 	}
 
-	WTSVariant* cfg = root->get("config");
+	VVTSVariant* cfg = root->get("config");
 	bool isUTF8 = cfg->getBoolean("utf8");
 	if(cfg->has("session"))
 		g_bdMgr.loadSessions(cfg->getCString("session"));
@@ -612,7 +612,7 @@ int main()
 
 	std::string module = cfg->getCString("trader");
 	std::string profile = cfg->getCString("profile");
-	WTSVariant* params = root->get(profile.c_str());
+	VVTSVariant* params = root->get(profile.c_str());
 	if(params == NULL)
 	{
 		WTSLogger::error("配置项{}不存在", profile);

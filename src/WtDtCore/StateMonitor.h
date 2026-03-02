@@ -11,13 +11,13 @@
 #include <vector>
 #include "../Share/StdUtils.hpp"
 #include "../Includes/FasterDefs.h"
-#include "../Includes/WTSMarcos.h"
+#include "../Includes/VVTSMarcos.h"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 class WTSSessionInfo;
-NS_WTP_END
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 typedef enum tagSimpleState
 {
@@ -70,7 +70,7 @@ typedef struct _StateInfo
 } StateInfo;
 
 typedef std::shared_ptr<StateInfo> StatePtr;
-typedef wtp::wt_hashmap<std::string, StatePtr>	StateMap;
+typedef vvtp::vvt_hashmap<std::string, StatePtr>	StateMap;
 
 class WTSBaseDataMgr;
 class DataManager;

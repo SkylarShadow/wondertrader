@@ -28,7 +28,7 @@
 #include "../Share/StdUtils.hpp"
 #include "../Share/DLLHelper.hpp"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class TraderDD : public ITraderApi
 {
@@ -64,7 +64,7 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	//ITraderApi接口
 public:
-	virtual bool init(WTSVariant* params) override;
+	virtual bool init(VVTSVariant* params) override;
 
 	virtual void release() override;
 

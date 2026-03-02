@@ -14,7 +14,7 @@
 #include "../Includes/WTSSessionInfo.hpp"
 #include "../Includes/WTSTradeDef.hpp"
 #include "../Includes/WTSError.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/WTSVersion.h"
 
 #include "../Share/ModuleHelper.hpp"
@@ -901,7 +901,7 @@ void TraderATP::OnRspShareQueryResult(const ATPRspShareQueryResultMsg &msg)
 }
 
 #pragma region "ITraderApi"
-bool TraderATP::init(WTSVariant *params)
+bool TraderATP::init(VVTSVariant *params)
 {
 	_user = params->getCString("user");
 	_pass = params->getCString("pass");
@@ -1103,8 +1103,8 @@ void TraderATP::doLogin(const char* productInfo)
 	// 设置登入消息
 	ATPReqCustLoginOtherMsg login_msg;
 
-	wt_strcpy(login_msg.fund_account_id, _fund_accountid.c_str());           // 资金账户ID
-	wt_strcpy(login_msg.password, _accpasswd.c_str());                  // 客户号密码
+	vvt_strcpy(login_msg.fund_account_id, _fund_accountid.c_str());           // 资金账户ID
+	vvt_strcpy(login_msg.password, _accpasswd.c_str());                  // 客户号密码
 	strncpy(login_msg.user_info, _user.c_str(), 17);
 	login_msg.login_mode = _loginmode;  //  wrapLoginMode(_loginmode);  // ATPCustLoginModeType::kFundAccountIDMode;	// 登录模式，资金账号登录
 	login_msg.client_seq_id = genRequestID();							// 客户系统消息号
@@ -1142,7 +1142,7 @@ int TraderATP::logout()
 		return -1;
 
 	ATPReqCustLogoutOtherMsg logout_msg;
-	wt_strcpy(logout_msg.fund_account_id, _fund_accountid.c_str());	// 资金账户ID
+	vvt_strcpy(logout_msg.fund_account_id, _fund_accountid.c_str());	// 资金账户ID
 	logout_msg.client_seq_id = genRequestID();              // 客户系统消息号
 	//logout_msg.client_feature_code = _product;				// 终端识别码
 
@@ -1174,12 +1174,12 @@ int TraderATP::orderInsert(WTSEntrust* entrust)
 
 	//bool isSh = (strcmp(entrust->getExchg(), "SSE") == 0) ? true : false;
 
-	wt_strcpy(p.security_id, entrust->getCode());                   // 证券代码
+	vvt_strcpy(p.security_id, entrust->getCode());                   // 证券代码
 	p.market_id = _is_sh ? ATPMarketIDConst::kShangHai : ATPMarketIDConst::kShenZhen;             // 市场ID，上海
-	wt_strcpy(p.cust_id, _cust_id.c_str());                 // 客户号ID
-	wt_strcpy(p.fund_account_id, _fund_accountid.c_str());       // 资金账户ID
+	vvt_strcpy(p.cust_id, _cust_id.c_str());                 // 客户号ID
+	vvt_strcpy(p.fund_account_id, _fund_accountid.c_str());       // 资金账户ID
 
-	wt_strcpy(p.account_id, _acctid.c_str());                 // 账户ID
+	vvt_strcpy(p.account_id, _acctid.c_str());                 // 账户ID
 
 	//p.side = (entrust->getDirection() == WOT_OPEN) ? ATPSideConst::kBuy : ATPSideConst::kSell;      // 买卖方向，买
 	p.side = wrapDirectionType(entrust->getDirection(), entrust->getOffsetType());
@@ -1230,13 +1230,13 @@ int TraderATP::orderAction(WTSEntrustAction* action)
 	//bool isSH = strcmp(action->getExchg(), "SSE") == 0;
 
 	p.market_id = (_is_sh) ? ATPMarketIDConst::kShangHai : ATPMarketIDConst::kShenZhen;
-	wt_strcpy(p.cust_id, _cust_id.c_str());                    // 客户号ID
-	wt_strcpy(p.fund_account_id, _fund_accountid.c_str());          // 资金账户ID
-	wt_strcpy(p.user_info, _user.c_str());                   // 账户ID
+	vvt_strcpy(p.cust_id, _cust_id.c_str());                    // 客户号ID
+	vvt_strcpy(p.fund_account_id, _fund_accountid.c_str());          // 资金账户ID
+	vvt_strcpy(p.user_info, _user.c_str());                   // 账户ID
 
-	wt_strcpy(p.account_id, _acctid.c_str());  // 证券账户
+	vvt_strcpy(p.account_id, _acctid.c_str());  // 证券账户
 
-	wt_strcpy(p.password, _accpasswd.c_str());  // 交易密码
+	vvt_strcpy(p.password, _accpasswd.c_str());  // 交易密码
 	p.client_seq_id = genRequestID();
 	p.order_way = std::to_string(_order_way).at(0);
 	p.orig_cl_ord_no = strtoull(action->getOrderID(), NULL, 10);

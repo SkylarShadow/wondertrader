@@ -11,7 +11,7 @@
 
 #include "../Includes/WTSDataDef.hpp"
 #include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/IBaseDataMgr.h"
 
 #include "../Share/ModuleHelper.hpp"
@@ -138,7 +138,7 @@ void ParserYD::notifyMarketData(const YDMarketData *pDepthMarketData)
 
 	WTSTickData* tick = WTSTickData::create(instInfo->InstrumentID);
 	WTSTickStruct& quote = tick->getTickStruct();
-	wt_strcpy(quote.exchg, contract->getExchg());
+	vvt_strcpy(quote.exchg, contract->getExchg());
 	tick->setContractInfo(contract);
 
 	quote.action_date = actDate;
@@ -173,7 +173,7 @@ void ParserYD::notifyMarketData(const YDMarketData *pDepthMarketData)
 	tick->release();
 }
 
-bool ParserYD::init(WTSVariant* config)
+bool ParserYD::init(VVTSVariant* config)
 {
 	m_strCfgFile = config->getCString("config");
 	m_strUserID = config->getCString("user");

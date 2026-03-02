@@ -6,9 +6,9 @@
 #include "../WTSTools/WTSBaseDataMgr.h"
 #include "../WTSUtils/WTSCfgLoader.h"
 
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 WTSBaseDataMgr		g_bdMgr;
 TraderAdapterMgr	g_adapterMgr;
@@ -22,13 +22,13 @@ bool Dumper::config(const char* cfgfile, bool isFile, const char* modDir)
 {
 	WtHelper::set_module_dir(modDir);
 
-	WTSVariant* root = NULL;
+	VVTSVariant* root = NULL;
 	if (isFile)
 		root = WTSCfgLoader::load_from_file(cfgfile);
 	else
 		root = WTSCfgLoader::load_from_content(cfgfile, false);
 
-	WTSVariant* cfg = root->get("config");
+	VVTSVariant* cfg = root->get("config");
 	if(cfg)
 	{
 		if(cfg->has("refresh_span"))
@@ -39,21 +39,21 @@ bool Dumper::config(const char* cfgfile, bool isFile, const char* modDir)
 	}
 
 	//基础数据文件
-	WTSVariant* cfgBF = root->get("basefiles");
+	VVTSVariant* cfgBF = root->get("basefiles");
 	if (cfgBF->get("session"))
 	{
 		g_bdMgr.loadSessions(cfgBF->getCString("session"));
 		WTSLogger::info("Trading sessions loaded");
 	}
 
-	WTSVariant* cfgItem = cfgBF->get("commodity");
+	VVTSVariant* cfgItem = cfgBF->get("commodity");
 	if (cfgItem)
 	{
-		if (cfgItem->type() == WTSVariant::VT_String)
+		if (cfgItem->type() == VVTSVariant::VT_String)
 		{
 			g_bdMgr.loadCommodities(cfgItem->asCString());
 		}
-		else if (cfgItem->type() == WTSVariant::VT_Array)
+		else if (cfgItem->type() == VVTSVariant::VT_Array)
 		{
 			for (uint32_t i = 0; i < cfgItem->size(); i++)
 			{
@@ -65,11 +65,11 @@ bool Dumper::config(const char* cfgfile, bool isFile, const char* modDir)
 	cfgItem = cfgBF->get("contract");
 	if (cfgItem)
 	{
-		if (cfgItem->type() == WTSVariant::VT_String)
+		if (cfgItem->type() == VVTSVariant::VT_String)
 		{
 			g_bdMgr.loadContracts(cfgItem->asCString());
 		}
-		else if (cfgItem->type() == WTSVariant::VT_Array)
+		else if (cfgItem->type() == VVTSVariant::VT_Array)
 		{
 			for (uint32_t i = 0; i < cfgItem->size(); i++)
 			{
@@ -81,7 +81,7 @@ bool Dumper::config(const char* cfgfile, bool isFile, const char* modDir)
 	cfg = root->get("traders");
 	for (uint32_t idx = 0; idx < cfg->size(); idx++)
 	{
-		WTSVariant* cfgItem = cfg->get(idx);
+		VVTSVariant* cfgItem = cfg->get(idx);
 		if (!cfgItem->getBoolean("active"))
 			continue;
 
@@ -150,13 +150,13 @@ void Dumper::on_position(const char* channelid, const char* exchg, const char* c
 }
 
 void Dumper::on_trade(const char* channelid, const char* exchg, const char* code, uint32_t curTDate, const char* tradeid, const char* orderid, 
-		uint32_t direct, uint32_t offset, double volume, double price, double amount, uint32_t ordertype, uint32_t tradetype, WtUInt64 tradetime, bool isLast)
+		uint32_t direct, uint32_t offset, double volume, double price, double amount, uint32_t ordertype, uint32_t tradetype, VvtUInt64 tradetime, bool isLast)
 {
 	if (_cb_trade)
 		_cb_trade(channelid, exchg, code, curTDate, tradeid, orderid, direct, offset, volume, price, amount, ordertype, tradetype, tradetime, isLast);
 }
 
-void Dumper::on_order(const char* channelid, const char* exchg, const char* code, uint32_t curTDate, const char* orderid, uint32_t direct, uint32_t offset, double volume, double leftover, double traded, double price, uint32_t ordertype, uint32_t pricetype, WtUInt64 ordertime, uint32_t state, const char* statemsg, bool isLast)
+void Dumper::on_order(const char* channelid, const char* exchg, const char* code, uint32_t curTDate, const char* orderid, uint32_t direct, uint32_t offset, double volume, double leftover, double traded, double price, uint32_t ordertype, uint32_t pricetype, VvtUInt64 ordertime, uint32_t state, const char* statemsg, bool isLast)
 {
 	if (_cb_order)
 		_cb_order(channelid, exchg, code, curTDate, orderid, direct, offset, volume, leftover, traded, price, ordertype, pricetype, ordertime, state, statemsg, isLast);

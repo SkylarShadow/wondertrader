@@ -17,7 +17,7 @@
 #include "../Includes/WTSContractInfo.hpp"
 #include "../Includes/IBaseDataMgr.h"
 #include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 
 #include "../Share/decimal.h"
 #include "../Share/TimeUtils.hpp"
@@ -27,7 +27,7 @@
 
 static const uint32_t DATA_SIZE_STEP = 8000;	//信息量每天最多4000
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 inline uint32_t makeUftCtxId()
 {
@@ -175,8 +175,8 @@ void UftStraContext::on_trade(uint32_t localid, const char* stdCode, bool isLong
 					uint32_t ridx = _rnd_blk._block->_size;
 					_rnd_blk._block->_size++;
 					uft::RoundStruct& rs = _rnd_blk._block->_rounds[ridx];
-					wt_strcpy(rs._code, cInfo->getCode());
-					wt_strcpy(rs._exchg, cInfo->getExchg());
+					vvt_strcpy(rs._code, cInfo->getCode());
+					vvt_strcpy(rs._exchg, cInfo->getExchg());
 
 					rs._open_price = pDS->_open_price;
 					rs._open_time = pDS->_open_time;
@@ -196,8 +196,8 @@ void UftStraContext::on_trade(uint32_t localid, const char* stdCode, bool isLong
 					uint32_t tidx = _trd_blk._block->_size;
 					_trd_blk._block->_size++;
 					uft::TradeStruct& ts = _trd_blk._block->_trades[tidx];
-					wt_strcpy(ts._code, cInfo->getCode());
-					wt_strcpy(ts._exchg, cInfo->getExchg());
+					vvt_strcpy(ts._code, cInfo->getCode());
+					vvt_strcpy(ts._exchg, cInfo->getExchg());
 					ts._direct = 1;
 					ts._offset = 1;
 					ts._price = price;
@@ -221,8 +221,8 @@ void UftStraContext::on_trade(uint32_t localid, const char* stdCode, bool isLong
 			uint32_t idx = _pos_blk._block->_size;
 			_pos_blk._block->_size++;
 			uft::DetailStruct& ds = _pos_blk._block->_details[idx];
-			wt_strcpy(ds._code, cInfo->getCode());
-			wt_strcpy(ds._exchg, cInfo->getExchg());
+			vvt_strcpy(ds._code, cInfo->getCode());
+			vvt_strcpy(ds._exchg, cInfo->getExchg());
 			ds._direct = 0;
 			ds._open_price = price;
 			ds._open_time = now;
@@ -245,8 +245,8 @@ void UftStraContext::on_trade(uint32_t localid, const char* stdCode, bool isLong
 			uint32_t tidx = _trd_blk._block->_size;
 			_trd_blk._block->_size++;
 			uft::TradeStruct& ts = _trd_blk._block->_trades[tidx];
-			wt_strcpy(ts._code, cInfo->getCode());
-			wt_strcpy(ts._exchg, cInfo->getExchg());
+			vvt_strcpy(ts._code, cInfo->getCode());
+			vvt_strcpy(ts._exchg, cInfo->getExchg());
 			ts._direct = 0;
 			ts._offset = 0;
 			ts._price = price;
@@ -295,8 +295,8 @@ void UftStraContext::on_trade(uint32_t localid, const char* stdCode, bool isLong
 					uint32_t ridx = _rnd_blk._block->_size;
 					_rnd_blk._block->_size++;
 					uft::RoundStruct& rs = _rnd_blk._block->_rounds[ridx];
-					wt_strcpy(rs._code, cInfo->getCode());
-					wt_strcpy(rs._exchg, cInfo->getExchg());
+					vvt_strcpy(rs._code, cInfo->getCode());
+					vvt_strcpy(rs._exchg, cInfo->getExchg());
 
 					rs._open_price = pDS->_open_price;
 					rs._open_time = pDS->_open_time;
@@ -316,8 +316,8 @@ void UftStraContext::on_trade(uint32_t localid, const char* stdCode, bool isLong
 					uint32_t tidx = _trd_blk._block->_size;
 					_trd_blk._block->_size++;
 					uft::TradeStruct& ts = _trd_blk._block->_trades[tidx];
-					wt_strcpy(ts._code, cInfo->getCode());
-					wt_strcpy(ts._exchg, cInfo->getExchg());
+					vvt_strcpy(ts._code, cInfo->getCode());
+					vvt_strcpy(ts._exchg, cInfo->getExchg());
 					ts._direct = 0;
 					ts._offset = 1;
 					ts._price = price;
@@ -341,8 +341,8 @@ void UftStraContext::on_trade(uint32_t localid, const char* stdCode, bool isLong
 			uint32_t idx = _pos_blk._block->_size;
 			_pos_blk._block->_size++;
 			uft::DetailStruct& ds = _pos_blk._block->_details[idx];
-			wt_strcpy(ds._code, cInfo->getCode());
-			wt_strcpy(ds._exchg, cInfo->getExchg());
+			vvt_strcpy(ds._code, cInfo->getCode());
+			vvt_strcpy(ds._exchg, cInfo->getExchg());
 			ds._direct = 1;
 			ds._open_price = price;
 			ds._open_time = now;
@@ -365,8 +365,8 @@ void UftStraContext::on_trade(uint32_t localid, const char* stdCode, bool isLong
 			uint32_t tidx = _trd_blk._block->_size;
 			_trd_blk._block->_size++;
 			uft::TradeStruct& ts = _trd_blk._block->_trades[tidx];
-			wt_strcpy(ts._code, cInfo->getCode());
-			wt_strcpy(ts._exchg, cInfo->getExchg());
+			vvt_strcpy(ts._code, cInfo->getCode());
+			vvt_strcpy(ts._exchg, cInfo->getExchg());
 			ts._direct = 1;
 			ts._offset = 0;
 			ts._price = price;
@@ -388,8 +388,8 @@ void UftStraContext::on_trade(uint32_t localid, const char* stdCode, bool isLong
 				uint32_t idx = _pos_blk._block->_size;
 				_pos_blk._block->_size++;
 				uft::DetailStruct& ds = _pos_blk._block->_details[idx];
-				wt_strcpy(ds._code, cInfo->getCode());
-				wt_strcpy(ds._exchg, cInfo->getExchg());
+				vvt_strcpy(ds._code, cInfo->getCode());
+				vvt_strcpy(ds._exchg, cInfo->getExchg());
 				ds._direct = 0;
 				ds._open_price = price;
 				ds._open_time = now;
@@ -410,8 +410,8 @@ void UftStraContext::on_trade(uint32_t localid, const char* stdCode, bool isLong
 				uint32_t tidx = _trd_blk._block->_size;
 				_trd_blk._block->_size++;
 				uft::TradeStruct& ts = _trd_blk._block->_trades[tidx];
-				wt_strcpy(ts._code, cInfo->getCode());
-				wt_strcpy(ts._exchg, cInfo->getExchg());
+				vvt_strcpy(ts._code, cInfo->getCode());
+				vvt_strcpy(ts._exchg, cInfo->getExchg());
 				ts._direct = 0;
 				ts._offset = offset;
 				ts._price = price;
@@ -447,8 +447,8 @@ void UftStraContext::on_trade(uint32_t localid, const char* stdCode, bool isLong
 					uint32_t ridx = _rnd_blk._block->_size;
 					_rnd_blk._block->_size++;
 					uft::RoundStruct& rs = _rnd_blk._block->_rounds[ridx];
-					wt_strcpy(rs._code, cInfo->getCode());
-					wt_strcpy(rs._exchg, cInfo->getExchg());
+					vvt_strcpy(rs._code, cInfo->getCode());
+					vvt_strcpy(rs._exchg, cInfo->getExchg());
 
 					rs._open_price = pDS->_open_price;
 					rs._open_time = pDS->_open_time;
@@ -470,8 +470,8 @@ void UftStraContext::on_trade(uint32_t localid, const char* stdCode, bool isLong
 				uint32_t tidx = _trd_blk._block->_size;
 				_trd_blk._block->_size++;
 				uft::TradeStruct& ts = _trd_blk._block->_trades[tidx];
-				wt_strcpy(ts._code, cInfo->getCode());
-				wt_strcpy(ts._exchg, cInfo->getExchg());
+				vvt_strcpy(ts._code, cInfo->getCode());
+				vvt_strcpy(ts._exchg, cInfo->getExchg());
 				ts._direct = 0;
 				ts._offset = offset;
 				ts._price = price;
@@ -492,8 +492,8 @@ void UftStraContext::on_trade(uint32_t localid, const char* stdCode, bool isLong
 				uint32_t idx = _pos_blk._block->_size;
 				_pos_blk._block->_size++;
 				uft::DetailStruct& ds = _pos_blk._block->_details[idx];
-				wt_strcpy(ds._code, cInfo->getCode());
-				wt_strcpy(ds._exchg, cInfo->getExchg());
+				vvt_strcpy(ds._code, cInfo->getCode());
+				vvt_strcpy(ds._exchg, cInfo->getExchg());
 				ds._direct = 1;
 				ds._open_price = price;
 				ds._open_time = TimeUtils::getLocalTimeNow();
@@ -514,8 +514,8 @@ void UftStraContext::on_trade(uint32_t localid, const char* stdCode, bool isLong
 				uint32_t tidx = _trd_blk._block->_size;
 				_trd_blk._block->_size++;
 				uft::TradeStruct& ts = _trd_blk._block->_trades[tidx];
-				wt_strcpy(ts._code, cInfo->getCode());
-				wt_strcpy(ts._exchg, cInfo->getExchg());
+				vvt_strcpy(ts._code, cInfo->getCode());
+				vvt_strcpy(ts._exchg, cInfo->getExchg());
 				ts._direct = 1;
 				ts._offset = offset;
 				ts._price = price;
@@ -548,8 +548,8 @@ void UftStraContext::on_trade(uint32_t localid, const char* stdCode, bool isLong
 					uint32_t ridx = _rnd_blk._block->_size;
 					_rnd_blk._block->_size++;
 					uft::RoundStruct& rs = _rnd_blk._block->_rounds[ridx];
-					wt_strcpy(rs._code, cInfo->getCode());
-					wt_strcpy(rs._exchg, cInfo->getExchg());
+					vvt_strcpy(rs._code, cInfo->getCode());
+					vvt_strcpy(rs._exchg, cInfo->getExchg());
 
 					rs._open_price = pDS->_open_price;
 					rs._open_time = pDS->_open_time;
@@ -571,8 +571,8 @@ void UftStraContext::on_trade(uint32_t localid, const char* stdCode, bool isLong
 				uint32_t tidx = _trd_blk._block->_size;
 				_trd_blk._block->_size++;
 				uft::TradeStruct& ts = _trd_blk._block->_trades[tidx];
-				wt_strcpy(ts._code, cInfo->getCode());
-				wt_strcpy(ts._exchg, cInfo->getExchg());
+				vvt_strcpy(ts._code, cInfo->getCode());
+				vvt_strcpy(ts._exchg, cInfo->getExchg());
 				ts._direct = 1;
 				ts._offset = offset;
 				ts._price = price;
@@ -602,8 +602,8 @@ void UftStraContext::on_order(uint32_t localid, const char* stdCode, bool isLong
 		uint32_t idx = _ord_blk._block->_size;
 		_ord_blk._block->_size++;
 		uft::OrderStruct& os = _ord_blk._block->_orders[idx];
-		wt_strcpy(os._code, cInfo->getCode());
-		wt_strcpy(os._exchg, cInfo->getExchg());
+		vvt_strcpy(os._code, cInfo->getCode());
+		vvt_strcpy(os._exchg, cInfo->getExchg());
 		os._direct = 0;
 		os._offset = offset;
 		os._volume = totalQty;
@@ -1044,14 +1044,14 @@ void UftStraContext::load_local_data()
 
 		WTSLogger::log_dyn("strategy", _name.c_str(), LL_WARN, "{} detected, positions will be overwrited", mannualfile);
 
-		WTSVariant* manual = WTSCfgLoader::load_from_file(mannualfile);
+		VVTSVariant* manual = WTSCfgLoader::load_from_file(mannualfile);
 		if (manual == NULL)
 		{
 			WTSLogger::log_dyn("strategy", _name.c_str(), LL_ERROR, "parsing mannual file {} failed", mannualfile);
 			break;
 		}
 
-		WTSVariant* ayDetails = manual->get("details");
+		VVTSVariant* ayDetails = manual->get("details");
 		if(ayDetails == NULL)
 			break;
 
@@ -1084,7 +1084,7 @@ void UftStraContext::load_local_data()
 
 			for (uint32_t i = 0; i < ayDetails->size(); i++)
 			{
-				WTSVariant* objDetail = ayDetails->get(i);
+				VVTSVariant* objDetail = ayDetails->get(i);
 				const char* exchg = objDetail->getCString("exchg");
 				const char* code = objDetail->getCString("code");
 				WTSContractInfo* cInfo = _engine->get_basedata_mgr()->getContract(code, exchg);
@@ -1095,8 +1095,8 @@ void UftStraContext::load_local_data()
 				}
 
 				uft::DetailStruct& ds = _pos_blk._block->_details[i];
-				wt_strcpy(ds._exchg, exchg);
-				wt_strcpy(ds._code, code);
+				vvt_strcpy(ds._exchg, exchg);
+				vvt_strcpy(ds._code, code);
 				ds._direct = objDetail->getUInt32("direct");
 				ds._volume = objDetail->getDouble("volume");
 				ds._open_price = objDetail->getDouble("openprice");

@@ -10,11 +10,11 @@
 #include "../WTSTools/WTSHotMgr.h"
 #include "../WTSTools/WTSBaseDataMgr.h"
 
-NS_WTP_BEGIN
-class WTSVariant;
-NS_WTP_END
+NS_VVTP_BEGIN
+class VVTSVariant;
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class WtExecRunner : public IParserStub, public IExecuterStub
 {
@@ -61,9 +61,9 @@ public:
 	virtual uint32_t get_trading_day() override;
 
 private:
-	bool initTraders(WTSVariant* cfgTrader);
-	bool initParsers(WTSVariant* cfgParser);
-	bool initExecuters(WTSVariant* cfgExecuter);
+	bool initTraders(VVTSVariant* cfgTrader);
+	bool initParsers(VVTSVariant* cfgParser);
+	bool initExecuters(VVTSVariant* cfgExecuter);
 	bool initDataMgr();
 	bool initActionPolicy();
 
@@ -73,7 +73,7 @@ private:
 	WtExecuterFactory	_exe_factory;
 	WtExecuterMgr		_exe_mgr;
 
-	WTSVariant*			_config;
+	VVTSVariant*			_config;
 
 	WtSimpDataMgr		_data_mgr;
 
@@ -81,6 +81,6 @@ private:
 	WTSHotMgr			_hot_mgr;
 	ActionPolicyMgr		_act_policy;
 
-	wt_hashmap<std::string, double> _positions;
+	vvt_hashmap<std::string, double> _positions;
 };
 

@@ -12,7 +12,7 @@ public:
 
 	virtual const char* getName() override;
 
-	virtual bool init(WTSVariant* cfg) override;
+	virtual bool init(VVTSVariant* cfg) override;
 
 	virtual void on_schedule(ICtaStraCtx* ctx, uint32_t curDate, uint32_t curTime) override;
 

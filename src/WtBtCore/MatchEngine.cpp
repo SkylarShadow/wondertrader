@@ -1,6 +1,6 @@
 ﻿#include "MatchEngine.h"
 #include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 
 #include "../Share/TimeUtils.hpp"
 #include "../Share/decimal.h"
@@ -12,7 +12,7 @@
 
 extern uint32_t makeLocalOrderID();
 
-void MatchEngine::init(WTSVariant* cfg)
+void MatchEngine::init(VVTSVariant* cfg)
 {
 	if (cfg == NULL)
 		return;

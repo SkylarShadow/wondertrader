@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "../Includes/WTSStruct.h"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 #pragma pack(push, 1)
 

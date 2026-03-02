@@ -29,7 +29,7 @@
 #include "../Share/DLLHelper.hpp"
 
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 
 class TraderHTS : public ITraderApi
@@ -52,7 +52,7 @@ public:
 
 private:
 	void doLogin();
-	void InitializeHTS(WTSVariant* params);
+	void InitializeHTS(VVTSVariant* params);
 	void qryGDNo();	//查询股东号
 	//void qryCustInfo();  // 查询客户信息
 	//void qryCustNodeInfo();  // 查询客户节点信息
@@ -73,7 +73,7 @@ private:
 	//////////////////////////////////////////////////////////////////////////
 	//ITraderApi接口
 public:
-	virtual bool init(WTSVariant* params) override;
+	virtual bool init(VVTSVariant* params) override;
 
 	virtual void release() override;
 
@@ -164,7 +164,7 @@ public:
 	~HTSCallMgr();
 
 public:
-	bool init(WTSVariant* params);
+	bool init(VVTSVariant* params);
 	void setCallbackMsgFunc();
 	void setHTSCallPtr(std::string khh, TraderHTS* pTrader);
 

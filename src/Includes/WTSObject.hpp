@@ -12,11 +12,11 @@
 #include <atomic>
 #include <boost/smart_ptr/detail/spinlock.hpp>
 
-#include "WTSMarcos.h"
+#include "VVTSMarcos.h"
 #include "../Share/ObjectPool.hpp"
 #include "../Share/SpinMutex.hpp"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 class WTSObject
 {
 public:
@@ -110,4 +110,4 @@ public:
 		}
 	}
 };
-NS_WTP_END
+NS_VVTP_END

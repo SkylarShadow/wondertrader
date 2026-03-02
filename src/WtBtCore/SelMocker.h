@@ -20,7 +20,7 @@
 
 class SelStrategy;
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class HisDataReplayer;
 
@@ -68,7 +68,7 @@ private:
 	void	proc_tick(const char* stdCode, double last_px, double cur_px);
 
 public:
-	bool	init_sel_factory(WTSVariant* cfg);
+	bool	init_sel_factory(VVTSVariant* cfg);
 
 public:
 	//////////////////////////////////////////////////////////////////////////
@@ -171,11 +171,11 @@ protected:
 		_KlineTag() :_closed(false), _count(0){}
 
 	} KlineTag;
-	typedef wt_hashmap<std::string, KlineTag> KlineTags;
+	typedef vvt_hashmap<std::string, KlineTag> KlineTags;
 	KlineTags	_kline_tags;
 
 	typedef std::pair<double, uint64_t>	PriceInfo;
-	typedef wt_hashmap<std::string, PriceInfo> PriceMap;
+	typedef vvt_hashmap<std::string, PriceInfo> PriceMap;
 	PriceMap		_price_map;
 
 	typedef struct _DetailInfo
@@ -222,7 +222,7 @@ protected:
 
 		inline double valid() const { return _volume - _frozen; }
 	} PosInfo;
-	typedef wt_hashmap<std::string, PosInfo> PositionMap;
+	typedef vvt_hashmap<std::string, PosInfo> PositionMap;
 	PositionMap		_pos_map;
 
 	typedef struct _SigInfo
@@ -243,7 +243,7 @@ protected:
 			_gentime = 0;
 		}
 	}SigInfo;
-	typedef wt_hashmap<std::string, SigInfo>	SignalMap;
+	typedef vvt_hashmap<std::string, SigInfo>	SignalMap;
 	SignalMap		_sig_map;
 
 	std::stringstream	_trade_logs;
@@ -256,7 +256,7 @@ protected:
 	bool			_is_in_schedule;	//是否在自动调度中
 
 	//用户数据
-	typedef wt_hashmap<std::string, std::string> StringHashMap;
+	typedef vvt_hashmap<std::string, std::string> StringHashMap;
 	StringHashMap	_user_datas;
 	bool			_ud_modified;
 

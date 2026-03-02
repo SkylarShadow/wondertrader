@@ -2,11 +2,11 @@
 #include "LMDBKeys.h"
 
 #include "../Includes/WTSStruct.h"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Share/StrUtil.hpp"
 #include "../Share/StdUtils.hpp"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 //By Wesley @ 2022.01.05
 #include "../Share/fmtlib.h"
@@ -48,7 +48,7 @@ WtBtDtReaderAD::~WtBtDtReaderAD()
 
 }
 
-void WtBtDtReaderAD::init(WTSVariant* cfg, IBtDtReaderSink* sink)
+void WtBtDtReaderAD::init(VVTSVariant* cfg, IBtDtReaderSink* sink)
 {
 	_sink = sink;
 

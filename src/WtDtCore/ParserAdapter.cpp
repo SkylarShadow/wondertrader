@@ -16,10 +16,10 @@
 #include "../Share/StrUtil.hpp"
 #include "../Share/DLLHelper.hpp"
 
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/WTSContractInfo.hpp"
 #include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 
 #include "../WTSTools/WTSBaseDataMgr.h"
 #include "../WTSTools/WTSLogger.h"
@@ -81,7 +81,7 @@ bool ParserAdapter::initExt(const char* id, IParserApi* api)
 }
 
 
-bool ParserAdapter::init(const char* id, WTSVariant* cfg)
+bool ParserAdapter::init(const char* id, VVTSVariant* cfg)
 {
 	if (cfg == NULL)
 		return false;

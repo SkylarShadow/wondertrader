@@ -1,7 +1,7 @@
 ﻿#include "WtUftStraDemo.h"
 #include "../Includes/IUftStraCtx.h"
 
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/WTSDataDef.hpp"
 #include "../Includes/WTSContractInfo.hpp"
 #include "../Share/TimeUtils.hpp"
@@ -38,7 +38,7 @@ const char* WtUftStraDemo::getFactName()
 	return FACT_NAME;
 }
 
-bool WtUftStraDemo::init(WTSVariant* cfg)
+bool WtUftStraDemo::init(VVTSVariant* cfg)
 {
 	//这里演示一下外部传入参数的获取
 	_code = cfg->getCString("code");

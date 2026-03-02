@@ -1,6 +1,6 @@
 ﻿#include "WtRdmDtReader.h"
 
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Share/TimeUtils.hpp"
 #include "../Share/CodeHelper.hpp"
 #include "../Share/DLLHelper.hpp"
@@ -66,7 +66,7 @@ WtRdmDtReader::~WtRdmDtReader()
 		_thrd_check->join();
 }
 
-void WtRdmDtReader::init(WTSVariant* cfg, IRdmDtReaderSink* sink)
+void WtRdmDtReader::init(VVTSVariant* cfg, IRdmDtReaderSink* sink)
 {
 	_sink = sink;
 
@@ -174,7 +174,7 @@ bool WtRdmDtReader::loadStkAdjFactorsFromFile(const char* adjfile)
 		return false;
 	}
 
-	WTSVariant* doc = WTSCfgLoader::load_from_file(adjfile);
+	VVTSVariant* doc = WTSCfgLoader::load_from_file(adjfile);
 	if (doc == NULL)
 	{
 		pipe_rdmreader_log(_sink, LL_ERROR, "Loading adjusting factors file {} failed", adjfile);
@@ -185,10 +185,10 @@ bool WtRdmDtReader::loadStkAdjFactorsFromFile(const char* adjfile)
 	uint32_t fct_cnt = 0;
 	for (const std::string& exchg : doc->memberNames())
 	{
-		WTSVariant* itemExchg = doc->get(exchg);
+		VVTSVariant* itemExchg = doc->get(exchg);
 		for (const std::string& code : itemExchg->memberNames())
 		{
-			WTSVariant* ayFacts = itemExchg->get(code);
+			VVTSVariant* ayFacts = itemExchg->get(code);
 			if (!ayFacts->isArray())
 				continue;
 
@@ -210,7 +210,7 @@ bool WtRdmDtReader::loadStkAdjFactorsFromFile(const char* adjfile)
 			AdjFactorList& fctrLst = _adj_factors[key];
 			for (uint32_t i = 0; i < ayFacts->size(); i++)
 			{
-				WTSVariant* fItem = ayFacts->get(i);
+				VVTSVariant* fItem = ayFacts->get(i);
 				AdjFactor adjFact;
 				adjFact._date = fItem->getUInt32("date");
 				adjFact._factor = fItem->getDouble("factor");

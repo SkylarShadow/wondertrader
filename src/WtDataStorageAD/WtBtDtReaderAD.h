@@ -6,7 +6,7 @@
 
 #include "../WTSUtils/WtLMDB.hpp"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 
 class WtBtDtReaderAD : public IBtDtReader
 {
@@ -17,7 +17,7 @@ public:
 //////////////////////////////////////////////////////////////////////////
 //IBtDtReader
 public:
-	virtual void init(WTSVariant* cfg, IBtDtReaderSink* sink);
+	virtual void init(VVTSVariant* cfg, IBtDtReaderSink* sink);
 
 	virtual bool read_raw_bars(const char* exchg, const char* code, WTSKlinePeriod period, std::string& buffer) override;
 	virtual bool read_raw_ticks(const char* exchg, const char* code, uint32_t uDate, std::string& buffer) override;
@@ -33,7 +33,7 @@ private:
 	 *	Tick数据，每个合约一个数据库，路径如./ticks/CFFEX/IF2101
 	 */
 	typedef std::shared_ptr<WtLMDB> WtLMDBPtr;
-	typedef wt_hashmap<std::string, WtLMDBPtr> WtLMDBMap;
+	typedef vvt_hashmap<std::string, WtLMDBPtr> WtLMDBMap;
 
 	WtLMDBMap	_exchg_m1_dbs;
 	WtLMDBMap	_exchg_m5_dbs;
@@ -47,4 +47,4 @@ private:
 	WtLMDBPtr	get_t_db(const char* exchg, const char* code);
 };
 
-NS_WTP_END
+NS_VVTP_END

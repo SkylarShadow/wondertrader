@@ -251,7 +251,7 @@ void* ShareBlocks::make_valid(const char* domain, const char* section, const cha
 		}
 
 		secInfo = &shm._block->_sections[shm._block->_count];
-		wt_strcpy(secInfo->_name, section);
+		vvt_strcpy(secInfo->_name, section);
 		secInfo->_updatetime = TimeUtils::getLocalTimeNow();
 		kvPair = &shm._sections[section];
 		kvPair->_index = shm._block->_count;
@@ -279,7 +279,7 @@ void* ShareBlocks::make_valid(const char* domain, const char* section, const cha
 			return nullptr;
 
 		keyInfo = &secInfo->_keys[secInfo->_count];
-		wt_strcpy(keyInfo->_key, key);
+		vvt_strcpy(keyInfo->_key, key);
 		keyInfo->_updatetime = TimeUtils::getLocalTimeNow();
 		keyInfo->_offset = secInfo->_offset;
 		kvPair->_keys[key] = keyInfo;
@@ -392,7 +392,7 @@ const char* ShareBlocks::allocate_string(const char* domain, const char* section
 	{
 		//如果type为0，说明是新分配的，则用初始值填充
 		keyInfo->_type = SMVT_STRING;
-		wt_strcpy(secInfo->_data + keyInfo->_offset, initVal, SMVT_SIZES[SMVT_STRING]);
+		vvt_strcpy(secInfo->_data + keyInfo->_offset, initVal, SMVT_SIZES[SMVT_STRING]);
 	}
 
 	return (secInfo->_data + keyInfo->_offset);
@@ -491,7 +491,7 @@ bool ShareBlocks::set_string(const char* domain, const char* section, const char
 		return false;
 
 	keyInfo->_type = SMVT_STRING;
-	wt_strcpy(secInfo->_data + keyInfo->_offset, val, SMVT_SIZES[SMVT_STRING]);
+	vvt_strcpy(secInfo->_data + keyInfo->_offset, val, SMVT_SIZES[SMVT_STRING]);
 
 	return true;
 }

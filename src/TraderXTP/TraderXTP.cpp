@@ -14,7 +14,7 @@
 #include "../Includes/WTSSessionInfo.hpp"
 #include "../Includes/WTSTradeDef.hpp"
 #include "../Includes/WTSError.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 
 #include "../Share/ModuleHelper.hpp"
 
@@ -580,7 +580,7 @@ void TraderXTP::OnQueryAsset(XTPQueryAssetRsp *asset, XTPRI *error_info, int req
 #pragma endregion "XTP::API:TraderSpi"
 
 #pragma region "ITraderApi"
-bool TraderXTP::init(WTSVariant *params)
+bool TraderXTP::init(VVTSVariant *params)
 {
 	_user = params->getCString("user");
 	_pass = params->getCString("pass");
@@ -854,7 +854,7 @@ int TraderXTP::orderInsert(WTSEntrust* entrust)
 	extractEntrustID(entrust->getEntrustID(), orderref);
 	req.order_client_id = orderref;
 	strcpy(req.ticker, entrust->getCode());
-	req.market = wt_stricmp(entrust->getExchg(), "SSE") == 0 ? XTP_MKT_SH_A : XTP_MKT_SZ_A;
+	req.market = vvt_stricmp(entrust->getExchg(), "SSE") == 0 ? XTP_MKT_SH_A : XTP_MKT_SZ_A;
 	req.price = entrust->getPrice();
 	req.quantity = (int64_t)entrust->getVolume();
 	req.price_type = XTP_PRICE_LIMIT;

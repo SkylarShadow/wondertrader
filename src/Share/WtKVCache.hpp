@@ -12,7 +12,7 @@ typedef std::shared_ptr<BoostMappingFile> BoostMFPtr;
 
 #pragma warning(disable:4200)
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 
 typedef std::function<void(const char*)> CacheLogger;
 
@@ -55,7 +55,7 @@ private:
 
 	CacheBlockPair	_cache;
 	SpinMutex		_lock;
-	wt_hashmap<std::string, uint32_t> _indice;
+	vvt_hashmap<std::string, uint32_t> _indice;
 
 private:
 	bool	resize(uint32_t newCap, CacheLogger logger = nullptr)
@@ -209,7 +209,7 @@ public:
 		auto it = _indice.find(key);
 		if (it != _indice.end())
 		{
-			wt_strcpy(_cache._block->_items[it->second]._val, val, len);
+			vvt_strcpy(_cache._block->_items[it->second]._val, val, len);
 		}
 		else
 		{
@@ -218,8 +218,8 @@ public:
 				resize(_cache._block->_capacity*2, logger);
 
 			_indice[key] = _cache._block->_size;
-			wt_strcpy(_cache._block->_items[_cache._block->_size]._key, key);
-			wt_strcpy(_cache._block->_items[_cache._block->_size]._val, val, len);
+			vvt_strcpy(_cache._block->_items[_cache._block->_size]._key, key);
+			vvt_strcpy(_cache._block->_items[_cache._block->_size]._val, val, len);
 			_cache._block->_size += 1;
 			_lock.unlock();
 		}
@@ -247,4 +247,4 @@ public:
 	}
 };
 
-NS_WTP_END
+NS_VVTP_END

@@ -50,7 +50,7 @@ WtDtRunner& getRunner()
 	return runner;
 }
 
-void initialize(WtString cfgFile, WtString logCfg, bool bCfgFile, bool bLogCfgFile)
+void initialize(VvtString cfgFile, VvtString logCfg, bool bCfgFile, bool bLogCfgFile)
 {
 #ifdef _MSC_VER
 	CMiniDumper::Enable(getModuleName(), true, WtHelper::get_cwd());
@@ -70,7 +70,7 @@ const char* get_version()
 	{
 		_ver = PLATFORM_NAME;
 		_ver += " ";
-		_ver += WT_VERSION;
+		_ver += VVT_VERSION;
 		_ver += " Build@";
 		_ver += __DATE__;
 		_ver += " ";
@@ -98,7 +98,7 @@ bool create_ext_parser(const char* id)
 	return getRunner().createExtParser(id);
 }
 
-void parser_push_quote(const char* id, WTSTickStruct* curTick, WtUInt32 uProcFlag)
+void parser_push_quote(const char* id, WTSTickStruct* curTick, VvtUInt32 uProcFlag)
 {
 	getRunner().on_ext_parser_quote(id, curTick, uProcFlag);
 }

@@ -4,12 +4,12 @@
 #include "../Includes/WTSDataDef.hpp"
 #include "../Share/fmtlib.h"
 
-void on_get_bar(WTSBarStruct* bar, WtUInt32 count, bool isLast)
+void on_get_bar(WTSBarStruct* bar, VvtUInt32 count, bool isLast)
 {
 	fmt::print("{}.{}\n", bar->date, bar->time);
 }
 
-void on_bar_cnt(WtUInt32 dataCnt)
+void on_bar_cnt(VvtUInt32 dataCnt)
 {
 	fmt::print("共{}条K线\n", dataCnt);
 }

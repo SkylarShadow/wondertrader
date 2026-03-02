@@ -14,7 +14,7 @@
 #include "../Includes/WTSSessionInfo.hpp"
 #include "../Includes/WTSTradeDef.hpp"
 #include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/IBaseDataMgr.h"
 
 #include "../Share/ModuleHelper.hpp"
@@ -238,7 +238,7 @@ TraderCTPOpt::~TraderCTPOpt()
 {
 }
 
-bool TraderCTPOpt::init(WTSVariant* params)
+bool TraderCTPOpt::init(VVTSVariant* params)
 {
 	m_strFront = params->get("front")->asCString();
 	m_strBroker = params->get("broker")->asCString();
@@ -710,8 +710,8 @@ int TraderCTPOpt::orderAction(WTSEntrustAction* action)
 	CThostFtdcInputOrderActionField req;
 	memset(&req, 0, sizeof(req));
 	///经纪公司代码
-	wt_strcpy(req.BrokerID, m_strBroker.c_str(), m_strBroker.size());
-	wt_strcpy(req.InvestorID, m_strUser.c_str(), m_strUser.size());
+	vvt_strcpy(req.BrokerID, m_strBroker.c_str(), m_strBroker.size());
+	vvt_strcpy(req.InvestorID, m_strUser.c_str(), m_strUser.size());
 	///报单引用
 	fmt::format_to(req.OrderRef, "{}", orderref);
 	///请求编号
@@ -1667,7 +1667,7 @@ bool TraderCTPOpt::extractEntrustID(const char* entrustid, uint32_t &frontid, ui
 {
 	//Market.FrontID.SessionID.OrderRef
 	thread_local static char buffer[64];
-	wt_strcpy(buffer, entrustid);
+	vvt_strcpy(buffer, entrustid);
 	char* s = buffer;
 	auto idx = StrUtil::findFirst(s, '#');
 	if (idx == std::string::npos)

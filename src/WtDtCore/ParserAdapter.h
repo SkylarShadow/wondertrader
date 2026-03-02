@@ -14,11 +14,11 @@
 #include <boost/core/noncopyable.hpp>
 #include "../Includes/IParserApi.h"
 
-NS_WTP_BEGIN
-class WTSVariant;
-NS_WTP_END
+NS_VVTP_BEGIN
+class VVTSVariant;
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 class wxMainFrame;
 class WTSBaseDataMgr;
 class DataManager;
@@ -31,7 +31,7 @@ public:
 	~ParserAdapter();
 
 public:
-	bool	init(const char* id, WTSVariant* cfg);
+	bool	init(const char* id, VVTSVariant* cfg);
 
 	bool	initExt(const char* id, IParserApi* api);
 
@@ -68,12 +68,12 @@ private:
 	typedef wt_hashset<std::string>	ExchgFilter;
 	ExchgFilter			_exchg_filter;
 	ExchgFilter			_code_filter;
-	WTSVariant*			_cfg;
+	VVTSVariant*			_cfg;
 	std::string			_id;
 };
 
 typedef std::shared_ptr<ParserAdapter>	ParserAdapterPtr;
-typedef wt_hashmap<std::string, ParserAdapterPtr>	ParserAdapterMap;
+typedef vvt_hashmap<std::string, ParserAdapterPtr>	ParserAdapterMap;
 
 class ParserAdapterMgr : private boost::noncopyable
 {

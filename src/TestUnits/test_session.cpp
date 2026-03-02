@@ -1,7 +1,7 @@
 ﻿#include "../Includes/WTSSessionInfo.hpp"
 #include "gtest/gtest/gtest.h"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 TEST(test_session, test_allday)
 {

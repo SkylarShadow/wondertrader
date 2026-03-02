@@ -19,13 +19,13 @@
 #include "../Share/StrUtil.hpp"
 #include "../Share/TimeUtils.hpp"
 
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/IBaseDataMgr.h"
 #include "../Includes/WTSContractInfo.hpp"
 
 #include "../WTSTools/WTSLogger.h"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 WtUftEngine::WtUftEngine()
 	: _cfg(NULL)
@@ -179,7 +179,7 @@ void WtUftEngine::notify_params_update(const char* name)
 	}
 }
 
-void WtUftEngine::init(WTSVariant* cfg, IBaseDataMgr* bdMgr, WtUftDtMgr* dataMgr, EventNotifier* notifier)
+void WtUftEngine::init(VVTSVariant* cfg, IBaseDataMgr* bdMgr, WtUftDtMgr* dataMgr, EventNotifier* notifier)
 {
 	_base_data_mgr = bdMgr;
 	_data_mgr = dataMgr;
@@ -200,7 +200,7 @@ void WtUftEngine::run()
 	_tm_ticker = new WtUftRtTicker(this);
 	if(_cfg && _cfg->has("product"))
 	{
-		WTSVariant* cfgProd = _cfg->get("product");
+		VVTSVariant* cfgProd = _cfg->get("product");
 		_tm_ticker->init(cfgProd->getCString("session"));
 	}
 	else

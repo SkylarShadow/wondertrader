@@ -2,7 +2,7 @@
 #include <functional>
 #include "WtLocalExecuter.h"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 class WtFilterMgr;
 
 typedef std::function<void(ExecCmdPtr)> EnumExecuterCb;
@@ -21,14 +21,14 @@ public:
 
 	void	enum_executer(EnumExecuterCb cb);
 
-	void	set_positions(wt_hashmap<std::string, double> target_pos);
+	void	set_positions(vvt_hashmap<std::string, double> target_pos);
 	void	handle_pos_change(const char* stdCode, double targetPos, double diffPos, const char* execid = "ALL");
 	void	handle_tick(const char* stdCode, WTSTickData* curTick);
 
 	/*
 	 *	加载路由规则
 	 */
-	bool	load_router_rules(WTSVariant* config);
+	bool	load_router_rules(VVTSVariant* config);
 
 	/*
 	 *	
@@ -72,16 +72,16 @@ public:
 	void	commit_cached_targets(double scale = 1.0);
 
 private:
-	typedef wt_hashmap<std::string, ExecCmdPtr> ExecuterMap;
+	typedef vvt_hashmap<std::string, ExecCmdPtr> ExecuterMap;
 	ExecuterMap		_executers;
 	WtFilterMgr*	_filter_mgr;
 
-	typedef wt_hashmap<std::string, double> TargetsMap;
-	wt_hashmap<std::string, TargetsMap>	_all_cached_targets;
+	typedef vvt_hashmap<std::string, double> TargetsMap;
+	vvt_hashmap<std::string, TargetsMap>	_all_cached_targets;
 
 	typedef wt_hashset<std::string>	ExecuterSet;
-	wt_hashmap<std::string, ExecuterSet>	_router_rules;
+	vvt_hashmap<std::string, ExecuterSet>	_router_rules;
 
 	wt_hashset<std::string>	_routed_executers;
 };
-NS_WTP_END
+NS_VVTP_END

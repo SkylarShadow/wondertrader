@@ -10,10 +10,10 @@
 #pragma once
 #include <stdint.h>
 
-#include "../Includes/WTSMarcos.h"
+#include "../Includes/VVTSMarcos.h"
 #include "../Includes/WTSTypes.h"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 class WTSKlineData;
 class WTSKlineSlice;
 class WTSTickSlice;
@@ -21,7 +21,7 @@ class WTSOrdQueSlice;
 class WTSOrdDtlSlice;
 class WTSTransSlice;
 struct WTSBarStruct;
-class WTSVariant;
+class VVTSVariant;
 class IBaseDataMgr;
 class IHotMgr;
 
@@ -158,7 +158,7 @@ public:
 	 *	@param cfg	模块配置项
 	 *	@param sink	模块回调接口
 	 */
-	virtual void init(WTSVariant* cfg, IDataReaderSink* sink, IHisDataLoader* loader = NULL) { _sink = sink; _loader = loader; }
+	virtual void init(VVTSVariant* cfg, IDataReaderSink* sink, IHisDataLoader* loader = NULL) { _sink = sink; _loader = loader; }
 
 	/*
 	 *	@brief	分钟线闭合事件处理接口
@@ -243,4 +243,4 @@ typedef IDataReader* (*FuncCreateDataReader)();
 //删除数据存储对象
 typedef void(*FuncDeleteDataReader)(IDataReader* store);
 
-NS_WTP_END
+NS_VVTP_END

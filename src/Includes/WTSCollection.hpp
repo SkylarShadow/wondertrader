@@ -17,7 +17,7 @@
 
 #include <deque>
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 
 //////////////////////////////////////////////////////////////////////////
 //WTSArray
@@ -598,13 +598,13 @@ protected:
 	virtual ~WTSHashMap() {}
 
 	//std::unordered_map<T, WTSObject*>	_map;
-	wt_hashmap<T, WTSObject*, Hash>	_map;
+	vvt_hashmap<T, WTSObject*, Hash>	_map;
 
 public:
 	/*
 	 *	容器迭代器的定义
 	 */
-	typedef wt_hashmap<T, WTSObject*, Hash>		_MyType;
+	typedef vvt_hashmap<T, WTSObject*, Hash>		_MyType;
 	typedef typename _MyType::const_iterator	ConstIterator;
 
 	/*
@@ -872,4 +872,4 @@ protected:
 	std::deque<WTSObject*>	_queue;
 };
 
-NS_WTP_END
+NS_VVTP_END

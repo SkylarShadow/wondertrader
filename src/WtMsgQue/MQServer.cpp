@@ -23,7 +23,7 @@
 #include <nanomsg/pubsub.h>
 
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 
 inline uint32_t makeMQSvrId()

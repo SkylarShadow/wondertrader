@@ -51,7 +51,7 @@ WtDtRunner& getRunner()
 	return runner;
 }
 
-void initialize(WtString cfgFile, bool isFile, WtString logCfg, FuncOnTickCallback cbTick, FuncOnBarCallback cbBar)
+void initialize(VvtString cfgFile, bool isFile, VvtString logCfg, FuncOnTickCallback cbTick, FuncOnBarCallback cbBar)
 {
 	getRunner().initialize(cfgFile, isFile, getBinDir(), logCfg, cbTick, cbBar);
 }
@@ -63,7 +63,7 @@ const char* get_version()
 	{
 		_ver = PLATFORM_NAME;
 		_ver += " ";
-		_ver += WT_VERSION;
+		_ver += VVT_VERSION;
 		_ver += " Build@";
 		_ver += __DATE__;
 		_ver += " ";
@@ -72,7 +72,7 @@ const char* get_version()
 	return _ver.c_str();
 }
 
-WtUInt32 get_bars_by_range(const char* stdCode, const char* period, WtUInt64 beginTime, WtUInt64 endTime, FuncGetBarsCallback cb, FuncCountDataCallback cbCnt)
+VvtUInt32 get_bars_by_range(const char* stdCode, const char* period, VvtUInt64 beginTime, VvtUInt64 endTime, FuncGetBarsCallback cb, FuncCountDataCallback cbCnt)
 {
 	WTSKlineSlice* kData = getRunner().get_bars_by_range(stdCode, period, beginTime, endTime);
 	if (kData)
@@ -92,7 +92,7 @@ WtUInt32 get_bars_by_range(const char* stdCode, const char* period, WtUInt64 beg
 	}
 }
 
-WtUInt32 get_bars_by_date(const char* stdCode, const char* period, WtUInt32 uDate, FuncGetBarsCallback cb, FuncCountDataCallback cbCnt)
+VvtUInt32 get_bars_by_date(const char* stdCode, const char* period, VvtUInt32 uDate, FuncGetBarsCallback cb, FuncCountDataCallback cbCnt)
 {
 	WTSKlineSlice* kData = getRunner().get_bars_by_date(stdCode, period, uDate);
 	if (kData)
@@ -112,7 +112,7 @@ WtUInt32 get_bars_by_date(const char* stdCode, const char* period, WtUInt32 uDat
 	}
 }
 
-WtUInt32	get_ticks_by_range(const char* stdCode, WtUInt64 beginTime, WtUInt64 endTime, FuncGetTicksCallback cb, FuncCountDataCallback cbCnt)
+VvtUInt32	get_ticks_by_range(const char* stdCode, VvtUInt64 beginTime, VvtUInt64 endTime, FuncGetTicksCallback cb, FuncCountDataCallback cbCnt)
 {
 	WTSTickSlice* slice = getRunner().get_ticks_by_range(stdCode, beginTime, endTime);
 	if (slice)
@@ -136,7 +136,7 @@ WtUInt32	get_ticks_by_range(const char* stdCode, WtUInt64 beginTime, WtUInt64 en
 	}
 }
 
-WtUInt32 get_bars_by_count(const char* stdCode, const char* period, WtUInt32 count, WtUInt64 endTime, FuncGetBarsCallback cb, FuncCountDataCallback cbCnt)
+VvtUInt32 get_bars_by_count(const char* stdCode, const char* period, VvtUInt32 count, VvtUInt64 endTime, FuncGetBarsCallback cb, FuncCountDataCallback cbCnt)
 {
 	WTSKlineSlice* kData = getRunner().get_bars_by_count(stdCode, period, count, endTime);
 	if (kData)
@@ -156,7 +156,7 @@ WtUInt32 get_bars_by_count(const char* stdCode, const char* period, WtUInt32 cou
 	}
 }
 
-WtUInt32	get_ticks_by_count(const char* stdCode, WtUInt32 count, WtUInt64 endTime, FuncGetTicksCallback cb, FuncCountDataCallback cbCnt)
+VvtUInt32	get_ticks_by_count(const char* stdCode, VvtUInt32 count, VvtUInt64 endTime, FuncGetTicksCallback cb, FuncCountDataCallback cbCnt)
 {
 	WTSTickSlice* slice = getRunner().get_ticks_by_count(stdCode, count, endTime);
 	if (slice)
@@ -180,7 +180,7 @@ WtUInt32	get_ticks_by_count(const char* stdCode, WtUInt32 count, WtUInt64 endTim
 	}
 }
 
-WtUInt32 get_ticks_by_date(const char* stdCode, WtUInt32 uDate, FuncGetTicksCallback cb, FuncCountDataCallback cbCnt)
+VvtUInt32 get_ticks_by_date(const char* stdCode, VvtUInt32 uDate, FuncGetTicksCallback cb, FuncCountDataCallback cbCnt)
 {
 	WTSTickSlice* slice = getRunner().get_ticks_by_date(stdCode, uDate);
 	if (slice)
@@ -204,7 +204,7 @@ WtUInt32 get_ticks_by_date(const char* stdCode, WtUInt32 uDate, FuncGetTicksCall
 	}
 }
 
-WtUInt32 get_sbars_by_date(const char* stdCode, WtUInt32 secs, WtUInt32 uDate, FuncGetBarsCallback cb, FuncCountDataCallback cbCnt)
+VvtUInt32 get_sbars_by_date(const char* stdCode, VvtUInt32 secs, VvtUInt32 uDate, FuncGetBarsCallback cb, FuncCountDataCallback cbCnt)
 {
 	WTSKlineSlice* kData = getRunner().get_sbars_by_date(stdCode, secs, uDate);
 	if (kData)

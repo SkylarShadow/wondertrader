@@ -17,7 +17,7 @@
 
 #include "../Share/CodeHelper.hpp"
 #include "../Includes/WTSError.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/WTSTradeDef.hpp"
 #include "../Includes/WTSRiskDef.hpp"
 #include "../Share/StrUtil.hpp"
@@ -50,7 +50,7 @@ TraderAdapter::~TraderAdapter()
 {
 }
 
-bool TraderAdapter::init(const char* id, WTSVariant* params, IBaseDataMgr* bdMgr)
+bool TraderAdapter::init(const char* id, VVTSVariant* params, IBaseDataMgr* bdMgr)
 {
 	if (params == NULL)
 		return false;

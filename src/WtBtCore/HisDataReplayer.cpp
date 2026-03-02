@@ -13,11 +13,11 @@
 
 #include <fstream>
 
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/WTSDataDef.hpp"
 #include "../Includes/WTSContractInfo.hpp"
 #include "../Includes/WTSSessionInfo.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 
 #include "../Share/decimal.h"
 #include "../Share/StrUtil.hpp"
@@ -166,7 +166,7 @@ HisDataReplayer::~HisDataReplayer()
 }
 
 
-bool HisDataReplayer::init(WTSVariant* cfg, EventNotifier* notifier /* = NULL */, IBtDataLoader* dataLoader /* = NULL */)
+bool HisDataReplayer::init(VVTSVariant* cfg, EventNotifier* notifier /* = NULL */, IBtDataLoader* dataLoader /* = NULL */)
 {
 	_notifier = notifier;
 	_bt_loader = dataLoader;
@@ -186,7 +186,7 @@ bool HisDataReplayer::init(WTSVariant* cfg, EventNotifier* notifier /* = NULL */
 		_base_dir = StrUtil::standardisePath(cfg->getCString("path"));
 	}
 	
-	if(_mode == "storage" || _mode == "bin" || _mode == "wtp")
+	if(_mode == "storage" || _mode == "bin" || _mode == "vvtp")
 	{
 		if (cfg->has("store"))
 		{
@@ -194,7 +194,7 @@ bool HisDataReplayer::init(WTSVariant* cfg, EventNotifier* notifier /* = NULL */
 		}
 		else
 		{
-			WTSVariant* item = WTSVariant::createObject();
+			VVTSVariant* item = VVTSVariant::createObject();
 			item->append("path", _base_dir.c_str());
 			_his_dt_mgr.init(item);
 			item->release();
@@ -226,18 +226,18 @@ bool HisDataReplayer::init(WTSVariant* cfg, EventNotifier* notifier /* = NULL */
 	WTSLogger::info("nosim_if_notrade is {}", _nosim_if_notrade);
 
 	//基础数据文件
-	WTSVariant* cfgBF = cfg->get("basefiles");
+	VVTSVariant* cfgBF = cfg->get("basefiles");
 	if (cfgBF->get("session"))
 		_bd_mgr.loadSessions(cfgBF->getCString("session"));
 
-	WTSVariant* cfgItem = cfgBF->get("commodity");
+	VVTSVariant* cfgItem = cfgBF->get("commodity");
 	if (cfgItem)
 	{
-		if (cfgItem->type() == WTSVariant::VT_String)
+		if (cfgItem->type() == VVTSVariant::VT_String)
 		{
 			_bd_mgr.loadCommodities(cfgItem->asCString());
 		}
-		else if (cfgItem->type() == WTSVariant::VT_Array)
+		else if (cfgItem->type() == VVTSVariant::VT_Array)
 		{
 			for(uint32_t i = 0; i < cfgItem->size(); i ++)
 			{
@@ -249,11 +249,11 @@ bool HisDataReplayer::init(WTSVariant* cfg, EventNotifier* notifier /* = NULL */
 	cfgItem = cfgBF->get("contract");
 	if (cfgItem)
 	{
-		if (cfgItem->type() == WTSVariant::VT_String)
+		if (cfgItem->type() == VVTSVariant::VT_String)
 		{
 			_bd_mgr.loadContracts(cfgItem->asCString());
 		}
-		else if (cfgItem->type() == WTSVariant::VT_Array)
+		else if (cfgItem->type() == VVTSVariant::VT_Array)
 		{
 			for (uint32_t i = 0; i < cfgItem->size(); i++)
 			{
@@ -341,7 +341,7 @@ bool HisDataReplayer::loadStkAdjFactorsFromFile(const char* adjfile)
 	std::string content;
 	StdFile::read_file_content(adjfile, content);
 
-	WTSVariant* doc = WTSCfgLoader::load_from_file(adjfile);
+	VVTSVariant* doc = WTSCfgLoader::load_from_file(adjfile);
 	if (doc == NULL)
 	{
 		WTSLogger::error("Parsing adjust factor file {} faield", adjfile);
@@ -352,10 +352,10 @@ bool HisDataReplayer::loadStkAdjFactorsFromFile(const char* adjfile)
 	uint32_t fct_cnt = 0;
 	for (const std::string& exchg : doc->memberNames())
 	{
-		WTSVariant* itemExchg = doc->get(exchg);
+		VVTSVariant* itemExchg = doc->get(exchg);
 		for (const std::string& code : itemExchg->memberNames())
 		{
-			WTSVariant* ayFacts = itemExchg->get(code);
+			VVTSVariant* ayFacts = itemExchg->get(code);
 			if (!ayFacts->isArray())
 				continue;
 
@@ -376,7 +376,7 @@ bool HisDataReplayer::loadStkAdjFactorsFromFile(const char* adjfile)
 			AdjFactorList& fctrLst = _adj_factors[key];
 			for (uint32_t i = 0; i < ayFacts->size(); i++)
 			{
-				WTSVariant* fItem = ayFacts->get(i);
+				VVTSVariant* fItem = ayFacts->get(i);
 				AdjFactor adjFact;
 				adjFact._date = fItem->getUInt32("date");
 				adjFact._factor = fItem->getDouble("factor");
@@ -405,15 +405,15 @@ bool HisDataReplayer::loadStkAdjFactorsFromFile(const char* adjfile)
 void HisDataReplayer::register_task(uint32_t taskid, uint32_t date, uint32_t time, const char* period, const char* trdtpl /* = "CHINA" */, const char* session /* = "TRADING" */)
 {
 	TaskPeriodType ptype;
-	if (wt_stricmp(period, "d") == 0)
+	if (vvt_stricmp(period, "d") == 0)
 		ptype = TPT_Daily;
-	else if (wt_stricmp(period, "w") == 0)
+	else if (vvt_stricmp(period, "w") == 0)
 		ptype = TPT_Weekly;
-	else if (wt_stricmp(period, "m") == 0)
+	else if (vvt_stricmp(period, "m") == 0)
 		ptype = TPT_Monthly;
-	else if (wt_stricmp(period, "y") == 0)
+	else if (vvt_stricmp(period, "y") == 0)
 		ptype = TPT_Yearly;
-	else if (wt_stricmp(period, "min") == 0)
+	else if (vvt_stricmp(period, "min") == 0)
 		ptype = TPT_Minute;
 	else
 		ptype = TPT_None;
@@ -2895,7 +2895,7 @@ void HisDataReplayer::loadFees(const char* filename)
 		return;
 	}
 
-	WTSVariant* cfg = WTSCfgLoader::load_from_file(filename);
+	VVTSVariant* cfg = WTSCfgLoader::load_from_file(filename);
 	if (cfg == NULL)
 	{
 		WTSLogger::error("Converting fees template file {} failed", filename);
@@ -2905,7 +2905,7 @@ void HisDataReplayer::loadFees(const char* filename)
 	auto keys = cfg->memberNames();
 	for (const std::string& key : keys)
 	{
-		WTSVariant* cfgItem = cfg->get(key.c_str());
+		VVTSVariant* cfgItem = cfg->get(key.c_str());
 		FeeItem& fItem = _fee_map[key];
 		fItem._by_volume = cfgItem->getBoolean("byvolume");
 		fItem._open = cfgItem->getDouble("open");

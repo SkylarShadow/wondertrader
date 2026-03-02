@@ -12,7 +12,7 @@
 #include "WtHelper.h"
 
 #include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/WTSContractInfo.hpp"
 
 #include "../Share/StrUtil.hpp"
@@ -46,7 +46,7 @@ WtDataManager::~WtDataManager()
 	_bars_cache.clear();
 }
 
-bool WtDataManager::initStore(WTSVariant* cfg)
+bool WtDataManager::initStore(VVTSVariant* cfg)
 {
 	if (cfg == NULL)
 		return false;
@@ -88,7 +88,7 @@ bool WtDataManager::initStore(WTSVariant* cfg)
 	return true;
 }
 
-bool WtDataManager::init(WTSVariant* cfg, WtDtRunner* runner)
+bool WtDataManager::init(VVTSVariant* cfg, WtDtRunner* runner)
 {
 	_runner = runner;
 	if (_runner)

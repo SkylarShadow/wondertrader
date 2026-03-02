@@ -142,14 +142,14 @@
     <ClInclude Include="..\Includes\WTSDataDef.hpp" />
     <ClInclude Include="..\Includes\WTSError.hpp" />
     <ClInclude Include="..\Includes\WTSSwitchItem.hpp" />
-    <ClInclude Include="..\Includes\WTSMarcos.h" />
+    <ClInclude Include="..\Includes\VVTSMarcos.h" />
     <ClInclude Include="..\Includes\WTSObject.hpp" />
     <ClInclude Include="..\Includes\WTSRiskDef.hpp" />
     <ClInclude Include="..\Includes\WTSSessionInfo.hpp" />
     <ClInclude Include="..\Includes\WTSStruct.h" />
     <ClInclude Include="..\Includes\WTSTradeDef.hpp" />
     <ClInclude Include="..\Includes\WTSTypes.h" />
-    <ClInclude Include="..\Includes\WTSVariant.hpp" />
+    <ClInclude Include="..\Includes\VVTSVariant.hpp" />
     <ClInclude Include="..\Includes\WTSVersion.h" />
     <ClInclude Include="BoostFile.hpp" />
     <ClInclude Include="BoostMappingFile.hpp" />

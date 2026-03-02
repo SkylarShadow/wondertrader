@@ -16,8 +16,8 @@
 #include "../Share/threadpool.hpp"
 #include "../Share/SpinMutex.hpp"
 
-NS_WTP_BEGIN
-class WTSVariant;
+NS_VVTP_BEGIN
+class VVTSVariant;
 class IDataManager;
 class IBaseDataMgr;
 class TraderAdapter;
@@ -36,7 +36,7 @@ public:
 	 *	初始化执行器
 	 *	传入初始化参数
 	 */
-	bool init(WTSVariant* params);
+	bool init(VVTSVariant* params);
 
 	void setTrader(TraderAdapter* adapter);
 
@@ -72,7 +72,7 @@ public:
 	/*
 	 *	设置目标仓位
 	 */
-	virtual void set_position(const wt_hashmap<std::string, double>& targets) override;
+	virtual void set_position(const vvt_hashmap<std::string, double>& targets) override;
 
 
 	/*
@@ -128,17 +128,17 @@ private:
 	WtExecuterFactory*	_factory;
 	IDataManager*		_data_mgr;
 	IBaseDataMgr*		_bd_mgr;
-	WTSVariant*			_config;
+	VVTSVariant*			_config;
 
 	double				_scale;				//放大倍数
 	bool				_channel_ready;
 
 	SpinMutex			_mtx_units;
 
-	wt_hashmap<std::string, double> _target_pos;
-	wt_hashmap<std::string, double> _diff_pos;
+	vvt_hashmap<std::string, double> _target_pos;
+	vvt_hashmap<std::string, double> _diff_pos;
 
 	typedef std::shared_ptr<boost::threadpool::pool> ThreadPoolPtr;
 	ThreadPoolPtr		_pool;
 };
-NS_WTP_END
+NS_VVTP_END

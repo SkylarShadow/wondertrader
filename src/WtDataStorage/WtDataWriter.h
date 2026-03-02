@@ -12,12 +12,12 @@
 
 typedef std::shared_ptr<BoostMappingFile> BoostMFPtr;
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 class WTSObject;
 class WTSContractInfo;
-NS_WTP_END
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class WtDataWriter : public IDataWriter
 {
@@ -48,7 +48,7 @@ private:
 	void	procTrans(WTSTransData* curTrans);
 
 public:
-	virtual bool init(WTSVariant* params, IDataWriterSink* sink) override;
+	virtual bool init(VVTSVariant* params, IDataWriterSink* sink) override;
 	virtual void release() override;
 
 	virtual bool writeTick(WTSTickData* curTick, uint32_t procFlag) override;
@@ -83,7 +83,7 @@ private:
 		}
 
 	} KBlockPair;
-	typedef wt_hashmap<std::string, KBlockPair*>	KBlockFilesMap;
+	typedef vvt_hashmap<std::string, KBlockPair*>	KBlockFilesMap;
 
 	typedef struct _TickBlockPair
 	{
@@ -102,7 +102,7 @@ private:
 			_lasttime = 0;
 		}
 	} TickBlockPair;
-	typedef wt_hashmap<std::string, TickBlockPair*>	TickBlockFilesMap;
+	typedef vvt_hashmap<std::string, TickBlockPair*>	TickBlockFilesMap;
 
 	typedef struct _TransBlockPair
 	{
@@ -118,7 +118,7 @@ private:
 			_lasttime = 0;
 		}
 	} TransBlockPair;
-	typedef wt_hashmap<std::string, TransBlockPair*>	TransBlockFilesMap;
+	typedef vvt_hashmap<std::string, TransBlockPair*>	TransBlockFilesMap;
 
 	typedef struct _OdeDtlBlockPair
 	{
@@ -134,7 +134,7 @@ private:
 			_lasttime = 0;
 		}
 	} OrdDtlBlockPair;
-	typedef wt_hashmap<std::string, OrdDtlBlockPair*>	OrdDtlBlockFilesMap;
+	typedef vvt_hashmap<std::string, OrdDtlBlockPair*>	OrdDtlBlockFilesMap;
 
 	typedef struct _OdeQueBlockPair
 	{
@@ -150,7 +150,7 @@ private:
 			_lasttime = 0;
 		}
 	} OrdQueBlockPair;
-	typedef wt_hashmap<std::string, OrdQueBlockPair*>	OrdQueBlockFilesMap;
+	typedef vvt_hashmap<std::string, OrdQueBlockPair*>	OrdQueBlockFilesMap;
 	
 
 	KBlockFilesMap	_rt_min1_blocks;
@@ -162,7 +162,7 @@ private:
 	OrdQueBlockFilesMap _rt_ordque_blocks;
 
 	SpinMutex		_lck_tick_cache;
-	wt_hashmap<std::string, uint32_t> _tick_cache_idx;
+	vvt_hashmap<std::string, uint32_t> _tick_cache_idx;
 	BoostMFPtr		_tick_cache_file;
 	RTTickCache*	_tick_cache_block;
 

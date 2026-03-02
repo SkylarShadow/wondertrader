@@ -1,11 +1,11 @@
 ﻿#include "WtDistExecuter.h"
 
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 
 #include "../Share/decimal.h"
 #include "../WTSTools/WTSLogger.h"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 WtDistExecuter::WtDistExecuter(const char* name)
 	: IExecCommand(name)
@@ -18,7 +18,7 @@ WtDistExecuter::~WtDistExecuter()
 
 }
 
-bool WtDistExecuter::init(WTSVariant* params)
+bool WtDistExecuter::init(VVTSVariant* params)
 {
 	if (params == NULL)
 		return false;
@@ -31,7 +31,7 @@ bool WtDistExecuter::init(WTSVariant* params)
 	return true;
 }
 
-void WtDistExecuter::set_position(const wt_hashmap<std::string, double>& targets)
+void WtDistExecuter::set_position(const vvt_hashmap<std::string, double>& targets)
 {
 	for (auto it = targets.begin(); it != targets.end(); it++)
 	{

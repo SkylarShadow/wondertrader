@@ -1,7 +1,7 @@
 ﻿#include "WtTWapExeUnit.h"
 
 #include "../Share/TimeUtils.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/WTSContractInfo.hpp"
 #include "../Share/decimal.h"
 #include "../Share/fmtlib.h"
@@ -71,7 +71,7 @@ const char* WtTWapExeUnit::getName()
 	return "WtTWapExeUnit";
 }
 
-void WtTWapExeUnit::init(ExecuteContext* ctx, const char* stdCode, WTSVariant* cfg)
+void WtTWapExeUnit::init(ExecuteContext* ctx, const char* stdCode, VVTSVariant* cfg)
 {
 	ExecuteUnit::init(ctx, stdCode, cfg);
 

@@ -20,8 +20,8 @@
 
 class WtDtRunner;
 
-NS_WTP_BEGIN
-class WTSVariant;
+NS_VVTP_BEGIN
+class VVTSVariant;
 class WTSTickData;
 class WTSKlineSlice;
 class WTSKlineData;
@@ -39,7 +39,7 @@ public:
 	~WtDataManager();
 
 private:
-	bool	initStore(WTSVariant* cfg);
+	bool	initStore(VVTSVariant* cfg);
 
 	WTSSessionInfo* get_session_info(const char* sid, bool isCode = false);
 
@@ -62,7 +62,7 @@ public:
 	virtual void			reader_log(WTSLogLevel ll, const char* message) override;
 
 public:
-	bool	init(WTSVariant* cfg, WtDtRunner* runner);
+	bool	init(VVTSVariant* cfg, WtDtRunner* runner);
 
 	WTSOrdQueSlice* get_order_queue_slice(const char* stdCode, uint64_t stime, uint64_t etime = 0);
 	WTSOrdDtlSlice* get_order_detail_slice(const char* stdCode, uint64_t stime, uint64_t etime = 0);
@@ -110,7 +110,7 @@ private:
 
 		_BarCache():_last_bartime(0),_period(KP_DAY),_times(1),_bars(NULL){}
 	} BarCache;
-	typedef wt_hashmap<std::string, BarCache>	BarCacheMap;
+	typedef vvt_hashmap<std::string, BarCache>	BarCacheMap;
 	BarCacheMap	_bars_cache;
 
 	typedef WTSHashMap<std::string>	RtBarMap;
@@ -118,4 +118,4 @@ private:
 	StdUniqueMutex	_mtx_rtbars;
 };
 
-NS_WTP_END
+NS_VVTP_END

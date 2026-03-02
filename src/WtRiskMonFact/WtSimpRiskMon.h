@@ -12,7 +12,7 @@
 
 #include "../Includes/RiskMonDefs.h"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class WtSimpleRiskMon : public WtRiskMonitor
 {
@@ -24,7 +24,7 @@ public:
 
 	virtual const char* getFactName() override;
 
-	virtual void init(WtPortContext* ctx, WTSVariant* cfg) override;
+	virtual void init(WtPortContext* ctx, VVTSVariant* cfg) override;
 
 	virtual void run() override;
 

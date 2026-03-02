@@ -14,8 +14,8 @@
 #include <functional>
 #include "WTSTypes.h"
 
-NS_WTP_BEGIN
-class WTSVariant;
+NS_VVTP_BEGIN
+class VVTSVariant;
 class WTSEntrust;
 class WTSOrderInfo;
 class WTSTradeInfo;
@@ -198,7 +198,7 @@ public:
 	/*
 	 *	初始化解析管理器
 	 */
-	virtual bool init(WTSVariant *params) { return false; }
+	virtual bool init(VVTSVariant *params) { return false; }
 
 	/*
 	 *	释放解析管理器
@@ -280,8 +280,8 @@ public:
 
 };
 
-NS_WTP_END
+NS_VVTP_END
 
 //获取IDataMgr的函数指针类型
-typedef wtp::ITraderApi* (*FuncCreateTrader)();
-typedef void(*FuncDeleteTrader)(wtp::ITraderApi* &trader);
+typedef vvtp::ITraderApi* (*FuncCreateTrader)();
+typedef void(*FuncDeleteTrader)(vvtp::ITraderApi* &trader);

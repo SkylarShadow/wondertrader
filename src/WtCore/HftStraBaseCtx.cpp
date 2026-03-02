@@ -25,7 +25,7 @@
 #include <rapidjson/prettywriter.h>
 namespace rj = rapidjson;
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 inline uint32_t makeHftCtxId()
 {
@@ -814,7 +814,7 @@ void HftStraBaseCtx::do_set_position(const char* stdCode, double qty, double pri
 		dInfo._volume = abs(diff);
 		dInfo._opentime = curTm;
 		dInfo._opentdate = curTDate;
-		wt_strcpy(dInfo._usertag, userTag);
+		vvt_strcpy(dInfo._usertag, userTag);
 		pInfo._details.emplace_back(dInfo);
 
 		double fee = commInfo->calcFee(trdPx, abs(diff), 0);
@@ -886,7 +886,7 @@ void HftStraBaseCtx::do_set_position(const char* stdCode, double qty, double pri
 			dInfo._volume = abs(left);
 			dInfo._opentime = curTm;
 			dInfo._opentdate = curTDate;
-			wt_strcpy(dInfo._usertag, userTag);
+			vvt_strcpy(dInfo._usertag, userTag);
 			pInfo._details.emplace_back(dInfo);
 
 			//这里还需要写一笔成交记录

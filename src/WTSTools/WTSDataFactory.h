@@ -10,7 +10,7 @@
 #pragma once
 #include "../Includes/IDataFactory.h"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class WTSDataFactory : public IDataFactory
 {

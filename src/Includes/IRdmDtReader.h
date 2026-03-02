@@ -10,10 +10,10 @@
 #pragma once
 #include <stdint.h>
 
-#include "../Includes/WTSMarcos.h"
+#include "../Includes/VVTSMarcos.h"
 #include "../Includes/WTSTypes.h"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 class WTSKlineSlice;
 class WTSTickSlice;
 class WTSOrdQueSlice;
@@ -21,7 +21,7 @@ class WTSOrdDtlSlice;
 class WTSTransSlice;
 class IBaseDataMgr;
 class IHotMgr;
-class WTSVariant;
+class VVTSVariant;
 
 
 /*
@@ -59,7 +59,7 @@ public:
 	virtual ~IRdmDtReader(){}
 
 public:
-	virtual void init(WTSVariant* cfg, IRdmDtReaderSink* sink) { _sink = sink; }
+	virtual void init(VVTSVariant* cfg, IRdmDtReaderSink* sink) { _sink = sink; }
 
 	virtual WTSOrdDtlSlice*	readOrdDtlSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime = 0) = 0;
 	virtual WTSOrdQueSlice*	readOrdQueSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime = 0) = 0;
@@ -92,4 +92,4 @@ typedef IRdmDtReader* (*FuncCreateRdmDtReader)();
 //删除数据存储对象
 typedef void(*FuncDeleteRdmDtReader)(IRdmDtReader* store);
 
-NS_WTP_END
+NS_VVTP_END

@@ -14,7 +14,7 @@
 #include "../Includes/WTSSessionInfo.hpp"
 #include "../Includes/WTSTradeDef.hpp"
 #include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/IBaseDataMgr.h"
 
 #include "../Share/ModuleHelper.hpp"
@@ -95,7 +95,7 @@ TraderCTPMini::~TraderCTPMini()
 {
 }
 
-bool TraderCTPMini::init(WTSVariant* params)
+bool TraderCTPMini::init(VVTSVariant* params)
 {
 	m_strFront = params->get("front")->asCString();
 	m_strBroker = params->get("broker")->asCString();
@@ -1278,7 +1278,7 @@ void TraderCTPMini::generateEntrustID(char* buffer, uint32_t frontid, uint32_t s
 bool TraderCTPMini::extractEntrustID(const char* entrustid, uint32_t &frontid, uint32_t &sessionid, uint32_t &orderRef)
 {
 	thread_local static char buffer[64];
-	wt_strcpy(buffer, entrustid);
+	vvt_strcpy(buffer, entrustid);
 	char* s = buffer;
 	auto idx = StrUtil::findFirst(s, '#');
 	if (idx == std::string::npos)

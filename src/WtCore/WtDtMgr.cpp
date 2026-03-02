@@ -15,7 +15,7 @@
 #include "../Share/CodeHelper.hpp"
 
 #include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 
 #include "../WTSTools/WTSLogger.h"
 #include "../WTSTools/WTSDataFactory.h"
@@ -47,7 +47,7 @@ WtDtMgr::~WtDtMgr()
 		_rt_tick_map->release();
 }
 
-bool WtDtMgr::initStore(WTSVariant* cfg)
+bool WtDtMgr::initStore(VVTSVariant* cfg)
 {
 	if (cfg == NULL)
 		return false;
@@ -86,7 +86,7 @@ bool WtDtMgr::initStore(WTSVariant* cfg)
 	return true;
 }
 
-bool WtDtMgr::init(WTSVariant* cfg, WtEngine* engine, bool bForceCache /* = false */)
+bool WtDtMgr::init(VVTSVariant* cfg, WtEngine* engine, bool bForceCache /* = false */)
 {
 	_engine = engine;
 

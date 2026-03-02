@@ -13,12 +13,12 @@
 #include "WTSTypes.h"
 #include "FasterDefs.h"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 class WTSTickData;
 class WTSOrdDtlData;
 class WTSOrdQueData;
 class WTSTransData;
-class WTSVariant;
+class VVTSVariant;
 class WTSArray;
 class IBaseDataMgr;
 
@@ -91,7 +91,7 @@ public:
 	 *	@config	模块配置
 	 *	返回值	是否初始化成功
 	 */
-	virtual bool init(WTSVariant* config) { return false; }
+	virtual bool init(VVTSVariant* config) { return false; }
 
 	/*
 	 *	释放解析模块
@@ -133,8 +133,8 @@ public:
 	virtual void registerSpi(IParserSpi* spi) {}
 };
 
-NS_WTP_END
+NS_VVTP_END
 
 //获取IDataMgr的函数指针类型
-typedef wtp::IParserApi* (*FuncCreateParser)();
-typedef void(*FuncDeleteParser)(wtp::IParserApi* &parser);
+typedef vvtp::IParserApi* (*FuncCreateParser)();
+typedef void(*FuncDeleteParser)(vvtp::IParserApi* &parser);

@@ -11,16 +11,16 @@
 #include "PorterDefs.h"
 #include "../WtBtCore/EventNotifier.h"
 #include "../WtBtCore/HisDataReplayer.h"
-#include "../Includes/WTSMarcos.h"
+#include "../Includes/VVTSMarcos.h"
 
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 class WTSTickData;
 struct WTSBarStruct;
-class WTSVariant;
-NS_WTP_END
+class VVTSVariant;
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 typedef enum tagEngineType
 {
@@ -90,7 +90,7 @@ public:
 	uint32_t	initSelMocker(const char* name, uint32_t date, uint32_t time, const char* period, 
 		const char* trdtpl = "CHINA", const char* session = "TRADING", int32_t slippage = 0, bool isRatioSlp = false);
 
-	bool	initEvtNotifier(WTSVariant* cfg);
+	bool	initEvtNotifier(VVTSVariant* cfg);
 
 	void	ctx_on_init(uint32_t id, EngineType eType);
 	void	ctx_on_session_event(uint32_t id, uint32_t curTDate, bool isBegin = true, EngineType eType = ET_CTA);
@@ -105,9 +105,9 @@ public:
 	void	hft_on_transaction(uint32_t id, const char* stdCode, WTSTransData* newTranns);
 
 	void	hft_on_channel_ready(uint32_t cHandle, const char* trader);
-	void	hft_on_order(uint32_t cHandle, WtUInt32 localid, const char* stdCode, bool isBuy, double totalQty, double leftQty, double price, bool isCanceled, const char* userTag);
-	void	hft_on_trade(uint32_t cHandle, WtUInt32 localid, const char* stdCode, bool isBuy, double vol, double price, const char* userTag);
-	void	hft_on_entrust(uint32_t cHandle, WtUInt32 localid, const char* stdCode, bool bSuccess, const char* message, const char* userTag);
+	void	hft_on_order(uint32_t cHandle, VvtUInt32 localid, const char* stdCode, bool isBuy, double totalQty, double leftQty, double price, bool isCanceled, const char* userTag);
+	void	hft_on_trade(uint32_t cHandle, VvtUInt32 localid, const char* stdCode, bool isBuy, double vol, double price, const char* userTag);
+	void	hft_on_entrust(uint32_t cHandle, VvtUInt32 localid, const char* stdCode, bool bSuccess, const char* message, const char* userTag);
 
 	void	init(const char* logProfile = "", bool isFile = true, const char* outDir = "./outputs_bt");
 	void	config(const char* cfgFile, bool isFile = true);
@@ -115,7 +115,7 @@ public:
 	void	release();
 	void	stop();
 
-	void	set_time_range(WtUInt64 stime, WtUInt64 etime);
+	void	set_time_range(VvtUInt64 stime, VvtUInt64 etime);
 
 	void	enable_tick(bool bEnabled = true);
 
@@ -212,6 +212,6 @@ private:
 	FuncReadTicks	_feeder_ticks;
 	FuncReadFactors	_feeder_fcts;
 	StdUniqueMutex	_feed_mtx;
-	WTSVariant* _cfg;
+	VVTSVariant* _cfg;
 };
 

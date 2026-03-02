@@ -135,7 +135,7 @@
     <ClInclude Include="..\Includes\ITraderApi.h">
       <Filter>Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="..\Includes\WTSMarcos.h">
+    <ClInclude Include="..\Includes\VVTSMarcos.h">
       <Filter>BaseDefs</Filter>
     </ClInclude>
     <ClInclude Include="..\Includes\WTSTypes.h">
@@ -168,7 +168,7 @@
     <ClInclude Include="..\Includes\WTSTradeDef.hpp">
       <Filter>Objects</Filter>
     </ClInclude>
-    <ClInclude Include="..\Includes\WTSVariant.hpp">
+    <ClInclude Include="..\Includes\VVTSVariant.hpp">
       <Filter>Objects</Filter>
     </ClInclude>
     <ClInclude Include="..\Includes\IDataManager.h">

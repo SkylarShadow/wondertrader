@@ -14,10 +14,10 @@
 #include <sys/stat.h>
 #endif
 
-#include "../Includes/WTSMarcos.h"
+#include "../Includes/VVTSMarcos.h"
 #include "lmdb/lmdb.h"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 
 typedef std::vector<std::string> ValueArray;
 typedef std::function<void(const ValueArray&, const ValueArray&)> LMDBQueryCallback;
@@ -397,4 +397,4 @@ private:
 	bool		_commited;
 };
 
-NS_WTP_END
+NS_VVTP_END

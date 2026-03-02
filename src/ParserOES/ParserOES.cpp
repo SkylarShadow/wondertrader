@@ -8,7 +8,7 @@
  * \brief 
  */
 #include "ParserOES.h"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/WTSDataDef.hpp"
 #include "../Share/DLLHelper.hpp"
 #include "../Share/ModuleHelper.hpp"
@@ -124,7 +124,7 @@ ParserOES::~ParserOES()
 {
 }
 
-bool ParserOES::init( WTSVariant* config )
+bool ParserOES::init( VVTSVariant* config )
 {
 	_config = config->getCString("config");
 	_gpsize = config->getUInt32("gpsize");

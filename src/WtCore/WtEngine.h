@@ -26,7 +26,7 @@
 #include "../Share/SpinMutex.hpp"
 
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 class WTSSessionInfo;
 class WTSCommodityInfo;
 class WTSContractInfo;
@@ -34,7 +34,7 @@ class WTSContractInfo;
 class IBaseDataMgr;
 class IHotMgr;
 
-class WTSVariant;
+class VVTSVariant;
 
 class WTSTickData;
 struct WTSBarStruct;
@@ -153,7 +153,7 @@ public:
 	virtual void handle_push_quote(WTSTickData* newTick) override;
 
 public:
-	virtual void init(WTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHotMgr* hotMgr, EventNotifier* notifier);
+	virtual void init(VVTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHotMgr* hotMgr, EventNotifier* notifier);
 
 	virtual void run() = 0;
 
@@ -183,7 +183,7 @@ protected:
 
 	void		update_fund_dynprofit();
 
-	bool		init_riskmon(WTSVariant* cfg);
+	bool		init_riskmon(VVTSVariant* cfg);
 
 private:
 	void		init_outputs();
@@ -208,8 +208,8 @@ protected:
 	//By Wesley @ 2022.02.07
 	//tick数据订阅项，first是contextid，second是订阅选项，0-原始订阅，1-前复权，2-后复权
 	typedef std::pair<uint32_t, uint32_t> SubOpt;
-	typedef wt_hashmap<uint32_t, SubOpt> SubList;
-	typedef wt_hashmap<std::string, SubList>	StraSubMap;
+	typedef vvt_hashmap<uint32_t, SubOpt> SubList;
+	typedef vvt_hashmap<std::string, SubList>	StraSubMap;
 	StraSubMap		_tick_sub_map;	//tick数据订阅表
 	StraSubMap		_bar_sub_map;	//K线数据订阅表
 
@@ -231,7 +231,7 @@ protected:
 			_gentime = 0;
 		}
 	}SigInfo;
-	typedef wt_hashmap<std::string, SigInfo>	SignalMap;
+	typedef vvt_hashmap<std::string, SigInfo>	SignalMap;
 	SignalMap		_sig_map;
 
 	//////////////////////////////////////////////////////////////////////////
@@ -253,7 +253,7 @@ protected:
 			memset(this, 0, sizeof(_FeeItem));
 		}
 	} FeeItem;
-	typedef wt_hashmap<std::string, FeeItem>	FeeMap;
+	typedef vvt_hashmap<std::string, FeeItem>	FeeMap;
 	FeeMap		_fee_map;
 	
 
@@ -293,12 +293,12 @@ protected:
 		}
 	} PosInfo;
 	typedef std::shared_ptr<PosInfo> PosInfoPtr;
-	typedef wt_hashmap<std::string, PosInfoPtr> PositionMap;
+	typedef vvt_hashmap<std::string, PosInfoPtr> PositionMap;
 	PositionMap		_pos_map;
 
 	//////////////////////////////////////////////////////////////////////////
 	//
-	typedef wt_hashmap<std::string, double> PriceMap;
+	typedef vvt_hashmap<std::string, double> PriceMap;
 	PriceMap		_price_map;
 
 	//后台任务线程, 把风控和资金, 持仓更新都放到这个线程里去
@@ -327,9 +327,9 @@ protected:
 	BoostFilePtr	_trade_logs;
 	BoostFilePtr	_close_logs;
 
-	wt_hashmap<std::string, double>	_factors_cache;
+	vvt_hashmap<std::string, double>	_factors_cache;
 
 	//用于标记是否可以推送tickle
 	bool			_ready;
 };
-NS_WTP_END
+NS_VVTP_END

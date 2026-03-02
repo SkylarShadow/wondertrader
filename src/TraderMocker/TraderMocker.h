@@ -11,11 +11,11 @@
 #include "../Includes/WTSCollection.hpp"
 
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 	class WTSTickData;
-NS_WTP_END
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 /*
  *	仿真交易器
@@ -94,7 +94,7 @@ private:
 		}
 	} PosItem;
 
-	wt_hashmap<std::string, PosItem> _positions;
+	vvt_hashmap<std::string, PosItem> _positions;
 	std::string		_pos_file;
 
 private:
@@ -116,7 +116,7 @@ private:
 //////////////////////////////////////////////////////////////////////////
 //ITraderApi
 public:
-	virtual bool init(WTSVariant *params) override;
+	virtual bool init(VVTSVariant *params) override;
 
 	virtual void release() override;
 

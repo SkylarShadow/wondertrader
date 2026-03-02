@@ -10,7 +10,7 @@
 #pragma once
 #include <stdint.h>
 #include "WTSDataDef.hpp"
-#include "WTSMarcos.h"
+#include "VVTSMarcos.h"
 
 #ifdef _MSC_VER
 #include <WTypes.h>
@@ -22,7 +22,7 @@ typedef unsigned long	DWORD;
 #define RGB(r,g,b)	((COLORREF)(((BYTE)(r)|((WORD)((BYTE)(g))<<8))|(((DWORD)(BYTE)(b))<<16)))
 #endif
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 
 //////////////////////////////////////////////////////////////////////////
 //线型类,指标用到
@@ -382,4 +382,4 @@ protected:
 	double			m_dBaseLine;
 };
 
-NS_WTP_END
+NS_VVTP_END

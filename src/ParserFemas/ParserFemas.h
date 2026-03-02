@@ -13,11 +13,11 @@
 #include "../API/Femas3.02/USTPFtdcMduserApi.h"
 #include <map>
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 class WTSTickData;
-NS_WTP_END
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class ParserFemas : public IParserApi, public CUstpFtdcMduserSpi
 {
@@ -35,7 +35,7 @@ public:
 
 //IQuoteParser 接口
 public:
-	virtual bool init(WTSVariant* config) override;
+	virtual bool init(VVTSVariant* config) override;
 
 	virtual void release() override;
 

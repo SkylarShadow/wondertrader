@@ -8,10 +8,10 @@
  * \brief WonderTrader基本数据类型定义文件
  */
 #pragma once
-#include "WTSMarcos.h"
+#include "VVTSMarcos.h"
 #include <stdint.h>
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 
 /*
  *	合约分类
@@ -372,4 +372,4 @@ typedef uint32_t WTSOrdDetailType;
 #define ODT_AnyPrice	'1'	//市价
 #define ODT_LimitPrice	'2'	//限价
 
-NS_WTP_END
+NS_VVTP_END

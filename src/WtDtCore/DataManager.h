@@ -13,16 +13,16 @@
 #include "../Share/StdUtils.hpp"
 #include "../Share/BoostMappingFile.hpp"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 class WTSTickData;
 class WTSOrdQueData;
 class WTSOrdDtlData;
 class WTSTransData;
-class WTSVariant;
+class VVTSVariant;
 class IDataCaster;
-NS_WTP_END
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class WTSBaseDataMgr;
 class StateMonitor;
@@ -35,7 +35,7 @@ public:
 	~DataManager();
 
 public:
-	bool init(WTSVariant* params, WTSBaseDataMgr* bdMgr, StateMonitor* stMonitor);
+	bool init(VVTSVariant* params, WTSBaseDataMgr* bdMgr, StateMonitor* stMonitor);
 
 	void add_ext_dumper(const char* id, IHisDataDumper* dumper);
 

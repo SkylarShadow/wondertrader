@@ -4,7 +4,7 @@
 #include "../Share/fmtlib.h"
 #include "gtest/gtest/gtest.h"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 TEST(test_kvcache, test_usage)
 {

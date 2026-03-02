@@ -11,7 +11,7 @@
 
 #include "../WtDtCore/WtHelper.h"
 #include "../Includes/WTSSessionInfo.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/WTSDataDef.hpp"
 #include "../Includes/WTSContractInfo.hpp"
 
@@ -23,7 +23,7 @@
 #include "../Share/StdUtils.hpp"
 #include "../Share/CodeHelper.hpp"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 WtDtRunner::WtDtRunner()
 	: _data_store(NULL)
@@ -58,7 +58,7 @@ void WtDtRunner::initialize(const char* cfgFile, bool isFile /* = true */, const
 	WTSLogger::init(logCfg);
 	WtHelper::set_module_dir(modDir);
 
-	WTSVariant* config = isFile ? WTSCfgLoader::load_from_file(cfgFile) : WTSCfgLoader::load_from_content(cfgFile, false);
+	VVTSVariant* config = isFile ? WTSCfgLoader::load_from_file(cfgFile) : WTSCfgLoader::load_from_content(cfgFile, false);
 	if(config == NULL)
 	{
 		WTSLogger::error("Loading config failed");
@@ -73,21 +73,21 @@ void WtDtRunner::initialize(const char* cfgFile, bool isFile /* = true */, const
 #endif
 	}
 	//基础数据文件
-	WTSVariant* cfgBF = config->get("basefiles");
+	VVTSVariant* cfgBF = config->get("basefiles");
 	if (cfgBF->get("session"))
 	{
 		_bd_mgr.loadSessions(cfgBF->getCString("session"));
 		WTSLogger::info("Trading sessions loaded");
 	}
 
-	WTSVariant* cfgItem = cfgBF->get("commodity");
+	VVTSVariant* cfgItem = cfgBF->get("commodity");
 	if (cfgItem)
 	{
-		if (cfgItem->type() == WTSVariant::VT_String)
+		if (cfgItem->type() == VVTSVariant::VT_String)
 		{
 			_bd_mgr.loadCommodities(cfgItem->asCString());
 		}
-		else if (cfgItem->type() == WTSVariant::VT_Array)
+		else if (cfgItem->type() == VVTSVariant::VT_Array)
 		{
 			for (uint32_t i = 0; i < cfgItem->size(); i++)
 			{
@@ -99,11 +99,11 @@ void WtDtRunner::initialize(const char* cfgFile, bool isFile /* = true */, const
 	cfgItem = cfgBF->get("contract");
 	if (cfgItem)
 	{
-		if (cfgItem->type() == WTSVariant::VT_String)
+		if (cfgItem->type() == VVTSVariant::VT_String)
 		{
 			_bd_mgr.loadContracts(cfgItem->asCString());
 		}
-		else if (cfgItem->type() == WTSVariant::VT_Array)
+		else if (cfgItem->type() == VVTSVariant::VT_Array)
 		{
 			for (uint32_t i = 0; i < cfgItem->size(); i++)
 			{
@@ -151,16 +151,16 @@ void WtDtRunner::initialize(const char* cfgFile, bool isFile /* = true */, const
 
 	initDataMgr(config->get("data"));
 
-	WTSVariant* cfgParser = config->get("parsers");
+	VVTSVariant* cfgParser = config->get("parsers");
 	if (cfgParser)
 	{
-		if (cfgParser->type() == WTSVariant::VT_String)
+		if (cfgParser->type() == VVTSVariant::VT_String)
 		{
 			const char* filename = cfgParser->asCString();
 			if (StdFile::exists(filename))
 			{
 				WTSLogger::info("Reading parser config from {}...", filename);
-				WTSVariant* var = WTSCfgLoader::load_from_file(filename);
+				VVTSVariant* var = WTSCfgLoader::load_from_file(filename);
 				if (var)
 				{
 					initParsers(var->get("parsers"));
@@ -176,7 +176,7 @@ void WtDtRunner::initialize(const char* cfgFile, bool isFile /* = true */, const
 				WTSLogger::error("Parser configuration {} not exists", filename);
 			}
 		}
-		else if (cfgParser->type() == WTSVariant::VT_Array)
+		else if (cfgParser->type() == VVTSVariant::VT_Array)
 		{
 			initParsers(cfgParser);
 		}
@@ -191,7 +191,7 @@ void WtDtRunner::initialize(const char* cfgFile, bool isFile /* = true */, const
 	_is_inited = true;
 }
 
-void WtDtRunner::initDataMgr(WTSVariant* config)
+void WtDtRunner::initDataMgr(VVTSVariant* config)
 {
 	if (config == NULL)
 		return;
@@ -377,11 +377,11 @@ WTSKlineSlice* WtDtRunner::get_sbars_by_date(const char* stdCode, uint32_t secs,
 	return _data_mgr.get_skline_slice_by_date(stdCode, secs, uDate);
 }
 
-void WtDtRunner::initParsers(WTSVariant* cfg)
+void WtDtRunner::initParsers(VVTSVariant* cfg)
 {
 	for (uint32_t idx = 0; idx < cfg->size(); idx++)
 	{
-		WTSVariant* cfgItem = cfg->get(idx);
+		VVTSVariant* cfgItem = cfg->get(idx);
 		if (!cfgItem->getBoolean("active"))
 			continue;
 

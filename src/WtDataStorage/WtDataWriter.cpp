@@ -3,7 +3,7 @@
 #include "../Includes/WTSSessionInfo.hpp"
 #include "../Includes/WTSContractInfo.hpp"
 #include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Share/BoostFile.hpp"
 #include "../Share/StrUtil.hpp"
 #include "../Share/IniHelper.hpp"
@@ -110,7 +110,7 @@ bool WtDataWriter::isSessionProceeded(const char* sid)
 }
 
 
-bool WtDataWriter::init(WTSVariant* params, IDataWriterSink* sink)
+bool WtDataWriter::init(VVTSVariant* params, IDataWriterSink* sink)
 {
 	IDataWriter::init(params, sink);
 
@@ -399,7 +399,7 @@ void WtDataWriter::procTick(WTSTickData* curTick, uint32_t procFlag)
 
 		_sink->broadcastTick(curTick);
 
-		static wt_hashmap<std::string, uint64_t> _tcnt_map;
+		static vvt_hashmap<std::string, uint64_t> _tcnt_map;
 		uint64_t& cnt = _tcnt_map[curTick->exchg()];
 		cnt++;
 		if (cnt % _log_group_size == 0)
@@ -453,7 +453,7 @@ void WtDataWriter::procQueue(WTSOrdQueData* curOrdQue)
 
 		_sink->broadcastOrdQue(curOrdQue);
 
-		static wt_hashmap<std::string, uint64_t> _tcnt_map;
+		static vvt_hashmap<std::string, uint64_t> _tcnt_map;
 		uint64_t& cnt = _tcnt_map[curOrdQue->exchg()];
 		cnt++;
 		if (cnt % _log_group_size == 0)
@@ -507,7 +507,7 @@ void WtDataWriter::procOrder(WTSOrdDtlData* curOrdDtl)
 
 		_sink->broadcastOrdDtl(curOrdDtl);
 
-		static wt_hashmap<std::string, uint64_t> _tcnt_map;
+		static vvt_hashmap<std::string, uint64_t> _tcnt_map;
 		uint64_t& cnt = _tcnt_map[curOrdDtl->exchg()];
 		cnt++;
 		if (cnt % _log_group_size == 0)
@@ -561,7 +561,7 @@ void WtDataWriter::procTrans(WTSTransData* curTrans)
 
 		_sink->broadcastTrans(curTrans);
 
-		static wt_hashmap<std::string, uint64_t> _tcnt_map;
+		static vvt_hashmap<std::string, uint64_t> _tcnt_map;
 		uint64_t& cnt = _tcnt_map[curTrans->exchg()];
 		cnt++;
 		if (cnt % _log_group_size == 0)
@@ -1352,9 +1352,9 @@ WtDataWriter::KBlockPair* WtDataWriter::getKlineBlock(WTSContractInfo* ct, WTSKl
 		if (bAutoCreate)
 			BoostFile::create_directories(path);
 
-		wt_strcpy(s, ct->getCode());
+		vvt_strcpy(s, ct->getCode());
 		s += strlen(ct->getCode());
-		wt_strcpy(s, ".dmb");
+		vvt_strcpy(s, ".dmb");
 		s += 4;
 		s[0] = '\0';
 
@@ -2229,7 +2229,7 @@ void WtDataWriter::proc_loop()
 				newCache->_version = BLOCK_VERSION_RAW_V2;
 				strcpy(newCache->_blk_flag, BLK_FLAG);
 
-				wt_hashmap<std::string, uint32_t> newIdxMap;
+				vvt_hashmap<std::string, uint32_t> newIdxMap;
 
 				uint32_t newIdx = 0;
 				for (const std::string& key : setCodes)

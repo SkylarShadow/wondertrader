@@ -1,11 +1,11 @@
 ﻿#include "ShmCaster.h"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/WTSDataDef.hpp"
 #include "../Share/StdUtils.hpp"
 #include "../Share/BoostFile.hpp"
 #include "../WTSTools/WTSLogger.h"
 
-bool ShmCaster::init(WTSVariant* cfg)
+bool ShmCaster::init(VVTSVariant* cfg)
 {
 	if (cfg == NULL)
 		return false;

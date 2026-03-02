@@ -13,8 +13,8 @@
 #include <boost/filesystem.hpp>
 
 #include "../WTSUtils/WTSCfgLoader.h"
-#include "../Includes/WTSVariant.hpp"
-USING_NS_WTP;
+#include "../Includes/VVTSVariant.hpp"
+USING_NS_VVTP;
 
 #include "../Share/charconv.hpp"
 
@@ -68,11 +68,11 @@ int run(const char* cfgfile, bool bAsync = false, bool isFile = true)
 
 	if (!isFile)
 	{
-		WTSVariant* root = WTSCfgLoader::load_from_content(cfgfile, true);
+		VVTSVariant* root = WTSCfgLoader::load_from_content(cfgfile, true);
 		if (root == NULL)
 			return 0;
 
-		WTSVariant* ctp = root->get("ctp");
+		VVTSVariant* ctp = root->get("ctp");
 		FRONT_ADDR = ctp->getCString("front");
 		BROKER_ID = ctp->getCString("broker");
 		INVESTOR_ID = ctp->getCString("user");
@@ -80,7 +80,7 @@ int run(const char* cfgfile, bool bAsync = false, bool isFile = true)
 		APPID = ctp->getCString("appid");
 		AUTHCODE = ctp->getCString("authcode");
 
-		WTSVariant* cfg = root->get("config");
+		VVTSVariant* cfg = root->get("config");
 		SAVEPATH = cfg->getCString("path");
 		CLASSMASK = cfg->getUInt32("mask"); //1-期货,2-期权,4-股票
 
@@ -127,7 +127,7 @@ int run(const char* cfgfile, bool bAsync = false, bool isFile = true)
 		CONT_FILE = ini.readString("config", "contfile", "contracts.json");
 
 		map_files = ini.readString("config", "mapfiles", "");
-		ONLYINCFG = wt_stricmp(ini.readString("config", "onlyincfg", "false").c_str(), "true") == 0;
+		ONLYINCFG = vvt_stricmp(ini.readString("config", "onlyincfg", "false").c_str(), "true") == 0;
 
 #ifdef _WIN32
 		MODULE_NAME = ini.readString("config", "module", "./soptthosttraderapi_se.dll");
@@ -137,11 +137,11 @@ int run(const char* cfgfile, bool bAsync = false, bool isFile = true)
 	}
 	else
 	{
-		WTSVariant* root = WTSCfgLoader::load_from_file(cfgfile);
+		VVTSVariant* root = WTSCfgLoader::load_from_file(cfgfile);
 		if (root == NULL)
 			return 0;
 
-		WTSVariant* ctp = root->get("ctp");
+		VVTSVariant* ctp = root->get("ctp");
 		FRONT_ADDR = ctp->getCString("front");
 		BROKER_ID = ctp->getCString("broker");
 		INVESTOR_ID = ctp->getCString("user");
@@ -149,7 +149,7 @@ int run(const char* cfgfile, bool bAsync = false, bool isFile = true)
 		APPID = ctp->getCString("appid");
 		AUTHCODE = ctp->getCString("authcode");
 
-		WTSVariant* cfg = root->get("config");
+		VVTSVariant* cfg = root->get("config");
 		SAVEPATH = cfg->getCString("path");
 		CLASSMASK = cfg->getUInt32("mask"); //1-期货,2-期权,4-股票
 

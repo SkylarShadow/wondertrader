@@ -16,8 +16,8 @@
 
 #include "../Includes/ITraderApi.h"
 
-NS_WTP_BEGIN
-class WTSVariant;
+NS_VVTP_BEGIN
+class VVTSVariant;
 class ActionPolicyMgr;
 class WTSContractInfo;
 class WTSCommodityInfo;
@@ -35,7 +35,7 @@ public:
 	~TraderAdapter();
 
 public:
-	bool init(const char* id, WTSVariant* params, IBaseDataMgr* bdMgr);
+	bool init(const char* id, VVTSVariant* params, IBaseDataMgr* bdMgr);
 
 	void release();
 
@@ -77,7 +77,7 @@ public:
 
 private:
 	TraderAdapterMgr*	_mgr;
-	WTSVariant*			_cfg;
+	VVTSVariant*			_cfg;
 	std::string			_id;
 
 	ITraderApi*			_trader_api;
@@ -123,4 +123,4 @@ private:
 	std::atomic<uint32_t>	_live_cnt;
 };
 
-NS_WTP_END
+NS_VVTP_END

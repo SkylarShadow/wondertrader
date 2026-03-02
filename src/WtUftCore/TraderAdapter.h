@@ -16,8 +16,8 @@
 #include "../Includes/WTSCollection.hpp"
 #include "../Share/SpinMutex.hpp"
 
-NS_WTP_BEGIN
-class WTSVariant;
+NS_VVTP_BEGIN
+class VVTSVariant;
 class WTSContractInfo;
 class WTSCommodityInfo;
 class ITrdNotifySink;
@@ -98,7 +98,7 @@ public:
 	} RiskParams;
 
 public:
-	bool init(const char* id, WTSVariant* params, IBaseDataMgr* bdMgr, ActionPolicyMgr* policyMgr);
+	bool init(const char* id, VVTSVariant* params, IBaseDataMgr* bdMgr, ActionPolicyMgr* policyMgr);
 
 	bool initExt(const char* id, ITraderApi* api, IBaseDataMgr* bdMgr, ActionPolicyMgr* policyMgr);
 
@@ -225,7 +225,7 @@ public:
 	virtual void handleTraderLog(WTSLogLevel ll, const char* message) override;
 
 private:
-	WTSVariant*			_cfg;
+	VVTSVariant*			_cfg;
 	std::string			_id;
 	std::string			_order_pattern;
 
@@ -240,33 +240,33 @@ private:
 	IBaseDataMgr*		_bd_mgr;
 	ActionPolicyMgr*	_policy_mgr;
 
-	wt_hashmap<std::string, PosItem> _positions;
+	vvt_hashmap<std::string, PosItem> _positions;
 
 	SpinMutex	_mtx_orders;
 	OrderMap*	_orders;
 	wt_hashset<std::string> _orderids;	//主要用于标记有没有处理过该订单
 
-	wt_hashmap<std::string, double> _undone_qty;	//未完成数量
+	vvt_hashmap<std::string, double> _undone_qty;	//未完成数量
 
 	typedef WTSHashMap<std::string>	TradeStatMap;
 	TradeStatMap*	_stat_map;	//统计数据
 
 	//这两个缓存时间内的容器,主要是为了控制瞬间流量而设置的
 	typedef std::vector<uint64_t> TimeCacheList;
-	typedef wt_hashmap<std::string, TimeCacheList> CodeTimeCacheMap;
+	typedef vvt_hashmap<std::string, TimeCacheList> CodeTimeCacheMap;
 	CodeTimeCacheMap	_order_time_cache;	//下单时间缓存
 	CodeTimeCacheMap	_cancel_time_cache;	//撤单时间缓存
 
 	//如果被风控了,就会进入到排除队列
 	wt_hashset<std::string>	_exclude_codes;
 
-	typedef wt_hashmap<std::string, RiskParams>	RiskParamsMap;
+	typedef vvt_hashmap<std::string, RiskParams>	RiskParamsMap;
 	RiskParamsMap	_risk_params_map;
 	bool			_risk_mon_enabled;
 };
 
 typedef std::shared_ptr<TraderAdapter>					TraderAdapterPtr;
-typedef wt_hashmap<std::string, TraderAdapterPtr>	TraderAdapterMap;
+typedef vvt_hashmap<std::string, TraderAdapterPtr>	TraderAdapterMap;
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -288,4 +288,4 @@ private:
 	TraderAdapterMap	_adapters;
 };
 
-NS_WTP_END
+NS_VVTP_END

@@ -8,7 +8,7 @@
  * \brief 
  */
 #pragma once
-#include "../Includes/WTSMarcos.h"
+#include "../Includes/VVTSMarcos.h"
 
 #include <stdio.h>
 #include <stdint.h>
@@ -23,8 +23,8 @@
  *	风控模块只处理高效的风控策略
  */
 
-NS_WTP_BEGIN
-class WTSVariant;
+NS_VVTP_BEGIN
+class VVTSVariant;
 class WTSPortFundInfo;
 
 /*
@@ -102,7 +102,7 @@ public:
 	*	ctx		执行单元运行环境
 	*	code	管理的合约代码
 	*/
-	virtual void init(WtPortContext* ctx, WTSVariant* cfg){ _ctx = ctx; }
+	virtual void init(WtPortContext* ctx, VVTSVariant* cfg){ _ctx = ctx; }
 
 	/*
 	 *	启动风控模块
@@ -156,4 +156,4 @@ typedef IRiskMonitorFact* (*FuncCreateRiskMonFact)();
 //删除执行工厂
 typedef void(*FuncDeleteRiskMonFact)(IRiskMonitorFact* &fact);
 
-NS_WTP_END
+NS_VVTP_END

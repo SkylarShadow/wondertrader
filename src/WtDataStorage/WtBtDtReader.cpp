@@ -1,6 +1,6 @@
 ﻿#include "WtBtDtReader.h"
 
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Share/StrUtil.hpp"
 #include "../WTSUtils/WTSCmpHelper.hpp"
 
@@ -51,7 +51,7 @@ WtBtDtReader::~WtBtDtReader()
 
 }
 
-void WtBtDtReader::init(WTSVariant* cfg, IBtDtReaderSink* sink)
+void WtBtDtReader::init(VVTSVariant* cfg, IBtDtReaderSink* sink)
 {
 	_sink = sink;
 

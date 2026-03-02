@@ -22,7 +22,7 @@
 
 #include "../WTSTools/WTSLogger.h"
 #include "../WTSUtils/WTSCfgLoader.h"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../WTSUtils/SignalHook.hpp"
 
 #ifdef _MSC_VER
@@ -418,19 +418,19 @@ void WtBtRunner::hft_on_channel_ready(uint32_t cHandle, const char* trader)
 		_cb_hft_chnl(cHandle, trader, 1000/*CHNL_EVENT_READY*/);
 }
 
-void WtBtRunner::hft_on_entrust(uint32_t cHandle, WtUInt32 localid, const char* stdCode, bool bSuccess, const char* message, const char* userTag)
+void WtBtRunner::hft_on_entrust(uint32_t cHandle, VvtUInt32 localid, const char* stdCode, bool bSuccess, const char* message, const char* userTag)
 {
 	if (_cb_hft_entrust)
 		_cb_hft_entrust(cHandle, localid, stdCode, bSuccess, message, userTag);
 }
 
-void WtBtRunner::hft_on_order(uint32_t cHandle, WtUInt32 localid, const char* stdCode, bool isBuy, double totalQty, double leftQty, double price, bool isCanceled, const char* userTag)
+void WtBtRunner::hft_on_order(uint32_t cHandle, VvtUInt32 localid, const char* stdCode, bool isBuy, double totalQty, double leftQty, double price, bool isCanceled, const char* userTag)
 {
 	if (_cb_hft_ord)
 		_cb_hft_ord(cHandle, localid, stdCode, isBuy, totalQty, leftQty, price, isCanceled, userTag);
 }
 
-void WtBtRunner::hft_on_trade(uint32_t cHandle, WtUInt32 localid, const char* stdCode, bool isBuy, double vol, double price, const char* userTag)
+void WtBtRunner::hft_on_trade(uint32_t cHandle, VvtUInt32 localid, const char* stdCode, bool isBuy, double vol, double price, const char* userTag)
 {
 	if (_cb_hft_trd)
 		_cb_hft_trd(cHandle, localid, stdCode, isBuy, vol, price, userTag);
@@ -468,9 +468,9 @@ void WtBtRunner::config(const char* cfgFile, bool isFile /* = true */)
 
 	_replayer.init(_cfg->get("replayer"), &_notifier, _ext_fnl_bar_loader != NULL ? this : NULL);
 
-	WTSVariant* cfgEnv = _cfg->get("env");
+	VVTSVariant* cfgEnv = _cfg->get("env");
 	const char* mode = cfgEnv->getCString("mocker");
-	WTSVariant* cfgMode = _cfg->get(mode);
+	VVTSVariant* cfgMode = _cfg->get(mode);
 	if (strcmp(mode, "cta") == 0 && cfgMode)
 	{
 		const char* name = cfgMode->getCString("name");
@@ -494,7 +494,7 @@ void WtBtRunner::config(const char* cfgFile, bool isFile /* = true */)
 		_sel_mocker->init_sel_factory(cfgMode);
 		_replayer.register_sink(_sel_mocker, name);
 
-		WTSVariant* cfgTask = cfgMode->get("task");
+		VVTSVariant* cfgTask = cfgMode->get("task");
 		if(cfgTask)
 			_replayer.register_task(_sel_mocker->id(), cfgTask->getUInt32("date"), cfgTask->getUInt32("time"),
 				cfgTask->getCString("period"), cfgTask->getCString("trdtpl"), cfgTask->getCString("session"));
@@ -589,7 +589,7 @@ void WtBtRunner::release()
 	WTSLogger::stop();
 }
 
-void WtBtRunner::set_time_range(WtUInt64 stime, WtUInt64 etime)
+void WtBtRunner::set_time_range(VvtUInt64 stime, VvtUInt64 etime)
 {
 	_replayer.set_time_range(stime, etime);
 
@@ -625,9 +625,9 @@ const char* LOG_TAGS[] = {
 	"none",
 };
 
-bool WtBtRunner::initEvtNotifier(WTSVariant* cfg)
+bool WtBtRunner::initEvtNotifier(VVTSVariant* cfg)
 {
-	if (cfg == NULL || cfg->type() != WTSVariant::VT_Object)
+	if (cfg == NULL || cfg->type() != VVTSVariant::VT_Object)
 		return false;
 
 	_notifier.init(cfg);

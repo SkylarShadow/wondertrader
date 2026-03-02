@@ -12,8 +12,8 @@
 
 #include "../Includes/WTSTypes.h"
 
-NS_WTP_BEGIN
-class WTSVariant;
+NS_VVTP_BEGIN
+class VVTSVariant;
 
 /*
  *	@brief 数据读取模块回调接口
@@ -40,7 +40,7 @@ public:
 	virtual ~IBtDtReader(){}
 
 public:
-	virtual void init(WTSVariant* cfg, IBtDtReaderSink* sink) { _sink = sink; }
+	virtual void init(VVTSVariant* cfg, IBtDtReaderSink* sink) { _sink = sink; }
 
 	virtual bool read_raw_bars(const char* exchg, const char* code, WTSKlinePeriod period, std::string& buffer) = 0;
 	virtual bool read_raw_ticks(const char* exchg, const char* code, uint32_t uDate, std::string& buffer) = 0;
@@ -58,4 +58,4 @@ typedef IBtDtReader* (*FuncCreateBtDtReader)();
 //删除数据存储对象
 typedef void(*FuncDeleteBtDtReader)(IBtDtReader* store);
 
-NS_WTP_END
+NS_VVTP_END

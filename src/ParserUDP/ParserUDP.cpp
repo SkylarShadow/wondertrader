@@ -8,7 +8,7 @@
  * \brief 
  */
 #include "ParserUDP.h"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/WTSDataDef.hpp"
 
 #include <boost/bind.hpp>
@@ -94,7 +94,7 @@ ParserUDP::~ParserUDP()
 {
 }
 
-bool ParserUDP::init( WTSVariant* config )
+bool ParserUDP::init( VVTSVariant* config )
 {
 	_hots = config->getCString("host");
 	_bport = config->getInt32("bport");

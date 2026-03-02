@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "../Includes/CtaStrategyDefs.h"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class WtStraFact : public ICtaStrategyFact
 {

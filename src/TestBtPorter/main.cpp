@@ -8,7 +8,7 @@
 #include "../Share/StdUtils.hpp"
 #include "../Share/fmtlib.h"
 
-void on_getbar(CtxHandler ctxid, const char* code, const char* period, WTSBarStruct* bar, WtUInt32 count, bool isLast)
+void on_getbar(CtxHandler ctxid, const char* code, const char* period, WTSBarStruct* bar, VvtUInt32 count, bool isLast)
 {
 	if (bar)
 		fmt::print("on_getbar@{}.{}\n", bar->date, bar->time);
@@ -34,13 +34,13 @@ void on_tick(CtxHandler ctxid, const char* stdCode, WTSTickStruct* newTick)
 	//fmt::print("on_tick\n");
 }
 
-void on_calc(CtxHandler ctxid, WtUInt32 curDate, WtUInt32 curTime)
+void on_calc(CtxHandler ctxid, VvtUInt32 curDate, VvtUInt32 curTime)
 {
 	fmt::print("on_calc @ {}.{}\n", curDate, curTime);
 	//cta_get_ticks(ctxid, "CFFEX.IF.HOT", 100, on_gettick);
 }
 
-void on_calc_done(CtxHandler ctxid, WtUInt32 curDate, WtUInt32 curTime)
+void on_calc_done(CtxHandler ctxid, VvtUInt32 curDate, VvtUInt32 curTime)
 {
 	fmt::print("on_calc_done @ {}.{}\n", curDate, curTime);
 	//cta_get_ticks(ctxid, "CFFEX.IF.HOT", 100, on_gettick);
@@ -52,7 +52,7 @@ void on_bar(CtxHandler ctxid, const char* code, const char* period, WTSBarStruct
 	//fmt::print("on_bar\n");
 }
 
-void on_session_event(CtxHandler cHandle, WtUInt32 curTDate, bool isBegin)
+void on_session_event(CtxHandler cHandle, VvtUInt32 curTDate, bool isBegin)
 {
 
 }

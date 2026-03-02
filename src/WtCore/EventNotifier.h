@@ -11,7 +11,7 @@
 
 #include <boost/asio/io_service.hpp>
 
-#include "../Includes/WTSMarcos.h"
+#include "../Includes/VVTSMarcos.h"
 #include "../Includes/WTSObject.hpp"
 #include "../Share/StdUtils.hpp"
 
@@ -23,10 +23,10 @@ typedef void(*FuncLogCallback)(unsigned long, const char*, bool);
 typedef void(*FuncRegCallbacks)(FuncLogCallback);
 
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 class WTSTradeInfo;
 class WTSOrderInfo;
-class WTSVariant;
+class VVTSVariant;
 
 class EventNotifier
 {
@@ -40,7 +40,7 @@ private:
 	void	orderToJson(const char* trader, uint32_t localid, const char* stdCode, WTSOrderInfo* ordInfo, std::string& output);
 
 public:
-	bool	init(WTSVariant* cfg);
+	bool	init(VVTSVariant* cfg);
 
 	void	notify(const char* trader, uint32_t localid, const char* stdCode, WTSTradeInfo* trdInfo);
 	void	notify(const char* trader, uint32_t localid, const char* stdCode, WTSOrderInfo* ordInfo);
@@ -67,4 +67,4 @@ private:
 	StdThreadPtr				_worker;
 };
 
-NS_WTP_END
+NS_VVTP_END

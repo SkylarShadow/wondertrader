@@ -13,9 +13,9 @@
 
 #include "../Includes/IHftStraCtx.h"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 
-class WTSVariant;
+class VVTSVariant;
 class WtHftRtTicker;
 
 typedef std::shared_ptr<IHftStraCtx> HftContextPtr;
@@ -29,7 +29,7 @@ public:
 public:
 	//////////////////////////////////////////////////////////////////////////
 	//WtEngine 接口
-	virtual void init(WTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHotMgr* hotMgr, EventNotifier* notifier) override;
+	virtual void init(VVTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHotMgr* hotMgr, EventNotifier* notifier) override;
 
 	virtual void run() override;
 
@@ -63,11 +63,11 @@ public:
 	void sub_transaction(uint32_t sid, const char* stdCode);
 
 private:
-	typedef wt_hashmap<uint32_t, HftContextPtr> ContextMap;
+	typedef vvt_hashmap<uint32_t, HftContextPtr> ContextMap;
 	ContextMap		_ctx_map;
 
 	WtHftRtTicker*	_tm_ticker;
-	WTSVariant*		_cfg;
+	VVTSVariant*		_cfg;
 
 
 	StraSubMap		_ordque_sub_map;	//委托队列订阅表
@@ -75,4 +75,4 @@ private:
 	StraSubMap		_trans_sub_map;		//成交明细订阅表
 };
 
-NS_WTP_END
+NS_VVTP_END

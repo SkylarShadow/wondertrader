@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "../Includes/WTSTypes.h"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 class WTSTickSlice;
 class WTSKlineSlice;
 class WTSTickData;
@@ -26,4 +26,4 @@ public:
 	virtual uint32_t get_adjusting_flag() { return 0; }
 };
 
-NS_WTP_END
+NS_VVTP_END

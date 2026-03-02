@@ -11,7 +11,7 @@
 #include "../WTSUtils/WTSCfgLoader.h"
 
 #include "../Includes/WTSSwitchItem.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 
 #include "../Share/StrUtil.hpp"
 #include "../Share/TimeUtils.hpp"
@@ -202,7 +202,7 @@ bool WTSHotMgr::loadCustomRules(const char* tag, const char* filename)
 		return false;
 	}
 
-	WTSVariant* root = WTSCfgLoader::load_from_file(filename);
+	VVTSVariant* root = WTSCfgLoader::load_from_file(filename);
 	if (root == NULL)
 		return false;
 
@@ -218,11 +218,11 @@ bool WTSHotMgr::loadCustomRules(const char* tag, const char* filename)
 
 	for (const std::string& exchg : root->memberNames())
 	{
-		WTSVariant* jExchg = root->get(exchg);
+		VVTSVariant* jExchg = root->get(exchg);
 
 		for (const std::string& pid : jExchg->memberNames())
 		{
-			WTSVariant* jProduct = jExchg->get(pid);
+			VVTSVariant* jProduct = jExchg->get(pid);
 			std::string fullPid = fmt::format("{}.{}", exchg, pid);
 
 			WTSDateHotMap* dateMap = WTSDateHotMap::create();
@@ -232,7 +232,7 @@ bool WTSHotMgr::loadCustomRules(const char* tag, const char* filename)
 			double factor = 1.0;
 			for (uint32_t i = 0; i < jProduct->size(); i++)
 			{
-				WTSVariant* jHotItem = jProduct->get(i);
+				VVTSVariant* jHotItem = jProduct->get(i);
 				WTSSwitchItem* pItem = WTSSwitchItem::create(
 					exchg.c_str(), pid.c_str(),
 					jHotItem->getCString("from"), jHotItem->getCString("to"), 

@@ -7,8 +7,8 @@
 
 class WtExecRunner;
 
-NS_WTP_BEGIN
-class WTSVariant;
+NS_VVTP_BEGIN
+class VVTSVariant;
 class WTSHisTickData;
 class WTSKlineData;
 class WTSTickData;
@@ -25,10 +25,10 @@ public:
 	~WtSimpDataMgr();
 
 private:
-	bool	initStore(WTSVariant* cfg);
+	bool	initStore(VVTSVariant* cfg);
 
 public:
-	bool	init(WTSVariant* cfg, WtExecRunner* runner);
+	bool	init(VVTSVariant* cfg, WtExecRunner* runner);
 
 	void	handle_push_quote(const char* stdCode, WTSTickData* newTick);
 
@@ -74,4 +74,4 @@ private:
 
 };
 
-NS_WTP_END
+NS_VVTP_END

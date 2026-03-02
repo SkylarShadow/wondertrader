@@ -3,7 +3,7 @@
 
 #include <unordered_set>
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class WtStraDtSel : public SelStrategy
 {
@@ -16,7 +16,7 @@ public:
 
 	virtual const char* getFactName() override;
 
-	virtual bool init(WTSVariant* cfg) override;
+	virtual bool init(VVTSVariant* cfg) override;
 
 	virtual void on_init(ISelStraCtx* ctx) override;
 

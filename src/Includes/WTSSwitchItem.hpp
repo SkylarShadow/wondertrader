@@ -10,7 +10,7 @@
 #pragma once
 #include "WTSObject.hpp"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 class WTSSwitchItem : public WTSObject
 {
 protected:
@@ -46,4 +46,4 @@ private:
 	uint32_t		_dt;
 	double			_factor;
 };
-NS_WTP_END
+NS_VVTP_END

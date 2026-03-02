@@ -1,9 +1,9 @@
 #pragma once
-#include "../Includes/WTSMarcos.h"
+#include "../Includes/VVTSMarcos.h"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 class WTSTickData;
-class WTSVariant;
+class VVTSVariant;
 class WTSOrdDtlData;
 class WTSOrdQueData;
 class WTSTransData;
@@ -17,4 +17,4 @@ public:
 	virtual void	broadcast(WTSTransData* curTrans){}
 };
 
-NS_WTP_END
+NS_VVTP_END

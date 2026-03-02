@@ -11,7 +11,7 @@ public:
 	IndexFactory():_hot_mgr(NULL), _bd_mgr(NULL){}
 
 public:
-	bool	init(WTSVariant* config, IHotMgr* hotMgr, IBaseDataMgr* bdMgr, DataManager* dataMgr);
+	bool	init(VVTSVariant* config, IHotMgr* hotMgr, IBaseDataMgr* bdMgr, DataManager* dataMgr);
 	void	handle_quote(WTSTickData* newTick);
 
 public:

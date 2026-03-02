@@ -10,8 +10,8 @@
 #include "../Share/BoostMappingFile.hpp"
 #include "../Share/StdUtils.hpp"
 
-NS_WTP_BEGIN
-class WTSVariant;
+NS_VVTP_BEGIN
+class VVTSVariant;
 class WTSTickSlice;
 class WTSKlineSlice;
 class WTSOrdDtlSlice;
@@ -32,7 +32,7 @@ public:
 //////////////////////////////////////////////////////////////////////////
 //IBtDtReader
 public:
-	virtual void init(WTSVariant* cfg, IBtDtReaderSink* sink);
+	virtual void init(VVTSVariant* cfg, IBtDtReaderSink* sink);
 
 	virtual bool read_raw_bars(const char* exchg, const char* code, WTSKlinePeriod period, std::string& buffer) override;
 	virtual bool read_raw_ticks(const char* exchg, const char* code, uint32_t uDate, std::string& buffer) override;
@@ -45,4 +45,4 @@ private:
 	std::string		_base_dir;
 };
 
-NS_WTP_END
+NS_VVTP_END

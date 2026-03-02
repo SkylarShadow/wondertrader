@@ -5,7 +5,7 @@
 
 #include <boost/core/noncopyable.hpp>
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 
 //////////////////////////////////////////////////////////////////////////
 //执行单元封装
@@ -32,7 +32,7 @@ private:
 };
 
 typedef std::shared_ptr<ExeUnitWrapper>	ExecuteUnitPtr;
-typedef wt_hashmap<std::string, ExecuteUnitPtr> ExecuteUnitMap;
+typedef vvt_hashmap<std::string, ExecuteUnitPtr> ExecuteUnitMap;
 
 //////////////////////////////////////////////////////////////////////////
 //执行器工厂类
@@ -61,10 +61,10 @@ private:
 		FuncCreateExeFact	_creator;
 		FuncDeleteExeFact	_remover;
 	} ExeFactInfo;
-	typedef wt_hashmap<std::string, ExeFactInfo> ExeFactMap;
+	typedef vvt_hashmap<std::string, ExeFactInfo> ExeFactMap;
 
 	ExeFactMap	_factories;
 };
 
 
-NS_WTP_END
+NS_VVTP_END

@@ -16,7 +16,7 @@
 #include "../Includes/WTSSessionInfo.hpp"
 #include "../Includes/WTSTradeDef.hpp"
 #include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Share/StdUtils.hpp"
 #include "../Share/TimeUtils.hpp"
 #include "../Includes/IBaseDataMgr.h"
@@ -231,7 +231,7 @@ TraderHTS::~TraderHTS()
 
 }
 
-void TraderHTS::InitializeHTS(WTSVariant* params)
+void TraderHTS::InitializeHTS(VVTSVariant* params)
 {
 	SECITPDK_SetLogPath("./");            //日志目录
 	SECITPDK_SetProfilePath("./");           //配置文件目录
@@ -245,7 +245,7 @@ void TraderHTS::InitializeHTS(WTSVariant* params)
 	}
 }
 
-bool TraderHTS::init(WTSVariant* params)
+bool TraderHTS::init(VVTSVariant* params)
 {
 	m_strUser = params->getCString("user");
 	m_strPass = params->getCString("pass");
@@ -267,7 +267,7 @@ bool TraderHTS::init(WTSVariant* params)
 	temp = params->getCString("szFundAcct");
 	strncpy(sSzZjzh, temp.c_str(), sizeof(sShGdh));
 
-	WTSVariant* param = params->get("ddmodule");
+	VVTSVariant* param = params->get("ddmodule");
 	if (param != NULL)
 	{
 		m_strModule = getBinDir() + param->asCString();
@@ -1417,7 +1417,7 @@ HTSCallMgr::~HTSCallMgr()
 
 }
 
-bool HTSCallMgr::init(WTSVariant* params)
+bool HTSCallMgr::init(VVTSVariant* params)
 {
 	if (params)
 	{

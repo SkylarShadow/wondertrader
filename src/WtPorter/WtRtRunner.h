@@ -34,12 +34,12 @@
 #include "../WTSTools/WTSHotMgr.h"
 #include "../WTSTools/WTSBaseDataMgr.h"
 
-NS_WTP_BEGIN
-class WTSVariant;
+NS_VVTP_BEGIN
+class VVTSVariant;
 class WtDataStorage;
-NS_WTP_END
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 typedef enum tagEngineType
 {
@@ -169,9 +169,9 @@ public:
 
 	void hft_on_channel_ready(uint32_t cHandle, const char* trader);
 	void hft_on_channel_lost(uint32_t cHandle, const char* trader);
-	void hft_on_order(uint32_t cHandle, WtUInt32 localid, const char* stdCode, bool isBuy, double totalQty, double leftQty, double price, bool isCanceled, const char* userTag);
-	void hft_on_trade(uint32_t cHandle, WtUInt32 localid, const char* stdCode, bool isBuy, double vol, double price, const char* userTag);
-	void hft_on_entrust(uint32_t cHandle, WtUInt32 localid, const char* stdCode, bool bSuccess, const char* message, const char* userTag);
+	void hft_on_order(uint32_t cHandle, VvtUInt32 localid, const char* stdCode, bool isBuy, double totalQty, double leftQty, double price, bool isCanceled, const char* userTag);
+	void hft_on_trade(uint32_t cHandle, VvtUInt32 localid, const char* stdCode, bool isBuy, double vol, double price, const char* userTag);
+	void hft_on_entrust(uint32_t cHandle, VvtUInt32 localid, const char* stdCode, bool bSuccess, const char* message, const char* userTag);
 	void hft_on_position(uint32_t cHandle, const char* stdCode, bool isLong, double prevol, double preavail, double newvol, double newavail);
 
 	void hft_on_order_queue(uint32_t id, const char* stdCode, WTSOrdQueData* newOrdQue);
@@ -184,9 +184,9 @@ public:
 	bool addSelFactories(const char* folder);
 
 private:
-	bool initTraders(WTSVariant* cfgTrader);
-	bool initParsers(WTSVariant* cfgParser);
-	bool initExecuters(WTSVariant* cfgExecuter);
+	bool initTraders(VVTSVariant* cfgTrader);
+	bool initParsers(VVTSVariant* cfgParser);
+	bool initExecuters(VVTSVariant* cfgExecuter);
 	bool initDataMgr();
 	bool initEvtNotifier();
 	bool initCtaStrategies();
@@ -232,7 +232,7 @@ private:
 	FuncExecCmdCallback		_cb_exec_cmd;
 	FuncExecInitCallback	_cb_exec_init;
 
-	WTSVariant*			_config;
+	VVTSVariant*			_config;
 	TraderAdapterMgr	_traders;
 	ParserAdapterMgr	_parsers;
 	WtExecuterFactory	_exe_factory;

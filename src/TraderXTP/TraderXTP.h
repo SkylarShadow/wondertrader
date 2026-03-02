@@ -21,7 +21,7 @@
 #include "../Share/DLLHelper.hpp"
 #include "../Share/WtKVCache.hpp"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class TraderXTP : public XTP::API::TraderSpi, public ITraderApi
 {
@@ -62,7 +62,7 @@ public:
 public:
 	//////////////////////////////////////////////////////////////////////////
 	//ITraderApi 接口
-	virtual bool init(WTSVariant *params) override;
+	virtual bool init(VVTSVariant *params) override;
 
 	virtual void release() override;
 

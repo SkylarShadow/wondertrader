@@ -25,7 +25,7 @@
 #include "../Includes/WTSSessionInfo.hpp"
 #include "../Includes/WTSTradeDef.hpp"
 #include "../Includes/WTSError.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/WTSCollection.hpp"
 #include "../Share/TimeUtils.hpp"
 #include "../Share/ModuleHelper.hpp"
@@ -37,7 +37,7 @@
 
 #include "../API/HuaX4.03/traderapi/TORATstpTraderApi.h"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 using namespace TORASTOCKAPI;
 typedef CTORATstpTraderSpi HuaXTraderSpi;
@@ -107,7 +107,7 @@ public:
 public:
 	//////////////////////////////////////////////////////////////////////////
 	//ITraderApi 接口
-	virtual bool init(WTSVariant *params) override;
+	virtual bool init(VVTSVariant *params) override;
 
 	virtual void release() override;
 

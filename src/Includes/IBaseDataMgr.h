@@ -11,10 +11,10 @@
 #include <string>
 #include <stdint.h>
 
-#include "WTSMarcos.h"
+#include "VVTSMarcos.h"
 #include "FasterDefs.h"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 typedef CodeSet ContractSet;
 
 class WTSContractInfo;
@@ -51,4 +51,4 @@ public:
 
 	virtual uint32_t			getContractSize(const char* exchg = "", uint32_t uDate = 0) { return 0; }
 };
-NS_WTP_END
+NS_VVTP_END

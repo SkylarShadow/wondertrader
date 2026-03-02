@@ -19,7 +19,7 @@ typedef std::shared_ptr<BoostMappingFile> BoostMFPtr;
 
 class UftStrategy;
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 class WtUftEngine;
 class TraderAdapter;
 
@@ -308,9 +308,9 @@ private:
 		}
 	} PosInfo;
 
-	wt_hashmap<std::string, PosInfo> _positions;
+	vvt_hashmap<std::string, PosInfo> _positions;
 
-	wt_hashmap<uint32_t, uft::OrderStruct*> _order_ids;
+	vvt_hashmap<uint32_t, uft::OrderStruct*> _order_ids;
 
 	inline bool is_my_order(uint32_t localid) const
 	{
@@ -327,4 +327,4 @@ private:
 	UftStrategy*	_strategy;
 };
 
-NS_WTP_END
+NS_VVTP_END

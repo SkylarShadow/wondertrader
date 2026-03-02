@@ -18,7 +18,7 @@
 #include "../Share/decimal.h"
 #include "../Includes/WTSContractInfo.hpp"
 #include "../Includes/WTSSessionInfo.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 
 #include "../WTSTools/WTSLogger.h"
 
@@ -227,7 +227,7 @@ void SelMocker::log_close(const char* stdCode, bool isLong, uint64_t openTime, d
 		<< totalprofit << "," << enterTag << "," << exitTag << "," << openBarNo << "," << closeBarNo << "\n";
 }
 
-bool SelMocker::init_sel_factory(WTSVariant* cfg)
+bool SelMocker::init_sel_factory(VVTSVariant* cfg)
 {
 	if (cfg == NULL)
 		return false;
@@ -251,7 +251,7 @@ bool SelMocker::init_sel_factory(WTSVariant* cfg)
 	_factory._remover = (FuncDeleteSelStraFact)DLLHelper::get_symbol(hInst, "deleteSelStrategyFact");
 	_factory._fact = _factory._creator();
 
-	WTSVariant* cfgStra = cfg->get("strategy");
+	VVTSVariant* cfgStra = cfg->get("strategy");
 	if (cfgStra)
 	{
 		_strategy = _factory._fact->createStrategy(cfgStra->getCString("name"), cfgStra->getCString("id"));
@@ -525,7 +525,7 @@ void SelMocker::on_session_begin(uint32_t curTDate)
 
 void SelMocker::enum_position(FuncEnumSelPositionCallBack cb)
 {
-	wt_hashmap<std::string, double> desPos;
+	vvt_hashmap<std::string, double> desPos;
 	for (auto& it : _pos_map)
 	{
 		const char* stdCode = it.first.c_str();

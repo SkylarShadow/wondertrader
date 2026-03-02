@@ -5,16 +5,16 @@
 #include <functional>
 #include <string.h>
 
-#include "../Includes/WTSMarcos.h"
+#include "../Includes/VVTSMarcos.h"
 #include "../Includes/WTSCollection.hpp"
 #include "../Includes/FasterDefs.h"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 class WTSTickData;
-class WTSVariant;
-NS_WTP_END
+class VVTSVariant;
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 typedef std::vector<uint32_t> OrderIDs;
 
@@ -66,7 +66,7 @@ private:
 	inline WTSTickData*	grab_last_tick(const char* stdCode);
 
 public:
-	void	init(WTSVariant* cfg);
+	void	init(VVTSVariant* cfg);
 
 	void	regisSink(IMatchSink* sink) { _sink = sink; }
 
@@ -100,7 +100,7 @@ private:
 		}
 	} OrderInfo;
 
-	typedef wt_hashmap<uint32_t, OrderInfo> Orders;
+	typedef vvt_hashmap<uint32_t, OrderInfo> Orders;
 	Orders	_orders;
 
 	typedef std::map<uint32_t, double>	LOBItems;
@@ -127,7 +127,7 @@ private:
 			_bid_px = 0;
 		}
 	} LmtOrdBook;
-	typedef wt_hashmap<std::string, LmtOrdBook> LmtOrdBooks;
+	typedef vvt_hashmap<std::string, LmtOrdBook> LmtOrdBooks;
 	LmtOrdBooks	_lmt_ord_books;
 
 	IMatchSink*	_sink;

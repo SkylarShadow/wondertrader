@@ -2,13 +2,13 @@
 #include "EventNotifier.h"
 
 #include "../Share/CodeHelper.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../WTSUtils/WTSCfgLoader.h"
 #include "../WTSTools/WTSLogger.h"
 
 #include <boost/filesystem.hpp>
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 void WtFilterMgr::load_filters(const char* fileName)
 {
@@ -35,7 +35,7 @@ void WtFilterMgr::load_filters(const char* fileName)
 			_notifier->notify_event("Filter file has been reloaded");
 	}
 
-	WTSVariant* cfg = WTSCfgLoader::load_from_file(_filter_file.c_str());
+	VVTSVariant* cfg = WTSCfgLoader::load_from_file(_filter_file.c_str());
 
 	_filter_timestamp = lastModTime;
 
@@ -44,18 +44,18 @@ void WtFilterMgr::load_filters(const char* fileName)
 	_exec_filters.clear();
 
 	//读策略过滤器
-	WTSVariant* filterStra = cfg->get("strategy_filters");
+	VVTSVariant* filterStra = cfg->get("strategy_filters");
 	if (filterStra)
 	{
 		auto keys = filterStra->memberNames();
 		for (const std::string& key : keys)
 		{
-			WTSVariant* cfgItem = filterStra->get(key.c_str());
+			VVTSVariant* cfgItem = filterStra->get(key.c_str());
 			const char* action = cfgItem->getCString("action");
 			FilterAction fAct = FA_None;
-			if (wt_stricmp(action, "ignore") == 0)
+			if (vvt_stricmp(action, "ignore") == 0)
 				fAct = FA_Ignore;
-			else if (wt_stricmp(action, "redirect") == 0)
+			else if (vvt_stricmp(action, "redirect") == 0)
 				fAct = FA_Redirect;
 
 			if (fAct == FA_None)
@@ -74,19 +74,19 @@ void WtFilterMgr::load_filters(const char* fileName)
 	}
 
 	//读代码过滤器
-	WTSVariant* filterCodes = cfg->get("code_filters");
+	VVTSVariant* filterCodes = cfg->get("code_filters");
 	if (filterCodes)
 	{
 		auto codes = filterCodes->memberNames();
 		for (const std::string& stdCode : codes)
 		{
 
-			WTSVariant* cfgItem = filterCodes->get(stdCode.c_str());
+			VVTSVariant* cfgItem = filterCodes->get(stdCode.c_str());
 			const char* action = cfgItem->getCString("action");
 			FilterAction fAct = FA_None;
-			if (wt_stricmp(action, "ignore") == 0)
+			if (vvt_stricmp(action, "ignore") == 0)
 				fAct = FA_Ignore;
-			else if (wt_stricmp(action, "redirect") == 0)
+			else if (vvt_stricmp(action, "redirect") == 0)
 				fAct = FA_Redirect;
 
 			if (fAct == FA_None)
@@ -105,7 +105,7 @@ void WtFilterMgr::load_filters(const char* fileName)
 	}
 
 	//读通道过滤器
-	WTSVariant* filterExecuters = cfg->get("executer_filters");
+	VVTSVariant* filterExecuters = cfg->get("executer_filters");
 	if (filterExecuters)
 	{
 		auto executer_ids = filterExecuters->memberNames();

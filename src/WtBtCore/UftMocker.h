@@ -198,7 +198,7 @@ public:
 	virtual void on_entrust(uint32_t localid, const char* stdCode, bool bSuccess, const char* message);
 
 public:
-	bool	init_uft_factory(WTSVariant* cfg);
+	bool	init_uft_factory(VVTSVariant* cfg);
 
 private:
 	typedef std::function<void()> Task;
@@ -222,7 +222,7 @@ private:
 	uint32_t		_error_rate;
 	bool			_match_this_tick;	//是否在当前tick撮合
 
-	typedef wt_hashmap<std::string, double> PriceMap;
+	typedef vvt_hashmap<std::string, double> PriceMap;
 	PriceMap		_price_map;
 
 
@@ -274,12 +274,12 @@ private:
 		}
 
 	} OrderInfo;
-	typedef wt_hashmap<uint32_t, OrderInfo> Orders;
+	typedef vvt_hashmap<uint32_t, OrderInfo> Orders;
 	StdRecurMutex	_mtx_ords;
 	Orders			_orders;
 
 	//用户数据
-	typedef wt_hashmap<std::string, std::string> StringHashMap;
+	typedef vvt_hashmap<std::string, std::string> StringHashMap;
 	StringHashMap	_user_datas;
 	bool			_ud_modified;
 
@@ -336,7 +336,7 @@ private:
 		inline double closeprofit() const{ return _long._closeprofit + _short._closeprofit; }
 		inline double dynprofit() const { return _long._dynprofit + _short._dynprofit; }
 	} PosInfo;
-	typedef wt_hashmap<std::string, PosInfo> PositionMap;
+	typedef vvt_hashmap<std::string, PosInfo> PositionMap;
 	PositionMap		_pos_map;
 
 	std::stringstream	_trade_logs;

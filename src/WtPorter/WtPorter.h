@@ -31,11 +31,11 @@ extern "C"
 
 	EXPORT_FLAG void		register_ext_data_loader(FuncLoadFnlBars fnlBarLoader, FuncLoadRawBars rawBarLoader, FuncLoadAdjFactors fctLoader, FuncLoadRawTicks tickLoader);
 
-	EXPORT_FLAG void		feed_raw_bars(WTSBarStruct* bars, WtUInt32 count);
+	EXPORT_FLAG void		feed_raw_bars(WTSBarStruct* bars, VvtUInt32 count);
 
-	EXPORT_FLAG void		feed_raw_ticks(WTSTickStruct* ticks, WtUInt32 count);
+	EXPORT_FLAG void		feed_raw_ticks(WTSTickStruct* ticks, VvtUInt32 count);
 
-	EXPORT_FLAG void		feed_adj_factors(WtString stdCode, WtUInt32* dates, double* factors, WtUInt32 count);
+	EXPORT_FLAG void		feed_adj_factors(VvtString stdCode, VvtUInt32* dates, double* factors, VvtUInt32 count);
 
 	EXPORT_FLAG	void		init_porter(const char* logCfg, bool isFile, const char* genDir);
 
@@ -43,9 +43,9 @@ extern "C"
 
 	EXPORT_FLAG	void		run_porter(bool bAsync);
 
-	EXPORT_FLAG	void		write_log(WtUInt32 level, const char* message, const char* catName);
+	EXPORT_FLAG	void		write_log(VvtUInt32 level, const char* message, const char* catName);
 
-	EXPORT_FLAG	WtString	get_version();
+	EXPORT_FLAG	VvtString	get_version();
 
 	EXPORT_FLAG	bool		reg_cta_factories(const char* factFolder);
 
@@ -61,7 +61,7 @@ extern "C"
 
 	EXPORT_FLAG	bool		create_ext_executer(const char* id);
 
-	EXPORT_FLAG	WtString	get_raw_stdcode(const char* stdCode);
+	EXPORT_FLAG	VvtString	get_raw_stdcode(const char* stdCode);
 
 	//////////////////////////////////////////////////////////////////////////
 	//CTA策略接口
@@ -78,7 +78,7 @@ extern "C"
 
 	EXPORT_FLAG	double		cta_get_position_profit(CtxHandler cHandle, const char* stdCode);
 
-	EXPORT_FLAG	WtUInt64	cta_get_detail_entertime(CtxHandler cHandle, const char* stdCode, const char* openTag);
+	EXPORT_FLAG	VvtUInt64	cta_get_detail_entertime(CtxHandler cHandle, const char* stdCode, const char* openTag);
 
 	EXPORT_FLAG	double		cta_get_detail_cost(CtxHandler cHandle, const char* stdCode, const char* openTag);
 
@@ -96,33 +96,33 @@ extern "C"
 
 	EXPORT_FLAG	double		cta_get_fund_data(CtxHandler cHandle, int flag);
 
-	EXPORT_FLAG	WtUInt32 	cta_get_tdate();
+	EXPORT_FLAG	VvtUInt32 	cta_get_tdate();
 
-	EXPORT_FLAG	WtUInt32 	cta_get_date();
+	EXPORT_FLAG	VvtUInt32 	cta_get_date();
 
-	EXPORT_FLAG	WtUInt32 	cta_get_time();
+	EXPORT_FLAG	VvtUInt32 	cta_get_time();
 
-	EXPORT_FLAG	WtUInt32	cta_get_bars(CtxHandler cHandle, const char* stdCode, const char* period, WtUInt32 barCnt, bool isMain, FuncGetBarsCallback cb);
+	EXPORT_FLAG	VvtUInt32	cta_get_bars(CtxHandler cHandle, const char* stdCode, const char* period, VvtUInt32 barCnt, bool isMain, FuncGetBarsCallback cb);
 
-	EXPORT_FLAG	WtUInt32	cta_get_ticks(CtxHandler cHandle, const char* stdCode, WtUInt32 tickCnt, FuncGetTicksCallback cb);
+	EXPORT_FLAG	VvtUInt32	cta_get_ticks(CtxHandler cHandle, const char* stdCode, VvtUInt32 tickCnt, FuncGetTicksCallback cb);
 
 	EXPORT_FLAG	void		cta_get_all_position(CtxHandler cHandle, FuncGetPositionCallback cb);
 
-	EXPORT_FLAG	WtUInt64	cta_get_first_entertime(CtxHandler cHandle, const char* stdCode);
+	EXPORT_FLAG	VvtUInt64	cta_get_first_entertime(CtxHandler cHandle, const char* stdCode);
 
-	EXPORT_FLAG	WtUInt64	cta_get_last_entertime(CtxHandler cHandle, const char* stdCode);
+	EXPORT_FLAG	VvtUInt64	cta_get_last_entertime(CtxHandler cHandle, const char* stdCode);
 
-	EXPORT_FLAG	WtUInt64	cta_get_last_exittime(CtxHandler cHandle, const char* stdCode);
+	EXPORT_FLAG	VvtUInt64	cta_get_last_exittime(CtxHandler cHandle, const char* stdCode);
 
 	EXPORT_FLAG	double		cta_get_last_enterprice(CtxHandler cHandle, const char* stdCode);
 
-	EXPORT_FLAG	WtString	cta_get_last_entertag(CtxHandler cHandle, const char* stdCode);
+	EXPORT_FLAG	VvtString	cta_get_last_entertag(CtxHandler cHandle, const char* stdCode);
 
-	EXPORT_FLAG	void		cta_log_text(CtxHandler cHandle, WtUInt32 level, const char* message);
+	EXPORT_FLAG	void		cta_log_text(CtxHandler cHandle, VvtUInt32 level, const char* message);
 
 	EXPORT_FLAG	void		cta_save_userdata(CtxHandler cHandle, const char* key, const char* val);
 
-	EXPORT_FLAG	WtString	cta_load_userdata(CtxHandler cHandle, const char* key, const char* defVal);
+	EXPORT_FLAG	VvtString	cta_load_userdata(CtxHandler cHandle, const char* key, const char* defVal);
 
 	EXPORT_FLAG	void		cta_sub_ticks(CtxHandler cHandle, const char* stdCode);
 
@@ -143,7 +143,7 @@ extern "C"
 	 *	@idxName	指标名称
 	 *	@indexType	指标类型：0-主图指标，1-副图指标
 	 */
-	EXPORT_FLAG void		cta_register_index(CtxHandler cHandle, const char* idxName, WtUInt32 indexType);
+	EXPORT_FLAG void		cta_register_index(CtxHandler cHandle, const char* idxName, VvtUInt32 indexType);
 
 	/*
 	 *	添加指标线
@@ -151,7 +151,7 @@ extern "C"
 	 *	@lineName	线条名称
 	 *	@lineType	线性，0-曲线
 	 */
-	EXPORT_FLAG bool		cta_register_index_line(CtxHandler cHandle, const char* idxName, const char* lineName, WtUInt32 lineType);
+	EXPORT_FLAG bool		cta_register_index_line(CtxHandler cHandle, const char* idxName, const char* lineName, VvtUInt32 lineType);
 
 	/*
 	 *	添加基准线
@@ -181,21 +181,21 @@ extern "C"
 
 	EXPORT_FLAG	double 		sel_get_price(const char* stdCode);
 
-	EXPORT_FLAG	WtUInt32 	sel_get_date();
+	EXPORT_FLAG	VvtUInt32 	sel_get_date();
 
-	EXPORT_FLAG	WtUInt32 	sel_get_time();
+	EXPORT_FLAG	VvtUInt32 	sel_get_time();
 
-	EXPORT_FLAG	WtUInt32	sel_get_bars(CtxHandler cHandle, const char* stdCode, const char* period, WtUInt32 barCnt, FuncGetBarsCallback cb);
+	EXPORT_FLAG	VvtUInt32	sel_get_bars(CtxHandler cHandle, const char* stdCode, const char* period, VvtUInt32 barCnt, FuncGetBarsCallback cb);
 
-	EXPORT_FLAG	WtUInt32	sel_get_ticks(CtxHandler cHandle, const char* stdCode, WtUInt32 tickCnt, FuncGetTicksCallback cb);
+	EXPORT_FLAG	VvtUInt32	sel_get_ticks(CtxHandler cHandle, const char* stdCode, VvtUInt32 tickCnt, FuncGetTicksCallback cb);
 
 	EXPORT_FLAG	void		sel_get_all_position(CtxHandler cHandle, FuncGetPositionCallback cb);
 
-	EXPORT_FLAG	void		sel_log_text(CtxHandler cHandle, WtUInt32 level, const char* message);
+	EXPORT_FLAG	void		sel_log_text(CtxHandler cHandle, VvtUInt32 level, const char* message);
 
 	EXPORT_FLAG	void		sel_save_userdata(CtxHandler cHandle, const char* key, const char* val);
 
-	EXPORT_FLAG	WtString	sel_load_userdata(CtxHandler cHandle, const char* key, const char* defVal);
+	EXPORT_FLAG	VvtString	sel_load_userdata(CtxHandler cHandle, const char* key, const char* defVal);
 
 	EXPORT_FLAG	void		sel_sub_ticks(CtxHandler cHandle, const char* stdCode);
 
@@ -203,7 +203,7 @@ extern "C"
 	//扩展SEL的接口，主要是和CTA接口做一个同步
 	EXPORT_FLAG	double		sel_get_position_profit(CtxHandler cHandle, const char* stdCode);
 
-	EXPORT_FLAG	WtUInt64	sel_get_detail_entertime(CtxHandler cHandle, const char* stdCode, const char* openTag);
+	EXPORT_FLAG	VvtUInt64	sel_get_detail_entertime(CtxHandler cHandle, const char* stdCode, const char* openTag);
 
 	EXPORT_FLAG	double		sel_get_detail_cost(CtxHandler cHandle, const char* stdCode, const char* openTag);
 
@@ -215,17 +215,17 @@ extern "C"
 
 	EXPORT_FLAG	double		sel_get_fund_data(CtxHandler cHandle, int flag);
 
-	EXPORT_FLAG	WtUInt32 	sel_get_tdate();
+	EXPORT_FLAG	VvtUInt32 	sel_get_tdate();
 
-	EXPORT_FLAG	WtUInt64	sel_get_first_entertime(CtxHandler cHandle, const char* stdCode);
+	EXPORT_FLAG	VvtUInt64	sel_get_first_entertime(CtxHandler cHandle, const char* stdCode);
 
-	EXPORT_FLAG	WtUInt64	sel_get_last_entertime(CtxHandler cHandle, const char* stdCode);
+	EXPORT_FLAG	VvtUInt64	sel_get_last_entertime(CtxHandler cHandle, const char* stdCode);
 
-	EXPORT_FLAG	WtUInt64	sel_get_last_exittime(CtxHandler cHandle, const char* stdCode);
+	EXPORT_FLAG	VvtUInt64	sel_get_last_exittime(CtxHandler cHandle, const char* stdCode);
 
 	EXPORT_FLAG	double		sel_get_last_enterprice(CtxHandler cHandle, const char* stdCode);
 
-	EXPORT_FLAG	WtString	sel_get_last_entertag(CtxHandler cHandle, const char* stdCode);
+	EXPORT_FLAG	VvtString	sel_get_last_entertag(CtxHandler cHandle, const char* stdCode);
 #pragma endregion "SEL接口"
 
 	//////////////////////////////////////////////////////////////////////////
@@ -243,23 +243,23 @@ extern "C"
 
 	EXPORT_FLAG	double 		hft_get_price(const char* stdCode);
 
-	EXPORT_FLAG	WtUInt32 	hft_get_date();
+	EXPORT_FLAG	VvtUInt32 	hft_get_date();
 
-	EXPORT_FLAG	WtUInt32 	hft_get_time();
+	EXPORT_FLAG	VvtUInt32 	hft_get_time();
 
-	EXPORT_FLAG	WtUInt32 	hft_get_secs();
+	EXPORT_FLAG	VvtUInt32 	hft_get_secs();
 
-	EXPORT_FLAG	WtUInt32	hft_get_bars(CtxHandler cHandle, const char* stdCode, const char* period, WtUInt32 barCnt, FuncGetBarsCallback cb);
+	EXPORT_FLAG	VvtUInt32	hft_get_bars(CtxHandler cHandle, const char* stdCode, const char* period, VvtUInt32 barCnt, FuncGetBarsCallback cb);
 
-	EXPORT_FLAG	WtUInt32	hft_get_ticks(CtxHandler cHandle, const char* stdCode, WtUInt32 tickCnt, FuncGetTicksCallback cb);
+	EXPORT_FLAG	VvtUInt32	hft_get_ticks(CtxHandler cHandle, const char* stdCode, VvtUInt32 tickCnt, FuncGetTicksCallback cb);
 
-	EXPORT_FLAG	WtUInt32	hft_get_ordque(CtxHandler cHandle, const char* stdCode, WtUInt32 tickCnt, FuncGetOrdQueCallback cb);
+	EXPORT_FLAG	VvtUInt32	hft_get_ordque(CtxHandler cHandle, const char* stdCode, VvtUInt32 tickCnt, FuncGetOrdQueCallback cb);
 
-	EXPORT_FLAG	WtUInt32	hft_get_orddtl(CtxHandler cHandle, const char* stdCode, WtUInt32 tickCnt, FuncGetOrdDtlCallback cb);
+	EXPORT_FLAG	VvtUInt32	hft_get_orddtl(CtxHandler cHandle, const char* stdCode, VvtUInt32 tickCnt, FuncGetOrdDtlCallback cb);
 
-	EXPORT_FLAG	WtUInt32	hft_get_trans(CtxHandler cHandle, const char* stdCode, WtUInt32 tickCnt, FuncGetTransCallback cb);
+	EXPORT_FLAG	VvtUInt32	hft_get_trans(CtxHandler cHandle, const char* stdCode, VvtUInt32 tickCnt, FuncGetTransCallback cb);
 
-	EXPORT_FLAG	void		hft_log_text(CtxHandler cHandle, WtUInt32 level, const char* message);
+	EXPORT_FLAG	void		hft_log_text(CtxHandler cHandle, VvtUInt32 level, const char* message);
 
 	EXPORT_FLAG	void		hft_sub_ticks(CtxHandler cHandle, const char* stdCode);
 
@@ -269,21 +269,21 @@ extern "C"
 
 	EXPORT_FLAG	void		hft_sub_transaction(CtxHandler cHandle, const char* stdCode);
 
-	EXPORT_FLAG	bool		hft_cancel(CtxHandler cHandle, WtUInt32 localid);
+	EXPORT_FLAG	bool		hft_cancel(CtxHandler cHandle, VvtUInt32 localid);
 
-	EXPORT_FLAG	WtString	hft_cancel_all(CtxHandler cHandle, const char* stdCode, bool isBuy);
+	EXPORT_FLAG	VvtString	hft_cancel_all(CtxHandler cHandle, const char* stdCode, bool isBuy);
 
-	EXPORT_FLAG	WtString	hft_buy(CtxHandler cHandle, const char* stdCode, double price, double qty, const char* userTag, int flag);
+	EXPORT_FLAG	VvtString	hft_buy(CtxHandler cHandle, const char* stdCode, double price, double qty, const char* userTag, int flag);
 
-	EXPORT_FLAG	WtString	hft_sell(CtxHandler cHandle, const char* stdCode, double price, double qty, const char* userTag, int flag);
+	EXPORT_FLAG	VvtString	hft_sell(CtxHandler cHandle, const char* stdCode, double price, double qty, const char* userTag, int flag);
 
 	EXPORT_FLAG	void		hft_save_userdata(CtxHandler cHandle, const char* key, const char* val);
 
-	EXPORT_FLAG	WtString	hft_load_userdata(CtxHandler cHandle, const char* key, const char* defVal);
+	EXPORT_FLAG	VvtString	hft_load_userdata(CtxHandler cHandle, const char* key, const char* defVal);
 #pragma endregion "HFT接口"
 
 #pragma region "扩展Parser接口"
-	EXPORT_FLAG	void		parser_push_quote(const char* id, WTSTickStruct* curTick, WtUInt32 uProcFlag);
+	EXPORT_FLAG	void		parser_push_quote(const char* id, WTSTickStruct* curTick, VvtUInt32 uProcFlag);
 #pragma endregion "扩展Parser接口"
 
 #ifdef __cplusplus

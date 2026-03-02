@@ -28,7 +28,7 @@
 #include "../Share/ModuleHelper.hpp"
 
 #include "../Includes/WTSContractInfo.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 
 #ifdef _MSC_VER
 #include "../Common/mdump.h"
@@ -334,15 +334,15 @@ uint32_t WtRtRunner::createHftContext(const char* name, const char* trader, bool
 uint32_t WtRtRunner::createSelContext(const char* name, uint32_t date, uint32_t time, const char* period, int32_t slippage, const char* trdtpl /* = "CHINA" */, const char* session/* ="TRADING" */)
 {
 	TaskPeriodType ptype;
-	if (wt_stricmp(period, "d") == 0)
+	if (vvt_stricmp(period, "d") == 0)
 		ptype = TPT_Daily;
-	else if (wt_stricmp(period, "w") == 0)
+	else if (vvt_stricmp(period, "w") == 0)
 		ptype = TPT_Weekly;
-	else if (wt_stricmp(period, "m") == 0)
+	else if (vvt_stricmp(period, "m") == 0)
 		ptype = TPT_Monthly;
-	else if (wt_stricmp(period, "y") == 0)
+	else if (vvt_stricmp(period, "y") == 0)
 		ptype = TPT_Yearly;
-	else if (wt_stricmp(period, "min") == 0)
+	else if (vvt_stricmp(period, "min") == 0)
 		ptype = TPT_Minute;
 	else
 		ptype = TPT_None;
@@ -458,19 +458,19 @@ void WtRtRunner::hft_on_channel_ready(uint32_t cHandle, const char* trader)
 		_cb_hft_chnl(cHandle, trader, CHNL_EVENT_READY);
 }
 
-void WtRtRunner::hft_on_entrust(uint32_t cHandle, WtUInt32 localid, const char* stdCode, bool bSuccess, const char* message, const char* userTag)
+void WtRtRunner::hft_on_entrust(uint32_t cHandle, VvtUInt32 localid, const char* stdCode, bool bSuccess, const char* message, const char* userTag)
 {
 	if (_cb_hft_entrust)
 		_cb_hft_entrust(cHandle, localid, stdCode, bSuccess, message, userTag);
 }
 
-void WtRtRunner::hft_on_order(uint32_t cHandle, WtUInt32 localid, const char* stdCode, bool isBuy, double totalQty, double leftQty, double price, bool isCanceled, const char* userTag)
+void WtRtRunner::hft_on_order(uint32_t cHandle, VvtUInt32 localid, const char* stdCode, bool isBuy, double totalQty, double leftQty, double price, bool isCanceled, const char* userTag)
 {
 	if (_cb_hft_ord)
 		_cb_hft_ord(cHandle, localid, stdCode, isBuy, totalQty, leftQty, price, isCanceled, userTag);
 }
 
-void WtRtRunner::hft_on_trade(uint32_t cHandle, WtUInt32 localid, const char* stdCode, bool isBuy, double vol, double price, const char* userTag)
+void WtRtRunner::hft_on_trade(uint32_t cHandle, VvtUInt32 localid, const char* stdCode, bool isBuy, double vol, double price, const char* userTag)
 {
 	if (_cb_hft_trd)
 		_cb_hft_trd(cHandle, localid, stdCode, isBuy, vol, price, userTag);
@@ -487,21 +487,21 @@ bool WtRtRunner::config(const char* cfgFile, bool isFile /* = true */)
 	_config = isFile ? WTSCfgLoader::load_from_file(cfgFile) : WTSCfgLoader::load_from_content(cfgFile, false);
 
 	//基础数据文件
-	WTSVariant* cfgBF = _config->get("basefiles");
+	VVTSVariant* cfgBF = _config->get("basefiles");
 	if (cfgBF->get("session"))
 	{
 		_bd_mgr.loadSessions(cfgBF->getCString("session"));
 		WTSLogger::info("Trading sessions loaded");
 	}
 
-	WTSVariant* cfgItem = cfgBF->get("commodity");
+	VVTSVariant* cfgItem = cfgBF->get("commodity");
 	if (cfgItem)
 	{
-		if (cfgItem->type() == WTSVariant::VT_String)
+		if (cfgItem->type() == VVTSVariant::VT_String)
 		{
 			_bd_mgr.loadCommodities(cfgItem->asCString());
 		}
-		else if (cfgItem->type() == WTSVariant::VT_Array)
+		else if (cfgItem->type() == VVTSVariant::VT_Array)
 		{
 			for (uint32_t i = 0; i < cfgItem->size(); i++)
 			{
@@ -513,11 +513,11 @@ bool WtRtRunner::config(const char* cfgFile, bool isFile /* = true */)
 	cfgItem = cfgBF->get("contract");
 	if (cfgItem)
 	{
-		if (cfgItem->type() == WTSVariant::VT_String)
+		if (cfgItem->type() == VVTSVariant::VT_String)
 		{
 			_bd_mgr.loadContracts(cfgItem->asCString());
 		}
-		else if (cfgItem->type() == WTSVariant::VT_Array)
+		else if (cfgItem->type() == VVTSVariant::VT_Array)
 		{
 			for (uint32_t i = 0; i < cfgItem->size(); i++)
 			{
@@ -585,16 +585,16 @@ bool WtRtRunner::config(const char* cfgFile, bool isFile /* = true */)
 		return false;
 
 	//初始化行情通道
-	WTSVariant* cfgParser = _config->get("parsers");
+	VVTSVariant* cfgParser = _config->get("parsers");
 	if (cfgParser)
 	{
-		if (cfgParser->type() == WTSVariant::VT_String)
+		if (cfgParser->type() == VVTSVariant::VT_String)
 		{
 			const char* filename = cfgParser->asCString();
 			if (StdFile::exists(filename))
 			{
 				WTSLogger::info("Reading parser config from {}...", filename);
-				WTSVariant* var = WTSCfgLoader::load_from_file(filename);
+				VVTSVariant* var = WTSCfgLoader::load_from_file(filename);
 				if (var)
 				{
 					if (!initParsers(var->get("parsers")))
@@ -611,23 +611,23 @@ bool WtRtRunner::config(const char* cfgFile, bool isFile /* = true */)
 				WTSLogger::error("Parser configuration {} not exists", filename);
 			}
 		}
-		else if (cfgParser->type() == WTSVariant::VT_Array)
+		else if (cfgParser->type() == VVTSVariant::VT_Array)
 		{
 			initParsers(cfgParser);
 		}
 	}
 
 	//初始化交易通道
-	WTSVariant* cfgTraders = _config->get("traders");
+	VVTSVariant* cfgTraders = _config->get("traders");
 	if(cfgTraders)
 	{
-		if (cfgTraders->type() == WTSVariant::VT_String)
+		if (cfgTraders->type() == VVTSVariant::VT_String)
 		{
 			const char* filename = cfgTraders->asCString();
 			if (StdFile::exists(filename))
 			{
 				WTSLogger::info("Reading trader config from {}...", filename);
-				WTSVariant* var = WTSCfgLoader::load_from_file(filename);
+				VVTSVariant* var = WTSCfgLoader::load_from_file(filename);
 				if (var)
 				{
 					if (!initTraders(var->get("traders")))
@@ -644,7 +644,7 @@ bool WtRtRunner::config(const char* cfgFile, bool isFile /* = true */)
 				WTSLogger::error("Trader configuration {} not exists", filename);
 			}
 		}
-		else if (cfgTraders->type() == WTSVariant::VT_Array)
+		else if (cfgTraders->type() == VVTSVariant::VT_Array)
 		{
 			initTraders(cfgTraders);
 		}
@@ -656,22 +656,22 @@ bool WtRtRunner::config(const char* cfgFile, bool isFile /* = true */)
 	//如果不是高频引擎,则需要配置执行模块
 	if (!_is_hft)
 	{
-		WTSVariant* cfgExec = _config->get("executers");
+		VVTSVariant* cfgExec = _config->get("executers");
 		if(cfgExec != NULL)
 		{
-			if(cfgExec->type() == WTSVariant::VT_String)
+			if(cfgExec->type() == VVTSVariant::VT_String)
 			{
 				const char* filename = cfgExec->asCString();
 				if (StdFile::exists(filename))
 				{
 					WTSLogger::info("Reading executer config from {}...", filename);
-					WTSVariant* var = WTSCfgLoader::load_from_file(filename);
+					VVTSVariant* var = WTSCfgLoader::load_from_file(filename);
 					if (var)
 					{
 						if (!initExecuters(var->get("executers")))
 							WTSLogger::error("Loading executers failed");
 
-						WTSVariant* c = var->get("routers");
+						VVTSVariant* c = var->get("routers");
 						if (c != NULL)
 							_cta_engine.loadRouterRules(c);
 
@@ -687,13 +687,13 @@ bool WtRtRunner::config(const char* cfgFile, bool isFile /* = true */)
 					WTSLogger::error("Trader configuration {} not exists", filename);
 				}
 			}
-			else if(cfgExec->type() == WTSVariant::VT_Array)
+			else if(cfgExec->type() == VVTSVariant::VT_Array)
 			{
 				initExecuters(cfgExec);
 			}
 		}
 
-		WTSVariant* cfgRouter = _config->get("routers");
+		VVTSVariant* cfgRouter = _config->get("routers");
 		if (cfgRouter != NULL)
 			_cta_engine.loadRouterRules(cfgRouter);
 		
@@ -709,17 +709,17 @@ bool WtRtRunner::config(const char* cfgFile, bool isFile /* = true */)
 
 bool WtRtRunner::initCtaStrategies()
 {
-	WTSVariant* cfg = _config->get("strategies");
-	if (cfg == NULL || cfg->type() != WTSVariant::VT_Object)
+	VVTSVariant* cfg = _config->get("strategies");
+	if (cfg == NULL || cfg->type() != VVTSVariant::VT_Object)
 		return false;
 
 	cfg = cfg->get("cta");
-	if (cfg == NULL || cfg->type() != WTSVariant::VT_Array)
+	if (cfg == NULL || cfg->type() != VVTSVariant::VT_Array)
 		return false;
 
 	for (uint32_t idx = 0; idx < cfg->size(); idx++)
 	{
-		WTSVariant* cfgItem = cfg->get(idx);
+		VVTSVariant* cfgItem = cfg->get(idx);
 		if (!cfgItem->getBoolean("active"))
 			continue;
 
@@ -738,17 +738,17 @@ bool WtRtRunner::initCtaStrategies()
 
 bool WtRtRunner::initSelStrategies()
 {
-	WTSVariant* cfg = _config->get("strategies");
-	if (cfg == NULL || cfg->type() != WTSVariant::VT_Object)
+	VVTSVariant* cfg = _config->get("strategies");
+	if (cfg == NULL || cfg->type() != VVTSVariant::VT_Object)
 		return false;
 
 	cfg = cfg->get("cta");
-	if (cfg == NULL || cfg->type() != WTSVariant::VT_Array)
+	if (cfg == NULL || cfg->type() != VVTSVariant::VT_Array)
 		return false;
 
 	for (uint32_t idx = 0; idx < cfg->size(); idx++)
 	{
-		WTSVariant* cfgItem = cfg->get(idx);
+		VVTSVariant* cfgItem = cfg->get(idx);
 		if (!cfgItem->getBoolean("active"))
 			continue;
 
@@ -761,13 +761,13 @@ bool WtRtRunner::initSelStrategies()
 		const char* period = cfgItem->getCString("period");
 
 		TaskPeriodType ptype;
-		if (wt_stricmp(period, "d") == 0)
+		if (vvt_stricmp(period, "d") == 0)
 			ptype = TPT_Daily;
-		else if (wt_stricmp(period, "w") == 0)
+		else if (vvt_stricmp(period, "w") == 0)
 			ptype = TPT_Weekly;
-		else if (wt_stricmp(period, "m") == 0)
+		else if (vvt_stricmp(period, "m") == 0)
 			ptype = TPT_Monthly;
-		else if (wt_stricmp(period, "y") == 0)
+		else if (vvt_stricmp(period, "y") == 0)
 			ptype = TPT_Yearly;
 		else
 			ptype = TPT_None;
@@ -784,17 +784,17 @@ bool WtRtRunner::initSelStrategies()
 
 bool WtRtRunner::initHftStrategies()
 {
-	WTSVariant* cfg = _config->get("strategies");
-	if (cfg == NULL || cfg->type() != WTSVariant::VT_Object)
+	VVTSVariant* cfg = _config->get("strategies");
+	if (cfg == NULL || cfg->type() != VVTSVariant::VT_Object)
 		return false;
 
 	cfg = cfg->get("hft");
-	if (cfg == NULL || cfg->type() != WTSVariant::VT_Array)
+	if (cfg == NULL || cfg->type() != VVTSVariant::VT_Array)
 		return false;
 
 	for (uint32_t idx = 0; idx < cfg->size(); idx++)
 	{
-		WTSVariant* cfgItem = cfg->get(idx);
+		VVTSVariant* cfgItem = cfg->get(idx);
 		if (!cfgItem->getBoolean("active"))
 			continue;
 
@@ -831,22 +831,22 @@ bool WtRtRunner::initHftStrategies()
 
 bool WtRtRunner::initEngine()
 {
-	WTSVariant* cfg = _config->get("env");
+	VVTSVariant* cfg = _config->get("env");
 	if (cfg == NULL)
 		return false;
 
 	const char* name = cfg->getCString("name");
 
-	if (strlen(name) == 0 || wt_stricmp(name, "cta") == 0)
+	if (strlen(name) == 0 || vvt_stricmp(name, "cta") == 0)
 	{
 		_is_hft = false;
 		_is_sel = false;
 	}
-	else if (wt_stricmp(name, "sel") == 0)
+	else if (vvt_stricmp(name, "sel") == 0)
 	{
 		_is_sel = true;
 	}
-	else //if (wt_stricmp(name, "hft") == 0)
+	else //if (vvt_stricmp(name, "hft") == 0)
 	{
 		_is_hft = true;
 	}
@@ -877,7 +877,7 @@ bool WtRtRunner::initEngine()
 
 bool WtRtRunner::initDataMgr()
 {
-	WTSVariant* cfg = _config->get("data");
+	VVTSVariant* cfg = _config->get("data");
 	if (cfg == NULL)
 		return false;
 
@@ -889,15 +889,15 @@ bool WtRtRunner::initDataMgr()
 	return true;
 }
 
-bool WtRtRunner::initParsers(WTSVariant* cfgParsers)
+bool WtRtRunner::initParsers(VVTSVariant* cfgParsers)
 {
-	if (cfgParsers == NULL || cfgParsers->type() != WTSVariant::VT_Array)
+	if (cfgParsers == NULL || cfgParsers->type() != VVTSVariant::VT_Array)
 		return false;
 
 	uint32_t count = 0;
 	for (uint32_t idx = 0; idx < cfgParsers->size(); idx++)
 	{
-		WTSVariant* cfgItem = cfgParsers->get(idx);
+		VVTSVariant* cfgItem = cfgParsers->get(idx);
 		if (!cfgItem->getBoolean("active"))
 			continue;
 
@@ -924,9 +924,9 @@ bool WtRtRunner::initParsers(WTSVariant* cfgParsers)
 	return true;
 }
 
-bool WtRtRunner::initExecuters(WTSVariant* cfgExecuter)
+bool WtRtRunner::initExecuters(VVTSVariant* cfgExecuter)
 {
-	if (cfgExecuter == NULL || cfgExecuter->type() != WTSVariant::VT_Array)
+	if (cfgExecuter == NULL || cfgExecuter->type() != VVTSVariant::VT_Array)
 		return false;
 
 	//先加载自带的执行器工厂
@@ -936,7 +936,7 @@ bool WtRtRunner::initExecuters(WTSVariant* cfgExecuter)
 	uint32_t count = 0;
 	for (uint32_t idx = 0; idx < cfgExecuter->size(); idx++)
 	{
-		WTSVariant* cfgItem = cfgExecuter->get(idx);
+		VVTSVariant* cfgItem = cfgExecuter->get(idx);
 		if (!cfgItem->getBoolean("active"))
 			continue;
 
@@ -1047,8 +1047,8 @@ bool WtRtRunner::initExecuters(WTSVariant* cfgExecuter)
 
 bool WtRtRunner::initEvtNotifier()
 {
-	WTSVariant* cfg = _config->get("notifier");
-	if (cfg == NULL || cfg->type() != WTSVariant::VT_Object)
+	VVTSVariant* cfg = _config->get("notifier");
+	if (cfg == NULL || cfg->type() != VVTSVariant::VT_Object)
 		return false;
 
 	_notifier.init(cfg);
@@ -1056,15 +1056,15 @@ bool WtRtRunner::initEvtNotifier()
 	return true;
 }
 
-bool WtRtRunner::initTraders(WTSVariant* cfgTraders)
+bool WtRtRunner::initTraders(VVTSVariant* cfgTraders)
 {
-	if (cfgTraders == NULL || cfgTraders->type() != WTSVariant::VT_Array)
+	if (cfgTraders == NULL || cfgTraders->type() != VVTSVariant::VT_Array)
 		return false;
 	
 	uint32_t count = 0;
 	for (uint32_t idx = 0; idx < cfgTraders->size(); idx++)
 	{
-		WTSVariant* cfgItem = cfgTraders->get(idx);
+		VVTSVariant* cfgItem = cfgTraders->get(idx);
 		if (!cfgItem->getBoolean("active"))
 			continue;
 

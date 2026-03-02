@@ -659,7 +659,7 @@ void SelStraBaseCtx::on_session_begin(uint32_t uTDate)
 
 void SelStraBaseCtx::enum_position(FuncEnumSelPositionCallBack cb)
 {
-	wt_hashmap<std::string, double> desPos;
+	vvt_hashmap<std::string, double> desPos;
 	for (auto& it : _pos_map)
 	{
 		const char* stdCode = it.first.c_str();
@@ -829,7 +829,7 @@ void SelStraBaseCtx::do_set_position(const char* stdCode, double qty, const char
 		dInfo._volume = abs(diff);
 		dInfo._opentime = curTm;
 		dInfo._opentdate = curTDate;
-		wt_strcpy(dInfo._opentag, userTag);
+		vvt_strcpy(dInfo._opentag, userTag);
 		pInfo._details.push_back(dInfo);
 		pInfo._last_entertime = curTm;
 
@@ -914,7 +914,7 @@ void SelStraBaseCtx::do_set_position(const char* stdCode, double qty, const char
 			dInfo._volume = abs(left);
 			dInfo._opentime = curTm;
 			dInfo._opentdate = curTDate;
-			wt_strcpy(dInfo._opentag, userTag);
+			vvt_strcpy(dInfo._opentag, userTag);
 			pInfo._details.push_back(dInfo);
 			pInfo._last_entertime = curTm;
 

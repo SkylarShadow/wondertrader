@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "../Includes/WTSMarcos.h"
+#include "../Includes/VVTSMarcos.h"
 #include "../Includes/WTSStruct.h"
 #include "../Includes/FasterDefs.h"
 
@@ -7,15 +7,15 @@
 #include "../Share/StdUtils.hpp"
 #include "../Share/SpinMutex.hpp"
 
-NS_WTP_BEGIN
-class WTSVariant;
+NS_VVTP_BEGIN
+class VVTSVariant;
 class WTSTickData;
 class IHotMgr;
 class IBaseDataMgr;
 class WTSContractInfo;
-NS_WTP_END
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class IndexFactory;
 
@@ -25,7 +25,7 @@ public:
 	IndexWorker(IndexFactory* factor):_factor(factor), _stopped(false), _process(false) {}
 
 public:
-	bool	init(WTSVariant* config);
+	bool	init(VVTSVariant* config);
 	void	handle_quote(WTSTickData* newTick);
 
 private:
@@ -52,7 +52,7 @@ protected:
 		}
 	}WeightFactor;
 	SpinMutex	_mtx_data;
-	wt_hashmap<std::string, WeightFactor>	_weight_scales;
+	vvt_hashmap<std::string, WeightFactor>	_weight_scales;
 	uint32_t	_weight_alg;
 
 	StdThreadPtr	_thrd_trigger;

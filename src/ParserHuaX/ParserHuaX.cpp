@@ -78,7 +78,7 @@ ParserHuaX::~ParserHuaX()
 	_api = NULL;
 }
 
-bool ParserHuaX::init(WTSVariant* config)
+bool ParserHuaX::init(VVTSVariant* config)
 {
 	_front = config->getCString("front");
 	_strUser = config->getCString("user");
@@ -158,7 +158,7 @@ void ParserHuaX::DoLogin()
 	CTORATstpReqUserLoginField req_user_login_field;
 	memset(&req_user_login_field, 0, sizeof(req_user_login_field));
 
-	strcpy(req_user_login_field.UserProductInfo, WT_PRODUCT);
+	strcpy(req_user_login_field.UserProductInfo, VVT_PRODUCT);
 
 	int iResult = _api->ReqUserLogin(&req_user_login_field, 1);
 

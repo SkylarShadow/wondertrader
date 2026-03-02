@@ -18,7 +18,7 @@
 
 #include "ITrdNotifySink.h"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 
 class WtHftEngine;
 class TraderAdapter;
@@ -251,7 +251,7 @@ protected:
 	TraderAdapter*	_trader;
 	int32_t			_slippage;
 
-	wt_hashmap<std::string, std::string> _code_map;
+	vvt_hashmap<std::string, std::string> _code_map;
 
 	BoostFilePtr	_sig_logs;
 	BoostFilePtr	_close_logs;
@@ -259,7 +259,7 @@ protected:
 	BoostFilePtr	_fund_logs;
 
 	//用户数据
-	typedef wt_hashmap<std::string, std::string> StringHashMap;
+	typedef vvt_hashmap<std::string, std::string> StringHashMap;
 	StringHashMap	_user_datas;
 	bool			_ud_modified;
 
@@ -302,7 +302,7 @@ private:
 			_dynprofit = 0;
 		}
 	} PosInfo;
-	typedef wt_hashmap<std::string, PosInfo> PositionMap;
+	typedef vvt_hashmap<std::string, PosInfo> PositionMap;
 	PositionMap		_pos_map;
 
 	typedef struct _OrderTag
@@ -314,10 +314,10 @@ private:
 		_OrderTag(uint32_t localid, const char* usertag)
 		{
 			_localid = localid;
-			wt_strcpy(_usertag, usertag);
+			vvt_strcpy(_usertag, usertag);
 		}
 	} OrderTag;
-	//typedef wt_hashmap<uint32_t, std::string> OrderMap;
+	//typedef vvt_hashmap<uint32_t, std::string> OrderMap;
 	//OrderMap		_orders;
 	boost::circular_buffer<OrderTag> _orders;
 
@@ -335,8 +335,8 @@ private:
 
 	StraFundInfo		_fund_info;
 
-	typedef wt_hashmap<std::string, double> PriceMap;
+	typedef vvt_hashmap<std::string, double> PriceMap;
 	PriceMap		_price_map;
 };
 
-NS_WTP_END
+NS_VVTP_END

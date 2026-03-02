@@ -163,7 +163,7 @@ public:
 	virtual void on_entrust(uint32_t localid, const char* stdCode, bool bSuccess, const char* message, const char* userTag);
 
 public:
-	bool	init_hft_factory(WTSVariant* cfg);
+	bool	init_hft_factory(VVTSVariant* cfg);
 	void	install_hook();
 	void	enable_hook(bool bEnabled = true);
 	void	step_tick();
@@ -190,7 +190,7 @@ private:
 	uint32_t		_error_rate;
 	bool			_match_this_tick;	//是否在当前tick撮合
 
-	typedef wt_hashmap<std::string, double> PriceMap;
+	typedef vvt_hashmap<std::string, double> PriceMap;
 	PriceMap		_price_map;
 
 
@@ -254,7 +254,7 @@ private:
 
 	} OrderInfo;
 	typedef std::shared_ptr<OrderInfo> OrderInfoPtr;
-	typedef wt_hashmap<uint32_t, OrderInfoPtr> Orders;
+	typedef vvt_hashmap<uint32_t, OrderInfoPtr> Orders;
 	StdRecurMutex	_mtx_ords;
 	Orders			_orders;
 
@@ -262,7 +262,7 @@ private:
 	CommodityMap*	_commodities;
 
 	//用户数据
-	typedef wt_hashmap<std::string, std::string> StringHashMap;
+	typedef vvt_hashmap<std::string, std::string> StringHashMap;
 	StringHashMap	_user_datas;
 	bool			_ud_modified;
 
@@ -303,7 +303,7 @@ private:
 
 		inline double valid() const { return _volume - _frozen; }
 	} PosInfo;
-	typedef wt_hashmap<std::string, PosInfo> PositionMap;
+	typedef vvt_hashmap<std::string, PosInfo> PositionMap;
 	PositionMap		_pos_map;
 
 	std::stringstream	_trade_logs;

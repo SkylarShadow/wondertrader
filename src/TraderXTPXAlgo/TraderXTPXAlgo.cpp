@@ -14,7 +14,7 @@
 #include "../Includes/WTSSessionInfo.hpp"
 #include "../Includes/WTSTradeDef.hpp"
 #include "../Includes/WTSError.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 
 #include "../Share/ModuleHelper.hpp"
 
@@ -782,7 +782,7 @@ void TraderXTPXAlgo::OnCancelAlgoOrder(XTPStrategyInfoStruct* strategy_info, XTP
 #pragma endregion "XTP::API:TraderSpi"
 
 #pragma region "ITraderApi"
-bool TraderXTPXAlgo::init(WTSVariant *params)
+bool TraderXTPXAlgo::init(VVTSVariant *params)
 {
 	// 交易服务器登录设置
 	_user = params->getCString("user");

@@ -18,7 +18,7 @@
 #include "../Share/decimal.h"
 #include "../Share/CodeHelper.hpp"
 
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/WTSContractInfo.hpp"
 
 #include "../WTSTools/WTSLogger.h"
@@ -27,7 +27,7 @@
 #include <rapidjson/prettywriter.h>
 namespace rj = rapidjson;
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 WtHftEngine::WtHftEngine()
 	: _cfg(NULL)
@@ -49,7 +49,7 @@ WtHftEngine::~WtHftEngine()
 		_cfg->release();
 }
 
-void WtHftEngine::init(WTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHotMgr* hotMgr, EventNotifier* notifier /* = NULL */)
+void WtHftEngine::init(VVTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHotMgr* hotMgr, EventNotifier* notifier /* = NULL */)
 {
 	WtEngine::init(cfg, bdMgr, dataMgr, hotMgr, notifier);
 
@@ -66,7 +66,7 @@ void WtHftEngine::run()
 	}
 
 	_tm_ticker = new WtHftRtTicker(this);
-	WTSVariant* cfgProd = _cfg->get("product");
+	VVTSVariant* cfgProd = _cfg->get("product");
 	_tm_ticker->init(_data_mgr->reader(), cfgProd->getCString("session"));
 
 	//启动之前,先把运行中的策略落地

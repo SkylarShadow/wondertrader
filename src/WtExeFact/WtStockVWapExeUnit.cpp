@@ -92,7 +92,7 @@ const char * WtStockVWapExeUnit::getName()
 	return "WtStockVWapExeUnit";
 }
 
-void WtStockVWapExeUnit::init(ExecuteContext * ctx, const char * stdCode, WTSVariant * cfg)
+void WtStockVWapExeUnit::init(ExecuteContext * ctx, const char * stdCode, VVTSVariant * cfg)
 {
 	ExecuteUnit::init(ctx, stdCode, cfg);
 

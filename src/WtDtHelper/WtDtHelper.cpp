@@ -24,7 +24,7 @@
 
 namespace rj = rapidjson;
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 /*
  *	处理块数据
@@ -157,7 +157,7 @@ uint32_t strToDate(const char* strDate)
 	return strtoul(ss.str().c_str(), NULL, 10);
 }
 
-void dump_bars(WtString binFolder, WtString csvFolder, WtString strFilter /* = "" */, FuncLogCallback cbLogger /* = NULL */)
+void dump_bars(VvtString binFolder, VvtString csvFolder, VvtString strFilter /* = "" */, FuncLogCallback cbLogger /* = NULL */)
 {
 	std::string srcFolder = StrUtil::standardisePath(binFolder);
 	if (!BoostFile::exists(srcFolder.c_str()))
@@ -262,7 +262,7 @@ void dump_bars(WtString binFolder, WtString csvFolder, WtString strFilter /* = "
 		cbLogger(StrUtil::printf("目录%s全部导出完成...", binFolder).c_str());
 }
 
-void dump_ticks(WtString binFolder, WtString csvFolder, WtString strFilter /* = "" */, FuncLogCallback cbLogger /* = NULL */)
+void dump_ticks(VvtString binFolder, VvtString csvFolder, VvtString strFilter /* = "" */, FuncLogCallback cbLogger /* = NULL */)
 {
 	std::string srcFolder = StrUtil::standardisePath(binFolder);
 	if (!BoostFile::exists(srcFolder.c_str()))
@@ -368,7 +368,7 @@ void dump_ticks(WtString binFolder, WtString csvFolder, WtString strFilter /* = 
 		cbLogger(StrUtil::printf("目录%s全部导出完成...", binFolder).c_str());
 }
 
-void trans_csv_bars(WtString csvFolder, WtString binFolder, WtString period, FuncLogCallback cbLogger /* = NULL */)
+void trans_csv_bars(VvtString csvFolder, VvtString binFolder, VvtString period, FuncLogCallback cbLogger /* = NULL */)
 {
 	if (!BoostFile::exists(csvFolder))
 		return;
@@ -377,9 +377,9 @@ void trans_csv_bars(WtString csvFolder, WtString binFolder, WtString period, Fun
 		BoostFile::create_directories(binFolder);
 
 	WTSKlinePeriod kp = KP_DAY;
-	if (wt_stricmp(period, "m1") == 0)
+	if (vvt_stricmp(period, "m1") == 0)
 		kp = KP_Minute1;
-	else if (wt_stricmp(period, "m5") == 0)
+	else if (vvt_stricmp(period, "m5") == 0)
 		kp = KP_Minute5;
 	else
 		kp = KP_DAY;
@@ -468,7 +468,7 @@ void trans_csv_bars(WtString csvFolder, WtString binFolder, WtString period, Fun
 	}
 }
 
-//bool trans_bars(WtString barFile, FuncGetBarItem getter, int count, WtString period, FuncLogCallback cbLogger /* = NULL */)
+//bool trans_bars(VvtString barFile, FuncGetBarItem getter, int count, VvtString period, FuncLogCallback cbLogger /* = NULL */)
 //{
 //	if (count == 0)
 //	{
@@ -478,11 +478,11 @@ void trans_csv_bars(WtString csvFolder, WtString binFolder, WtString period, Fun
 //	}
 //
 //	BlockType bType = BT_HIS_Day;
-//	if (wt_stricmp(period, "m1") == 0)
+//	if (vvt_stricmp(period, "m1") == 0)
 //		bType = BT_HIS_Minute1;
-//	else if (wt_stricmp(period, "m5") == 0)
+//	else if (vvt_stricmp(period, "m5") == 0)
 //		bType = BT_HIS_Minute5;
-//	else if(wt_stricmp(period, "d") == 0)
+//	else if(vvt_stricmp(period, "d") == 0)
 //		bType = BT_HIS_Day;
 //	else
 //	{
@@ -534,7 +534,7 @@ void trans_csv_bars(WtString csvFolder, WtString binFolder, WtString period, Fun
 //	return true;
 //}
 //
-//bool trans_ticks(WtString tickFile, FuncGetTickItem getter, int count, FuncLogCallback cbLogger/* = NULL*/)
+//bool trans_ticks(VvtString tickFile, FuncGetTickItem getter, int count, FuncLogCallback cbLogger/* = NULL*/)
 //{
 //	if (count == 0)
 //	{
@@ -587,7 +587,7 @@ void trans_csv_bars(WtString csvFolder, WtString binFolder, WtString period, Fun
 //	return true;
 //}
 
-WtUInt32 read_dsb_ticks(WtString tickFile, FuncGetTicksCallback cb, FuncCountDataCallback cbCnt, FuncLogCallback cbLogger /* = NULL */)
+VvtUInt32 read_dsb_ticks(VvtString tickFile, FuncGetTicksCallback cb, FuncCountDataCallback cbCnt, FuncLogCallback cbLogger /* = NULL */)
 {
 	std::string path = tickFile;
 
@@ -619,10 +619,10 @@ WtUInt32 read_dsb_ticks(WtString tickFile, FuncGetTicksCallback cb, FuncCountDat
 	if (cbLogger)
 		cbLogger(StrUtil::printf("%s读取完成,共%u条tick数据", tickFile, tcnt).c_str());
 
-	return (WtUInt32)tcnt;
+	return (VvtUInt32)tcnt;
 }
 
-WtUInt32 read_dsb_order_details(WtString dataFile, FuncGetOrdDtlCallback cb, FuncCountDataCallback cbCnt, FuncLogCallback cbLogger/* = NULL*/)
+VvtUInt32 read_dsb_order_details(VvtString dataFile, FuncGetOrdDtlCallback cb, FuncCountDataCallback cbCnt, FuncLogCallback cbLogger/* = NULL*/)
 {
 	std::string path = dataFile;
 
@@ -654,10 +654,10 @@ WtUInt32 read_dsb_order_details(WtString dataFile, FuncGetOrdDtlCallback cb, Fun
 	if (cbLogger)
 		cbLogger(StrUtil::printf("%s读取完成,共%u条order detail数据", dataFile, tcnt).c_str());
 
-	return (WtUInt32)tcnt;
+	return (VvtUInt32)tcnt;
 }
 
-WtUInt32 read_dsb_order_queues(WtString dataFile, FuncGetOrdQueCallback cb, FuncCountDataCallback cbCnt, FuncLogCallback cbLogger/* = NULL*/)
+VvtUInt32 read_dsb_order_queues(VvtString dataFile, FuncGetOrdQueCallback cb, FuncCountDataCallback cbCnt, FuncLogCallback cbLogger/* = NULL*/)
 {
 	std::string path = dataFile;
 
@@ -689,10 +689,10 @@ WtUInt32 read_dsb_order_queues(WtString dataFile, FuncGetOrdQueCallback cb, Func
 	if (cbLogger)
 		cbLogger(StrUtil::printf("%s读取完成,共%u条order queue数据", dataFile, tcnt).c_str());
 
-	return (WtUInt32)tcnt;
+	return (VvtUInt32)tcnt;
 }
 
-WtUInt32 read_dsb_transactions(WtString dataFile, FuncGetTransCallback cb, FuncCountDataCallback cbCnt, FuncLogCallback cbLogger/* = NULL*/)
+VvtUInt32 read_dsb_transactions(VvtString dataFile, FuncGetTransCallback cb, FuncCountDataCallback cbCnt, FuncLogCallback cbLogger/* = NULL*/)
 {
 	std::string path = dataFile;
 
@@ -724,10 +724,10 @@ WtUInt32 read_dsb_transactions(WtString dataFile, FuncGetTransCallback cb, FuncC
 	if (cbLogger)
 		cbLogger(StrUtil::printf("%s读取完成,共%u条transaction数据", dataFile, tcnt).c_str());
 
-	return (WtUInt32)tcnt;
+	return (VvtUInt32)tcnt;
 }
 
-WtUInt32 read_dsb_bars(WtString barFile, FuncGetBarsCallback cb, FuncCountDataCallback cbCnt, FuncLogCallback cbLogger )
+VvtUInt32 read_dsb_bars(VvtString barFile, FuncGetBarsCallback cb, FuncCountDataCallback cbCnt, FuncLogCallback cbLogger )
 {
 	std::string path = barFile;
 	if (cbLogger)
@@ -758,10 +758,10 @@ WtUInt32 read_dsb_bars(WtString barFile, FuncGetBarsCallback cb, FuncCountDataCa
 	if (cbLogger)
 		cbLogger(StrUtil::printf("%s读取完成,共%u条bar", barFile, kcnt).c_str());
 
-	return (WtUInt32)kcnt;
+	return (VvtUInt32)kcnt;
 }
 
-WtUInt32 read_dmb_bars(WtString barFile, FuncGetBarsCallback cb, FuncCountDataCallback cbCnt, FuncLogCallback cbLogger)
+VvtUInt32 read_dmb_bars(VvtString barFile, FuncGetBarsCallback cb, FuncCountDataCallback cbCnt, FuncLogCallback cbLogger)
 {
 	std::string path = barFile;
 
@@ -788,10 +788,10 @@ WtUInt32 read_dmb_bars(WtString barFile, FuncGetBarsCallback cb, FuncCountDataCa
 	if (cbLogger)
 		cbLogger(StrUtil::printf("%s读取完成,共%u条bar", barFile, kcnt).c_str());
 
-	return (WtUInt32)kcnt;
+	return (VvtUInt32)kcnt;
 }
 
-WtUInt32 read_dmb_ticks(WtString tickFile, FuncGetTicksCallback cb, FuncCountDataCallback cbCnt, FuncLogCallback cbLogger /* = NULL */)
+VvtUInt32 read_dmb_ticks(VvtString tickFile, FuncGetTicksCallback cb, FuncCountDataCallback cbCnt, FuncLogCallback cbLogger /* = NULL */)
 {
 	std::string path = tickFile;
 
@@ -821,23 +821,23 @@ WtUInt32 read_dmb_ticks(WtString tickFile, FuncGetTicksCallback cb, FuncCountDat
 	if (cbLogger)
 		cbLogger(StrUtil::printf("%s读取完成,共%u条tick数据", tickFile, tcnt).c_str());
 
-	return (WtUInt32)tcnt;
+	return (VvtUInt32)tcnt;
 }
 
 
-WtUInt32 resample_bars(WtString barFile, FuncGetBarsCallback cb, FuncCountDataCallback cbCnt, WtUInt64 fromTime, WtUInt64 endTime,
-	WtString period, WtUInt32 times, WtString sessInfo, FuncLogCallback cbLogger /* = NULL */, bool bAlignSec/* = false*/)
+VvtUInt32 resample_bars(VvtString barFile, FuncGetBarsCallback cb, FuncCountDataCallback cbCnt, VvtUInt64 fromTime, VvtUInt64 endTime,
+	VvtString period, VvtUInt32 times, VvtString sessInfo, FuncLogCallback cbLogger /* = NULL */, bool bAlignSec/* = false*/)
 {
 	WTSKlinePeriod kp;
-	if(wt_stricmp(period, "m1") == 0)
+	if(vvt_stricmp(period, "m1") == 0)
 	{
 		kp = KP_Minute1;
 	}
-	else if (wt_stricmp(period, "m5") == 0)
+	else if (vvt_stricmp(period, "m5") == 0)
 	{
 		kp = KP_Minute5;
 	}
-	else if (wt_stricmp(period, "d") == 0)
+	else if (vvt_stricmp(period, "d") == 0)
 	{
 		kp = KP_DAY;
 	}
@@ -1015,10 +1015,10 @@ WtUInt32 resample_bars(WtString barFile, FuncGetBarsCallback cb, FuncCountDataCa
 	sInfo->release();
 	slice->release();
 
-	return (WtUInt32)newCnt;
+	return (VvtUInt32)newCnt;
 }
 
-bool store_bars(WtString barFile, WTSBarStruct* firstBar, int count, WtString period, FuncLogCallback cbLogger /* = NULL */)
+bool store_bars(VvtString barFile, WTSBarStruct* firstBar, int count, VvtString period, FuncLogCallback cbLogger /* = NULL */)
 {
 	if (count == 0)
 	{
@@ -1028,11 +1028,11 @@ bool store_bars(WtString barFile, WTSBarStruct* firstBar, int count, WtString pe
 	}
 
 	BlockType bType = BT_HIS_Day;
-	if (wt_stricmp(period, "m1") == 0)
+	if (vvt_stricmp(period, "m1") == 0)
 		bType = BT_HIS_Minute1;
-	else if (wt_stricmp(period, "m5") == 0)
+	else if (vvt_stricmp(period, "m5") == 0)
 		bType = BT_HIS_Minute5;
-	else if (wt_stricmp(period, "d") == 0)
+	else if (vvt_stricmp(period, "d") == 0)
 		bType = BT_HIS_Day;
 	else
 	{
@@ -1071,7 +1071,7 @@ bool store_bars(WtString barFile, WTSBarStruct* firstBar, int count, WtString pe
 	return true;
 }
 
-bool store_ticks(WtString tickFile, WTSTickStruct* firstTick, int count, FuncLogCallback cbLogger/* = NULL*/)
+bool store_ticks(VvtString tickFile, WTSTickStruct* firstTick, int count, FuncLogCallback cbLogger/* = NULL*/)
 {
 	if (count == 0)
 	{
@@ -1111,7 +1111,7 @@ bool store_ticks(WtString tickFile, WTSTickStruct* firstTick, int count, FuncLog
 	return true;
 }
 
-bool store_order_details(WtString tickFile, WTSOrdDtlStruct* firstItem, int count, FuncLogCallback cbLogger/* = NULL*/)
+bool store_order_details(VvtString tickFile, WTSOrdDtlStruct* firstItem, int count, FuncLogCallback cbLogger/* = NULL*/)
 {
 	if (count == 0)
 	{
@@ -1151,7 +1151,7 @@ bool store_order_details(WtString tickFile, WTSOrdDtlStruct* firstItem, int coun
 	return true;
 }
 
-bool store_order_queues(WtString tickFile, WTSOrdQueStruct* firstItem, int count, FuncLogCallback cbLogger/* = NULL*/)
+bool store_order_queues(VvtString tickFile, WTSOrdQueStruct* firstItem, int count, FuncLogCallback cbLogger/* = NULL*/)
 {
 	if (count == 0)
 	{
@@ -1191,7 +1191,7 @@ bool store_order_queues(WtString tickFile, WTSOrdQueStruct* firstItem, int count
 	return true;
 }
 
-bool store_transactions(WtString tickFile, WTSTransStruct* firstItem, int count, FuncLogCallback cbLogger/* = NULL*/)
+bool store_transactions(VvtString tickFile, WTSTransStruct* firstItem, int count, FuncLogCallback cbLogger/* = NULL*/)
 {
 	if (count == 0)
 	{

@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "../Includes/UftStrategyDefs.h"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class WtUftStraFact : public IUftStrategyFact
 {

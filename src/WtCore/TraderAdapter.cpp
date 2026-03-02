@@ -20,7 +20,7 @@
 #include "../WTSTools/WTSLogger.h"
 
 #include "../Includes/WTSError.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/WTSTradeDef.hpp"
 #include "../Includes/WTSRiskDef.hpp"
 #include "../Includes/WTSSessionInfo.hpp"
@@ -93,7 +93,7 @@ TraderAdapter::~TraderAdapter()
 		_stat_map->release();
 }
 
-bool TraderAdapter::init(const char* id, WTSVariant* params, IBaseDataMgr* bdMgr, ActionPolicyMgr* policyMgr)
+bool TraderAdapter::init(const char* id, VVTSVariant* params, IBaseDataMgr* bdMgr, ActionPolicyMgr* policyMgr)
 {
 	if (params == NULL)
 		return false;
@@ -116,19 +116,19 @@ bool TraderAdapter::init(const char* id, WTSVariant* params, IBaseDataMgr* bdMgr
 		initSaveData();
 
 	//这里解析流量风控参数
-	WTSVariant* cfgRisk = params->get("riskmon");
+	VVTSVariant* cfgRisk = params->get("riskmon");
 	if (cfgRisk)
 	{
 		if (cfgRisk->getBoolean("active"))
 		{
 			_risk_mon_enabled = true;
 
-			WTSVariant* cfgPolicy = cfgRisk->get("policy");
+			VVTSVariant* cfgPolicy = cfgRisk->get("policy");
 			auto keys = cfgPolicy->memberNames();
 			for (auto it = keys.begin(); it != keys.end(); it++)
 			{
 				const char* product = (*it).c_str();
-				WTSVariant*	vProdItem = cfgPolicy->get(product);
+				VVTSVariant*	vProdItem = cfgPolicy->get(product);
 				RiskParams& rParam = _risk_params_map[product];
 				rParam._cancel_total_limits = vProdItem->getUInt32("cancel_total_limits");
 				rParam._cancel_times_boundary = vProdItem->getUInt32("cancel_times_boundary");
@@ -493,7 +493,7 @@ uint32_t TraderAdapter::doEntrust(WTSEntrust* entrust)
 
 	uint32_t localid = makeLocalOrderID();
 	char* usertag = entrust->getUserTag();
-	wt_strcpy(usertag, _order_pattern.c_str(), _order_pattern.size());
+	vvt_strcpy(usertag, _order_pattern.c_str(), _order_pattern.size());
 	usertag[_order_pattern.size()] =  '.';
 	fmtutil::format_to(usertag + _order_pattern.size() + 1, "{}", localid);
 	
@@ -1400,7 +1400,7 @@ void TraderAdapter::handleEvent(WTSTraderEvent e, int32_t ec)
 	{
 		if(ec == 0)
 		{
-			_trader_api->login(_cfg->getCString("user"), _cfg->getCString("pass"), WT_PRODUCT);
+			_trader_api->login(_cfg->getCString("user"), _cfg->getCString("pass"), VVT_PRODUCT);
 		}
 		else
 		{

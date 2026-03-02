@@ -13,7 +13,7 @@
 #include "WtHelper.h"
 #include "IDataCaster.h"
 
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Share/DLLHelper.hpp"
 
 #include "../WTSTools/WTSBaseDataMgr.h"
@@ -40,7 +40,7 @@ bool DataManager::isSessionProceeded(const char* sid)
 	return _writer->isSessionProceeded(sid);
 }
 
-bool DataManager::init(WTSVariant* params, WTSBaseDataMgr* bdMgr, StateMonitor* stMonitor)
+bool DataManager::init(VVTSVariant* params, WTSBaseDataMgr* bdMgr, StateMonitor* stMonitor)
 {
 	_bd_mgr = bdMgr;
 	_state_mon = stMonitor;

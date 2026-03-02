@@ -11,11 +11,11 @@
 #include "PorterDefs.h"
 #include <queue>
 
-#include "../Includes/WTSMarcos.h"
+#include "../Includes/VVTSMarcos.h"
 #include "../Includes/FasterDefs.h"
 #include "../Share/StdUtils.hpp"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 class MQManager;
 
 class MQClient
@@ -70,4 +70,4 @@ private:
 	char			_recv_buf[1024 * 1024];
 };
 
-NS_WTP_END
+NS_VVTP_END

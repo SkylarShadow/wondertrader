@@ -24,12 +24,12 @@
 
 typedef std::shared_ptr<spdlog::logger> SpdLoggerPtr;
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 class ILogHandler;
-class WTSVariant;
-NS_WTP_END
+class VVTSVariant;
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 #define MAX_LOG_BUF_SIZE 2048
 
@@ -43,7 +43,7 @@ private:
 	static void error_imp(SpdLoggerPtr logger, const char* message);
 	static void fatal_imp(SpdLoggerPtr logger, const char* message);
 
-	static void initLogger(const char* catName, WTSVariant* cfgLogger);
+	static void initLogger(const char* catName, VVTSVariant* cfgLogger);
 	static SpdLoggerPtr getLogger(const char* logger, const char* pattern = "");
 
 	static void print_message(const char* buffer);

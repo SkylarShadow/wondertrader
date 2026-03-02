@@ -13,7 +13,7 @@
 
 #include "../Share/StrUtil.hpp"
 #include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 
 #include "../WTSTools/WTSLogger.h"
 #include "../WTSTools/WTSDataFactory.h"
@@ -42,7 +42,7 @@ WtUftDtMgr::~WtUftDtMgr()
 		_rt_tick_map->release();
 }
 
-bool WtUftDtMgr::init(WTSVariant* cfg, WtUftEngine* engine)
+bool WtUftDtMgr::init(VVTSVariant* cfg, WtUftEngine* engine)
 {
 	_engine = engine;
 

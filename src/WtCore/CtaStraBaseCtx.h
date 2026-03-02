@@ -20,7 +20,7 @@
 
 class CtaStrategy;
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 
 class WtCtaEngine;
 
@@ -52,7 +52,7 @@ typedef struct _CondEntrust
 } CondEntrust;
 
 typedef std::vector<CondEntrust>	CondList;
-typedef wt_hashmap<std::string, CondList>	CondEntrustMap;
+typedef vvt_hashmap<std::string, CondList>	CondEntrustMap;
 
 
 class CtaStraBaseCtx : public ICtaStraCtx
@@ -231,10 +231,10 @@ protected:
 		_KlineTag() :_closed(false), _notify(false){}
 
 	} KlineTag;
-	typedef wt_hashmap<std::string, KlineTag> KlineTags;
+	typedef vvt_hashmap<std::string, KlineTag> KlineTags;
 	KlineTags	_kline_tags;
 
-	typedef wt_hashmap<std::string, double> PriceMap;
+	typedef vvt_hashmap<std::string, double> PriceMap;
 	PriceMap		_price_map;
 
 	typedef struct _DetailInfo
@@ -283,7 +283,7 @@ protected:
 			_frozen_date = 0;
 		}
 	} PosInfo;
-	typedef wt_hashmap<std::string, PosInfo> PositionMap;
+	typedef vvt_hashmap<std::string, PosInfo> PositionMap;
 	PositionMap		_pos_map;
 
 	typedef struct _SigInfo
@@ -304,7 +304,7 @@ protected:
 			_triggered = false;
 		}
 	}SigInfo;
-	typedef wt_hashmap<std::string, SigInfo>	SignalMap;
+	typedef vvt_hashmap<std::string, SigInfo>	SignalMap;
 	SignalMap		_sig_map;
 
 	BoostFilePtr	_trade_logs;
@@ -323,7 +323,7 @@ protected:
 	bool			_is_in_schedule;	//是否在自动调度中
 
 	//用户数据
-	typedef wt_hashmap<std::string, std::string> StringHashMap;
+	typedef vvt_hashmap<std::string, std::string> StringHashMap;
 	StringHashMap	_user_datas;
 	bool			_ud_modified;
 
@@ -360,15 +360,15 @@ protected:
 	{
 		std::string	_name;
 		uint32_t	_indexType;
-		wt_hashmap<std::string, ChartLine> _lines;
-		wt_hashmap<std::string, double> _base_lines;
+		vvt_hashmap<std::string, ChartLine> _lines;
+		vvt_hashmap<std::string, double> _base_lines;
 	} ChartIndex;
 
-	wt_hashmap<std::string, ChartIndex>	_chart_indice;
+	vvt_hashmap<std::string, ChartIndex>	_chart_indice;
 
 private:
 	SpinMutex		_mutex;
 };
 
 
-NS_WTP_END
+NS_VVTP_END

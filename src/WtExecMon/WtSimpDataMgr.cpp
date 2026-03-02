@@ -13,14 +13,14 @@
 
 #include "../Share/StrUtil.hpp"
 #include "../Includes/WTSDataDef.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Share/DLLHelper.hpp"
 #include "../Includes/WTSSessionInfo.hpp"
 
 #include "../WTSTools/WTSLogger.h"
 #include "../WTSTools/WTSDataFactory.h"
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 
 WTSDataFactory g_dataFact;
@@ -40,7 +40,7 @@ WtSimpDataMgr::~WtSimpDataMgr()
 		_rt_tick_map->release();
 }
 
-bool WtSimpDataMgr::initStore(WTSVariant* cfg)
+bool WtSimpDataMgr::initStore(VVTSVariant* cfg)
 {
 	if (cfg == NULL)
 		return false;
@@ -81,7 +81,7 @@ bool WtSimpDataMgr::initStore(WTSVariant* cfg)
 	return true;
 }
 
-bool WtSimpDataMgr::init(WTSVariant* cfg, WtExecRunner* runner)
+bool WtSimpDataMgr::init(VVTSVariant* cfg, WtExecRunner* runner)
 {
 	_runner = runner;
 	return initStore(cfg->get("store"));

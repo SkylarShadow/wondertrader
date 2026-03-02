@@ -16,7 +16,7 @@
 #include <boost/asio.hpp>
 #include <boost/asio/io_service.hpp>
 
-USING_NS_WTP;
+USING_NS_VVTP;
 using namespace boost::asio;
 
 class ParserShm : public IParserApi
@@ -57,7 +57,7 @@ public:
 #pragma pack(pop)
 
 public:
-	virtual bool init(WTSVariant* config) override;
+	virtual bool init(VVTSVariant* config) override;
 
 	virtual void release() override;
 

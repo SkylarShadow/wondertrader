@@ -9,9 +9,9 @@
  */
 #pragma once
 
-#include "WTSMarcos.h"
+#include "VVTSMarcos.h"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 class WTSSessionInfo;
 
 /*
@@ -29,4 +29,4 @@ public:
 	 */
 	virtual WTSSessionInfo* getSession(const char* code, const char* exchg = "")	= 0;
 };
-NS_WTP_END
+NS_VVTP_END

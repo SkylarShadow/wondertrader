@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "../Includes/WTSMarcos.h"
+#include "../Includes/VVTSMarcos.h"
 
-typedef void(PORTER_FLAG *FuncMQCallback)(WtUInt32 id, const char* topic, const char* data, WtUInt32 dataLen);
-typedef void(PORTER_FLAG *FuncLogCallback)(WtUInt32 id, const char* message, bool bServer);
+typedef void(PORTER_FLAG *FuncMQCallback)(VvtUInt32 id, const char* topic, const char* data, VvtUInt32 dataLen);
+typedef void(PORTER_FLAG *FuncLogCallback)(VvtUInt32 id, const char* message, bool bServer);

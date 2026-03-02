@@ -25,7 +25,7 @@
 
 #include "../Includes/IUftStraCtx.h"
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 class WTSSessionInfo;
 class WTSCommodityInfo;
 class WTSContractInfo;
@@ -33,7 +33,7 @@ class WTSContractInfo;
 class IBaseDataMgr;
 class IHotMgr;
 
-class WTSVariant;
+class VVTSVariant;
 
 class WTSTickData;
 struct WTSBarStruct;
@@ -49,7 +49,7 @@ class EventNotifier;
 typedef std::function<void()>	TaskItem;
 
 
-class WTSVariant;
+class VVTSVariant;
 class WtUftRtTicker;
 class EventNotifier;
 
@@ -90,7 +90,7 @@ public:
 	void notify_params_update(const char* name);
 
 public:
-	void init(WTSVariant* cfg, IBaseDataMgr* bdMgr, WtUftDtMgr* dataMgr, EventNotifier* notifier);
+	void init(VVTSVariant* cfg, IBaseDataMgr* bdMgr, WtUftDtMgr* dataMgr, EventNotifier* notifier);
 
 	void run();
 
@@ -138,7 +138,7 @@ private:
 	//By Wesley @ 2022.02.07
 	//tick数据订阅项，first是contextid，second是订阅选项，0-原始订阅，1-前复权，2-后复权
 	typedef wt_hashset<uint32_t> SubList;
-	typedef wt_hashmap<std::string, SubList>	StraSubMap;
+	typedef vvt_hashmap<std::string, SubList>	StraSubMap;
 	StraSubMap		_tick_sub_map;	//tick数据订阅表
 	StraSubMap		_ordque_sub_map;	//委托队列订阅表
 	StraSubMap		_orddtl_sub_map;	//委托明细订阅表
@@ -147,15 +147,15 @@ private:
 
 	TraderAdapterMgr*	_adapter_mgr;
 
-	typedef wt_hashmap<uint32_t, UftContextPtr> ContextMap;
+	typedef vvt_hashmap<uint32_t, UftContextPtr> ContextMap;
 	ContextMap		_ctx_map;
 
 	WtUftRtTicker*	_tm_ticker;
-	WTSVariant*		_cfg;
+	VVTSVariant*		_cfg;
 
 	bool			_dependent;	//子策略独立记账
 
 	EventNotifier*	_notifier;
 };
 
-NS_WTP_END
+NS_VVTP_END

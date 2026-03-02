@@ -9,7 +9,7 @@
  */
 #include "ParserXeleSkt.h"
 #include "md_struct.h"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/WTSDataDef.hpp"
 #include "../Includes/IBaseDataMgr.h"
 #include "../Includes/WTSContractInfo.hpp"
@@ -94,7 +94,7 @@ ParserXeleSkt::~ParserXeleSkt()
 {
 }
 
-bool ParserXeleSkt::init( WTSVariant* config )
+bool ParserXeleSkt::init( VVTSVariant* config )
 {
 	_tcp_host = config->getCString("tcp_host");
 	_tcp_port = config->getInt32("tcp_port");
@@ -210,7 +210,7 @@ bool ParserXeleSkt::prepare()
 				tick->setContractInfo(ct);
 
 				WTSTickStruct& quote = tick->getTickStruct();
-				wt_strcpy(quote.exchg, ct->getExchg());
+				vvt_strcpy(quote.exchg, ct->getExchg());
 
 				quote.action_date = strToTime(p->ActionDay);
 				quote.action_time = strToTime(p->UpdateTime) * 1000 + p->UpdateMilliSec;

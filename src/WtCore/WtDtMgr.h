@@ -15,8 +15,8 @@
 #include "../Includes/FasterDefs.h"
 #include "../Includes/WTSCollection.hpp"
 
-NS_WTP_BEGIN
-class WTSVariant;
+NS_VVTP_BEGIN
+class VVTSVariant;
 class WTSTickData;
 class WTSKlineSlice;
 class WTSTickSlice;
@@ -31,10 +31,10 @@ public:
 	~WtDtMgr();
 
 private:
-	bool	initStore(WTSVariant* cfg);
+	bool	initStore(VVTSVariant* cfg);
 
 public:
-	bool	init(WTSVariant* cfg, WtEngine* engine, bool bForceCache = false);
+	bool	init(VVTSVariant* cfg, WtEngine* engine, bool bForceCache = false);
 
 	void	regsiter_loader(IHisDataLoader* loader) { _loader = loader; }
 
@@ -95,7 +95,7 @@ private:
 		_NotifyItem(const char* code, char period, uint32_t times, WTSBarStruct* newBar)
 			: _times(times), _newBar(newBar)
 		{
-			wt_strcpy(_code, code);
+			vvt_strcpy(_code, code);
 			_period[0] = period;
 		}
 	} NotifyItem;
@@ -103,4 +103,4 @@ private:
 	std::vector<NotifyItem> _bar_notifies;
 };
 
-NS_WTP_END
+NS_VVTP_END

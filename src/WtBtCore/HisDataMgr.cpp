@@ -1,7 +1,7 @@
 ﻿#include "HisDataMgr.h"
 #include "WtHelper.h"
 #include "../Share/DLLHelper.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../WTSTools/WTSLogger.h"
 
 void HisDataMgr::reader_log(WTSLogLevel ll, const char* message)
@@ -9,7 +9,7 @@ void HisDataMgr::reader_log(WTSLogLevel ll, const char* message)
 	WTSLogger::log_raw(ll, message);
 }
 
-bool HisDataMgr::init(WTSVariant* cfg)
+bool HisDataMgr::init(VVTSVariant* cfg)
 {
 	std::string module = cfg->getCString("module");
 	if (module.empty())

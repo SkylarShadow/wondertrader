@@ -17,7 +17,7 @@
 #include "EventNotifier.h"
 
 #include "../Share/CodeHelper.hpp"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Share/TimeUtils.hpp"
 #include "../Includes/IBaseDataMgr.h"
 #include "../Includes/IHotMgr.h"
@@ -53,7 +53,7 @@ WtCtaEngine::~WtCtaEngine()
 void WtCtaEngine::run()
 {
 	_tm_ticker = new WtCtaRtTicker(this);
-	WTSVariant* cfgProd = _cfg->get("product");
+	VVTSVariant* cfgProd = _cfg->get("product");
 	_tm_ticker->init(_data_mgr->reader(), cfgProd->getCString("session"));
 
 	//启动之前,先把运行中的策略落地
@@ -105,7 +105,7 @@ void WtCtaEngine::run()
 
 }
 
-void WtCtaEngine::init(WTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHotMgr* hotMgr, EventNotifier* notifier /* = NULL */)
+void WtCtaEngine::init(VVTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHotMgr* hotMgr, EventNotifier* notifier /* = NULL */)
 {
 	WtEngine::init(cfg, bdMgr, dataMgr, hotMgr, notifier);
 
@@ -139,7 +139,7 @@ CtaContextPtr WtCtaEngine::getContext(uint32_t id)
 
 void WtCtaEngine::on_init()
 {
-	//wt_hashmap<std::string, double> target_pos;
+	//vvt_hashmap<std::string, double> target_pos;
 	_exec_mgr.clear_cached_targets();
 	for (auto it = _ctx_map.begin(); it != _ctx_map.end(); it++)
 	{
@@ -243,7 +243,7 @@ void WtCtaEngine::on_schedule(uint32_t curDate, uint32_t curTime)
 	//去检查一下过滤器
 	_filter_mgr.load_filters();
 	_exec_mgr.clear_cached_targets();
-	wt_hashmap<std::string, double> target_pos;
+	vvt_hashmap<std::string, double> target_pos;
 	if(_pool)
 	{
 		/*

@@ -16,10 +16,10 @@ extern "C"
 {
 #endif
 
-	EXPORT_FLAG void		initialize(WtString cfgFile, WtString logCfg, bool bCfgFile, bool bLogCfgFile);
+	EXPORT_FLAG void		initialize(VvtString cfgFile, VvtString logCfg, bool bCfgFile, bool bLogCfgFile);
 	EXPORT_FLAG void		start(bool bAsync = false);
 
-	EXPORT_FLAG	WtString	get_version();
+	EXPORT_FLAG	VvtString	get_version();
 	EXPORT_FLAG	void		write_log(unsigned int level, const char* message, const char* catName);
 
 
@@ -44,7 +44,7 @@ extern "C"
 	 *	@curTick	最新tick数据
 	 *	@procFlag	处理标记，0-切片行情，无需处理(ParserUDP)；1-完整快照，需要切片(国内各路通道)；2-极简快照，需要缓存累加（主要针对日线、tick，m1和m5都是自动累加的，虚拟货币行情）
 	 */
-	EXPORT_FLAG	void		parser_push_quote(const char* id, WTSTickStruct* curTick, WtUInt32 uProcFlag);
+	EXPORT_FLAG	void		parser_push_quote(const char* id, WTSTickStruct* curTick, VvtUInt32 uProcFlag);
 #pragma endregion "扩展Parser接口"
 
 #pragma region "扩展Dumper接口"

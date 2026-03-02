@@ -2,7 +2,7 @@
 #include <boost/filesystem.hpp>
 
 #include "../Includes/IParserApi.h"
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/WTSContractInfo.hpp"
 #include "../Includes/WTSDataDef.hpp"
 
@@ -15,14 +15,14 @@
 
 WTSBaseDataMgr	g_bdMgr;
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class ParserSpi : public IParserSpi
 {
 public:
 	ParserSpi(){}
 
-	bool init(WTSVariant* params, const char* ttype)
+	bool init(VVTSVariant* params, const char* ttype)
 	{
 		m_pParams = params;
 		if (m_pParams)
@@ -122,7 +122,7 @@ private:
 	IParserApi*			_api;
 	FuncDeleteParser	m_funcRemover;
 	std::string			m_strModule;
-	WTSVariant*			m_pParams;
+	VVTSVariant*			m_pParams;
 };
 
 std::string getBaseFolder()
@@ -142,14 +142,14 @@ int main()
 {
 	WTSLogger::init("logcfg.yaml");
 
-	WTSVariant* root = WTSCfgLoader::load_from_file("config.yaml");
+	VVTSVariant* root = WTSCfgLoader::load_from_file("config.yaml");
 	if (root == NULL)
 	{
 		WTSLogger::log_raw(LL_ERROR, "Loading config.yaml failed");
 		return 0;
 	}
 
-	WTSVariant* cfg = root->get("config");
+	VVTSVariant* cfg = root->get("config");
 	if (cfg->has("session"))
 		g_bdMgr.loadSessions(cfg->getCString("session"));
 
@@ -161,7 +161,7 @@ int main()
 
 	std::string module = cfg->getCString("parser");
 	std::string profile = cfg->getCString("profile");
-	WTSVariant* params = root->get(profile.c_str());
+	VVTSVariant* params = root->get(profile.c_str());
 	if (params == NULL)
 	{
 		WTSLogger::error("Configure {} not exist", profile);

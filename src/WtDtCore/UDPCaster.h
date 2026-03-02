@@ -15,11 +15,11 @@
 #include <boost/asio.hpp>
 #include <queue>
 
-NS_WTP_BEGIN
-	class WTSVariant;
-NS_WTP_END
+NS_VVTP_BEGIN
+	class VVTSVariant;
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class WTSBaseDataMgr;
 class DataManager;
@@ -56,7 +56,7 @@ private:
 	void	do_broadcast(WTSObject* data, uint32_t dataType);
 
 public:
-	bool	init(WTSVariant* cfg, WTSBaseDataMgr* bdMgr, DataManager* dtMgr);
+	bool	init(VVTSVariant* cfg, WTSBaseDataMgr* bdMgr, DataManager* dtMgr);
 	void	start(int bport);
 	void	stop();
 

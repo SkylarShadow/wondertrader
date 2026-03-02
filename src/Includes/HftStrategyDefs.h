@@ -11,19 +11,19 @@
 #include <string>
 #include <stdint.h>
 
-#include "../Includes/WTSMarcos.h"
+#include "../Includes/VVTSMarcos.h"
 
-NS_WTP_BEGIN
-class WTSVariant;
+NS_VVTP_BEGIN
+class VVTSVariant;
 class IHftStraCtx;
 class WTSTickData;
 class WTSOrdDtlData;
 class WTSOrdQueData;
 class WTSTransData;
 struct WTSBarStruct;
-NS_WTP_END
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class HftStrategy
 {
@@ -45,7 +45,7 @@ public:
 	/*
 	 *	初始化
 	 */
-	virtual bool init(WTSVariant* cfg){ return true; }
+	virtual bool init(VVTSVariant* cfg){ return true; }
 
 	virtual const char* id() const { return _id.c_str(); }
 

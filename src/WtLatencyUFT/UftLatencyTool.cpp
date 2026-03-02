@@ -10,7 +10,7 @@
 #include "UftLatencyTool.h"
 #include "../WtUftCore/UftStraContext.h"
 
-#include "../Includes/WTSVariant.hpp"
+#include "../Includes/VVTSVariant.hpp"
 #include "../Includes/IParserApi.h"
 #include "../Includes/ITraderApi.h"
 #include "../Includes/WTSContractInfo.hpp"
@@ -23,7 +23,7 @@
 #include "../Share/CpuHelper.hpp"
 
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 void test_uft()
 {
@@ -84,7 +84,7 @@ namespace uft
 				tick->setContractInfo(contract);
 
 				WTSTickStruct& quote = tick->getTickStruct();
-				wt_strcpy(quote.exchg, pCommInfo->getExchg());
+				vvt_strcpy(quote.exchg, pCommInfo->getExchg());
 
 				quote.action_date = actDate;
 				quote.action_time = actTime;
@@ -167,7 +167,7 @@ namespace uft
 
 		virtual bool makeEntrustID(char* buffer, int length) override
 		{
-			wt_strcpy(buffer, "123456");
+			vvt_strcpy(buffer, "123456");
 			return true;
 		}
 
@@ -226,7 +226,7 @@ namespace uft
 
 		std::string cfgFile = "config.yaml";
 
-		WTSVariant* _config = WTSCfgLoader::load_from_file(cfgFile);
+		VVTSVariant* _config = WTSCfgLoader::load_from_file(cfgFile);
 		if (_config == NULL)
 		{
 			WTSLogger::error("Loading config file {} failed", cfgFile);
@@ -234,18 +234,18 @@ namespace uft
 		}
 
 		//基础数据文件
-		WTSVariant* cfgBF = _config->get("basefiles");
+		VVTSVariant* cfgBF = _config->get("basefiles");
 		if (cfgBF->get("session"))
 			_bd_mgr.loadSessions(cfgBF->getCString("session"));
 
-		WTSVariant* cfgItem = cfgBF->get("commodity");
+		VVTSVariant* cfgItem = cfgBF->get("commodity");
 		if (cfgItem)
 		{
-			if (cfgItem->type() == WTSVariant::VT_String)
+			if (cfgItem->type() == VVTSVariant::VT_String)
 			{
 				_bd_mgr.loadCommodities(cfgItem->asCString());
 			}
-			else if (cfgItem->type() == WTSVariant::VT_Array)
+			else if (cfgItem->type() == VVTSVariant::VT_Array)
 			{
 				for (uint32_t i = 0; i < cfgItem->size(); i++)
 				{
@@ -257,11 +257,11 @@ namespace uft
 		cfgItem = cfgBF->get("contract");
 		if (cfgItem)
 		{
-			if (cfgItem->type() == WTSVariant::VT_String)
+			if (cfgItem->type() == VVTSVariant::VT_String)
 			{
 				_bd_mgr.loadContracts(cfgItem->asCString());
 			}
-			else if (cfgItem->type() == WTSVariant::VT_Array)
+			else if (cfgItem->type() == VVTSVariant::VT_Array)
 			{
 				for (uint32_t i = 0; i < cfgItem->size(); i++)
 				{
@@ -298,7 +298,7 @@ namespace uft
 		return true;
 	}
 
-	bool UftLatencyTool::initEngine(WTSVariant* cfg)
+	bool UftLatencyTool::initEngine(VVTSVariant* cfg)
 	{
 		WTSLogger::warn("Trading enviroment initialzied with engine: UFT");
 		_engine.init(cfg, &_bd_mgr, NULL, NULL);

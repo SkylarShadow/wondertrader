@@ -18,7 +18,7 @@ void PORTER_FLAG on_tick(CtxHandler ctxid, const char* stdCode, WTSTickStruct* n
 	fmt::print("on_tick\n");
 }
 
-void PORTER_FLAG on_calc(CtxHandler ctxid, WtUInt32 uDate, WtUInt32 uTime)
+void PORTER_FLAG on_calc(CtxHandler ctxid, VvtUInt32 uDate, VvtUInt32 uTime)
 {
 	fmt::print("on_calc\n");
 }
@@ -41,28 +41,28 @@ void PORTER_FLAG on_getticks(CtxHandler cHandle, const char* code, WTSTickStruct
 	fmt::print("on_getticks\n");
 }
 
-void PORTER_FLAG on_event(WtUInt32 evtId, WtUInt32 curDate, WtUInt32 curTime)
+void PORTER_FLAG on_event(VvtUInt32 evtId, VvtUInt32 curDate, VvtUInt32 curTime)
 {
 	fmt::print("on_event\n");
 }
 
-void PORTER_FLAG on_channel_evt(CtxHandler cHandle, const char* trader, WtUInt32 evtid)
+void PORTER_FLAG on_channel_evt(CtxHandler cHandle, const char* trader, VvtUInt32 evtid)
 {
 	fmt::print("on_channel_evt\n");
 	double undone = hft_get_undone(cHandle, "CFFEX.IF.HOT");
 }
 
-void PORTER_FLAG on_order(CtxHandler cHandle, WtUInt32 localid, const char* stdCode, bool isBuy, double totalQty, double leftQty, double price, bool isCanceled, const char* userTag)
+void PORTER_FLAG on_order(CtxHandler cHandle, VvtUInt32 localid, const char* stdCode, bool isBuy, double totalQty, double leftQty, double price, bool isCanceled, const char* userTag)
 {
 
 }
 
-void PORTER_FLAG on_trade(CtxHandler cHandle, WtUInt32 localid, const char* stdCode, bool isBuy, double vol, double price, const char* userTag)
+void PORTER_FLAG on_trade(CtxHandler cHandle, VvtUInt32 localid, const char* stdCode, bool isBuy, double vol, double price, const char* userTag)
 {
 
 }
 
-void PORTER_FLAG on_entrust(CtxHandler cHandle, WtUInt32 localid, const char* stdCode, bool bSuccess, const char* message, const char* userTag)
+void PORTER_FLAG on_entrust(CtxHandler cHandle, VvtUInt32 localid, const char* stdCode, bool bSuccess, const char* message, const char* userTag)
 {
 
 }

@@ -12,11 +12,11 @@
 
 typedef std::shared_ptr<BoostMappingFile> BoostMFPtr;
 
-NS_WTP_BEGIN
+NS_VVTP_BEGIN
 class WTSContractInfo;
-NS_WTP_END
+NS_VVTP_END
 
-USING_NS_WTP;
+USING_NS_VVTP;
 
 class WtDataWriterAD : public IDataWriter
 {
@@ -29,7 +29,7 @@ private:
 	void* resizeRTBlock(BoostMFPtr& mfPtr, uint32_t nCount);
 
 public:
-	virtual bool init(WTSVariant* params, IDataWriterSink* sink) override;
+	virtual bool init(VVTSVariant* params, IDataWriterSink* sink) override;
 	virtual void release() override;
 
 	virtual bool writeTick(WTSTickData* curTick, uint32_t procFlag) override;
@@ -42,7 +42,7 @@ private:
 	//Tick缓存
 	StdUniqueMutex	_mtx_tick_cache;
 	std::string		_cache_file_tick;
-	wt_hashmap<std::string, uint32_t> _tick_cache_idx;
+	vvt_hashmap<std::string, uint32_t> _tick_cache_idx;
 	BoostMFPtr		_tick_cache_file;
 	RTTickCache*	_tick_cache_block;
 
@@ -51,7 +51,7 @@ private:
 	{
 		StdUniqueMutex	_mtx;
 		std::string		_filename;
-		wt_hashmap<std::string, uint32_t> _idx;
+		vvt_hashmap<std::string, uint32_t> _idx;
 		BoostMFPtr		_file_ptr;
 		RTBarCache*		_cache_block;
 
@@ -92,7 +92,7 @@ private:
 	 *	Tick数据，每个合约一个数据库，路径如./ticks/CFFEX/IF2101
 	 */
 	typedef std::shared_ptr<WtLMDB> WtLMDBPtr;
-	typedef wt_hashmap<std::string, WtLMDBPtr> WtLMDBMap;
+	typedef vvt_hashmap<std::string, WtLMDBPtr> WtLMDBMap;
 
 	WtLMDBMap	_exchg_m1_dbs;
 	WtLMDBMap	_exchg_m5_dbs;
