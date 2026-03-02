@@ -106,7 +106,7 @@
 * （**重要**）优化了WTSBaseDataMgr加载合约的流程，支持将合约直接当成品种进行处理，主要为了适应一些每个合约的交易规则都不同的场景
 * 修改了VvTSKlineSlice和VvTSTickSlice，改为多数据块的模式，使用更加灵活
 * 重构WTSLogger，全面改成兼容fmtlib的格式化语法
-* （**重要**）配置文件全面兼容yaml和json两种格式，并实现了一个WTSCfgLoader模块自动处理
+* （**重要**）配置文件全面兼容yaml和json两种格式，并实现了一个VvTSCfgLoader模块自动处理
 * 完善了对股票复权数据的处理
 * （**重要**）新增一个极速交易引擎UFTEngine(WtUftCore、WtUftStraFact、WtUftRunner三个工程)，独立于其他几个引擎，不做过多兼容处理，只为了针对极速交易场景
 * （**重要**）速度优化（时间函数、字符串函数、hash、对象池等优化），将UFTEngine的系统延迟优化到175纳秒以内，HFTEngine的系统延迟优化到1.5微秒以内

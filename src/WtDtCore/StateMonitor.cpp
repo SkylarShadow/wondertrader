@@ -17,7 +17,7 @@
 
 #include "../WTSTools/WTSBaseDataMgr.h"
 #include "../WTSTools/WTSLogger.h"
-#include "../WTSUtils/WTSCfgLoader.h"
+#include "../WTSUtils/VvTSCfgLoader.h"
 
 
 StateMonitor::StateMonitor()
@@ -43,7 +43,7 @@ bool StateMonitor::initialize(const char* filename, WTSBaseDataMgr* bdMgr, DataM
 		return false;
 	}
 
-	VvTSVariant* config = WTSCfgLoader::load_from_file(filename);
+	VvTSVariant* config = VvTSCfgLoader::load_from_file(filename);
 	if (config == NULL)
 	{
 		WTSLogger::error("Loading state config failed");

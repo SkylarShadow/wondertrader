@@ -18,7 +18,7 @@
 #include "../WTSTools/WTSLogger.h"
 #include "../WTSUtils/SignalHook.hpp"
 
-#include "../WTSUtils/WTSCfgLoader.h"
+#include "../WTSUtils/VvTSCfgLoader.h"
 #include "../Includes/VvTSVariant.hpp"
 #include "../Share/StdUtils.hpp"
 #include "../Share/cppcli.hpp"
@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
 		return 0;
 	}
 
-	VvTSVariant* cfg = WTSCfgLoader::load_from_file(filename.c_str());
+	VvTSVariant* cfg = VvTSCfgLoader::load_from_file(filename.c_str());
 	if (cfg == NULL)
 	{
 		WTSLogger::info("Loading configuration file {} failed", filename);

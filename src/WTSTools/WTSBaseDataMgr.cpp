@@ -8,7 +8,7 @@
  * \brief 
  */
 #include "WTSBaseDataMgr.h"
-#include "../WTSUtils/WTSCfgLoader.h"
+#include "../WTSUtils/VvTSCfgLoader.h"
 #include "WTSLogger.h"
 
 #include "../Includes/VvTSContractInfo.hpp"
@@ -288,7 +288,7 @@ bool WTSBaseDataMgr::loadSessions(const char* filename)
 		return false;
 	}
 
-	VvTSVariant* root = WTSCfgLoader::load_from_file(filename);
+	VvTSVariant* root = VvTSCfgLoader::load_from_file(filename);
 	if (root == NULL)
 	{
 		WTSLogger::error("Loading session config file {} failed", filename);
@@ -373,7 +373,7 @@ bool WTSBaseDataMgr::loadCommodities(const char* filename)
 		return false;
 	}
 
-	VvTSVariant* root = WTSCfgLoader::load_from_file(filename);
+	VvTSVariant* root = VvTSCfgLoader::load_from_file(filename);
 	if (root == NULL)
 	{
 		WTSLogger::error("Loading commodities config file {} failed", filename);
@@ -427,7 +427,7 @@ bool WTSBaseDataMgr::loadContracts(const char* filename)
 		return false;
 	}
 
-	VvTSVariant* root = WTSCfgLoader::load_from_file(filename);
+	VvTSVariant* root = VvTSCfgLoader::load_from_file(filename);
 	if (root == NULL)
 	{
 		WTSLogger::error("Loading contracts config file {} failed", filename);
@@ -562,7 +562,7 @@ bool WTSBaseDataMgr::loadHolidays(const char* filename)
 		return false;
 	}
 
-	VvTSVariant* root = WTSCfgLoader::load_from_file(filename);
+	VvTSVariant* root = VvTSCfgLoader::load_from_file(filename);
 	if (root == NULL)
 	{
 		WTSLogger::error("Loading holidays config file {} failed", filename);

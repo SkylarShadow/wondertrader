@@ -21,7 +21,7 @@
 #include "../WtCore/SelStraContext.h"
 
 #include "../WTSTools/WTSLogger.h"
-#include "../WTSUtils/WTSCfgLoader.h"
+#include "../WTSUtils/VvTSCfgLoader.h"
 #include "../WTSUtils/SignalHook.hpp"
 
 #include "../Share/TimeUtils.hpp"
@@ -484,7 +484,7 @@ void WtRtRunner::hft_on_position(uint32_t cHandle, const char* stdCode, bool isL
 
 bool WtRtRunner::config(const char* cfgFile, bool isFile /* = true */)
 {
-	_config = isFile ? WTSCfgLoader::load_from_file(cfgFile) : WTSCfgLoader::load_from_content(cfgFile, false);
+	_config = isFile ? VvTSCfgLoader::load_from_file(cfgFile) : VvTSCfgLoader::load_from_content(cfgFile, false);
 
 	//基础数据文件
 	VvTSVariant* cfgBF = _config->get("basefiles");
@@ -594,7 +594,7 @@ bool WtRtRunner::config(const char* cfgFile, bool isFile /* = true */)
 			if (StdFile::exists(filename))
 			{
 				WTSLogger::info("Reading parser config from {}...", filename);
-				VvTSVariant* var = WTSCfgLoader::load_from_file(filename);
+				VvTSVariant* var = VvTSCfgLoader::load_from_file(filename);
 				if (var)
 				{
 					if (!initParsers(var->get("parsers")))
@@ -627,7 +627,7 @@ bool WtRtRunner::config(const char* cfgFile, bool isFile /* = true */)
 			if (StdFile::exists(filename))
 			{
 				WTSLogger::info("Reading trader config from {}...", filename);
-				VvTSVariant* var = WTSCfgLoader::load_from_file(filename);
+				VvTSVariant* var = VvTSCfgLoader::load_from_file(filename);
 				if (var)
 				{
 					if (!initTraders(var->get("traders")))
@@ -665,7 +665,7 @@ bool WtRtRunner::config(const char* cfgFile, bool isFile /* = true */)
 				if (StdFile::exists(filename))
 				{
 					WTSLogger::info("Reading executer config from {}...", filename);
-					VvTSVariant* var = WTSCfgLoader::load_from_file(filename);
+					VvTSVariant* var = VvTSCfgLoader::load_from_file(filename);
 					if (var)
 					{
 						if (!initExecuters(var->get("executers")))

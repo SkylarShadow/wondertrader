@@ -27,8 +27,8 @@
 #include "../WTSTools/WTSDataFactory.h"
 #include "../WTSTools/CsvHelper.h"
 
-#include "../WTSUtils/WTSCmpHelper.hpp"
-#include "../WTSUtils/WTSCfgLoader.h"
+#include "../WTSUtils/VvTSCmpHelper.hpp"
+#include "../WTSUtils/VvTSCfgLoader.h"
 
 #include "../Share/CodeHelper.hpp"
 
@@ -70,7 +70,7 @@ bool proc_block_data(const char* tag, std::string& content, bool isBar, bool bKe
 		}
 
 		//将文件头后面的数据进行解压
-		buffer = WTSCmpHelper::uncompress_data(content.data() + BLOCK_HEADERV2_SIZE, blkV2->_size);
+		buffer = VvTSCmpHelper::uncompress_data(content.data() + BLOCK_HEADERV2_SIZE, blkV2->_size);
 	}
 	else
 	{
@@ -341,7 +341,7 @@ bool HisDataReplayer::loadStkAdjFactorsFromFile(const char* adjfile)
 	std::string content;
 	StdFile::read_file_content(adjfile, content);
 
-	VvTSVariant* doc = WTSCfgLoader::load_from_file(adjfile);
+	VvTSVariant* doc = VvTSCfgLoader::load_from_file(adjfile);
 	if (doc == NULL)
 	{
 		WTSLogger::error("Parsing adjust factor file {} faield", adjfile);
@@ -2895,7 +2895,7 @@ void HisDataReplayer::loadFees(const char* filename)
 		return;
 	}
 
-	VvTSVariant* cfg = WTSCfgLoader::load_from_file(filename);
+	VvTSVariant* cfg = VvTSCfgLoader::load_from_file(filename);
 	if (cfg == NULL)
 	{
 		WTSLogger::error("Converting fees template file {} failed", filename);
@@ -3512,7 +3512,7 @@ bool HisDataReplayer::cacheRawTicksFromCSV(const std::string& key, const char* s
 		//pBlk->_type = BT_HIS_Ticks;
 		//pBlk->_version = BLOCK_VERSION_CMP_V2;
 
-		//std::string cmpData = WTSCmpHelper::compress_data(tickList._items.data(), sizeof(VvTSTickStruct)*tickList._count);
+		//std::string cmpData = VvTSCmpHelper::compress_data(tickList._items.data(), sizeof(VvTSTickStruct)*tickList._count);
 		//pBlk->_size = cmpData.size();
 		//content.append(cmpData);
 
@@ -3580,7 +3580,7 @@ bool HisDataReplayer::cacheFinalBarsFromLoader(const std::string& key, const cha
 		else
 		{
 			HisKlineBlockV2* kBlock = (HisKlineBlockV2*)content.c_str();
-			std::string rawData = WTSCmpHelper::uncompress_data(kBlock->_data, kBlock->_size);
+			std::string rawData = VvTSCmpHelper::uncompress_data(kBlock->_data, kBlock->_size);
 			uint32_t barcnt = rawData.size() / sizeof(VvTSBarStruct);
 
 			if (bSubbed)
@@ -3659,7 +3659,7 @@ bool HisDataReplayer::cacheFinalBarsFromLoader(const std::string& key, const cha
 			kBlock->_type = btype;
 			kBlock->_version = BLOCK_VERSION_CMP_V2;
 
-			std::string cmpData = WTSCmpHelper::compress_data(barsList->_bars.data(), sizeof(VvTSBarStruct)*barsList->_count);
+			std::string cmpData = VvTSCmpHelper::compress_data(barsList->_bars.data(), sizeof(VvTSBarStruct)*barsList->_count);
 			kBlock->_size = cmpData.size();
 			content.append(cmpData);
 
@@ -3823,7 +3823,7 @@ bool HisDataReplayer::cacheRawBarsFromCSV(const std::string& key, const char* st
 		kBlock->_type = btype;
 		kBlock->_version = BLOCK_VERSION_CMP_V2;
 
-		std::string cmpData = WTSCmpHelper::compress_data(barsList->_bars.data(), sizeof(VvTSBarStruct)*barsList->_count);
+		std::string cmpData = VvTSCmpHelper::compress_data(barsList->_bars.data(), sizeof(VvTSBarStruct)*barsList->_count);
 		kBlock->_size = cmpData.size();
 		content.append(cmpData);
 

@@ -1,4 +1,4 @@
-﻿#include "WTSCfgLoader.h"
+﻿#include "VvTSCfgLoader.h"
 #include "../Share/StrUtil.hpp"
 #include "../Share/StdUtils.hpp"
 
@@ -107,7 +107,7 @@ bool json_to_variant(const rj::Value& root, VvTSVariant* params)
 	return true;
 }
 
-VvTSVariant* WTSCfgLoader::load_from_json(const char* content)
+VvTSVariant* VvTSCfgLoader::load_from_json(const char* content)
 {
 	rj::Document root;
 	root.Parse(content);
@@ -177,7 +177,7 @@ bool yaml_to_variant(const YAML::Node& root, VvTSVariant* params)
 	return true;
 }
 
-VvTSVariant* WTSCfgLoader::load_from_yaml(const char* content)
+VvTSVariant* VvTSCfgLoader::load_from_yaml(const char* content)
 {
 	YAML::Node root = YAML::Load(content);
 
@@ -194,7 +194,7 @@ VvTSVariant* WTSCfgLoader::load_from_yaml(const char* content)
 	return ret;
 }
 
-VvTSVariant* WTSCfgLoader::load_from_content(const std::string& content, bool isYaml /* = false */)
+VvTSVariant* VvTSCfgLoader::load_from_content(const std::string& content, bool isYaml /* = false */)
 {
 	//加一个自动检测编码的逻辑
 	bool isUTF8 = EncodingHelper::isUtf8((unsigned char*)content.data(), content.size());
@@ -219,7 +219,7 @@ VvTSVariant* WTSCfgLoader::load_from_content(const std::string& content, bool is
 		return load_from_json(buffer.c_str());
 }
 
-VvTSVariant* WTSCfgLoader::load_from_file(const char* filename)
+VvTSVariant* VvTSCfgLoader::load_from_file(const char* filename)
 {
 	if (!StdFile::exists(filename))
 		return NULL;

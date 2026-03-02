@@ -138,7 +138,7 @@
     <ClInclude Include="lmdb\midl.h">
       <Filter>lmdb</Filter>
     </ClInclude>
-    <ClInclude Include="WtLMDB.hpp">
+    <ClInclude Include="VvtLMDB.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="yamlcpp\collectionstack.h">
@@ -204,10 +204,10 @@
     <ClInclude Include="yamlcpp\token.h">
       <Filter>yaml-cpp</Filter>
     </ClInclude>
-    <ClInclude Include="WTSCfgLoader.h">
+    <ClInclude Include="VvTSCfgLoader.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="WTSCmpHelper.hpp">
+    <ClInclude Include="VvTSCmpHelper.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -404,7 +404,7 @@
     <ClCompile Include="yamlcpp\tag.cpp">
       <Filter>yaml-cpp</Filter>
     </ClCompile>
-    <ClCompile Include="WTSCfgLoader.cpp">
+    <ClCompile Include="VvTSCfgLoader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

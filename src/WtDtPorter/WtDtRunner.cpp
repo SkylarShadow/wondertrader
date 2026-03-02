@@ -19,7 +19,7 @@
 
 #include "../Share/StrUtil.hpp"
 
-#include "../WTSUtils/WTSCfgLoader.h"
+#include "../WTSUtils/VvTSCfgLoader.h"
 #include "../WTSTools/WTSLogger.h"
 #include "../WTSUtils/SignalHook.hpp"
 
@@ -90,9 +90,9 @@ void WtDtRunner::initialize(const char* cfgFile, const char* logCfg, const char*
 
 	VvTSVariant* config = NULL;
 	if (bCfgFile)
-		config = WTSCfgLoader::load_from_file(cfgFile);
+		config = VvTSCfgLoader::load_from_file(cfgFile);
 	else
-		config = WTSCfgLoader::load_from_content(cfgFile, false);
+		config = VvTSCfgLoader::load_from_content(cfgFile, false);
 
 	if(config == NULL)
 	{
@@ -201,7 +201,7 @@ void WtDtRunner::initialize(const char* cfgFile, const char* logCfg, const char*
 		//如果存在指数模块要，配置指数
 		const char* filename = config->getCString("index");
 		WTSLogger::info("Reading index config from {}...", filename);
-		VvTSVariant* var = WTSCfgLoader::load_from_file(filename);
+		VvTSVariant* var = VvTSCfgLoader::load_from_file(filename);
 		if (var)
 		{
 			_idx_factory.init(var, &_hot_mgr, &_bd_mgr, &_data_mgr);
@@ -222,7 +222,7 @@ void WtDtRunner::initialize(const char* cfgFile, const char* logCfg, const char*
 			if (StdFile::exists(filename))
 			{
 				WTSLogger::info("Reading parser config from {}...", filename);
-				VvTSVariant* var = WTSCfgLoader::load_from_file(filename);
+				VvTSVariant* var = VvTSCfgLoader::load_from_file(filename);
 				if (var)
 				{
 					initParsers(var->get("parsers"));

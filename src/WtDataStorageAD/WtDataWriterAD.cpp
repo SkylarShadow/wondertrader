@@ -413,7 +413,7 @@ void WtDataWriterAD::pushTask(TaskInfo task)
 void WtDataWriterAD::pipeToTicks(VvTSContractInfo* ct, VvTSTickData* curTick)
 {
 	//直接落地
-	WtLMDBPtr db = get_t_db(ct->getExchg(), ct->getCode());
+	VvtLMDBPtr db = get_t_db(ct->getExchg(), ct->getCode());
 	if (db)
 	{
 		//这里要把时间转成便宜时间，并用交易日作为date
@@ -422,7 +422,7 @@ void WtDataWriterAD::pipeToTicks(VvTSContractInfo* ct, VvTSTickData* curTick)
 		uint32_t offTime = ct->getCommInfo()->getSessionInfo()->offsetTime(actTime / 100000, true) * 100000 + actTime % 100000;
 
 		LMDBHftKey key(ct->getExchg(), ct->getCode(), curTick->tradingdate(), offTime);
-		WtLMDBQuery query(*db);
+		VvtLMDBQuery query(*db);
 		if (!query.put_and_commit((void*)&key, sizeof(key), &curTick->getTickStruct(), sizeof(VvTSTickStruct)))
 		{
 			pipe_writer_log(_sink, LL_ERROR, "pipe tick of {} to db failed: {}", ct->getFullCode(), db->errmsg());
@@ -447,11 +447,11 @@ void WtDataWriterAD::pipeToTicks(VvTSContractInfo* ct, VvTSTickData* curTick)
 void WtDataWriterAD::pipeToDayBars(VvTSContractInfo* ct, const VvTSBarStruct& bar)
 {
 	//直接落地
-	WtLMDBPtr db = get_k_db(ct->getExchg(), KP_DAY);
+	VvtLMDBPtr db = get_k_db(ct->getExchg(), KP_DAY);
 	if (db)
 	{
 		LMDBBarKey key(ct->getExchg(), ct->getCode(), bar.date);
-		WtLMDBQuery query(*db);
+		VvtLMDBQuery query(*db);
 		if (!query.put_and_commit((void*)&key, sizeof(key), (void*)&bar, sizeof(VvTSBarStruct)))
 		{
 			pipe_writer_log(_sink, LL_ERROR, "pipe day bar @ {} of {} to db failed", bar.date, ct->getFullCode());
@@ -480,11 +480,11 @@ void WtDataWriterAD::pipeToDayBars(VvTSContractInfo* ct, const VvTSBarStruct& ba
 void WtDataWriterAD::pipeToM1Bars(VvTSContractInfo* ct, const VvTSBarStruct& bar)
 {
 	//直接落地
-	WtLMDBPtr db = get_k_db(ct->getExchg(), KP_Minute1);
+	VvtLMDBPtr db = get_k_db(ct->getExchg(), KP_Minute1);
 	if(db)
 	{
 		LMDBBarKey key(ct->getExchg(), ct->getCode(), (uint32_t)bar.time);
-		WtLMDBQuery query(*db);
+		VvtLMDBQuery query(*db);
 		if(!query.put_and_commit((void*)&key, sizeof(key), (void*)&bar, sizeof(VvTSBarStruct)))
 		{
 			pipe_writer_log(_sink, LL_ERROR, "pipe m1 bar @ {} of {} to db failed", bar.time, ct->getFullCode());
@@ -513,11 +513,11 @@ void WtDataWriterAD::pipeToM1Bars(VvTSContractInfo* ct, const VvTSBarStruct& bar
 void WtDataWriterAD::pipeToM5Bars(VvTSContractInfo* ct, const VvTSBarStruct& bar)
 {
 	//直接落地
-	WtLMDBPtr db = get_k_db(ct->getExchg(), KP_Minute5);
+	VvtLMDBPtr db = get_k_db(ct->getExchg(), KP_Minute5);
 	if (db)
 	{
 		LMDBBarKey key(ct->getExchg(), ct->getCode(), (uint32_t)bar.time);
-		WtLMDBQuery query(*db);
+		VvtLMDBQuery query(*db);
 		if (!query.put_and_commit((void*)&key, sizeof(key), (void*)&bar, sizeof(bar)))
 		{
 			pipe_writer_log(_sink, LL_ERROR, "pipe m5 bar @ {} of {} to db failed", bar.time, ct->getFullCode());
@@ -1010,9 +1010,9 @@ bool WtDataWriterAD::updateTickCache(VvTSContractInfo* ct, VvTSTickData* curTick
 	return true;
 }
 
-WtDataWriterAD::WtLMDBPtr WtDataWriterAD::get_k_db(const char* exchg, VvTSKlinePeriod period)
+WtDataWriterAD::VvtLMDBPtr WtDataWriterAD::get_k_db(const char* exchg, VvTSKlinePeriod period)
 {
-	WtLMDBMap* the_map = NULL;
+	VvtLMDBMap* the_map = NULL;
 	std::string subdir;
 	if (period == KP_Minute1)
 	{
@@ -1030,39 +1030,39 @@ WtDataWriterAD::WtLMDBPtr WtDataWriterAD::get_k_db(const char* exchg, VvTSKlineP
 		subdir = "day";
 	}
 	else
-		return std::move(WtLMDBPtr());
+		return std::move(VvtLMDBPtr());
 
 	auto it = the_map->find(exchg);
 	if (it != the_map->end())
 		return std::move(it->second);
 
-	WtLMDBPtr dbPtr(new WtLMDB(false));
+	VvtLMDBPtr dbPtr(new VvtLMDB(false));
 	std::string path = StrUtil::printf("%s%s/%s/", _base_dir.c_str(), subdir.c_str(), exchg);
 	boost::filesystem::create_directories(path);
 	if(!dbPtr->open(path.c_str(), _kline_mapsize))
 	{
 		if (_sink) pipe_writer_log(_sink, LL_ERROR, "Opening {} db at {} failed: {}", subdir, path, dbPtr->errmsg());
-		return std::move(WtLMDBPtr());
+		return std::move(VvtLMDBPtr());
 	}
 
 	(*the_map)[exchg] = dbPtr;
 	return std::move(dbPtr);
 }
 
-WtDataWriterAD::WtLMDBPtr WtDataWriterAD::get_t_db(const char* exchg, const char* code)
+WtDataWriterAD::VvtLMDBPtr WtDataWriterAD::get_t_db(const char* exchg, const char* code)
 {
 	std::string key = StrUtil::printf("%s.%s", exchg, code);
 	auto it = _tick_dbs.find(key);
 	if (it != _tick_dbs.end())
 		return std::move(it->second);
 
-	WtLMDBPtr dbPtr(new WtLMDB(false));
+	VvtLMDBPtr dbPtr(new VvtLMDB(false));
 	std::string path = StrUtil::printf("%sticks/%s/%s", _base_dir.c_str(), exchg, code);
 	boost::filesystem::create_directories(path);
 	if (!dbPtr->open(path.c_str(), _tick_mapsize))
 	{
 		if (_sink) pipe_writer_log(_sink, LL_ERROR, "Opening tick db at {} failed: %s", path, dbPtr->errmsg());
-		return std::move(WtLMDBPtr());
+		return std::move(VvtLMDBPtr());
 	}
 
 	_tick_dbs[key] = dbPtr;

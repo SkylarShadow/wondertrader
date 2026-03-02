@@ -15,7 +15,7 @@
 
 #include "../WTSTools/WTSBaseDataMgr.h"
 #include "../WTSTools/WTSLogger.h"
-#include "../WTSUtils/WTSCfgLoader.h"
+#include "../WTSUtils/VvTSCfgLoader.h"
 
 
 WTSBaseDataMgr	g_bdMgr;
@@ -586,7 +586,7 @@ int main()
 {
 	WTSLogger::init("logcfg.yaml");
 
-	VvTSVariant* root = WTSCfgLoader::load_from_file("config.yaml");
+	VvTSVariant* root = VvTSCfgLoader::load_from_file("config.yaml");
 	if(root == NULL)
 	{
 		WTSLogger::log_raw(LL_ERROR, "配置文件config.yaml加载失败");

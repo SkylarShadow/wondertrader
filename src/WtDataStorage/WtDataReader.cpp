@@ -10,8 +10,8 @@
 #include "../Includes/IHotMgr.h"
 #include "../Includes/VvTSDataDef.hpp"
 
-#include "../WTSUtils/WTSCmpHelper.hpp"
-#include "../WTSUtils/WTSCfgLoader.h"
+#include "../WTSUtils/VvTSCmpHelper.hpp"
+#include "../WTSUtils/VvTSCfgLoader.h"
 
 #include <rapidjson/document.h>
 namespace rj = rapidjson;
@@ -73,7 +73,7 @@ bool proc_block_data(std::string& content, bool isBar, bool bKeepHead /* = true 
 		}
 
 		//将文件头后面的数据进行解压
-		buffer = WTSCmpHelper::uncompress_data(content.data() + BLOCK_HEADERV2_SIZE, (std::size_t)blkV2->_size);
+		buffer = VvTSCmpHelper::uncompress_data(content.data() + BLOCK_HEADERV2_SIZE, (std::size_t)blkV2->_size);
 	}
 	else
 	{
@@ -227,7 +227,7 @@ bool WtDataReader::loadStkAdjFactorsFromFile(const char* adjfile)
 		return false;
 	}
 
-	VvTSVariant* doc = WTSCfgLoader::load_from_file(adjfile);
+	VvTSVariant* doc = VvTSCfgLoader::load_from_file(adjfile);
 	if(doc == NULL)
 	{
 		pipe_reader_log(_sink, LL_ERROR, "Loading adjusting factors file {} failed", adjfile);
@@ -519,7 +519,7 @@ VvTSOrdQueSlice* WtDataReader::readOrdQueSlice(const char* stdCode, uint32_t cou
 			}
 
 			//需要解压
-			std::string buf = WTSCmpHelper::uncompress_data(tBlockV2->_data, (std::size_t)tBlockV2->_size);
+			std::string buf = VvTSCmpHelper::uncompress_data(tBlockV2->_data, (std::size_t)tBlockV2->_size);
 
 			//将原来的buffer只保留一个头部,并将所有tick数据追加到尾部
 			hisBlkPair._buffer.resize(sizeof(HisOrdQueBlock));
@@ -662,7 +662,7 @@ VvTSOrdDtlSlice* WtDataReader::readOrdDtlSlice(const char* stdCode, uint32_t cou
 			}
 
 			//需要解压
-			std::string buf = WTSCmpHelper::uncompress_data(tBlockV2->_data, (std::size_t)tBlockV2->_size);
+			std::string buf = VvTSCmpHelper::uncompress_data(tBlockV2->_data, (std::size_t)tBlockV2->_size);
 
 			//将原来的buffer只保留一个头部,并将所有tick数据追加到尾部
 			hisBlkPair._buffer.resize(sizeof(HisOrdDtlBlock));
@@ -805,7 +805,7 @@ VvTSTransSlice* WtDataReader::readTransSlice(const char* stdCode, uint32_t count
 			}
 
 			//需要解压
-			std::string buf = WTSCmpHelper::uncompress_data(tBlockV2->_data, (std::size_t)tBlockV2->_size);
+			std::string buf = VvTSCmpHelper::uncompress_data(tBlockV2->_data, (std::size_t)tBlockV2->_size);
 
 			//将原来的buffer只保留一个头部,并将所有tick数据追加到尾部
 			hisBlkPair._buffer.resize(sizeof(HisTransBlock));

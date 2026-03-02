@@ -27,7 +27,7 @@
 #include "../Includes/VvTSRiskDef.hpp"
 
 #include "../WTSTools/WTSLogger.h"
-#include "../WTSUtils/WTSCfgLoader.h"
+#include "../WTSUtils/VvTSCfgLoader.h"
 
 #include <rapidjson/document.h>
 #include <rapidjson/prettywriter.h>
@@ -846,7 +846,7 @@ void WtEngine::load_fees(const char* filename)
 		return;
 	}
 
-	VvTSVariant* cfg = WTSCfgLoader::load_from_file(filename);
+	VvTSVariant* cfg = VvTSCfgLoader::load_from_file(filename);
 	if (cfg == NULL)
 	{
 		WTSLogger::error("Fee templates file {} loading failed", filename);

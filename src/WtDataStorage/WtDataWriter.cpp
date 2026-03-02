@@ -11,7 +11,7 @@
 #include "../Share/TimeUtils.hpp"
 
 #include "../Includes/IBaseDataMgr.h"
-#include "../WTSUtils/WTSCmpHelper.hpp"
+#include "../WTSUtils/VvTSCmpHelper.hpp"
 
 #include <set>
 #include <algorithm>
@@ -1801,7 +1801,7 @@ bool WtDataWriter::proc_block_data(const char* tag, std::string& content, bool i
 		}
 
 		//将文件头后面的数据进行解压
-		buffer = WTSCmpHelper::uncompress_data(content.data() + BLOCK_HEADERV2_SIZE, (std::size_t)blkV2->_size);
+		buffer = VvTSCmpHelper::uncompress_data(content.data() + BLOCK_HEADERV2_SIZE, (std::size_t)blkV2->_size);
 	}
 	else
 	{
@@ -1927,7 +1927,7 @@ bool WtDataWriter::dump_day_data(VvTSContractInfo* ct, VvTSBarStruct* newBar)
 			bool bNeedCompress = bCompressed || (barcnt > 100);
 			if (bNeedCompress)
 			{
-				std::string cmpData = WTSCmpHelper::compress_data(content.data(), content.size());
+				std::string cmpData = VvTSCmpHelper::compress_data(content.data(), content.size());
 				BlockHeaderV2 header;
 				strcpy(header._blk_flag, BLK_FLAG);
 				header._type = BT_HIS_Day;
@@ -2041,7 +2041,7 @@ uint32_t WtDataWriter::dump_bars_to_file(VvTSContractInfo* ct)
 				//追加新的数据
 				buffer.append((const char*)kBlkPair->_block->_bars, sizeof(VvTSBarStruct)*size);
 
-				std::string cmpData = WTSCmpHelper::compress_data(buffer.data(), buffer.size());
+				std::string cmpData = VvTSCmpHelper::compress_data(buffer.data(), buffer.size());
 
 				f.truncate_file(0);
 				f.seek_to_begin(0);
@@ -2107,7 +2107,7 @@ uint32_t WtDataWriter::dump_bars_to_file(VvTSContractInfo* ct)
 
 				buffer.append((const char*)kBlkPair->_block->_bars, sizeof(VvTSBarStruct)*size);
 
-				std::string cmpData = WTSCmpHelper::compress_data(buffer.data(), buffer.size());
+				std::string cmpData = VvTSCmpHelper::compress_data(buffer.data(), buffer.size());
 
 				f.truncate_file(0);
 				f.seek_to_begin(0);
@@ -2382,7 +2382,7 @@ void WtDataWriter::proc_loop()
 							if (f.create_new_file(filename.c_str()))
 							{
 								//先压缩数据
-								std::string cmp_data = WTSCmpHelper::compress_data(tBlkPair->_block->_ticks, sizeof(VvTSTickStruct)*tBlkPair->_block->_size);
+								std::string cmp_data = VvTSCmpHelper::compress_data(tBlkPair->_block->_ticks, sizeof(VvTSTickStruct)*tBlkPair->_block->_size);
 
 								BlockHeaderV2 header;
 								strcpy(header._blk_flag, BLK_FLAG);
@@ -2449,7 +2449,7 @@ void WtDataWriter::proc_loop()
 						if (f.create_new_file(filename.c_str()))
 						{
 							//先压缩数据
-							std::string cmp_data = WTSCmpHelper::compress_data(tBlkPair->_block->_trans, sizeof(VvTSTransStruct)*tBlkPair->_block->_size);
+							std::string cmp_data = VvTSCmpHelper::compress_data(tBlkPair->_block->_trans, sizeof(VvTSTransStruct)*tBlkPair->_block->_size);
 
 							BlockHeaderV2 header;
 							strcpy(header._blk_flag, BLK_FLAG);
@@ -2515,7 +2515,7 @@ void WtDataWriter::proc_loop()
 						if (f.create_new_file(filename.c_str()))
 						{
 							//先压缩数据
-							std::string cmp_data = WTSCmpHelper::compress_data(tBlkPair->_block->_details, sizeof(VvTSOrdDtlStruct)*tBlkPair->_block->_size);
+							std::string cmp_data = VvTSCmpHelper::compress_data(tBlkPair->_block->_details, sizeof(VvTSOrdDtlStruct)*tBlkPair->_block->_size);
 
 							BlockHeaderV2 header;
 							strcpy(header._blk_flag, BLK_FLAG);
@@ -2581,7 +2581,7 @@ void WtDataWriter::proc_loop()
 						if (f.create_new_file(filename.c_str()))
 						{
 							//先压缩数据
-							std::string cmp_data = WTSCmpHelper::compress_data(tBlkPair->_block->_queues, sizeof(VvTSOrdQueStruct)*tBlkPair->_block->_size);
+							std::string cmp_data = VvTSCmpHelper::compress_data(tBlkPair->_block->_queues, sizeof(VvTSOrdQueStruct)*tBlkPair->_block->_size);
 
 							BlockHeaderV2 header;
 							strcpy(header._blk_flag, BLK_FLAG);

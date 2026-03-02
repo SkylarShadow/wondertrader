@@ -3,7 +3,7 @@
 
 #include "../Share/CodeHelper.hpp"
 #include "../Includes/VvTSVariant.hpp"
-#include "../WTSUtils/WTSCfgLoader.h"
+#include "../WTSUtils/VvTSCfgLoader.h"
 #include "../WTSTools/WTSLogger.h"
 
 #include <boost/filesystem.hpp>
@@ -35,7 +35,7 @@ void WtFilterMgr::load_filters(const char* fileName)
 			_notifier->notify_event("Filter file has been reloaded");
 	}
 
-	VvTSVariant* cfg = WTSCfgLoader::load_from_file(_filter_file.c_str());
+	VvTSVariant* cfg = VvTSCfgLoader::load_from_file(_filter_file.c_str());
 
 	_filter_timestamp = lastModTime;
 

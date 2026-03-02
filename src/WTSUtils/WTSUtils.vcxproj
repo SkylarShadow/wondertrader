@@ -165,9 +165,9 @@
     <ClInclude Include="SignalHook.hpp" />
     <ClInclude Include="StackTracer\StackTracer.h" />
     <ClInclude Include="StackTracer\StackWalker.h" />
-    <ClInclude Include="WtLMDB.hpp" />
-    <ClInclude Include="WTSCfgLoader.h" />
-    <ClInclude Include="WTSCmpHelper.hpp" />
+    <ClInclude Include="VvtLMDB.hpp" />
+    <ClInclude Include="VvTSCfgLoader.h" />
+    <ClInclude Include="VvTSCmpHelper.hpp" />
     <ClInclude Include="yamlcpp\collectionstack.h" />
     <ClInclude Include="yamlcpp\directives.h" />
     <ClInclude Include="yamlcpp\emitterstate.h" />
@@ -227,7 +227,7 @@
     <ClCompile Include="lmdb\midl.c" />
     <ClCompile Include="StackTracer\StackTracer.cpp" />
     <ClCompile Include="StackTracer\StackWalker.cpp" />
-    <ClCompile Include="WTSCfgLoader.cpp" />
+    <ClCompile Include="VvTSCfgLoader.cpp" />
     <ClCompile Include="yamlcpp\binary.cpp" />
     <ClCompile Include="yamlcpp\convert.cpp" />
     <ClCompile Include="yamlcpp\depthguard.cpp" />

@@ -12,7 +12,7 @@
 #include "../Share/charconv.hpp"
 #include "../Share/fmtlib.h"
 
-#include "../WTSUtils/WTSCfgLoader.h"
+#include "../WTSUtils/VvTSCfgLoader.h"
 #include "../Includes/VvTSVariant.hpp"
 USING_NS_VVTP;
 
@@ -68,7 +68,7 @@ int run(const char* cfgfile, bool bAsync = false, bool isFile = true)
 
 	if(!isFile)
 	{
-		VvTSVariant* root = WTSCfgLoader::load_from_content(cfgfile, true);
+		VvTSVariant* root = VvTSCfgLoader::load_from_content(cfgfile, true);
 		if (root == NULL)
 			return 0;
 
@@ -137,7 +137,7 @@ int run(const char* cfgfile, bool bAsync = false, bool isFile = true)
 	}
 	else
 	{
-		VvTSVariant* root = WTSCfgLoader::load_from_file(cfgfile);
+		VvTSVariant* root = VvTSCfgLoader::load_from_file(cfgfile);
 		if (root == NULL)
 			return 0;
 

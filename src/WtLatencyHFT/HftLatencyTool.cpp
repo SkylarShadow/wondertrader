@@ -16,7 +16,7 @@
 #include "../Includes/VvTSContractInfo.hpp"
 
 #include "../WTSTools/WTSLogger.h"
-#include "../WTSUtils/WTSCfgLoader.h"
+#include "../WTSUtils/VvTSCfgLoader.h"
 
 #include "../Share/StrUtil.hpp"
 #include "../Share/TimeUtils.hpp"
@@ -222,7 +222,7 @@ namespace hft
 	{
 		WTSLogger::init("logcfg.yaml");
 
-		VvTSVariant* _config = WTSCfgLoader::load_from_file("config.yaml");
+		VvTSVariant* _config = VvTSCfgLoader::load_from_file("config.yaml");
 		if (_config == NULL)
 		{
 			WTSLogger::log_raw(LL_ERROR, "Loading config file config.yaml failed");

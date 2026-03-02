@@ -17,7 +17,7 @@
 #endif
 
 #include "WTSLogger.h"
-#include "../WTSUtils/WTSCfgLoader.h"
+#include "../WTSUtils/VvTSCfgLoader.h"
 #include "../Includes/ILogHandler.h"
 #include "../Includes/VvTSVariant.hpp"
 #include "../Share/StdUtils.hpp"
@@ -208,7 +208,7 @@ void WTSLogger::init(const char* propFile /* = "logcfg.json" */, bool isFile /* 
 	if (isFile && !StdFile::exists(propFile))
 		return;
 
-	VvTSVariant* cfg = isFile ? WTSCfgLoader::load_from_file(propFile) : WTSCfgLoader::load_from_content(propFile, false);
+	VvTSVariant* cfg = isFile ? VvTSCfgLoader::load_from_file(propFile) : VvTSCfgLoader::load_from_content(propFile, false);
 	if (cfg == NULL)
 		return;
 

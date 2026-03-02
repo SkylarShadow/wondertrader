@@ -108,14 +108,14 @@ VvTSTickSlice* WtRdmDtReaderAD::readTickSliceByRange(const char* stdCode, uint64
 	bool bNeedNewer = etime > tickList._last_tick_time;
 
 	//这里要改成从lmdb读取
-	WtLMDBPtr db = get_t_db(cInfo._exchg, cInfo._code);
+	VvtLMDBPtr db = get_t_db(cInfo._exchg, cInfo._code);
 	if (db == NULL)
 		return NULL;
 
 	if (isEmpty)
 	{
 		//按照区间加载即可
-		WtLMDBQuery query(*db);
+		VvtLMDBQuery query(*db);
 		LMDBHftKey lKey(cInfo._exchg, cInfo._code, beginTDate, lTime * 100000 + lSecs);
 		LMDBHftKey rKey(cInfo._exchg, cInfo._code, endTDate, rTime * 100000 + rSecs);
 		int cnt = query.get_range(std::string((const char*)&lKey, sizeof(lKey)),
@@ -145,7 +145,7 @@ VvTSTickSlice* WtRdmDtReaderAD::readTickSliceByRange(const char* stdCode, uint64
 		if (bNeedOlder)
 		{
 			//读取更早的数据
-			WtLMDBQuery query(*db);
+			VvtLMDBQuery query(*db);
 			LMDBHftKey rKey(cInfo._exchg, cInfo._code, (uint32_t)(tickList._first_tick_time / 1000000000), (uint32_t)(tickList._first_tick_time % 1000000000));
 			LMDBHftKey lKey(cInfo._exchg, cInfo._code, beginTDate, lTime * 100000 + lSecs);
 			int cnt = query.get_range(std::string((const char*)&lKey, sizeof(lKey)), std::string((const char*)&rKey, sizeof(rKey)),
@@ -177,7 +177,7 @@ VvTSTickSlice* WtRdmDtReaderAD::readTickSliceByRange(const char* stdCode, uint64
 		if (bNeedNewer)
 		{
 			//读取更新的数据
-			WtLMDBQuery query(*db);
+			VvtLMDBQuery query(*db);
 			LMDBHftKey lKey(cInfo._exchg, cInfo._code, (uint32_t)(tickList._last_tick_time / 1000000000), (uint32_t)(tickList._last_tick_time % 1000000000));
 			LMDBHftKey rKey(cInfo._exchg, cInfo._code, endTDate, rTime * 100000 + rSecs);
 			int cnt = query.get_range(std::string((const char*)&lKey, sizeof(lKey)), std::string((const char*)&rKey, sizeof(rKey)),
@@ -286,14 +286,14 @@ VvTSKlineSlice* WtRdmDtReaderAD::readKlineSliceByRange(const char* stdCode, VvTS
 	bool bNeedNewer = (etime > barsList._last_bar_time);
 
 	//全部重载
-	WtLMDBPtr db = get_k_db(cInfo._exchg, period);
+	VvtLMDBPtr db = get_k_db(cInfo._exchg, period);
 	if (db == NULL)
 		return NULL;
 
 	if (barsList._bars.empty())
 	{
 		pipe_rdmreader_log(_sink, LL_DEBUG, "Reading back {} bars of {}.{}...", PERIOD_NAME[period], cInfo._exchg, cInfo._code);
-		WtLMDBQuery query(*db);
+		VvtLMDBQuery query(*db);
 		LMDBBarKey rKey(cInfo._exchg, cInfo._code, 0xffffffff);
 		LMDBBarKey lKey(cInfo._exchg, cInfo._code, 0);
 		int cnt = query.get_range(std::string((const char*)&lKey, sizeof(lKey)), std::string((const char*)&rKey, sizeof(rKey)),
@@ -315,7 +315,7 @@ VvTSKlineSlice* WtRdmDtReaderAD::readKlineSliceByRange(const char* stdCode, VvTS
 	{
 		//加载更新的数据
 		pipe_rdmreader_log(_sink, LL_DEBUG, "Reading back {} bars of {}.{}...", PERIOD_NAME[period], cInfo._exchg, cInfo._code);
-		WtLMDBQuery query(*db);
+		VvtLMDBQuery query(*db);
 		LMDBBarKey rKey(cInfo._exchg, cInfo._code, 0xffffffff);
 		LMDBBarKey lKey(cInfo._exchg, cInfo._code, (uint32_t)barsList._last_bar_time);
 		int cnt = query.get_range(std::string((const char*)&lKey, sizeof(lKey)), std::string((const char*)&rKey, sizeof(rKey)),
@@ -387,9 +387,9 @@ VvTSKlineSlice* WtRdmDtReaderAD::readKlineSliceByRange(const char* stdCode, VvTS
 	}
 }
 
-WtRdmDtReaderAD::WtLMDBPtr WtRdmDtReaderAD::get_k_db(const char* exchg, VvTSKlinePeriod period)
+WtRdmDtReaderAD::VvtLMDBPtr WtRdmDtReaderAD::get_k_db(const char* exchg, VvTSKlinePeriod period)
 {
-	WtLMDBMap* the_map = NULL;
+	VvtLMDBMap* the_map = NULL;
 	std::string subdir;
 	if (period == KP_Minute1)
 	{
@@ -407,19 +407,19 @@ WtRdmDtReaderAD::WtLMDBPtr WtRdmDtReaderAD::get_k_db(const char* exchg, VvTSKlin
 		subdir = "day";
 	}
 	else
-		return std::move(WtLMDBPtr());
+		return std::move(VvtLMDBPtr());
 
 	auto it = the_map->find(exchg);
 	if (it != the_map->end())
 		return std::move(it->second);
 
-	WtLMDBPtr dbPtr(new WtLMDB(true));
+	VvtLMDBPtr dbPtr(new VvtLMDB(true));
 	std::string path = StrUtil::printf("%s%s/%s/", _base_dir.c_str(), subdir.c_str(), exchg);
 	boost::filesystem::create_directories(path);
 	if (!dbPtr->open(path.c_str()))
 	{
 		pipe_rdmreader_log(_sink, LL_ERROR, "Opening {} db if {} failed: {}", subdir, exchg, dbPtr->errmsg());
-		return std::move(WtLMDBPtr());
+		return std::move(VvtLMDBPtr());
 	}
 	else
 	{
@@ -430,20 +430,20 @@ WtRdmDtReaderAD::WtLMDBPtr WtRdmDtReaderAD::get_k_db(const char* exchg, VvTSKlin
 	return std::move(dbPtr);
 }
 
-WtRdmDtReaderAD::WtLMDBPtr WtRdmDtReaderAD::get_t_db(const char* exchg, const char* code)
+WtRdmDtReaderAD::VvtLMDBPtr WtRdmDtReaderAD::get_t_db(const char* exchg, const char* code)
 {
 	std::string key = StrUtil::printf("%s.%s", exchg, code);
 	auto it = _tick_dbs.find(key);
 	if (it != _tick_dbs.end())
 		return std::move(it->second);
 
-	WtLMDBPtr dbPtr(new WtLMDB(true));
+	VvtLMDBPtr dbPtr(new VvtLMDB(true));
 	std::string path = StrUtil::printf("%sticks/%s/%s", _base_dir.c_str(), exchg, code);
 	boost::filesystem::create_directories(path);
 	if (!dbPtr->open(path.c_str()))
 	{
 		pipe_rdmreader_log(_sink, LL_ERROR, "Opening tick db of {}.{} failed: {}", exchg, code, dbPtr->errmsg());
-		return std::move(WtLMDBPtr());
+		return std::move(VvtLMDBPtr());
 	}
 	else
 	{

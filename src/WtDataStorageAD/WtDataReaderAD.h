@@ -5,7 +5,7 @@
 
 #include "DataDefineAD.h"
 
-#include "../WTSUtils/WtLMDB.hpp"
+#include "../WTSUtils/VvtLMDB.hpp"
 #include "../Includes/FasterDefs.h"
 #include "../Includes/IDataReader.h"
 
@@ -111,19 +111,19 @@ private:
 	 *	K线数据，按照每个市场m1/m5/d1三个周期一共三个数据库，路径如./m1/CFFEX
 	 *	Tick数据，每个合约一个数据库，路径如./ticks/CFFEX/IF2101
 	 */
-	typedef std::shared_ptr<WtLMDB> WtLMDBPtr;
-	typedef vvt_hashmap<std::string, WtLMDBPtr> WtLMDBMap;
+	typedef std::shared_ptr<VvtLMDB> VvtLMDBPtr;
+	typedef vvt_hashmap<std::string, VvtLMDBPtr> VvtLMDBMap;
 
-	WtLMDBMap	_exchg_m1_dbs;
-	WtLMDBMap	_exchg_m5_dbs;
-	WtLMDBMap	_exchg_d1_dbs;
+	VvtLMDBMap	_exchg_m1_dbs;
+	VvtLMDBMap	_exchg_m5_dbs;
+	VvtLMDBMap	_exchg_d1_dbs;
 
 	//用exchg.code作为key，如BINANCE.BTCUSDT
-	WtLMDBMap	_tick_dbs;
+	VvtLMDBMap	_tick_dbs;
 
-	WtLMDBPtr	get_k_db(const char* exchg, VvTSKlinePeriod period);
+	VvtLMDBPtr	get_k_db(const char* exchg, VvTSKlinePeriod period);
 
-	WtLMDBPtr	get_t_db(const char* exchg, const char* code);
+	VvtLMDBPtr	get_t_db(const char* exchg, const char* code);
 };
 
 NS_VVTP_END

@@ -23,7 +23,7 @@
 #include "../Share/TimeUtils.hpp"
 
 #include "../WTSTools/WTSLogger.h"
-#include "../WTSUtils/WTSCfgLoader.h"
+#include "../WTSUtils/VvTSCfgLoader.h"
 
 static const uint32_t DATA_SIZE_STEP = 8000;	//信息量每天最多4000
 
@@ -1044,7 +1044,7 @@ void UftStraContext::load_local_data()
 
 		WTSLogger::log_dyn("strategy", _name.c_str(), LL_WARN, "{} detected, positions will be overwrited", mannualfile);
 
-		VvTSVariant* manual = WTSCfgLoader::load_from_file(mannualfile);
+		VvTSVariant* manual = VvTSCfgLoader::load_from_file(mannualfile);
 		if (manual == NULL)
 		{
 			WTSLogger::log_dyn("strategy", _name.c_str(), LL_ERROR, "parsing mannual file {} failed", mannualfile);

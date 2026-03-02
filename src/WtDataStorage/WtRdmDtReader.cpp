@@ -11,8 +11,8 @@
 #include "../Includes/VvTSDataDef.hpp"
 #include "../Includes/VvTSSessionInfo.hpp"
 
-#include "../WTSUtils/WTSCmpHelper.hpp"
-#include "../WTSUtils/WTSCfgLoader.h"
+#include "../WTSUtils/VvTSCmpHelper.hpp"
+#include "../WTSUtils/VvTSCfgLoader.h"
 
 #include <rapidjson/document.h>
 namespace rj = rapidjson;
@@ -174,7 +174,7 @@ bool WtRdmDtReader::loadStkAdjFactorsFromFile(const char* adjfile)
 		return false;
 	}
 
-	VvTSVariant* doc = WTSCfgLoader::load_from_file(adjfile);
+	VvTSVariant* doc = VvTSCfgLoader::load_from_file(adjfile);
 	if (doc == NULL)
 	{
 		pipe_rdmreader_log(_sink, LL_ERROR, "Loading adjusting factors file {} failed", adjfile);
@@ -719,7 +719,7 @@ VvTSOrdQueSlice* WtRdmDtReader::readOrdQueSliceByRange(const char* stdCode, uint
 			}
 
 			//需要解压
-			std::string buf = WTSCmpHelper::uncompress_data(tBlockV2->_data, (std::size_t)tBlockV2->_size);
+			std::string buf = VvTSCmpHelper::uncompress_data(tBlockV2->_data, (std::size_t)tBlockV2->_size);
 
 			//将原来的buffer只保留一个头部,并将所有tick数据追加到尾部
 			hisBlkPair._buffer.resize(sizeof(HisOrdQueBlock));
@@ -894,7 +894,7 @@ VvTSOrdDtlSlice* WtRdmDtReader::readOrdDtlSliceByRange(const char* stdCode, uint
 			}
 
 			//需要解压
-			std::string buf = WTSCmpHelper::uncompress_data(tBlockV2->_data, (std::size_t)tBlockV2->_size);
+			std::string buf = VvTSCmpHelper::uncompress_data(tBlockV2->_data, (std::size_t)tBlockV2->_size);
 
 			//将原来的buffer只保留一个头部,并将所有tick数据追加到尾部
 			hisBlkPair._buffer.resize(sizeof(HisOrdDtlBlock));
@@ -1068,7 +1068,7 @@ VvTSTransSlice* WtRdmDtReader::readTransSliceByRange(const char* stdCode, uint64
 			}
 
 			//需要解压
-			std::string buf = WTSCmpHelper::uncompress_data(tBlockV2->_data, (std::size_t)tBlockV2->_size);
+			std::string buf = VvTSCmpHelper::uncompress_data(tBlockV2->_data, (std::size_t)tBlockV2->_size);
 
 			//将原来的buffer只保留一个头部,并将所有tick数据追加到尾部
 			hisBlkPair._buffer.resize(sizeof(HisTransBlock));
@@ -1390,7 +1390,7 @@ bool WtRdmDtReader::cacheHisBarsFromFile(void* codeInfo, const std::string& key,
 				if (kBlockV2->_size == 0)
 					break;
 
-				buffer = WTSCmpHelper::uncompress_data(kBlockV2->_data, (std::size_t)kBlockV2->_size);
+				buffer = VvTSCmpHelper::uncompress_data(kBlockV2->_data, (std::size_t)kBlockV2->_size);
 			}
 			else
 			{

@@ -4,7 +4,7 @@
 
 #include "../WTSTools/WTSLogger.h"
 #include "../WTSTools/WTSBaseDataMgr.h"
-#include "../WTSUtils/WTSCfgLoader.h"
+#include "../WTSUtils/VvTSCfgLoader.h"
 
 #include "../Includes/VvTSVariant.hpp"
 
@@ -24,9 +24,9 @@ bool Dumper::config(const char* cfgfile, bool isFile, const char* modDir)
 
 	VvTSVariant* root = NULL;
 	if (isFile)
-		root = WTSCfgLoader::load_from_file(cfgfile);
+		root = VvTSCfgLoader::load_from_file(cfgfile);
 	else
-		root = WTSCfgLoader::load_from_content(cfgfile, false);
+		root = VvTSCfgLoader::load_from_content(cfgfile, false);
 
 	VvTSVariant* cfg = root->get("config");
 	if(cfg)

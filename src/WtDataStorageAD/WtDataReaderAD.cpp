@@ -137,7 +137,7 @@ VvTSTickSlice* WtDataReaderAD::readTickSlice(const char* stdCode, uint32_t count
 	} while (false);
 
 	//这里要改成从lmdb读取
-	WtLMDBPtr db = get_t_db(cInfo._exchg, cInfo._code);
+	VvtLMDBPtr db = get_t_db(cInfo._exchg, cInfo._code);
 	if (db == NULL)
 		return NULL;
 
@@ -145,7 +145,7 @@ VvTSTickSlice* WtDataReaderAD::readTickSlice(const char* stdCode, uint32_t count
 	{
 		//增量更新，从上次的时间戳到本次的时间戳，读取最新的即可
 		last_access_time += 1;
-		WtLMDBQuery query(*db);
+		VvtLMDBQuery query(*db);
 		LMDBHftKey lKey(cInfo._exchg, cInfo._code, (uint32_t)(last_access_time / 1000000000), (uint32_t)(last_access_time % 1000000000));
 		LMDBHftKey rKey(cInfo._exchg, cInfo._code, (uint32_t)(etime / 1000000000), (uint32_t)(etime % 1000000000));
 		int cnt = query.get_range(std::string((const char*)&lKey, sizeof(lKey)), 
@@ -162,7 +162,7 @@ VvTSTickSlice* WtDataReaderAD::readTickSlice(const char* stdCode, uint32_t count
 	else if(reload_flag == 2)
 	{
 		//全部更新，从结束时间往前读取即可
-		WtLMDBQuery query(*db);
+		VvtLMDBQuery query(*db);
 		LMDBHftKey rKey(cInfo._exchg, cInfo._code, (uint32_t)(etime / 1000000000), (uint32_t)(etime % 1000000000));
 		LMDBHftKey lKey(cInfo._exchg, cInfo._code, 0, 0);
 		int cnt = query.get_lowers(std::string((const char*)&lKey, sizeof(lKey)), std::string((const char*)&rKey, sizeof(rKey)),
@@ -205,12 +205,12 @@ VvTSTickSlice* WtDataReaderAD::readTickSlice(const char* stdCode, uint32_t count
 std::string WtDataReaderAD::read_bars_to_buffer(const char* exchg, const char* code, VvTSKlinePeriod period)
 {
 	//直接从LMDB读取
-	WtLMDBPtr db = get_k_db(exchg, period);
+	VvtLMDBPtr db = get_k_db(exchg, period);
 	if (db == NULL)
 		return "";
 
 	std::string buffer;
-	WtLMDBQuery query(*db);
+	VvtLMDBQuery query(*db);
 	LMDBBarKey lKey(exchg, code, 0);
 	LMDBBarKey rKey(exchg, code, 0xffffffff);
 	query.get_range(std::string((const char*)&lKey, sizeof(lKey)),
@@ -236,11 +236,11 @@ bool WtDataReaderAD::cacheBarsFromStorage(const std::string& key, const char* st
 	barList._exchg = cInfo._exchg;
 
 	//直接从LMDB读取
-	WtLMDBPtr db = get_k_db(cInfo._exchg, period);
+	VvtLMDBPtr db = get_k_db(cInfo._exchg, period);
 	if (db == NULL)
 		return false;
 
-	WtLMDBQuery query(*db);
+	VvtLMDBQuery query(*db);
 	LMDBBarKey rKey(cInfo._exchg, cInfo._code, 0xffffffff);
 	LMDBBarKey lKey(cInfo._exchg, cInfo._code, 0);
 	int cnt = query.get_lowers(std::string((const char*)&lKey, sizeof(lKey)), std::string((const char*)&rKey, sizeof(rKey)),
@@ -266,8 +266,8 @@ bool WtDataReaderAD::cacheBarsFromStorage(const std::string& key, const char* st
 void WtDataReaderAD::update_cache_from_lmdb(BarsList& barsList, const char* exchg, const char* code, VvTSKlinePeriod period, uint32_t& lastBarTime)
 {
 	bool isDay = (period == KP_DAY);
-	WtLMDBPtr db = get_k_db(exchg, period);
-	WtLMDBQuery query(*db);
+	VvtLMDBPtr db = get_k_db(exchg, period);
+	VvtLMDBQuery query(*db);
 	LMDBBarKey lKey(exchg, code, lastBarTime);
 	LMDBBarKey rKey(exchg, code, 0xFFFFFFFF);
 	int cnt = query.get_uppers(std::string((const char*)&lKey, sizeof(lKey)), std::string((const char*)&rKey, sizeof(rKey)), 
@@ -549,9 +549,9 @@ void WtDataReaderAD::onMinuteEnd(uint32_t uDate, uint32_t uTime, uint32_t endTDa
 	_last_time = nowTime;
 }
 
-WtDataReaderAD::WtLMDBPtr WtDataReaderAD::get_k_db(const char* exchg, VvTSKlinePeriod period)
+WtDataReaderAD::VvtLMDBPtr WtDataReaderAD::get_k_db(const char* exchg, VvTSKlinePeriod period)
 {
-	WtLMDBMap* the_map = NULL;
+	VvtLMDBMap* the_map = NULL;
 	std::string subdir;
 	if (period == KP_Minute1)
 	{
@@ -569,19 +569,19 @@ WtDataReaderAD::WtLMDBPtr WtDataReaderAD::get_k_db(const char* exchg, VvTSKlineP
 		subdir = "day";
 	}
 	else
-		return std::move(WtLMDBPtr());
+		return std::move(VvtLMDBPtr());
 
 	auto it = the_map->find(exchg);
 	if (it != the_map->end())
 		return std::move(it->second);
 
-	WtLMDBPtr dbPtr(new WtLMDB(true));
+	VvtLMDBPtr dbPtr(new VvtLMDB(true));
 	std::string path = StrUtil::printf("%s%s/%s/", _base_dir.c_str(), subdir.c_str(), exchg);
 	boost::filesystem::create_directories(path);
 	if (!dbPtr->open(path.c_str()))
 	{
 		pipe_reader_log(_sink, LL_ERROR, "Opening {} db if {} failed: {}", subdir, exchg, dbPtr->errmsg());
-		return std::move(WtLMDBPtr());
+		return std::move(VvtLMDBPtr());
 	}
 	else
 	{
@@ -592,20 +592,20 @@ WtDataReaderAD::WtLMDBPtr WtDataReaderAD::get_k_db(const char* exchg, VvTSKlineP
 	return std::move(dbPtr);
 }
 
-WtDataReaderAD::WtLMDBPtr WtDataReaderAD::get_t_db(const char* exchg, const char* code)
+WtDataReaderAD::VvtLMDBPtr WtDataReaderAD::get_t_db(const char* exchg, const char* code)
 {
 	std::string key = StrUtil::printf("%s.%s", exchg, code);
 	auto it = _tick_dbs.find(key);
 	if (it != _tick_dbs.end())
 		return std::move(it->second);
 
-	WtLMDBPtr dbPtr(new WtLMDB(true));
+	VvtLMDBPtr dbPtr(new VvtLMDB(true));
 	std::string path = StrUtil::printf("%sticks/%s/%s", _base_dir.c_str(), exchg, code);
 	boost::filesystem::create_directories(path);
 	if (!dbPtr->open(path.c_str()))
 	{
 		pipe_reader_log(_sink, LL_ERROR, "Opening tick db of {}.{} failed: {}", exchg, code, dbPtr->errmsg());
-		return std::move(WtLMDBPtr());
+		return std::move(VvtLMDBPtr());
 	}
 	else
 	{

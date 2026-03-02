@@ -8,7 +8,7 @@
  * \brief 
  */
 #include "WTSHotMgr.h"
-#include "../WTSUtils/WTSCfgLoader.h"
+#include "../WTSUtils/VvTSCfgLoader.h"
 
 #include "../Includes/VvTSSwitchItem.hpp"
 #include "../Includes/VvTSVariant.hpp"
@@ -202,7 +202,7 @@ bool WTSHotMgr::loadCustomRules(const char* tag, const char* filename)
 		return false;
 	}
 
-	VvTSVariant* root = WTSCfgLoader::load_from_file(filename);
+	VvTSVariant* root = VvTSCfgLoader::load_from_file(filename);
 	if (root == NULL)
 		return false;
 

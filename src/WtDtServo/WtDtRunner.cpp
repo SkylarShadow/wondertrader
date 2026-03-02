@@ -16,7 +16,7 @@
 #include "../Includes/VvTSContractInfo.hpp"
 
 #include "../WTSUtils/SignalHook.hpp"
-#include "../WTSUtils/WTSCfgLoader.h"
+#include "../WTSUtils/VvTSCfgLoader.h"
 #include "../WTSTools/WTSLogger.h"
 
 #include "../Share/StrUtil.hpp"
@@ -58,7 +58,7 @@ void WtDtRunner::initialize(const char* cfgFile, bool isFile /* = true */, const
 	WTSLogger::init(logCfg);
 	WtHelper::set_module_dir(modDir);
 
-	VvTSVariant* config = isFile ? WTSCfgLoader::load_from_file(cfgFile) : WTSCfgLoader::load_from_content(cfgFile, false);
+	VvTSVariant* config = isFile ? VvTSCfgLoader::load_from_file(cfgFile) : VvTSCfgLoader::load_from_content(cfgFile, false);
 	if(config == NULL)
 	{
 		WTSLogger::error("Loading config failed");
@@ -160,7 +160,7 @@ void WtDtRunner::initialize(const char* cfgFile, bool isFile /* = true */, const
 			if (StdFile::exists(filename))
 			{
 				WTSLogger::info("Reading parser config from {}...", filename);
-				VvTSVariant* var = WTSCfgLoader::load_from_file(filename);
+				VvTSVariant* var = VvTSCfgLoader::load_from_file(filename);
 				if (var)
 				{
 					initParsers(var->get("parsers"));

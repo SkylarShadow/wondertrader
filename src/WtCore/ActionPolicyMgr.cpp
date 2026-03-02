@@ -13,7 +13,7 @@
 #include "../WTSTools/WTSLogger.h"
 
 #include "../Includes/VvTSVariant.hpp"
-#include "../WTSUtils/WTSCfgLoader.h"
+#include "../WTSUtils/VvTSCfgLoader.h"
 
 USING_NS_VVTP;
 
@@ -28,7 +28,7 @@ ActionPolicyMgr::~ActionPolicyMgr()
 
 bool ActionPolicyMgr::init(const char* filename)
 {
-	VvTSVariant* cfg = WTSCfgLoader::load_from_file(filename);
+	VvTSVariant* cfg = VvTSCfgLoader::load_from_file(filename);
 	if (cfg == NULL)
 		return false;
 

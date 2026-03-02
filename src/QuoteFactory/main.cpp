@@ -12,7 +12,7 @@
 #include "../WTSTools/WTSHotMgr.h"
 #include "../WTSTools/WTSBaseDataMgr.h"
 #include "../WTSTools/WTSLogger.h"
-#include "../WTSUtils/WTSCfgLoader.h"
+#include "../WTSUtils/VvTSCfgLoader.h"
 #include "../Share/StrUtil.hpp"
 #include "../Share/cppcli.hpp"
 
@@ -97,7 +97,7 @@ void initialize(const std::string& filename)
 {
 	WtHelper::set_module_dir(getBinDir());
 
-	VvTSVariant* config = WTSCfgLoader::load_from_file(filename.c_str());
+	VvTSVariant* config = VvTSCfgLoader::load_from_file(filename.c_str());
 	if(config == NULL)
 	{
 		WTSLogger::error("Loading config file {} failed", filename);
@@ -203,7 +203,7 @@ void initialize(const std::string& filename)
 		//如果存在指数模块要，配置指数
 		const char* filename = config->getCString("index");
 		WTSLogger::info("Reading index config from {}...", filename);
-		VvTSVariant* var = WTSCfgLoader::load_from_file(filename);
+		VvTSVariant* var = VvTSCfgLoader::load_from_file(filename);
 		if (var)
 		{
 			g_idxFactory.init(var, &g_hotMgr, &g_baseDataMgr, &g_dataMgr);
@@ -224,7 +224,7 @@ void initialize(const std::string& filename)
 			if (StdFile::exists(filename))
 			{
 				WTSLogger::info("Reading parser config from {}...", filename);
-				VvTSVariant* var = WTSCfgLoader::load_from_file(filename);
+				VvTSVariant* var = VvTSCfgLoader::load_from_file(filename);
 				if (var)
 				{
 					initParsers(var->get("parsers"));

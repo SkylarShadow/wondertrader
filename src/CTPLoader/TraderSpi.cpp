@@ -10,7 +10,7 @@
 #include "../Includes/LoaderDef.hpp"
 #include "../Includes/VvTSVariant.hpp"
 
-#include "../WTSUtils/WTSCfgLoader.h"
+#include "../WTSUtils/VvTSCfgLoader.h"
 
 #include <rapidjson/document.h>
 #include <rapidjson/prettywriter.h>
@@ -382,7 +382,7 @@ void CTraderSpi::LoadFromJson()
 {
 	std::string path = SAVEPATH;
 	path += COMM_FILE;
-	VvTSVariant* root = WTSCfgLoader::load_from_file(path);
+	VvTSVariant* root = VvTSCfgLoader::load_from_file(path);
 	if(root)
 	{
 		for(const auto& exchg : root->memberNames())
@@ -419,10 +419,10 @@ void CTraderSpi::LoadFromJson()
 
 	path = SAVEPATH;
 	path += CONT_FILE;
-	root = WTSCfgLoader::load_from_file(path);
+	root = VvTSCfgLoader::load_from_file(path);
 	if (root)
 	{
-		VvTSVariant* root = WTSCfgLoader::load_from_file(path);
+		VvTSVariant* root = VvTSCfgLoader::load_from_file(path);
 		for (const auto& exchg_id : root->memberNames())
 		{
 			VvTSVariant* jExchg = root->get(exchg_id.c_str());

@@ -13,7 +13,7 @@
 #include "../Share/BoostFile.hpp"
 
 #include "../WtDataStorage/DataDefine.h"
-#include "../WTSUtils/WTSCmpHelper.hpp"
+#include "../WTSUtils/VvTSCmpHelper.hpp"
 #include "../WTSTools/CsvHelper.h"
 #include "../WTSTools/WTSDataFactory.h"
 
@@ -55,7 +55,7 @@ bool proc_block_data(std::string& content, bool isBar, bool bKeepHead /* = true 
 		}
 
 		//将文件头后面的数据进行解压
-		buffer = WTSCmpHelper::uncompress_data(content.data() + BLOCK_HEADERV2_SIZE, blkV2->_size);
+		buffer = VvTSCmpHelper::uncompress_data(content.data() + BLOCK_HEADERV2_SIZE, blkV2->_size);
 	}
 	else
 	{
@@ -449,7 +449,7 @@ void trans_csv_bars(VvTString csvFolder, VvTString binFolder, VvTString period, 
 		kBlock._type = btype;
 		kBlock._version = BLOCK_VERSION_CMP_V2;
 
-		std::string cmprsData = WTSCmpHelper::compress_data(bars.data(), sizeof(VvTSBarStruct)*bars.size());
+		std::string cmprsData = VvTSCmpHelper::compress_data(bars.data(), sizeof(VvTSBarStruct)*bars.size());
 		kBlock._size = cmprsData.size();
 
 		std::string filename = StrUtil::standardisePath(binFolder);
@@ -518,7 +518,7 @@ void trans_csv_bars(VvTString csvFolder, VvTString binFolder, VvTString period, 
 //	strcpy(block->_blk_flag, BLK_FLAG);
 //	block->_version = BLOCK_VERSION_CMP;
 //	block->_type = bType;
-//	std::string cmp_data = WTSCmpHelper::compress_data(bars, buffer.size());
+//	std::string cmp_data = VvTSCmpHelper::compress_data(bars, buffer.size());
 //	block->_size = cmp_data.size();
 //	content.append(cmp_data);
 //
@@ -570,7 +570,7 @@ void trans_csv_bars(VvTString csvFolder, VvTString binFolder, VvTString period, 
 //	strcpy(block->_blk_flag, BLK_FLAG);
 //	block->_version = BLOCK_VERSION_CMP;
 //	block->_type = BT_HIS_Ticks;
-//	std::string cmp_data = WTSCmpHelper::compress_data(ticks, buffer.size());
+//	std::string cmp_data = VvTSCmpHelper::compress_data(ticks, buffer.size());
 //	block->_size = cmp_data.size();
 //	content.append(cmp_data);
 //
@@ -1055,7 +1055,7 @@ bool store_bars(VvTString barFile, VvTSBarStruct* firstBar, int count, VvTString
 	strcpy(block->_blk_flag, BLK_FLAG);
 	block->_version = BLOCK_VERSION_CMP_V2;
 	block->_type = bType;
-	std::string cmp_data = WTSCmpHelper::compress_data(bars, buffer.size());
+	std::string cmp_data = VvTSCmpHelper::compress_data(bars, buffer.size());
 	block->_size = cmp_data.size();
 	content.append(cmp_data);
 
@@ -1094,7 +1094,7 @@ bool store_ticks(VvTString tickFile, VvTSTickStruct* firstTick, int count, FuncL
 	strcpy(block->_blk_flag, BLK_FLAG);
 	block->_version = BLOCK_VERSION_CMP_V2;
 	block->_type = BT_HIS_Ticks;
-	std::string cmp_data = WTSCmpHelper::compress_data(ticks, buffer.size());
+	std::string cmp_data = VvTSCmpHelper::compress_data(ticks, buffer.size());
 	block->_size = cmp_data.size();
 	content.append(cmp_data);
 
@@ -1134,7 +1134,7 @@ bool store_order_details(VvTString tickFile, VvTSOrdDtlStruct* firstItem, int co
 	strcpy(block->_blk_flag, BLK_FLAG);
 	block->_version = BLOCK_VERSION_CMP_V2;
 	block->_type = BT_HIS_OrdDetail;
-	std::string cmp_data = WTSCmpHelper::compress_data(items, buffer.size());
+	std::string cmp_data = VvTSCmpHelper::compress_data(items, buffer.size());
 	block->_size = cmp_data.size();
 	content.append(cmp_data);
 
@@ -1174,7 +1174,7 @@ bool store_order_queues(VvTString tickFile, VvTSOrdQueStruct* firstItem, int cou
 	strcpy(block->_blk_flag, BLK_FLAG);
 	block->_version = BLOCK_VERSION_CMP_V2;
 	block->_type = BT_HIS_OrdQueue;
-	std::string cmp_data = WTSCmpHelper::compress_data(items, buffer.size());
+	std::string cmp_data = VvTSCmpHelper::compress_data(items, buffer.size());
 	block->_size = cmp_data.size();
 	content.append(cmp_data);
 
@@ -1214,7 +1214,7 @@ bool store_transactions(VvTString tickFile, VvTSTransStruct* firstItem, int coun
 	strcpy(block->_blk_flag, BLK_FLAG);
 	block->_version = BLOCK_VERSION_CMP_V2;
 	block->_type = BT_HIS_Trnsctn;
-	std::string cmp_data = WTSCmpHelper::compress_data(items, buffer.size());
+	std::string cmp_data = VvTSCmpHelper::compress_data(items, buffer.size());
 	block->_size = cmp_data.size();
 	content.append(cmp_data);
 

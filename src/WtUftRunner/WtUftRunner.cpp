@@ -15,7 +15,7 @@
 
 #include "../Includes/VvTSVariant.hpp"
 #include "../WTSTools/WTSLogger.h"
-#include "../WTSUtils/WTSCfgLoader.h"
+#include "../WTSUtils/VvTSCfgLoader.h"
 #include "../WTSUtils/SignalHook.hpp"
 #include "../Share/StrUtil.hpp"
 
@@ -59,7 +59,7 @@ void WtUftRunner::init(const std::string& filename)
 
 bool WtUftRunner::config(const std::string& filename)
 {
-	_config = WTSCfgLoader::load_from_file(filename.c_str());
+	_config = VvTSCfgLoader::load_from_file(filename.c_str());
 	if(_config == NULL)
 	{
 		WTSLogger::error("Loading config file {} failed", filename);
@@ -136,7 +136,7 @@ bool WtUftRunner::config(const std::string& filename)
 			if (StdFile::exists(filename))
 			{
 				WTSLogger::info("Reading parser config from {}...", filename);
-				VvTSVariant* var = WTSCfgLoader::load_from_file(filename);
+				VvTSVariant* var = VvTSCfgLoader::load_from_file(filename);
 				if(var)
 				{
 					if (!initParsers(var->get("parsers")))
@@ -169,7 +169,7 @@ bool WtUftRunner::config(const std::string& filename)
 			if (StdFile::exists(filename))
 			{
 				WTSLogger::info("Reading trader config from {}...", filename);
-				VvTSVariant* var = WTSCfgLoader::load_from_file(filename);
+				VvTSVariant* var = VvTSCfgLoader::load_from_file(filename);
 				if (var)
 				{
 					if (!initTraders(var->get("traders")))

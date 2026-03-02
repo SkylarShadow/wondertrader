@@ -5,7 +5,7 @@
 #include "../WtCore/WtDistExecuter.h"
 
 #include "../WTSTools/WTSLogger.h"
-#include "../WTSUtils/WTSCfgLoader.h"
+#include "../WTSUtils/VvTSCfgLoader.h"
 
 #include "../Includes/VvTSContractInfo.hpp"
 #include "../Includes/VvTSVariant.hpp"
@@ -62,7 +62,7 @@ bool WtExecRunner::init(const char* logCfg /* = "logcfgexec.json" */, bool isFil
 
 bool WtExecRunner::config(const char* cfgFile, bool isFile /* = true */)
 {
-	_config = isFile ? WTSCfgLoader::load_from_file(cfgFile) : WTSCfgLoader::load_from_content(cfgFile, false);
+	_config = isFile ? VvTSCfgLoader::load_from_file(cfgFile) : VvTSCfgLoader::load_from_content(cfgFile, false);
 	if(_config == NULL)
 	{
 		WTSLogger::log_raw(LL_ERROR, "Loading config file failed");
@@ -128,7 +128,7 @@ bool WtExecRunner::config(const char* cfgFile, bool isFile /* = true */)
 	if (StdFile::exists(cfgParser))
 	{
 		WTSLogger::info("Reading parser config from {}...", cfgParser);
-		VvTSVariant* var = WTSCfgLoader::load_from_file(cfgParser);
+		VvTSVariant* var = VvTSCfgLoader::load_from_file(cfgParser);
 		if (var)
 		{
 			if (!initParsers(var))
@@ -146,7 +146,7 @@ bool WtExecRunner::config(const char* cfgFile, bool isFile /* = true */)
 	if (StdFile::exists(cfgTraders))
 	{
 		WTSLogger::info("Reading trader config from {}...", cfgTraders);
-		VvTSVariant* var = WTSCfgLoader::load_from_file(cfgTraders);
+		VvTSVariant* var = VvTSCfgLoader::load_from_file(cfgTraders);
 		if (var)
 		{
 			if (!initTraders(var))
@@ -163,7 +163,7 @@ bool WtExecRunner::config(const char* cfgFile, bool isFile /* = true */)
 	if (StdFile::exists(cfgExecuters))
 	{
 		WTSLogger::info("Reading executer config from {}...", cfgExecuters);
-		VvTSVariant* var = WTSCfgLoader::load_from_file(cfgExecuters);
+		VvTSVariant* var = VvTSCfgLoader::load_from_file(cfgExecuters);
 		if (var)
 		{
 			if (!initExecuters(var))

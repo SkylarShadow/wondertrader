@@ -21,7 +21,7 @@
 #include "../Share/ModuleHelper.hpp"
 
 #include "../WTSTools/WTSLogger.h"
-#include "../WTSUtils/WTSCfgLoader.h"
+#include "../WTSUtils/VvTSCfgLoader.h"
 #include "../Includes/VvTSVariant.hpp"
 #include "../WTSUtils/SignalHook.hpp"
 
@@ -456,7 +456,7 @@ void WtBtRunner::config(const char* cfgFile, bool isFile /* = true */)
 		return;
 	}
 
-	_cfg = isFile ? WTSCfgLoader::load_from_file(cfgFile) : WTSCfgLoader::load_from_content(cfgFile, false);
+	_cfg = isFile ? VvTSCfgLoader::load_from_file(cfgFile) : VvTSCfgLoader::load_from_content(cfgFile, false);
 	if(_cfg == NULL)
 	{
 		WTSLogger::error("Loading config failed");

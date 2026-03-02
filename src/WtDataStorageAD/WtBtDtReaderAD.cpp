@@ -64,12 +64,12 @@ void WtBtDtReaderAD::init(VvTSVariant* cfg, IBtDtReaderSink* sink)
 bool WtBtDtReaderAD::read_raw_bars(const char* exchg, const char* code, VvTSKlinePeriod period, std::string& buffer)
 {
 	//直接从LMDB读取
-	WtLMDBPtr db = get_k_db(exchg, period);
+	VvtLMDBPtr db = get_k_db(exchg, period);
 	if (db == NULL)
 		return false;
 
 	pipe_btreader_log(_sink, LL_DEBUG, "Reading back {} bars of {}.{}...", PERIOD_NAME[period], exchg, code);
-	WtLMDBQuery query(*db);
+	VvtLMDBQuery query(*db);
 	LMDBBarKey rKey(exchg, code, 0xffffffff);
 	LMDBBarKey lKey(exchg, code, 0);
 	int cnt = query.get_range(std::string((const char*)&lKey, sizeof(lKey)), std::string((const char*)&rKey, sizeof(rKey)),
@@ -94,12 +94,12 @@ bool WtBtDtReaderAD::read_raw_bars(const char* exchg, const char* code, VvTSKlin
 bool WtBtDtReaderAD::read_raw_ticks(const char* exchg, const char* code, uint32_t uDate, std::string& buffer)
 {
 	//直接从LMDB读取
-	WtLMDBPtr db = get_t_db(exchg, code);
+	VvtLMDBPtr db = get_t_db(exchg, code);
 	if (db == NULL)
 		return false;
 
 	pipe_btreader_log(_sink, LL_DEBUG, "Reading back ticks on {} of {}.{}...", uDate, exchg, code);
-	WtLMDBQuery query(*db);
+	VvtLMDBQuery query(*db);
 	LMDBHftKey rKey(exchg, code, uDate, 240000000);
 	LMDBHftKey lKey(exchg, code, uDate, 0);
 	int cnt = query.get_range(std::string((const char*)&lKey, sizeof(lKey)), std::string((const char*)&rKey, sizeof(rKey)),
@@ -121,9 +121,9 @@ bool WtBtDtReaderAD::read_raw_ticks(const char* exchg, const char* code, uint32_
 	return true;
 }
 
-WtBtDtReaderAD::WtLMDBPtr WtBtDtReaderAD::get_k_db(const char* exchg, VvTSKlinePeriod period)
+WtBtDtReaderAD::VvtLMDBPtr WtBtDtReaderAD::get_k_db(const char* exchg, VvTSKlinePeriod period)
 {
-	WtLMDBMap* the_map = NULL;
+	VvtLMDBMap* the_map = NULL;
 	std::string subdir;
 	if (period == KP_Minute1)
 	{
@@ -141,21 +141,21 @@ WtBtDtReaderAD::WtLMDBPtr WtBtDtReaderAD::get_k_db(const char* exchg, VvTSKlineP
 		subdir = "day";
 	}
 	else
-		return std::move(WtLMDBPtr());
+		return std::move(VvtLMDBPtr());
 
 	auto it = the_map->find(exchg);
 	if (it != the_map->end())
 		return std::move(it->second);
 
-	WtLMDBPtr dbPtr(new WtLMDB(true));
+	VvtLMDBPtr dbPtr(new VvtLMDB(true));
 	std::string path = StrUtil::printf("%s%s/%s/", _base_dir.c_str(), subdir.c_str(), exchg);
 	if (!StdFile::exists(path.c_str()))
-		return std::move(WtLMDBPtr());
+		return std::move(VvtLMDBPtr());
 
 	if (!dbPtr->open(path.c_str()))
 	{
 		pipe_btreader_log(_sink, LL_ERROR, "Opening {} db if {} failed: {}", subdir, exchg, dbPtr->errmsg());
-		return std::move(WtLMDBPtr());
+		return std::move(VvtLMDBPtr());
 	}
 	else
 	{
@@ -166,22 +166,22 @@ WtBtDtReaderAD::WtLMDBPtr WtBtDtReaderAD::get_k_db(const char* exchg, VvTSKlineP
 	return std::move(dbPtr);
 }
 
-WtBtDtReaderAD::WtLMDBPtr WtBtDtReaderAD::get_t_db(const char* exchg, const char* code)
+WtBtDtReaderAD::VvtLMDBPtr WtBtDtReaderAD::get_t_db(const char* exchg, const char* code)
 {
 	std::string key = StrUtil::printf("%s.%s", exchg, code);
 	auto it = _tick_dbs.find(key);
 	if (it != _tick_dbs.end())
 		return std::move(it->second);
 
-	WtLMDBPtr dbPtr(new WtLMDB(true));
+	VvtLMDBPtr dbPtr(new VvtLMDB(true));
 	std::string path = StrUtil::printf("%sticks/%s/%s", _base_dir.c_str(), exchg, code);
 	if (!StdFile::exists(path.c_str()))
-		return std::move(WtLMDBPtr());
+		return std::move(VvtLMDBPtr());
 
 	if (!dbPtr->open(path.c_str()))
 	{
 		pipe_btreader_log(_sink, LL_ERROR, "Opening tick db of {}.{} failed: {}", exchg, code, dbPtr->errmsg());
-		return std::move(WtLMDBPtr());
+		return std::move(VvtLMDBPtr());
 	}
 	else
 	{
