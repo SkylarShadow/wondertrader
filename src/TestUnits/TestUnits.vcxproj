@@ -203,7 +203,7 @@
     <ClInclude Include="gtest\gtest-internal-inl.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\WtShareHelper\WtShareHelper.vcxproj">
+    <ProjectReference Include="..\VvtShareHelper\VvtShareHelper.vcxproj">
       <Project>{3b8eba76-b27b-4def-bf80-c2de6a03748f}</Project>
     </ProjectReference>
     <ProjectReference Include="..\VvTSTools\VvTSTools.vcxproj">

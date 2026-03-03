@@ -50,17 +50,17 @@
 	- ParserUDP		对接数据组件*UDP*广播的行情数据通道的解析器
 + ***Plugins***
 	Plugins包含了交易框架外部插件的项目代码
-	- WtExeFact		内置的执行器工厂，提供了一个简单的执行单元
-	- WtRiskMonFact	内置的风控单元工厂，提供了一个简单的组合盘资金风控的风控单元
-	- WtCtaStraFact	一个示例的CTA策略工厂，内置一个C++版本的DualThrust策略
-	- WtHftStraFact	一个示例的HFT策略工厂
-	- WtSelStraFact 一个示例的SEL策略工厂
+	- VvtExeFact		内置的执行器工厂，提供了一个简单的执行单元
+	- VvtRiskMonFact	内置的风控单元工厂，提供了一个简单的组合盘资金风控的风控单元
+	- VvtCtaStraFact	一个示例的CTA策略工厂，内置一个C++版本的DualThrust策略
+	- VvtHftStraFact	一个示例的HFT策略工厂
+	- VvtSelStraFact 一个示例的SEL策略工厂
 + ***Product***
 	Porter包含了实盘的核心项目，是整个解决方案的核心
 	- VvtCore		实盘交易核心库，包含了整个交易框架的核心逻辑
 	- VvtPorter		交易框架C接口导出库，主要用于跨语言调用
 	- VvtExecMon		独立执行器C接口导出库，作为独立执行器的入口
-	- WtRunner		同*VvtBtRunner*，实盘框架纯C++环境运行的入口
+	- VvtRunner		同*VvtBtRunner*，实盘框架纯C++环境运行的入口
 + ***Traders***
 	Traders包含了所有的交易通道的模块代码
 	- TraderCTP		(期)CTP柜台交易通道对接模块
@@ -77,9 +77,9 @@
 	- TraderHuaX	(股)华鑫奇点交易通道对接模块
 	- TraderMocker	纯本地仿真撮合模块，广泛适用于各种品种的仿真交易，减少对仿真环境的依赖，只需要接入行情就可以进行仿真交易测试
 + ***UltraFT***
-	- WtUftCore		超高频引擎核心模块
-	- WtUftStraFact	超高频引起示例策略工厂
-	- WtUftRunner	超高频引擎实盘运行入口程序
+	- VvtUftCore		超高频引擎核心模块
+	- VvtUftStraFact	超高频引起示例策略工厂
+	- VvtUftRunner	超高频引擎实盘运行入口程序
 + ***Tools***
 	- CTPLoader		CTP合约加载模块
 	- MiniLoader	CTPMini合约加载模块

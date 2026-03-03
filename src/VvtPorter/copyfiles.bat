@@ -19,9 +19,9 @@ xcopy ..\%plat%\%env%\TraderCTPMini.dll ..\%plat%\%env%\VvtPorter\traders\ /C /Y
 xcopy ..\%plat%\%env%\TraderCTPOpt.dll ..\%plat%\%env%\VvtPorter\traders\ /C /Y
 xcopy ..\%plat%\%env%\TraderFemas.dll ..\%plat%\%env%\VvtPorter\traders\ /C /Y
 
-xcopy ..\%plat%\%env%\WtExeFact.dll ..\%plat%\%env%\VvtPorter\executer\ /C /Y
+xcopy ..\%plat%\%env%\VvtExeFact.dll ..\%plat%\%env%\VvtPorter\executer\ /C /Y
 
 xcopy ..\%plat%\%env%\VvtDataStorage.dll ..\%plat%\%env%\VvtPorter\ /C /Y
 xcopy ..\%plat%\%env%\VvtDataStorageAD.dll ..\%plat%\%env%\VvtPorter\ /C /Y
-xcopy ..\%plat%\%env%\WtRiskMonFact.dll ..\%plat%\%env%\VvtPorter\ /C /Y
+xcopy ..\%plat%\%env%\VvtRiskMonFact.dll ..\%plat%\%env%\VvtPorter\ /C /Y
 xcopy ..\%plat%\%env%\VvtMsgQue.dll ..\%plat%\%env%\VvtPorter\ /C /Y

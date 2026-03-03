@@ -39,13 +39,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TraderFemas", "TraderFemas\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TraderCTPMini", "TraderCTPMini\TraderCTPMini.vcxproj", "{A9B17A19-7EFA-4B8B-BB31-4E79EDEC08AA}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WtExeFact", "WtExeFact\WtExeFact.vcxproj", "{A6225D49-88D8-4B05-8D87-9A34CC1E55E0}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VvtExeFact", "VvtExeFact\VvtExeFact.vcxproj", "{A6225D49-88D8-4B05-8D87-9A34CC1E55E0}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestPorter", "TestPorter\TestPorter.vcxproj", "{60A1E7B2-14E3-42B3-95C4-A56C49802E61}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ParserUDP", "ParserUDP\ParserUDP.vcxproj", "{3067E462-81AA-430F-B30E-E6BD8E02296F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WtRiskMonFact", "WtRiskMonFact\WtRiskMonFact.vcxproj", "{4C93FBFF-6203-4133-9B05-7AA6D4F04046}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VvtRiskMonFact", "VvtRiskMonFact\VvtRiskMonFact.vcxproj", "{4C93FBFF-6203-4133-9B05-7AA6D4F04046}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VvtBtCore", "VvtBtCore\VvtBtCore.vcxproj", "{220C7C79-C4E8-44C2-95B8-DAB2D4B0D385}"
 EndProject
@@ -97,7 +97,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QuoteFactory", "QuoteFactor
 		{5B3F47DD-648A-40D1-AA40-AD752DBF92A3} = {5B3F47DD-648A-40D1-AA40-AD752DBF92A3}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WtCtaStraFact", "WtCtaStraFact\WtCtaStraFact.vcxproj", "{B76611D8-2A9E-4209-A3AB-54FC54F1C713}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VvtCtaStraFact", "VvtCtaStraFact\VvtCtaStraFact.vcxproj", "{B76611D8-2A9E-4209-A3AB-54FC54F1C713}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ParserCTPMini", "ParserCTPMini\ParserCTPMini.vcxproj", "{5B3F47DD-648A-40D1-AA40-AD752DBF92A3}"
 EndProject
@@ -105,7 +105,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ParserFemas", "ParserFemas\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TraderMocker", "TraderMocker\TraderMocker.vcxproj", "{711F8640-BBF0-4601-8278-46752890071A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WtSelStraFact", "WtSelStraFact\WtSelStraFact.vcxproj", "{3FCCED7F-0975-401F-933D-A0CF7D8F1F4F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VvtSelStraFact", "VvtSelStraFact\VvtSelStraFact.vcxproj", "{3FCCED7F-0975-401F-933D-A0CF7D8F1F4F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VvtExecMon", "VvtExecMon\VvtExecMon.vcxproj", "{C91F9311-117B-4DB3-BC1A-DF01B7A364C1}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -116,7 +116,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{F6EC0754
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CTPLoader", "CTPLoader\CTPLoader.vcxproj", "{1B6A38BF-6DD4-4E55-BA95-96F9615144F0}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WtHftStraFact", "WtHftStraFact\WtHftStraFact.vcxproj", "{DCB373BD-FB85-4EC8-8E68-C6690C7325D2}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VvtHftStraFact", "VvtHftStraFact\VvtHftStraFact.vcxproj", "{DCB373BD-FB85-4EC8-8E68-C6690C7325D2}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VvtDtHelper", "VvtDtHelper\VvtDtHelper.vcxproj", "{CD6DE209-C68E-43FA-8C55-A92A346D020A}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -129,7 +129,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ParserCTPOpt", "ParserCTPOp
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TraderCTPOpt", "TraderCTPOpt\TraderCTPOpt.vcxproj", "{E73F2967-AF16-4FDD-82D3-369B8E4ADC26}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WtRunner", "WtRunner\WtRunner.vcxproj", "{5E088D13-17D5-40C6-98DD-0D7711160CA4}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VvtRunner", "VvtRunner\VvtRunner.vcxproj", "{5E088D13-17D5-40C6-98DD-0D7711160CA4}"
 	ProjectSection(ProjectDependencies) = postProject
 		{AD84323B-D333-49E9-AA7B-5276C7216835} = {AD84323B-D333-49E9-AA7B-5276C7216835}
 		{25D69D42-B843-4449-BA53-B92FD9849558} = {25D69D42-B843-4449-BA53-B92FD9849558}
@@ -167,9 +167,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VvtDtServo", "VvtDtServo\Vv
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UltraFT", "UltraFT", "{433884B0-BFAF-4AB6-8BD8-21BC9323E7BF}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WtUftStraFact", "WtUftStraFact\WtUftStraFact.vcxproj", "{50EFCB3A-6A79-4559-965C-E85DF1C39D22}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VvtUftStraFact", "VvtUftStraFact\VvtUftStraFact.vcxproj", "{50EFCB3A-6A79-4559-965C-E85DF1C39D22}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WtUftRunner", "WtUftRunner\WtUftRunner.vcxproj", "{EFC2015D-07C3-4704-B887-B40CA921C46B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VvtUftRunner", "VvtUftRunner\VvtUftRunner.vcxproj", "{EFC2015D-07C3-4704-B887-B40CA921C46B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3B047C87-53FF-4F0E-828F-B029E7184CA0} = {3B047C87-53FF-4F0E-828F-B029E7184CA0}
 		{3BCACE8E-75B4-4DC5-8255-9767FA36932D} = {3BCACE8E-75B4-4DC5-8255-9767FA36932D}
@@ -183,11 +183,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ParserXeleSkt", "ParserXele
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestParser", "TestParser\TestParser.vcxproj", "{BD8CB6CD-43D1-4130-B3C2-884940092919}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WtLatencyUFT", "WtLatencyUFT\WtLatencyUFT.vcxproj", "{6FB75341-B03E-45C0-ACAC-E3E40104FA40}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VvtLatencyUFT", "VvtLatencyUFT\VvtLatencyUFT.vcxproj", "{6FB75341-B03E-45C0-ACAC-E3E40104FA40}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WtLatencyHFT", "WtLatencyHFT\WtLatencyHFT.vcxproj", "{2F9A3D12-93CD-42E1-9717-9D4977238D94}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VvtLatencyHFT", "VvtLatencyHFT\VvtLatencyHFT.vcxproj", "{2F9A3D12-93CD-42E1-9717-9D4977238D94}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WtUftCore", "WtUftCore\WtUftCore.vcxproj", "{A68AD4DD-4FAA-44F2-8275-59E227C13B5A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VvtUftCore", "VvtUftCore\VvtUftCore.vcxproj", "{A68AD4DD-4FAA-44F2-8275-59E227C13B5A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TraderDumper", "TraderDumper\TraderDumper.vcxproj", "{A7B8E8F5-2714-46F0-9991-FC2ADC30E9E2}"
 EndProject
@@ -203,7 +203,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TraderHuaX", "TraderHuaX\Tr
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TraderXTPXAlgo", "TraderXTPXAlgo\TraderXTPXAlgo.vcxproj", "{5AB06F76-878B-444E-96D7-8DB8133E5785}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WtShareHelper", "WtShareHelper\WtShareHelper.vcxproj", "{3B8EBA76-B27B-4DEF-BF80-C2DE6A03748F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VvtShareHelper", "VvtShareHelper\VvtShareHelper.vcxproj", "{3B8EBA76-B27B-4DEF-BF80-C2DE6A03748F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ParserShm", "ParserShm\ParserShm.vcxproj", "{01FC1DD7-94DF-41FC-8B9D-40A8A8DA0C9D}"
 EndProject

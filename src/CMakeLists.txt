@@ -134,26 +134,26 @@ add_subdirectory(TraderFemas)
 add_subdirectory(TraderMocker)
 add_subdirectory(TraderXTP)
 add_subdirectory(TraderYD)
-add_subdirectory(WtExeFact)
-add_subdirectory(WtRiskMonFact)
+add_subdirectory(VvtExeFact)
+add_subdirectory(VvtRiskMonFact)
 
 add_subdirectory(VvtMsgQue)
 add_subdirectory(VvtCore)
 add_subdirectory(VvtPorter)
 add_subdirectory(VvtExecMon)
-add_subdirectory(WtRunner)
+add_subdirectory(VvtRunner)
 
 add_subdirectory(TraderDumper)
 
-add_subdirectory(WtShareHelper)
+add_subdirectory(VvtShareHelper)
 
 #uft
-add_subdirectory(WtUftCore)
-add_subdirectory(WtUftStraFact)
-add_subdirectory(WtUftRunner)
+add_subdirectory(VvtUftCore)
+add_subdirectory(VvtUftStraFact)
+add_subdirectory(VvtUftRunner)
 
-add_subdirectory(WtLatencyHFT)
-add_subdirectory(WtLatencyUFT)
+add_subdirectory(VvtLatencyHFT)
+add_subdirectory(VvtLatencyUFT)
 
 #test projects
 add_subdirectory(TestBtPorter)

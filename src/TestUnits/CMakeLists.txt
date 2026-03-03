@@ -14,7 +14,7 @@ file(GLOB SRCS *.cpp ./gtest/*.cc)
 SET(LIBS
     VvTSTools
 	VvTSUtils
-    WtShareHelper)
+    VvtShareHelper)
 IF (MSVC)
 ELSE(GNUCC)
     LIST(APPEND LIBS pthread boost_filesystem)

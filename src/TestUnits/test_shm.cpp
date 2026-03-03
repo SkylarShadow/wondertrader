@@ -1,5 +1,5 @@
 ﻿#include "gtest/gtest/gtest.h"
-#include "../WtShareHelper/WtShareHelper.h"
+#include "../VvtShareHelper/VvtShareHelper.h"
 
 TEST(test_shm, test_sharehelper)
 {

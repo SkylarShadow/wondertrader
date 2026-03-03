@@ -9,7 +9,7 @@ strategies:
     uft:
     -   active: true
         id: uft_demo
-        name: WtUftStraFact.SimpleUft
+        name: VvtUftStraFact.SimpleUft
         params:
             code: SHFE.ni2209
             count: 50

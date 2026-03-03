@@ -21,7 +21,7 @@ class VvTSVariant;
 class ActionPolicyMgr;
 class VvTSContractInfo;
 class VvTSCommodityInfo;
-class WtExecuter;
+class VvtExecuter; //?没用到
 class EventNotifier;
 
 class ITrdNotifySink;

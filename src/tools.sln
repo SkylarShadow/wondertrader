@@ -23,7 +23,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VvtMsgQue", "VvtMsgQue\VvtM
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TraderDumper", "TraderDumper\TraderDumper.vcxproj", "{A7B8E8F5-2714-46F0-9991-FC2ADC30E9E2}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WtShareHelper", "WtShareHelper\WtShareHelper.vcxproj", "{3B8EBA76-B27B-4DEF-BF80-C2DE6A03748F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VvtShareHelper", "VvtShareHelper\VvtShareHelper.vcxproj", "{3B8EBA76-B27B-4DEF-BF80-C2DE6A03748F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -54,7 +54,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VvtExecMon", "VvtExecMon\Vv
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TraderCTPOpt", "TraderCTPOpt\TraderCTPOpt.vcxproj", "{E73F2967-AF16-4FDD-82D3-369B8E4ADC26}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WtRunner", "WtRunner\WtRunner.vcxproj", "{5E088D13-17D5-40C6-98DD-0D7711160CA4}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VvtRunner", "VvtRunner\VvtRunner.vcxproj", "{5E088D13-17D5-40C6-98DD-0D7711160CA4}"
 	ProjectSection(ProjectDependencies) = postProject
 		{25D69D42-B843-4449-BA53-B92FD9849558} = {25D69D42-B843-4449-BA53-B92FD9849558}
 		{A6225D49-88D8-4B05-8D87-9A34CC1E55E0} = {A6225D49-88D8-4B05-8D87-9A34CC1E55E0}
@@ -81,7 +81,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VvtDataStorage", "VvtDataSt
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VvtMsgQue", "VvtMsgQue\VvtMsgQue.vcxproj", "{43BFD9C9-5C97-416E-A91C-9653FD7D19C3}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WtExeFact", "WtExeFact\WtExeFact.vcxproj", "{A6225D49-88D8-4B05-8D87-9A34CC1E55E0}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VvtExeFact", "VvtExeFact\VvtExeFact.vcxproj", "{A6225D49-88D8-4B05-8D87-9A34CC1E55E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

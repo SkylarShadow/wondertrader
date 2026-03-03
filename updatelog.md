@@ -5,7 +5,7 @@
 * （**重要**）实现了UFT策略独立记账的机制，即UFTContext单独记录各个子策略的持仓、成交等数据
 * （**重要**）回测框架优化了对未订阅的K线数据的处理，大幅提升了在大量标的回测时的性能
 * UFTEngin进一步完善，包括整合EventNotifier、支持净头寸统计等
-* 完善了WtShareHelper，支持离线修改数据的机制
+* 完善了VvtShareHelper，支持离线修改数据的机制
 * 完善了撤单失败的回报处理逻辑
 * 完善了对t+1的处理机制
 * CTAEngine新增一个订阅K线事件的接口，如果不调用，就不触发onbar，减少开销
@@ -17,7 +17,7 @@
 * （**重要**）hash容器升级，从以前的robin_map，升级为ankerl::unordered_dense，综合读写速度提升1/3
 * （**重要**）去掉以前的Longkey和ShortKey，改成std::string，并且将std::string对应的hash算法改成bkdrhash（还没做特别详细的性能对比，后面可能还会修改）
 * （**重要**）全面升级到C++17标准，linux下编译器升级到gcc8.4.0
-* （**重要**）新增一个WtShareHelper模块，可以将UFT里的一些数据通过mmap的方式共享访问，提升数据交换的效率（UFT策略也有相应的修改）
+* （**重要**）新增一个VvtShareHelper模块，可以将UFT里的一些数据通过mmap的方式共享访问，提升数据交换的效率（UFT策略也有相应的修改）
 * （**重要**）WtDataFactory在进行分钟线重采样时，支持根据小节做强制对齐（VvtDtMgr的配置，增加了一个align_by_section设置项进行控制）
 * （**重要**）CtaEngine里数据分发回调，改成支持线程池，可以并发回调（通过poolsize配置项控制，为0则不适用线程池）
 * （**重要**）dockerfile升级，dockerhub上的wondertrader编译环境镜像也进行了更新，可以通过dockerfile直接构建本地镜像
@@ -64,7 +64,7 @@
 
 ### 0.9.3
 * （**重要**）VvtLocalExecuter新增一个strict_portfolio配置项，默认为关闭，如果该配置项开启，会自动平掉交易账号上不在管理中的持仓
-* （**重要**）WtExeFact新增一个差量执行单元WtDiffMinImpactExeUnit
+* （**重要**）VvtExeFact新增一个差量执行单元VvtDiffMinImpactExeUnit
 * （**重要**）新增一个差量执行器VvtDiffExecuter
 * （**重要**）回测框架和实盘框架增加了输出每日持仓、最终的策略数据和用户数据的机制
 * （**重要**）执行器新增了一个信号路由机制，可以将指定策略的信号，通过指定的执行器进行交易
@@ -80,15 +80,15 @@
 * 扩展了策略的日志输出接口stra_log_text，可以指定日志的输出级别
 * VvtDtServo新增一个按天获取tick数据的接口get_ticks_by_date和按天获取秒线的接口get_sbars_by_date；同时对接口做了一些完善
 * VvtDtServo新增了一个get_bars_by_date接口，用于按交易日获取分钟线数据
-* WtExeFact完善了WtTWapExeUnit
+* VvtExeFact完善了VvtTWapExeUnit
 * 新增一个TraderDumper模块，用于将交易接口的回报往外部模块推送
-* WtExeFact增加针对股票的最小冲击算法WtStockMinImpactExeUnit
+* VvtExeFact增加针对股票的最小冲击算法VvtStockMinImpactExeUnit
 * 完善了TraderXTP的一些细节
 * 其他细节优化和bug修正
 
 
 ### 0.9.2
-* 持续的性能优化，HFT引擎系统内延迟可以做到700ns左右（具体测试工具可以参考WtLatencyHFT）
+* 持续的性能优化，HFT引擎系统内延迟可以做到700ns左右（具体测试工具可以参考VvtLatencyHFT）
 * UFT引擎集成ActionPolicy机制，开放buy和sell两个下单接口，简化下单接口调用方式
 * TraderAdapter订单统计，区分FAK/FOK撤单和普通撤单
 * 完善了回测引擎中处理动态订阅K线的一些细节
@@ -108,9 +108,9 @@
 * 重构VvTSLogger，全面改成兼容fmtlib的格式化语法
 * （**重要**）配置文件全面兼容yaml和json两种格式，并实现了一个VvTSCfgLoader模块自动处理
 * 完善了对股票复权数据的处理
-* （**重要**）新增一个极速交易引擎UFTEngine(WtUftCore、WtUftStraFact、WtUftRunner三个工程)，独立于其他几个引擎，不做过多兼容处理，只为了针对极速交易场景
+* （**重要**）新增一个极速交易引擎UFTEngine(VvtUftCore、VvtUftStraFact、VvtUftRunner三个工程)，独立于其他几个引擎，不做过多兼容处理，只为了针对极速交易场景
 * （**重要**）速度优化（时间函数、字符串函数、hash、对象池等优化），将UFTEngine的系统延迟优化到175纳秒以内，HFTEngine的系统延迟优化到1.5微秒以内
-* （**重要**）新增两个延迟测试工具WtLatencyHFT和WtLatencyUFT，分别用于测试HFTEngine和UFTEngine的系统延迟
+* （**重要**）新增两个延迟测试工具VvtLatencyHFT和VvtLatencyUFT，分别用于测试HFTEngine和UFTEngine的系统延迟
 * （**重要**）内部细节调整，完善了对7*24小时品种的支持
 * （**重要**）TraderAdapter新增了自成交熔断机制
 * 新对接了易达交易柜台(TraderYD、PaserYD)
@@ -148,7 +148,7 @@
 * 新增一个基于nanomsg封装的pub/sub消息队列VvtMsgQue模块，该模块采用C接口封装，可以单独使用，主要作为实盘和回测消息通知模块EventNotifier的基础组件使用。提供了MQServer和MQClient两个类，可以很方便上手
 * 实盘框架的EventNotifier，调用VvtMsgQue的MQServer，向外推送日志、成交、风控等消息
 * 回测框架的EventNotifier，调用VvtMsgQue的MQServer，向外推送回测进度、每日结算的资金信息等消息
-* WtExecFact新增一个最小冲击算法执行单元WtMinImpactExeUnit，对大单进行拆单发送，可以设定时间间隔、每次发单的固定数量或按照对价挂单量的比例
+* WtExecFact新增一个最小冲击算法执行单元VvtMinImpactExeUnit，对大单进行拆单发送，可以设定时间间隔、每次发单的固定数量或按照对价挂单量的比例
 * 改造了回测框架的一些数据的落地，主要针对远程回测监控提供一些基础特性
 * 开平策略管理器ActionPolicyMgr，新增了一个净今仓和净昨仓的检查，主要针对中金所的特殊规则（如果同事有今仓和昨仓，中金所处理平仓一定是优先平今的，这样会推高手续费）做的兼容性设置
 * VvtPorter和VvtBtPorter获取数据的回调接口，从原来的每条数据回调一次，改成直接整块数据块回调，减少回调函数的调用次数，数据读取性能大概能提升10%左右
@@ -198,7 +198,7 @@
 ### 0.6.2
 * 将日志全部翻译成英文
 * 内置简单执行单元WtSimpExeUnit增加了涨跌停价的修正逻辑
-* 内置执行单元工厂WtExeFact中的订单管理模块WtOrdMon，检查订单超时时，会根据是否是涨跌停价挂单，如果是涨跌停价挂单，则不进行撤单重挂
+* 内置执行单元工厂VvtExeFact中的订单管理模块VvtOrdMon，检查订单超时时，会根据是否是涨跌停价挂单，如果是涨跌停价挂单，则不进行撤单重挂
 * CTPMini2对接模块ParserCTPMini和TraderCTPMini进行的细节完善，并接入实盘
 * 文档做了一次更新
 * 其他代码细节完善
@@ -224,7 +224,7 @@
 * 修复了`ParserUDP`的一些`bug`
 * `CTA`引擎设置目标仓位时，同时订阅`tick`数据，主要针对标的不确定的策略，例如截面因子`CTA`策略
 * 内置执行单元`WtSimpExeUnit`新增一个根据`microprice`来确定委托价格的方式
-* 将内置执行模块`WtExeFact`中的订单管理模块独立出来，方便调用
+* 将内置执行模块`VvtExeFact`中的订单管理模块独立出来，方便调用
 * `CTA`回测引擎中，输出的平仓明细中新增“最大潜在收益”和“最大潜在亏损”两个字段
 * 回测框架中，将`ExecMocker`中的模拟撮合逻辑剥离出来，放到一个单独的`MatchEngine`中，方便以后的优化
 * **`HFT`引擎的回测进行了一次彻底的整理实现，基本满足了`HFT`策略回测的需求（已测试）**
