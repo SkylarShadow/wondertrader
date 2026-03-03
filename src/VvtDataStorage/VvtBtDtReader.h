@@ -1,0 +1,48 @@
+﻿#pragma once
+#include <string>
+#include <stdint.h>
+
+#include "DataDefine.h"
+
+#include "../Includes/FasterDefs.h"
+#include "../Includes/IBtDtReader.h"
+
+#include "../Share/BoostMappingFile.hpp"
+#include "../Share/StdUtils.hpp"
+
+NS_VVTP_BEGIN
+class VvTSVariant;
+class VvTSTickSlice;
+class VvTSKlineSlice;
+class VvTSOrdDtlSlice;
+class VvTSOrdQueSlice;
+class VvTSTransSlice;
+class VvTSArray;
+
+class IBaseDataMgr;
+class IHotMgr;
+typedef std::shared_ptr<BoostMappingFile> BoostMFPtr;
+
+class VvtBtDtReader : public IBtDtReader
+{
+public:
+	VvtBtDtReader();
+	virtual ~VvtBtDtReader();	
+
+//////////////////////////////////////////////////////////////////////////
+//IBtDtReader
+public:
+	virtual void init(VvTSVariant* cfg, IBtDtReaderSink* sink);
+
+	virtual bool read_raw_bars(const char* exchg, const char* code, VvTSKlinePeriod period, std::string& buffer) override;
+	virtual bool read_raw_ticks(const char* exchg, const char* code, uint32_t uDate, std::string& buffer) override;
+
+	virtual bool read_raw_order_details(const char* exchg, const char* code, uint32_t uDate, std::string& buffer) override;
+	virtual bool read_raw_order_queues(const char* exchg, const char* code, uint32_t uDate, std::string& buffer) override;
+	virtual bool read_raw_transactions(const char* exchg, const char* code, uint32_t uDate, std::string& buffer) override;
+
+private:
+	std::string		_base_dir;
+};
+
+NS_VVTP_END

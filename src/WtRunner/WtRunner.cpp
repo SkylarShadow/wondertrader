@@ -9,10 +9,10 @@
  */
 #include "WtRunner.h"
 
-#include "../WtCore/VvtHelper.h"
-#include "../WtCore/CtaStraContext.h"
-#include "../WtCore/HftStraContext.h"
-#include "../WtCore/WtDiffExecuter.h"
+#include "../VvtCore/VvtHelper.h"
+#include "../VvtCore/CtaStraContext.h"
+#include "../VvtCore/HftStraContext.h"
+#include "../VvtCore/VvtDiffExecuter.h"
 
 #include "../Includes/VvTSVariant.hpp"
 #include "../Includes/VvTSContractInfo.hpp"
@@ -483,7 +483,7 @@ bool WtRunner::initExecuters(VvTSVariant* cfgExecuter)
 
 		if (name == "local")
 		{
-			WtLocalExecuter* executer = new WtLocalExecuter(&_exe_factory, id, &_data_mgr);
+			VvtLocalExecuter* executer = new VvtLocalExecuter(&_exe_factory, id, &_data_mgr);
 			if (!executer->init(cfgItem))
 				return false;
 
@@ -510,7 +510,7 @@ bool WtRunner::initExecuters(VvTSVariant* cfgExecuter)
 		}
 		else if (name == "diff")
 		{
-			WtDiffExecuter* executer = new WtDiffExecuter(&_exe_factory, id, &_data_mgr, &_bd_mgr);
+			VvtDiffExecuter* executer = new VvtDiffExecuter(&_exe_factory, id, &_data_mgr, &_bd_mgr);
 			if (!executer->init(cfgItem))
 				return false;
 
@@ -537,7 +537,7 @@ bool WtRunner::initExecuters(VvTSVariant* cfgExecuter)
 		}
 		else
 		{
-			WtDistExecuter* executer = new WtDistExecuter(id);
+			VvtDistExecuter* executer = new VvtDistExecuter(id);
 			if (!executer->init(cfgItem))
 				return false;
 

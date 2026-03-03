@@ -181,7 +181,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\WtCore\WtCore.vcxproj">
+    <ProjectReference Include="..\VvtCore\VvtCore.vcxproj">
       <Project>{c2086cb3-f8f7-455f-83c8-b806b58e52a8}</Project>
     </ProjectReference>
     <ProjectReference Include="..\VvTSTools\VvTSTools.vcxproj">

@@ -11,7 +11,7 @@
     - **面向于专业机构的整体架构**
     - **数十亿级的实盘管理规模**
     - 从数据落地清洗、到回测分析、再到实盘交易、运营调度，**量化交易所有环节全覆盖**
-* `WonderTrader`依托于高速的`C++`核心框架，高效易用的应用层框架（[wtpy](https://github.com/wondertrader/wtpy)），致力于打造一个从研发、交易、到运营、调度，全部环节全自动一站式的量化研发交易场景。
+* `WonderTrader`依托于高速的`C++`核心框架，高效易用的应用层框架（[VvtPy](https://github.com/wondertrader/VvtPy)），致力于打造一个从研发、交易、到运营、调度，全部环节全自动一站式的量化研发交易场景。
 * `WonderTrader`于`0.9`开启了一个新的**UFT引擎**，针对超低延时交易的需求进行实现，经过一系列的优化以后，系统延迟在**175纳秒**之内。
 
 
@@ -39,7 +39,7 @@
     > - **多账户并发执行**：组合的目标头寸确定以后，就通过多个交易通道同步执行，可以有效的保障不同的账户的绩效的一致性。
 
 * **全类型的回测支持**
-    > - **语言支持全**：不论是`C++`开发的策略还是`wtpy`下开发的`python`策略，或者其他语言子框架下开发的策略，都在**统一的回测引擎**中统一回测。
+    > - **语言支持全**：不论是`C++`开发的策略还是`VvtPy`下开发的`python`策略，或者其他语言子框架下开发的策略，都在**统一的回测引擎**中统一回测。
     > - **回测效率高**：回测引擎采用`C++`开发，回测效率高，速度快。不管是`C++`策略还是`Python`策略，都能快速验证。
     > - **策略支持完备**：除了**CTA策略**、**SEL策略**可以回测，**HFT策略**、**UFT策略**和**执行单元**也能回测
     ![backtest.jpg](./images/backtest.jpg)
@@ -57,7 +57,7 @@
     > - **离合器机制**：离合器机制依托于信号和执行分离的机制的，主要是如果策略或组合发生风险，通过离合器机制，直接断开信号执行。优点是不影响策略的逻辑，只断开信号的执行，可以继续观察策略在特定行情阶段的表现，和理论研究相互印证。
     ![risk.jpg](./images/risk.jpg)
 
-* **强大的控制台**（[wtpy](https://github.com/wondertrader/wtpy)的监控服务）
+* **强大的控制台**（[VvtPy](https://github.com/wondertrader/VvtPy)的监控服务）
     > - **组合盘运行监控**：可以查看实时运行日志、策略理论数据、交易通道数据等，并提供手动启停的入口。
     ![monitor.jpg](./images/monitor.png)
     > - **自动调度服务**：全自动调度定时任务（启动、停止、重启），支持按周设置任务重复，支持进程守护。
@@ -94,10 +94,10 @@
 
 * **极速交易**
     `WonderTrader`使用`C++`作为底层核心开发语言，一个最重要的目的就是**追求极致性能**，所以`WonderTrader`的使用场景中**高频交易**或者**极速交易**有一个非常大的占比。`WonderTrader`于`v0.9`版本开设了一个新的**UFTEngine**，专门针对极速交易的场景。
-    和原来的`HFTEngine`不同，`HFTEngine`针对的是一般高频，侧重于**向应用层提供高性能的底层组件**，会考虑更多的兼容性问题以及应用层对接的问题，**系统延迟在1-2微秒之间**。而`UFTEngine`则完全从`WtCore`项目剥离，不向应用层提供接口，全部在`C++`进行开发实现，**系统延迟在200ns以内**。
+    和原来的`HFTEngine`不同，`HFTEngine`针对的是一般高频，侧重于**向应用层提供高性能的底层组件**，会考虑更多的兼容性问题以及应用层对接的问题，**系统延迟在1-2微秒之间**。而`UFTEngine`则完全从`VvtCore`项目剥离，不向应用层提供接口，全部在`C++`进行开发实现，**系统延迟在200ns以内**。
 
 * **算法交易**
-    `WonderTrader`有一个独立的执行器入口模块`WtExecMon`，用户可以在此基础上实现算法交易。`WonderTrader`的**M+1+N**执行架构中，**1+N**执行部分剥离出来，就可以作为一个**独立算法交易执行器**来使用。用户在使用的时候，通过设置指定标的的目标头寸，算法执行单元就可以按照预设的算法进行交易下单。
+    `WonderTrader`有一个独立的执行器入口模块`VvtExecMon`，用户可以在此基础上实现算法交易。`WonderTrader`的**M+1+N**执行架构中，**1+N**执行部分剥离出来，就可以作为一个**独立算法交易执行器**来使用。用户在使用的时候，通过设置指定标的的目标头寸，算法执行单元就可以按照预设的算法进行交易下单。
     用户可以通过实现自己的`WtExecFact`模块，来添加更多的算法执行单元。高效的`C++`底层，可以给算法执行单元的执行效果提供有力的保障。
 
 #### 支持的交易接口
@@ -118,29 +118,29 @@
     * 华锐ATP
     * 宽睿OES
 
-#### `wtpy`简介
-* [wtpy](https://github.com/wondertrader/wtpy)是构建在`WonderTrader`核心模块之上的，使用`Python3`开发的`WonderTrader`的`Python3`子框架
+#### `VvtPy`简介
+* [VvtPy](https://github.com/wondertrader/VvtPy)是构建在`WonderTrader`核心模块之上的，使用`Python3`开发的`WonderTrader`的`Python3`子框架
 * `Python`作为量化领域最流行的语言，在时序数据处理上有许多非常受欢迎的强大的第三方库
 * `Python`作为一种解释型语言，代码编写和调试都非常方便，不需要编译就可以直接运行
 * `Python`的跨平台属性也使`Python`可以应用到更多的场景中
-* `wtpy`主要功能是作为`WonderTrader`在`Python`语言的外延
-* 同时`wtpy`还内置了一个强大的监控服务组件`WtMonSvr`。该组件提供了远程的`webui`的监控界面，可以实时监控策略组合的运行情况，还提供全天`24×7`的自动调度服务，为你的交易保驾护航。
+* `VvtPy`主要功能是作为`WonderTrader`在`Python`语言的外延
+* 同时`VvtPy`还内置了一个强大的监控服务组件`WtMonSvr`。该组件提供了远程的`webui`的监控界面，可以实时监控策略组合的运行情况，还提供全天`24×7`的自动调度服务，为你的交易保驾护航。
 
 #### `WonderTrader`怎么获取
 * `WonderTrader`
 	- `github`地址：<https://github.com/wondertrader/wondertrader>
 	- `gitee`地址：<https://gitee.com/wondertrader/wondertrader>
-* `wtpy`
-	- `github`地址：<https://github.com/wondertrader/wtpy>
-	- `gitee`地址：<https://gitee.com/wondertrader/wtpy>
-* `wtpy`获取地址：<https://pypi.org/project/wtpy/>
-    `wtpy`可以直接在`python3.8`以上的版本安装
+* `VvtPy`
+	- `github`地址：<https://github.com/wondertrader/VvtPy>
+	- `gitee`地址：<https://gitee.com/wondertrader/VvtPy>
+* `VvtPy`获取地址：<https://pypi.org/project/VvtPy/>
+    `VvtPy`可以直接在`python3.8`以上的版本安装
     ``` shell
-    pip install wtpy --upgrade
+    pip install VvtPy --upgrade
     ```
 
 #### `WonderTrader`延伸项目
-* 将`wtpy`作为底层回测引擎的强化学习框架`Wt4ElegantRL`
+* 将`VvtPy`作为底层回测引擎的强化学习框架`Wt4ElegantRL`
 <https://github.com/drlgistics/Wt4ElegantRL>
 
 

@@ -1,5 +1,5 @@
 ﻿/*!
- * \file WtHftTicker.h
+ * \file VvtHftTicker.h
  * \project	WonderTrader
  *
  * \author Wesley

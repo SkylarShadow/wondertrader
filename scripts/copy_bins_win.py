@@ -7,11 +7,11 @@ import sys
 !!!!重要提示!!!!
 如果直接到scripts目录下执行这个py脚本
 会有相对路径问题
-而且需要wondertrader和wtpy在同一个目录级别
+而且需要wondertrader和VvtPy在同一个目录级别
 所以如果要使用这个脚本，大概率要自己改一下
 '''
 
-subdirs = ['WtPorter','WtDtPorter','WtBtPorter','Loader']
+subdirs = ['VvtPorter','VvtDtPorter','VvtBtPorter','Loader']
 
 def copyBin(srcDir:str, desDir:str, pdbBakDir:str):
 
@@ -66,9 +66,9 @@ if not os.path.exists(pdbBakDir):
     os.mkdir(pdbBakDir)
 
 #复制x86
-copyBin("./src/Win32/Release", os.path.join(despath, "wtpy/wrapper/x86"), os.path.join(pdbBakDir,"x86"))
+copyBin("./src/Win32/Release", os.path.join(despath, "VvtPy/wrapper/x86"), os.path.join(pdbBakDir,"x86"))
 #复制x64
-copyBin("./src/x64/Release", os.path.join(despath, "wtpy/wrapper/x64"), os.path.join(pdbBakDir,"x64"))
+copyBin("./src/x64/Release", os.path.join(despath, "VvtPy/wrapper/x64"), os.path.join(pdbBakDir,"x64"))
 
 #压缩pdb备份目录
 paths = os.path.split(__file__)

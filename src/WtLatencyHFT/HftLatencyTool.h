@@ -8,12 +8,12 @@
  * /brief 
  */
 #pragma once
-#include "../WtCore/WtHftEngine.h"
-#include "../WtCore/HftStrategyMgr.h"
-#include "../WtCore/TraderAdapter.h"
-#include "../WtCore/ParserAdapter.h"
-#include "../WtCore/ActionPolicyMgr.h"
-#include "../WtCore/WtDtMgr.h"
+#include "../VvtCore/VvtHftEngine.h"
+#include "../VvtCore/HftStrategyMgr.h"
+#include "../VvtCore/TraderAdapter.h"
+#include "../VvtCore/ParserAdapter.h"
+#include "../VvtCore/ActionPolicyMgr.h"
+#include "../VvtCore/VvtDtMgr.h"
 
 #include "../VvTSTools/VvTSBaseDataMgr.h"
 #include "../VvTSTools/VvTSHotMgr.h"
@@ -50,12 +50,12 @@ namespace hft
 		ParserAdapterMgr	_parsers;
 		HftStrategyMgr		_stra_mgr;
 
-		WtHftEngine			_engine;
+		VvtHftEngine			_engine;
 
 		VvTSBaseDataMgr		_bd_mgr;
 		VvTSHotMgr			_hot_mgr;
 		ActionPolicyMgr		_act_mgr;
-		WtDtMgr				_dt_mgr;
+		VvtDtMgr				_dt_mgr;
 
 		uint32_t			_times;
 		uint32_t			_core;

@@ -16,9 +16,9 @@
 ## 解决方案结构
 + ***Backtest***
 	backtest包含了回测相关的项目
-	- WtBtCore		回测框架核心代码
-	- WtBtPorter	回测框架C接口导出模块
-	- WtBtRunner	回测框架纯C++环境运行入口程序
+	- VvtBtCore		回测框架核心代码
+	- VvtBtPorter	回测框架C接口导出模块
+	- VvtBtRunner	回测框架纯C++环境运行入口程序
 	- TestBtPorter	C接口导出模块（*WtBtPorer*）的测试程序，方便在C++环境调试
 + ***BaseLibs***
 	BaseLibs包含了整个解决方案的基础库
@@ -27,13 +27,13 @@
 	- VvTSToolsLib	框架的通用工具库，很多基础工具都在该项目里定义，如日志模块*VvTSLogger*、基础数据模模块*VvTSBaseDataMgr*等
 + ***DataKit***
 	数据组件包含了数据接入以及落地的项目代码
-	- WtDtCore		数据组件核心库，包含了整个数据接入落地的核心逻辑
-	- WtDtPorter	数据组件C接口导出库，主要用于跨语言调用
+	- VvtDtCore		数据组件核心库，包含了整个数据接入落地的核心逻辑
+	- VvtDtPorter	数据组件C接口导出库，主要用于跨语言调用
 	- QuoteFactory	这是一个C++可执行程序，作为C++环境的数据落地程序的入口
-	- WtDataStorage	数据读取组件，用于读取WT自有格式的行情数据
-	- WtDataStorageAD	数据落地组件，用于将行情数据落地到文件中
-	- WtDtHelper	数据辅助工具，用于提供将数据转换成wt标准数据的接口
-	- WtDtServo		数据伺服器，用于提供实时的数据随机访问接口
+	- VvtDataStorage	数据读取组件，用于读取WT自有格式的行情数据
+	- VvtDataStorageAD	数据落地组件，用于将行情数据落地到文件中
+	- VvtDtHelper	数据辅助工具，用于提供将数据转换成wt标准数据的接口
+	- VvtDtServo		数据伺服器，用于提供实时的数据随机访问接口
 + ***Parsers***
 	Parsers包含了所有的行情解析器模块代码
 	- ParserCTP		(期)对接CTP行情通道的行情解析器
@@ -57,10 +57,10 @@
 	- WtSelStraFact 一个示例的SEL策略工厂
 + ***Product***
 	Porter包含了实盘的核心项目，是整个解决方案的核心
-	- WtCore		实盘交易核心库，包含了整个交易框架的核心逻辑
-	- WtPorter		交易框架C接口导出库，主要用于跨语言调用
-	- WtExecMon		独立执行器C接口导出库，作为独立执行器的入口
-	- WtRunner		同*WtBtRunner*，实盘框架纯C++环境运行的入口
+	- VvtCore		实盘交易核心库，包含了整个交易框架的核心逻辑
+	- VvtPorter		交易框架C接口导出库，主要用于跨语言调用
+	- VvtExecMon		独立执行器C接口导出库，作为独立执行器的入口
+	- WtRunner		同*VvtBtRunner*，实盘框架纯C++环境运行的入口
 + ***Traders***
 	Traders包含了所有的交易通道的模块代码
 	- TraderCTP		(期)CTP柜台交易通道对接模块
@@ -86,4 +86,4 @@
 	- CTPOptLoader	CTPOpt合约加载模块
 	- LoaderRunner	合约加载器模块运行入口程序
 	- TraderDumper	交易数据落地模块，主要用于实时转储交易接口的数据
-	- WtMsgQue		消息队列MQ模块，将nanomsg封装成了C接口，便于调用
+	- VvtMsgQue		消息队列MQ模块，将nanomsg封装成了C接口，便于调用

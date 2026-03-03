@@ -1,0 +1,71 @@
+﻿#include "VvtDistExecuter.h"
+
+#include "../Includes/VvTSVariant.hpp"
+
+#include "../Share/decimal.h"
+#include "../VvTSTools/VvTSLogger.h"
+
+USING_NS_VVTP;
+
+VvtDistExecuter::VvtDistExecuter(const char* name)
+	: IExecCommand(name)
+{
+
+}
+
+VvtDistExecuter::~VvtDistExecuter()
+{
+
+}
+
+bool VvtDistExecuter::init(VvTSVariant* params)
+{
+	if (params == NULL)
+		return false;
+
+	_config = params;
+	_config->retain();
+
+	_scale = params->getUInt32("scale");
+
+	return true;
+}
+
+void VvtDistExecuter::set_position(const vvt_hashmap<std::string, double>& targets)
+{
+	for (auto it = targets.begin(); it != targets.end(); it++)
+	{
+		const char* stdCode = it->first.c_str();
+		double newVol = it->second;
+
+		newVol *= _scale;
+		double oldVol = _target_pos[stdCode];
+		_target_pos[stdCode] = newVol;
+		if (!decimal::eq(oldVol, newVol))
+		{
+			VvTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "[{}]{}目标仓位更新: {} -> {}", _name.c_str(), stdCode, oldVol, newVol);
+		}
+
+		//这里广播目标仓位
+	}
+}
+
+void VvtDistExecuter::on_position_changed(const char* stdCode, double targetPos)
+{
+	targetPos *= _scale;
+
+	double oldVol = _target_pos[stdCode];
+	_target_pos[stdCode] = targetPos;
+
+	if (!decimal::eq(oldVol, targetPos))
+	{
+		VvTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "[{}]{}目标仓位更新: {} -> {}", _name.c_str(), stdCode, oldVol, targetPos);
+	}
+
+	//这里广播目标仓位
+}
+
+void VvtDistExecuter::on_tick(const char* stdCode, VvTSTickData* newTick)
+{
+	//分布式执行器不需要处理ontick
+}

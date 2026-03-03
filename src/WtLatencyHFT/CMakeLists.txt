@@ -19,7 +19,7 @@ INCLUDE_DIRECTORIES(${INCS})
 LINK_DIRECTORIES(${LNKS})
 
 SET(LIBS
-	WtCore
+	VvtCore
 	VvTSTools
     VvTSUtils
 	)

@@ -1,7 +1,7 @@
 ﻿#ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
 #endif
-#include "../WtBtPorter/WtBtPorter.h"
+#include "../VvtBtPorter/VvtBtPorter.h"
 
 #include "../Includes/VvTSStruct.h"
 #include "../Share/DLLHelper.hpp"
@@ -76,9 +76,9 @@ bool on_load_his_bars(const char* stdCode, const char* period)
 void run_bt()
 {
 #ifdef _WIN32
-	DLLHelper::load_library("WtBtPorter.dll");
+	DLLHelper::load_library("VvtBtPorter.dll");
 #else
-	DLLHelper::load_library("libWtBtPorter.so");
+	DLLHelper::load_library("libVvtBtPorter.so");
 #endif
 	register_cta_callbacks(on_init, on_tick, on_calc, on_bar, on_session_event, on_calc_done);
 

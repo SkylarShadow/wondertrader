@@ -200,7 +200,7 @@
     <ClInclude Include="..\Common\mdump.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\WtDtCore\WtDtCore.vcxproj">
+    <ProjectReference Include="..\VvtDtCore\VvtDtCore.vcxproj">
       <Project>{a869d9f7-a05d-4f9f-8d26-57c97245915a}</Project>
     </ProjectReference>
     <ProjectReference Include="..\VvTSTools\VvTSTools.vcxproj">

@@ -19,7 +19,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CTPOptLoader", "CTPOptLoade
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LoaderRunner", "LoaderRunner\LoaderRunner.vcxproj", "{AFC32121-FF00-4F4A-85C1-D1DBB43B0D1C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WtMsgQue", "WtMsgQue\WtMsgQue.vcxproj", "{43BFD9C9-5C97-416E-A91C-9653FD7D19C3}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VvtMsgQue", "VvtMsgQue\VvtMsgQue.vcxproj", "{43BFD9C9-5C97-416E-A91C-9653FD7D19C3}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TraderDumper", "TraderDumper\TraderDumper.vcxproj", "{A7B8E8F5-2714-46F0-9991-FC2ADC30E9E2}"
 EndProject

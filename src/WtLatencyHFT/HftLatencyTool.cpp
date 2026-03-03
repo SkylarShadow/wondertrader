@@ -8,7 +8,7 @@
  * /brief 
  */
 #include "HftLatencyTool.h"
-#include "../WtCore/HftStraContext.h"
+#include "../VvtCore/HftStraContext.h"
 
 #include "../Includes/VvTSVariant.hpp"
 #include "../Includes/IParserApi.h"

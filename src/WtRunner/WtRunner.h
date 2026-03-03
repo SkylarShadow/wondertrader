@@ -13,27 +13,27 @@
 
 #include "../Includes/ILogHandler.h"
 
-#include "../WtCore/EventNotifier.h"
-#include "../WtCore/CtaStrategyMgr.h"
-#include "../WtCore/HftStrategyMgr.h"
-#include "../WtCore/SelStrategyMgr.h"
+#include "../VvtCore/EventNotifier.h"
+#include "../VvtCore/CtaStrategyMgr.h"
+#include "../VvtCore/HftStrategyMgr.h"
+#include "../VvtCore/SelStrategyMgr.h"
 
-#include "../WtCore/WtCtaEngine.h"
-#include "../WtCore/WtHftEngine.h"
-#include "../WtCore/WtSelEngine.h"
-#include "../WtCore/WtLocalExecuter.h"
-#include "../WtCore/WtDistExecuter.h"
-#include "../WtCore/TraderAdapter.h"
-#include "../WtCore/ParserAdapter.h"
-#include "../WtCore/WtDtMgr.h"
-#include "../WtCore/ActionPolicyMgr.h"
+#include "../VvtCore/VvtCtaEngine.h"
+#include "../VvtCore/VvtHftEngine.h"
+#include "../VvtCore/VvtSelEngine.h"
+#include "../VvtCore/VvtLocalExecuter.h"
+#include "../VvtCore/VvtDistExecuter.h"
+#include "../VvtCore/TraderAdapter.h"
+#include "../VvtCore/ParserAdapter.h"
+#include "../VvtCore/VvtDtMgr.h"
+#include "../VvtCore/ActionPolicyMgr.h"
 
 #include "../VvTSTools/VvTSHotMgr.h"
 #include "../VvTSTools/VvTSBaseDataMgr.h"
 
 NS_VVTP_BEGIN
 class VvTSVariant;
-class WtDataStorage;
+class VvtDataStorage;
 NS_VVTP_END
 
 USING_NS_VVTP;
@@ -72,16 +72,16 @@ private:
 	VvTSVariant*			_config;
 	TraderAdapterMgr	_traders;
 	ParserAdapterMgr	_parsers;
-	WtExecuterFactory	_exe_factory;
+	VvtExecuterFactory	_exe_factory;
 
-	WtCtaEngine			_cta_engine;
-	WtHftEngine			_hft_engine;
-	WtSelEngine			_sel_engine;
-	WtEngine*			_engine;
+	VvtCtaEngine			_cta_engine;
+	VvtHftEngine			_hft_engine;
+	VvtSelEngine			_sel_engine;
+	VvtEngine*			_engine;
 
-	WtDataStorage*		_data_store;
+	VvtDataStorage*		_data_store;
 
-	WtDtMgr				_data_mgr;
+	VvtDtMgr				_data_mgr;
 
 	VvTSBaseDataMgr		_bd_mgr;
 	VvTSHotMgr			_hot_mgr;

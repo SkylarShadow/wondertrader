@@ -1,6 +1,6 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS
-#include "../WtPorter/WtPorter.h"
-//#include "../WtExecMon/WtExecPorter.h"
+#include "../VvtPorter/VvtPorter.h"
+//#include "../VvtExecMon/VvtExecPorter.h"
 
 #include "../Includes/VvTSStruct.h"
 #include "../Share/DLLHelper.hpp"
@@ -85,9 +85,9 @@ void PORTER_FLAG on_transaction(CtxHandler cHandle, const char* stdCode, VvTSTra
 void test_porter()
 {
 #ifdef _WIN32
-	DLLHelper::load_library("WtPorter.dll");
+	DLLHelper::load_library("VvtPorter.dll");
 #else
-	DLLHelper::load_library("libWtPorter.so");
+	DLLHelper::load_library("libVvtPorter.so");
 #endif
 	init_porter("logcfg.json", true, "./generated");
 

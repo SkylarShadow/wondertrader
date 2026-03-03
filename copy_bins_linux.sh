@@ -1,20 +1,20 @@
 despath=$1
 if test "$despath" = ""; then 
-	despath="../wtpy"
+	despath="../VvtPy"
 fi
 
-echo "wtpy path is $despath"
+echo "VvtPy path is $despath"
 
 root="./src/build_all/build_x64/Release/bin"
-folders=("Loader" "WtBtPorter" "WtDtPorter" "WtPorter")
+folders=("Loader" "VvtBtPorter" "VvtDtPorter" "VvtPorter")
 for folder in ${folders[@]}
 do
-	cp -rvf $root/$folder/*.so $despath/wtpy/wrapper/linux
+	cp -rvf $root/$folder/*.so $despath/VvtPy/wrapper/linux
 	for file in `ls $root/$folder`
 	do
 		if [ -d $root"/"$folder"/"$file ]
 		then
-			cp -rvf $root/$folder/$file/*.so $despath/wtpy/wrapper/linux/$file
+			cp -rvf $root/$folder/$file/*.so $despath/VvtPy/wrapper/linux/$file
 		fi
 	done
 done

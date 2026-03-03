@@ -69,27 +69,27 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\WtPorter\</OutDir>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\VvtPorter\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <IncludePath>$(MyDepends141)\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(MyDepends141)\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\WtPorter\</OutDir>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\VvtPorter\</OutDir>
     <LibraryPath>$(MyDepends141)\lib\x64;$(LibraryPath)</LibraryPath>
     <IncludePath>$(MyDepends141)\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\WtPorter\</OutDir>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\VvtPorter\</OutDir>
     <LibraryPath>$(MyDepends141)\lib\x86;$(LibraryPath)</LibraryPath>
     <IncludePath>$(MyDepends141)\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\WtPorter\</OutDir>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\VvtPorter\</OutDir>
     <LibraryPath>$(MyDepends141)\lib\x64;$(LibraryPath)</LibraryPath>
     <IncludePath>$(MyDepends141)\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
@@ -104,7 +104,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <DelayLoadDLLs>WtPorter.dll</DelayLoadDLLs>
+      <DelayLoadDLLs>VvtPorter.dll</DelayLoadDLLs>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -160,7 +160,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\WtPorter\WtPorter.vcxproj">
+    <ProjectReference Include="..\VvtPorter\VvtPorter.vcxproj">
       <Project>{2fa13367-71a9-4b8f-9683-ab4f0c1e1c12}</Project>
     </ProjectReference>
   </ItemGroup>

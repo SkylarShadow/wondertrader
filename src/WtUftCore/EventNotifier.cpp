@@ -58,7 +58,7 @@ bool EventNotifier::init(VvTSVariant* cfg)
 		return false;
 
 	_url = cfg->getCString("url");
-	std::string module = DLLHelper::wrap_module("WtMsgQue", "lib");
+	std::string module = DLLHelper::wrap_module("VvtMsgQue", "lib");
 	//先看工作目录下是否有对应模块
 	std::string dllpath = VvtHelper::getCWD() + module;
 	//如果没有,则再看模块目录,即dll同目录下
