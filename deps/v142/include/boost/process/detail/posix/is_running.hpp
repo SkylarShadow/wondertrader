@@ -67,7 +67,7 @@ inline int eval_exit_status(int code)
     }
     else if (WIFSIGNALED(code))
     {
-        return VvTERMSIG(code);
+        return WTERMSIG(code);
     }
     else
     {
