@@ -1,98 +1,72 @@
 cmake_minimum_required(VERSION 3.16)
 
-PROJECT(WonderTrader)
+project(WonderTrader LANGUAGES CXX)
 
-#3. 环境判断
-if (WIN32)
-	message(STATUS "Operation System is windows")
-ELSEIF (UNIX)
-	message(STATUS "Operation System is UNIX-like OS's")
-endif ()
+# ========= 基本信息 =========
+message(STATUS "Generator: ${CMAKE_GENERATOR}")
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
-message(STATUS "Generator is ${CMAKE_GENERATOR}")
-
-#C++标准
+# ========= C++ 标准 =========
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# 架构判断
+# ========= 架构判断 =========
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
     set(PLATFORM x64)
 else()
     set(PLATFORM x86)
 endif()
 
-if (MSVC)
-	add_definitions (-D_CRT_SECURE_NO_WARNINGS)
-	add_definitions (-D_HAS_STD_BYTE=0)
+# ========= 编译器判断 =========
+if(MSVC)
+    message(STATUS "Compiler: MSVC")
 
-	set(DEPS_DIR ${CMAKE_SOURCE_DIR}/../deps/v142)
+    add_compile_definitions(
+        _CRT_SECURE_NO_WARNINGS
+        _HAS_STD_BYTE=0
+    )
 
-	if(PLATFORM STREQUAL "x64")
-		set(INCS ${DEPS_DIR}/include)
-		set(LNKS ${DEPS_DIR}/lib/x64)
-		set(BINS ${DEPS_DIR}/bin/x64)
-
-		include_directories(${INCS})
-		link_directories(${LNKS})
-
-		message(STATUS "Deps path: ${DEPS_DIR}")
-        message(STATUS "Include path: ${INCS}")
-        message(STATUS "Library path: ${LNKS}")
-		message(STATUS "Platform is x64")
-		set(PLATFORM x64)
-	else()
-		set(INCS ${DEPS_DIR}/include)
-		set(LNKS ${DEPS_DIR}/lib/x86)
-		set(BINS ${DEPS_DIR}/bin/x86)
-
-		include_directories(${INCS})
-		link_directories(${LNKS})
-		
-        message(STATUS "Deps path: ${DEPS_DIR}")
-        message(STATUS "Include path: ${INCS}")
-        message(STATUS "Library path: ${LNKS}")
-        message(STATUS "Platform: x86")
-	endif()
-	set(PREFIX )
-	set(SUFFIX .dll)
-else (GNUCC)
-
-	set(DEPS_DIR ${CMAKE_SOURCE_DIR}/../deps/v142)
-
-	set(INCS ${DEPS_DIR}/include)
-
-	if(WIN32)
-		# Windows + MinGW
-        if(PLATFORM STREQUAL "x64")
-			set(LNKS ${DEPS_DIR}/lib/x64)#gcc是否要加x64未测试
-			set(BINS ${DEPS_DIR}/bin/x64)
-			include_directories(${INCS})
-			link_directories(${LNKS})
-		
-		else()
-            set(LNKS ${DEPS_DIR}/lib/x86)
-            set(BINS ${DEPS_DIR}/bin/x86)
-			include_directories(${INCS})
-			link_directories(${LNKS})
-		
-		endif()
-		
-			set(SUFFIX .dll)
-	else(UNIX)
-		set(LNKS ${DEPS_DIR}/lib)
-		set(SUFFIX .so)
-	endif()
-	
-	message(STATUS "Deps path: ${DEPS_DIR}")
-    message(STATUS "Include path: ${INCS}")
-    message(STATUS "Library path: ${LNKS}")
-    message(STATUS "Platform is x64")
-
-	set(PLATFORM x64)
-	set(PREFIX lib)
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    message(STATUS "Compiler: GNU")
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    message(STATUS "Compiler: Clang")
 endif()
+
+# ========= 依赖路径 =========
+# TODO: 根据需要调整依赖路径
+set(DEPS_DIR ${CMAKE_SOURCE_DIR}/../deps/v142)
+
+set(INCS ${DEPS_DIR}/include)
+set(LNKS ${DEPS_DIR}/lib/${PLATFORM})
+set(BINS ${DEPS_DIR}/bin/${PLATFORM})
+
+message(STATUS "Deps root: ${DEPS_DIR}")
+message(STATUS "Deps include: ${DEPS_INCLUDE_DIR}")
+message(STATUS "Deps lib: ${DEPS_LIB_DIR}")
+
+
+# ========= 前后缀统一处理 =========
+if(WIN32)
+    set(SUFFIX .dll)
+else() #UNIX
+	set(LNKS ${DEPS_DIR}/lib)
+	set(SUFFIX .so)
+
+endif()
+set(PREFIX lib)
+
+message(STATUS "Shared suffix: ${SHARED_SUFFIX}")
+message(STATUS "Library prefix: ${LIB_PREFIX}")
+
+
+
+# ========= 全局 include / link =========
+# 全局include 可能会有污染，后面看一下是否要优化
+include_directories(${DEPS_INCLUDE_DIR})
+link_directories(${DEPS_LIB_DIR})
+
+
 
 #basic libraries
 add_subdirectory(VvTSUtils)
