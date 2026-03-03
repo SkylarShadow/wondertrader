@@ -22,13 +22,13 @@ ADD_LIBRARY(WtBtPorter SHARED ${SRCS} ${HDRS})
 IF(MSVC)
 	SET(LIBS
 		WtBtCore
-		WTSTools
+		VvTSTools
 		VvTSUtils
 	)
 ELSE(GNUCC)
 	SET(LIBS
 		WtBtCore
-		WTSTools
+		VvTSTools
 		VvTSUtils
 
 		dl

@@ -10,7 +10,7 @@
 #include "ActionPolicyMgr.h"
 
 #include "../Share/StdUtils.hpp"
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 #include "../Includes/VvTSVariant.hpp"
 #include "../VvTSUtils/VvTSCfgLoader.h"
@@ -60,7 +60,7 @@ bool ActionPolicyMgr::init(const char* filename)
 					aRule._atype = AT_CloseYestoday;
 				else 
 				{
-					WTSLogger::error("Loading action policy failed: unrecognized type {}", action);
+					VvTSLogger::error("Loading action policy failed: unrecognized type {}", action);
 					continue;
 				}
 
@@ -102,7 +102,7 @@ const ActionRuleGroup& ActionPolicyMgr::getActionRules(const char* pid)
 		if (it == _rules.end())
 		{
 			it = _rules.find("default");
-			WTSLogger::error("Action policy group {} not exists, changed to default group", gpName.c_str());
+			VvTSLogger::error("Action policy group {} not exists, changed to default group", gpName.c_str());
 		}
 
 		assert(it != _rules.end());

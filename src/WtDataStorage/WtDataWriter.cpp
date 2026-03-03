@@ -255,7 +255,7 @@ void DataManager::preloadRtCaches(const char* exchg)
 
 	if (ayCts != NULL)
 		ayCts->release();
-	pipe_writer_log(_sink, LL_INFO, "预加载%个品种的实时数据缓存文件{}个,耗时{}微秒", codecnt, cnt, WTSLogger::fmtInt64(ticker.micro_seconds()));
+	pipe_writer_log(_sink, LL_INFO, "预加载%个品种的实时数据缓存文件{}个,耗时{}微秒", codecnt, cnt, VvTSLogger::fmtInt64(ticker.micro_seconds()));
 	_preloaded = true;
 }
 */

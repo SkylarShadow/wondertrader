@@ -10,12 +10,12 @@
 #include "WtBtPorter.h"
 #include "WtBtRunner.h"
 
-#include "../WtBtCore/WtHelper.h"
+#include "../WtBtCore/VvtHelper.h"
 #include "../WtBtCore/CtaMocker.h"
 #include "../WtBtCore/SelMocker.h"
 #include "../WtBtCore/HftMocker.h"
 
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 #include "../Includes/VvTSVersion.h"
 
@@ -156,11 +156,11 @@ void write_log(VvTUInt32 level, const char* message, const char* catName)
 {
 	if (strlen(catName) > 0)
 	{
-		WTSLogger::log_raw_by_cat(catName, (VvTSLogLevel)level, message);
+		VvTSLogger::log_raw_by_cat(catName, (VvTSLogLevel)level, message);
 	}
 	else
 	{
-		WTSLogger::log_raw((VvTSLogLevel)level, message);
+		VvTSLogger::log_raw((VvTSLogLevel)level, message);
 	}
 }
 

@@ -17,7 +17,7 @@
 #include "../Includes/IHotMgr.h"
 #include "../Share/decimal.h"
 
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 USING_NS_VVTP;
 
@@ -124,7 +124,7 @@ bool WtArbiExecuter::init(VvTSVariant* params)
 		}
 	}
 
-	WTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "Local executer inited, scale: {}, auto_clear: {}, strict_sync: {}, thread poolsize: {}, code_groups: {}",
+	VvTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "Local executer inited, scale: {}, auto_clear: {}, strict_sync: {}, thread poolsize: {}, code_groups: {}",
 		_scale, _auto_clear, _strict_sync, poolsize, _groups.size());
 
 	return true;
@@ -252,7 +252,7 @@ void WtArbiExecuter::writeLog(const char* message)
 	static thread_local char szBuf[2048] = { 0 };
 	fmtutil::format_to(szBuf, "[{}]", _name.c_str());
 	strcat(szBuf, message);
-	WTSLogger::log_dyn_raw("executer", _name.c_str(), LL_INFO, szBuf);
+	VvTSLogger::log_dyn_raw("executer", _name.c_str(), LL_INFO, szBuf);
 }
 
 VvTSCommodityInfo* WtArbiExecuter::getCommodityInfo(const char* stdCode)
@@ -291,12 +291,12 @@ void WtArbiExecuter::on_position_changed(const char* stdCode, double diffPos)
 
 	if(!decimal::eq(diffPos, 0))
 	{
-		WTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "Target position of {} changed: {} -> {} : {} with scale:{}", stdCode, oldVol, newVol, traderTarget, _scale);
+		VvTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "Target position of {} changed: {} -> {} : {} with scale:{}", stdCode, oldVol, newVol, traderTarget, _scale);
 	}
 
 	if (_trader && !_trader->checkOrderLimits(stdCode))
 	{
-		WTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "{} is disabled", stdCode);
+		VvTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "{} is disabled", stdCode);
 		return;
 	}
 
@@ -358,12 +358,12 @@ void WtArbiExecuter::set_position(const vvt_hashmap<std::string, double>& target
 
 		if(!decimal::eq(oldVol, newVol))
 		{
-			WTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "Target position of {} changed: {} -> {} : {} with scale{}", stdCode, oldVol, newVol, traderTarget, _scale);
+			VvTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "Target position of {} changed: {} -> {} : {} with scale{}", stdCode, oldVol, newVol, traderTarget, _scale);
 		}
 
 		if (_trader && !_trader->checkOrderLimits(stdCode))
 		{
-			WTSLogger::log_dyn("executer", _name.c_str(), LL_WARN, "{} is disabled due to entrust limit control ", stdCode);
+			VvTSLogger::log_dyn("executer", _name.c_str(), LL_WARN, "{} is disabled due to entrust limit control ", stdCode);
 			continue;
 		}
 
@@ -389,7 +389,7 @@ void WtArbiExecuter::set_position(const vvt_hashmap<std::string, double>& target
 		if(tit != targets.end())
 			continue;
 
-		WTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "{} is not in target, set to 0 automatically", code);
+		VvTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "{} is not in target, set to 0 automatically", code);
 
 		ExecuteUnitPtr unit = getUnit(code);
 		if (unit == NULL)
@@ -420,7 +420,7 @@ void WtArbiExecuter::set_position(const vvt_hashmap<std::string, double>& target
 			if(it != _target_pos.end())
 				continue;
 
-			WTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "{} is not in management, set to 0 due to strict sync mode", stdCode.c_str());
+			VvTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "{} is not in management, set to 0 due to strict sync mode", stdCode.c_str());
 
 			ExecuteUnitPtr unit = getUnit(stdCode.c_str());
 			if (unit == NULL)
@@ -619,7 +619,7 @@ void WtArbiExecuter::on_position(const char* stdCode, bool isLong, double prevol
 	if (prevCode != cInfo._code)
 		return;
 
-	WTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "Prev hot contract of {}.{} on {} is {}", cInfo._exchg, cInfo._product, tradingday, prevCode);
+	VvTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "Prev hot contract of {}.{} on {} is {}", cInfo._exchg, cInfo._product, tradingday, prevCode);
 
 	thread_local static char fullPid[64] = { 0 };
 	fmtutil::format_to(fullPid, "{}.{}", cInfo._exchg, cInfo._product);
@@ -629,7 +629,7 @@ void WtArbiExecuter::on_position(const char* stdCode, bool isLong, double prevol
 	auto it = _clear_excludes.find(fullPid);
 	if(it != _clear_excludes.end())
 	{
-		WTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "Position of {}, as prev hot contract, won't be cleared for it's in exclude list", stdCode);
+		VvTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "Position of {}, as prev hot contract, won't be cleared for it's in exclude list", stdCode);
 		return;
 	}
 
@@ -640,13 +640,13 @@ void WtArbiExecuter::on_position(const char* stdCode, bool isLong, double prevol
 		it = _clear_includes.find(fullPid);
 		if (it == _clear_includes.end())
 		{
-			WTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "Position of {}, as prev hot contract, won't be cleared for it's not in include list", stdCode);
+			VvTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "Position of {}, as prev hot contract, won't be cleared for it's not in include list", stdCode);
 			return;
 		}
 	}
 
 	//最后再进行自动清理
-	WTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "Position of {}, as prev hot contract, will be cleared", stdCode);
+	VvTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "Position of {}, as prev hot contract, will be cleared", stdCode);
 	ExecuteUnitPtr unit = getUnit(stdCode);
 	if (unit)
 	{

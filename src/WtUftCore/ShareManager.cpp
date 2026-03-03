@@ -1,6 +1,6 @@
 ﻿#include "ShareManager.h"
 #include "WtUftEngine.h"
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 #include "../Share/StdUtils.hpp"
 
@@ -14,7 +14,7 @@ bool ShareManager::initialize(const char* module)
 
 	if(!StdFile::exists(module))
 	{
-		WTSLogger::warn("WtShareHelper {} not exist", module);
+		VvTSLogger::warn("WtShareHelper {} not exist", module);
 		return false;
 	}
 
@@ -83,7 +83,7 @@ bool ShareManager::start_watching(uint32_t microsecs)
 			}
 		}));
 
-		WTSLogger::info("Share domain is on watch");
+		VvTSLogger::info("Share domain is on watch");
 	}
 
 	return true;
@@ -96,11 +96,11 @@ bool ShareManager::init_domain(const char* id)
 
 	bool ret = _init_master(id, ".share");
 	_exchg = id;
-	WTSLogger::info("Share domain [{}] initialing {}", id, ret ? "succeed" : "failed");
+	VvTSLogger::info("Share domain [{}] initialing {}", id, ret ? "succeed" : "failed");
 
 	//初始化同步区
 	ret = _init_master("sync", ".sync");
-	WTSLogger::info("Sync domain [sync] initialing {}", ret ? "succeed" : "failed");
+	VvTSLogger::info("Sync domain [sync] initialing {}", ret ? "succeed" : "failed");
 
 	return ret;
 }

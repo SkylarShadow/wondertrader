@@ -1,8 +1,8 @@
 ﻿#include "WtExecPorter.h"
 #include "WtExecRunner.h"
 
-#include "../WtCore/WtHelper.h"
-#include "../WTSTools/WTSLogger.h"
+#include "../WtCore/VvtHelper.h"
+#include "../VvTSTools/VvTSLogger.h"
 #include "../Includes/VvTSVersion.h"
 
 #ifdef _WIN32
@@ -71,11 +71,11 @@ void write_log(unsigned int level, VvTString message, VvTString catName)
 {
 	if (strlen(catName) > 0)
 	{
-		WTSLogger::log_raw_by_cat(catName, (VvTSLogLevel)level, message);
+		VvTSLogger::log_raw_by_cat(catName, (VvTSLogLevel)level, message);
 	}
 	else
 	{
-		WTSLogger::log_raw((VvTSLogLevel)level, message);
+		VvTSLogger::log_raw((VvTSLogLevel)level, message);
 	}
 }
 

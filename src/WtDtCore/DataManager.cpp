@@ -10,14 +10,14 @@
 #include "DataManager.h"
 #include "StateMonitor.h"
 #include "UDPCaster.h"
-#include "WtHelper.h"
+#include "VvtHelper.h"
 #include "IDataCaster.h"
 
 #include "../Includes/VvTSVariant.hpp"
 #include "../Share/DLLHelper.hpp"
 
-#include "../WTSTools/WTSBaseDataMgr.h"
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSBaseDataMgr.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 
 DataManager::DataManager()
@@ -40,16 +40,16 @@ bool DataManager::isSessionProceeded(const char* sid)
 	return _writer->isSessionProceeded(sid);
 }
 
-bool DataManager::init(VvTSVariant* params, WTSBaseDataMgr* bdMgr, StateMonitor* stMonitor)
+bool DataManager::init(VvTSVariant* params, VvTSBaseDataMgr* bdMgr, StateMonitor* stMonitor)
 {
 	_bd_mgr = bdMgr;
 	_state_mon = stMonitor;
 
 	std::string module = params->getCString("module");
 	if (module.empty())
-		module = WtHelper::get_module_dir() + DLLHelper::wrap_module("WtDataStorage");
+		module = VvtHelper::get_module_dir() + DLLHelper::wrap_module("WtDataStorage");
 	else
-		module = WtHelper::get_module_dir() + DLLHelper::wrap_module(module.c_str());
+		module = VvtHelper::get_module_dir() + DLLHelper::wrap_module(module.c_str());
 	
 	DllHandle libWriter = DLLHelper::load_library(module.c_str());
 	if (libWriter)
@@ -57,13 +57,13 @@ bool DataManager::init(VvTSVariant* params, WTSBaseDataMgr* bdMgr, StateMonitor*
 		FuncCreateWriter pFuncCreateWriter = (FuncCreateWriter)DLLHelper::get_symbol(libWriter, "createWriter");
 		if (pFuncCreateWriter == NULL)
 		{
-			WTSLogger::error("Initializing of data writer failed: function createWriter not found...");
+			VvTSLogger::error("Initializing of data writer failed: function createWriter not found...");
 		}
 
 		FuncDeleteWriter pFuncDeleteWriter = (FuncDeleteWriter)DLLHelper::get_symbol(libWriter, "deleteWriter");
 		if (pFuncDeleteWriter == NULL)
 		{
-			WTSLogger::error("Initializing of data writer failed: function deleteWriter not found...");
+			VvTSLogger::error("Initializing of data writer failed: function deleteWriter not found...");
 		}
 
 		if (pFuncCreateWriter && pFuncDeleteWriter)
@@ -71,11 +71,11 @@ bool DataManager::init(VvTSVariant* params, WTSBaseDataMgr* bdMgr, StateMonitor*
 			_writer = pFuncCreateWriter();
 			_remover = pFuncDeleteWriter;
 		}
-		WTSLogger::info("Data storage module {} loaded", module);
+		VvTSLogger::info("Data storage module {} loaded", module);
 	}
 	else
 	{
-		WTSLogger::error("Initializing of data writer failed: loading module {} failed...", module.c_str());
+		VvTSLogger::error("Initializing of data writer failed: loading module {} failed...", module.c_str());
 		return false;
 	}
 
@@ -198,7 +198,7 @@ uint32_t DataManager::getTradingDate(const char* pid)
 
 void DataManager::outputLog(VvTSLogLevel ll, const char* message)
 {
-	WTSLogger::log_raw(ll, message);
+	VvTSLogger::log_raw(ll, message);
 }
 
 #pragma endregion "IDataWriterSink"

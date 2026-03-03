@@ -10,7 +10,7 @@
 #include "../Share/decimal.h"
 #include "../Share/TimeUtils.hpp"
 
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 const char* WEIGHT_ALGS[] = 
 {
@@ -95,7 +95,7 @@ bool IndexWorker::init(VvTSVariant* config)
 					lastTick->release();
 				}
 
-				WTSLogger::info("Consist {} of block index {}.{} subscribed", fullCode, _exchg, _code);
+				VvTSLogger::info("Consist {} of block index {}.{} subscribed", fullCode, _exchg, _code);
 			}
 		}
 	}
@@ -139,7 +139,7 @@ bool IndexWorker::init(VvTSVariant* config)
 				if (strlen(cInfo._ruletag) > 0)
 				{
 					code = hotMgr->getCustomRawCode(cInfo._ruletag, cInfo.stdCommID());
-					WTSLogger::info("{} contract confirmed: {} -> {}.{}", cInfo._ruletag, fullCode, cInfo._exchg, code);
+					VvTSLogger::info("{} contract confirmed: {} -> {}.{}", cInfo._ruletag, fullCode, cInfo._exchg, code);
 				}
 				else
 				{
@@ -152,7 +152,7 @@ bool IndexWorker::init(VvTSVariant* config)
 			VvTSContractInfo* cInfo = _factor->get_bd_mgr()->getContract(code.c_str(), exchg.c_str());
 			if(cInfo == NULL)
 			{
-				WTSLogger::error("Consist {} of block index {}.{} not exists", fullCode, _exchg, _code);
+				VvTSLogger::error("Consist {} of block index {}.{} not exists", fullCode, _exchg, _code);
 				continue;
 			}
 
@@ -167,11 +167,11 @@ bool IndexWorker::init(VvTSVariant* config)
 				lastTick->release();
 			}
 
-			WTSLogger::info("Consist {} of block index {}.{} subscribed", fullCode, _exchg, _code);
+			VvTSLogger::info("Consist {} of block index {}.{} subscribed", fullCode, _exchg, _code);
 		}
 	}
 
-	WTSLogger::info("Block index {}.{} initialized，weight algorithm: {}, trigger: {}, timeout: {}", _exchg, _code, WEIGHT_ALGS[_weight_alg], _trigger, _timeout);
+	VvTSLogger::info("Block index {}.{} initialized，weight algorithm: {}, trigger: {}, timeout: {}", _exchg, _code, WEIGHT_ALGS[_weight_alg], _trigger, _timeout);
 
 	return true;
 }
@@ -334,6 +334,6 @@ void IndexWorker::generate_tick()
 	VvTSTickData *newTick = VvTSTickData::create(_cache);
 	newTick->setContractInfo(_cInfo);
 	_factor->push_tick(newTick);
-	WTSLogger::debug("{}.{} - {}.{} - {}", _cache.exchg, _cache.code, _cache.action_date, _cache.action_time, _cache.price);
+	VvTSLogger::debug("{}.{} - {}.{} - {}", _cache.exchg, _cache.code, _cache.action_date, _cache.action_time, _cache.price);
 	newTick->release();
 }

@@ -26,7 +26,7 @@
     <ClCompile Include="ShmCaster.cpp" />
     <ClCompile Include="StateMonitor.cpp" />
     <ClCompile Include="UDPCaster.cpp" />
-    <ClCompile Include="WtHelper.cpp" />
+    <ClCompile Include="VvtHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataManager.h" />
@@ -38,7 +38,7 @@
     <ClInclude Include="StateMonitor.h" />
     <ClInclude Include="StatHelper.hpp" />
     <ClInclude Include="UDPCaster.h" />
-    <ClInclude Include="WtHelper.h" />
+    <ClInclude Include="VvtHelper.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{A869D9F7-A05D-4F9F-8D26-57C97245915A}</ProjectGuid>

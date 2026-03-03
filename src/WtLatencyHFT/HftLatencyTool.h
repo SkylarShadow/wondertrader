@@ -15,8 +15,8 @@
 #include "../WtCore/ActionPolicyMgr.h"
 #include "../WtCore/WtDtMgr.h"
 
-#include "../WTSTools/WTSBaseDataMgr.h"
-#include "../WTSTools/WTSHotMgr.h"
+#include "../VvTSTools/VvTSBaseDataMgr.h"
+#include "../VvTSTools/VvTSHotMgr.h"
 
 
 NS_VVTP_BEGIN
@@ -52,8 +52,8 @@ namespace hft
 
 		WtHftEngine			_engine;
 
-		WTSBaseDataMgr		_bd_mgr;
-		WTSHotMgr			_hot_mgr;
+		VvTSBaseDataMgr		_bd_mgr;
+		VvTSHotMgr			_hot_mgr;
 		ActionPolicyMgr		_act_mgr;
 		WtDtMgr				_dt_mgr;
 

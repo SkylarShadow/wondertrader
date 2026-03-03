@@ -17,8 +17,8 @@
 #include "../Includes/VvTSMarcos.h"
 #include "../Includes/VvTSTypes.h"
 
-#include "../WTSTools/WTSHotMgr.h"
-#include "../WTSTools/WTSBaseDataMgr.h"
+#include "../VvTSTools/VvTSHotMgr.h"
+#include "../VvTSTools/VvTSBaseDataMgr.h"
 
 NS_VVTP_BEGIN
 class VvTSTickData;
@@ -507,8 +507,8 @@ private:
 	uint32_t		_closed_tdate;
 	uint32_t		_opened_tdate;
 
-	WTSBaseDataMgr	_bd_mgr;
-	WTSHotMgr		_hot_mgr;
+	VvTSBaseDataMgr	_bd_mgr;
+	VvTSHotMgr		_hot_mgr;
 
 	std::string		_base_dir;
 	std::string		_mode;

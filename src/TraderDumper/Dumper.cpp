@@ -1,26 +1,26 @@
 ﻿#include "Dumper.h"
-#include "WtHelper.h"
+#include "VvtHelper.h"
 #include "TraderAdapter.h"
 
-#include "../WTSTools/WTSLogger.h"
-#include "../WTSTools/WTSBaseDataMgr.h"
+#include "../VvTSTools/VvTSLogger.h"
+#include "../VvTSTools/VvTSBaseDataMgr.h"
 #include "../VvTSUtils/VvTSCfgLoader.h"
 
 #include "../Includes/VvTSVariant.hpp"
 
 USING_NS_VVTP;
 
-WTSBaseDataMgr		g_bdMgr;
+VvTSBaseDataMgr		g_bdMgr;
 TraderAdapterMgr	g_adapterMgr;
 
 void Dumper::init(const char* logProfile)
 {
-	WTSLogger::init(logProfile);
+	VvTSLogger::init(logProfile);
 }
 
 bool Dumper::config(const char* cfgfile, bool isFile, const char* modDir)
 {
-	WtHelper::set_module_dir(modDir);
+	VvtHelper::set_module_dir(modDir);
 
 	VvTSVariant* root = NULL;
 	if (isFile)
@@ -43,7 +43,7 @@ bool Dumper::config(const char* cfgfile, bool isFile, const char* modDir)
 	if (cfgBF->get("session"))
 	{
 		g_bdMgr.loadSessions(cfgBF->getCString("session"));
-		WTSLogger::info("Trading sessions loaded");
+		VvTSLogger::info("Trading sessions loaded");
 	}
 
 	VvTSVariant* cfgItem = cfgBF->get("commodity");
@@ -94,7 +94,7 @@ bool Dumper::config(const char* cfgfile, bool isFile, const char* modDir)
 
 	root->release();
 
-	WTSLogger::info("交易数据落地模块初始化完成，主动刷新间隔:{}s", _refresh_span);
+	VvTSLogger::info("交易数据落地模块初始化完成，主动刷新间隔:{}s", _refresh_span);
 
 	return true;
 }

@@ -15,12 +15,12 @@
 #include <iomanip>
 
 #include "../WtBtCore/ExecMocker.h"
-#include "../WtBtCore/WtHelper.h"
+#include "../WtBtCore/VvtHelper.h"
 
 #include "../Share/TimeUtils.hpp"
 #include "../Share/ModuleHelper.hpp"
 
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 #include "../VvTSUtils/VvTSCfgLoader.h"
 #include "../Includes/VvTSVariant.hpp"
 #include "../VvTSUtils/SignalHook.hpp"
@@ -86,7 +86,7 @@ WtBtRunner::WtBtRunner()
 	, _async(false)
 {
 	install_signal_hooks([](const char* message) {
-		WTSLogger::error(message);
+		VvTSLogger::error(message);
 	});
 }
 
@@ -114,7 +114,7 @@ bool WtBtRunner::loadRawHisBars(void* obj, const char* stdCode, VvTSKlinePeriod 
         return _ext_raw_bar_loader(stdCode, "m5");
 	default:
 		{
-			WTSLogger::error("Unsupported period of extended data loader");
+			VvTSLogger::error("Unsupported period of extended data loader");
 			return false;
 		}
 	}
@@ -139,7 +139,7 @@ bool WtBtRunner::loadFinalHisBars(void* obj, const char* stdCode, VvTSKlinePerio
 		return _ext_fnl_bar_loader(stdCode, "m5");
 	default:
 		{
-			WTSLogger::error("Unsupported period of extended data loader");
+			VvTSLogger::error("Unsupported period of extended data loader");
 			return false;
 		}
 	}
@@ -185,7 +185,7 @@ void WtBtRunner::feedRawBars(VvTSBarStruct* bars, uint32_t count)
 {
 	if(_ext_fnl_bar_loader == NULL && _ext_raw_bar_loader == NULL)
 	{
-		WTSLogger::error("Cannot feed bars because of no extented bar loader registered.");
+		VvTSLogger::error("Cannot feed bars because of no extented bar loader registered.");
 		return;
 	}
 
@@ -196,7 +196,7 @@ void WtBtRunner::feedAdjFactors(const char* stdCode, uint32_t* dates, double* fa
 {
 	if(_ext_adj_fct_loader == NULL)
 	{
-		WTSLogger::error("Cannot feed adjusting factors because of no extented adjusting factor loader registered.");
+		VvTSLogger::error("Cannot feed adjusting factors because of no extented adjusting factor loader registered.");
 		return;
 	}
 
@@ -207,7 +207,7 @@ void WtBtRunner::feedRawTicks(VvTSTickStruct* ticks, uint32_t count)
 {
 	if (_ext_tick_loader == NULL)
 	{
-		WTSLogger::error("Cannot feed ticks because of no extented tick loader registered.");
+		VvTSLogger::error("Cannot feed ticks because of no extented tick loader registered.");
 		return;
 	}
 
@@ -226,7 +226,7 @@ void WtBtRunner::registerCtaCallbacks(FuncStraInitCallback cbInit, FuncStraTickC
 	_cb_cta_calc_done = cbCalcDone;
 	_cb_cta_cond_trigger = cbCondTrigger;
 
-	WTSLogger::info("Callbacks of CTA engine registration done");
+	VvTSLogger::info("Callbacks of CTA engine registration done");
 }
 
 void WtBtRunner::registerSelCallbacks(FuncStraInitCallback cbInit, FuncStraTickCallback cbTick, FuncStraCalcCallback cbCalc, 
@@ -240,7 +240,7 @@ void WtBtRunner::registerSelCallbacks(FuncStraInitCallback cbInit, FuncStraTickC
 
 	_cb_sel_calc_done = cbCalcDone;
 
-	WTSLogger::info("Callbacks of SEL engine registration done");
+	VvTSLogger::info("Callbacks of SEL engine registration done");
 }
 
 void WtBtRunner::registerHftCallbacks(FuncStraInitCallback cbInit, FuncStraTickCallback cbTick, FuncStraBarCallback cbBar,
@@ -262,7 +262,7 @@ void WtBtRunner::registerHftCallbacks(FuncStraInitCallback cbInit, FuncStraTickC
 
 	_cb_hft_sessevt = cbSessEvt;
 
-	WTSLogger::info("Callbacks of HFT engine registration done");
+	VvTSLogger::info("Callbacks of HFT engine registration done");
 }
 
 uint32_t WtBtRunner::initCtaMocker(const char* name, int32_t slippage /* = 0 */, bool hook /* = false */, 
@@ -439,27 +439,27 @@ void WtBtRunner::hft_on_trade(uint32_t cHandle, VvTUInt32 localid, const char* s
 void WtBtRunner::init(const char* logProfile /* = "" */, bool isFile /* = true */, const char* outDir/* = "./outputs_bt"*/)
 {
 #ifdef _MSC_VER
-	CMiniDumper::Enable(getModuleName(), true, WtHelper::getCWD().c_str());
+	CMiniDumper::Enable(getModuleName(), true, VvtHelper::getCWD().c_str());
 #endif
 
-	WTSLogger::init(logProfile, isFile);
+	VvTSLogger::init(logProfile, isFile);
 
-	WtHelper::setInstDir(getBinDir());
-	WtHelper::setOutputDir(outDir);
+	VvtHelper::setInstDir(getBinDir());
+	VvtHelper::setOutputDir(outDir);
 }
 
 void WtBtRunner::config(const char* cfgFile, bool isFile /* = true */)
 {
 	if(_inited)
 	{
-		WTSLogger::error("WtBtEngine has already been inited");
+		VvTSLogger::error("WtBtEngine has already been inited");
 		return;
 	}
 
 	_cfg = isFile ? VvTSCfgLoader::load_from_file(cfgFile) : VvTSCfgLoader::load_from_content(cfgFile, false);
 	if(_cfg == NULL)
 	{
-		WTSLogger::error("Loading config failed");
+		VvTSLogger::error("Loading config failed");
 		return;
 	}
 
@@ -515,7 +515,7 @@ void WtBtRunner::run(bool bNeedDump /* = false */, bool bAsync /* = false */)
 
 	_async = bAsync;
 
-	WTSLogger::info("Backtesting will run in {} mode", _async ? "async" : "sync");
+	VvTSLogger::info("Backtesting will run in {} mode", _async ? "async" : "sync");
 
 	if (_cta_mocker)
 		_cta_mocker->enable_hook(_async);
@@ -537,12 +537,12 @@ void WtBtRunner::run(bool bNeedDump /* = false */, bool bAsync /* = false */)
 			}
 			catch (...)
 			{
-				WTSLogger::error("Exception raised while worker running");
+				VvTSLogger::error("Exception raised while worker running");
 				//print_stack_trace([](const char* message) {
-				//	WTSLogger::error(message);
+				//	VvTSLogger::error(message);
 				//});
 			}
-			WTSLogger::debug("Worker thread of backtest finished");
+			VvTSLogger::debug("Worker thread of backtest finished");
 			_running = false;
 
 		}));
@@ -563,7 +563,7 @@ void WtBtRunner::stop()
 
 	_replayer.stop();
 
-	WTSLogger::debug("Notify to finish last round");
+	VvTSLogger::debug("Notify to finish last round");
 
 	if (_cta_mocker)
 		_cta_mocker->step_calc();
@@ -571,7 +571,7 @@ void WtBtRunner::stop()
 	if (_hft_mocker)
 		_hft_mocker->step_tick();
 
-	WTSLogger::debug("Last round ended");
+	VvTSLogger::debug("Last round ended");
 
 	if (_worker)
 	{
@@ -579,28 +579,28 @@ void WtBtRunner::stop()
 		_worker.reset();
 	}
 
-	WTSLogger::freeAllDynLoggers();
+	VvTSLogger::freeAllDynLoggers();
 
-	WTSLogger::debug("Backtest stopped");
+	VvTSLogger::debug("Backtest stopped");
 }
 
 void WtBtRunner::release()
 {
-	WTSLogger::stop();
+	VvTSLogger::stop();
 }
 
 void WtBtRunner::set_time_range(VvTUInt64 stime, VvTUInt64 etime)
 {
 	_replayer.set_time_range(stime, etime);
 
-	WTSLogger::info("Backtest time range is set to be [{},{}] mannually", stime, etime);
+	VvTSLogger::info("Backtest time range is set to be [{},{}] mannually", stime, etime);
 }
 
 void WtBtRunner::enable_tick(bool bEnabled /* = true */)
 {
 	_replayer.enable_tick(bEnabled);
 
-	WTSLogger::info("Tick data replaying is {}", bEnabled ? "enabled" : "disabled");
+	VvTSLogger::info("Tick data replaying is {}", bEnabled ? "enabled" : "disabled");
 }
 
 void WtBtRunner::clear_cache()

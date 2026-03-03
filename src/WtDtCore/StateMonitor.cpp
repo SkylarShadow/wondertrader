@@ -15,8 +15,8 @@
 #include "../Includes/VvTSSessionInfo.hpp"
 #include "../Includes/VvTSVariant.hpp"
 
-#include "../WTSTools/WTSBaseDataMgr.h"
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSBaseDataMgr.h"
+#include "../VvTSTools/VvTSLogger.h"
 #include "../VvTSUtils/VvTSCfgLoader.h"
 
 
@@ -32,21 +32,21 @@ StateMonitor::~StateMonitor()
 {
 }
 
-bool StateMonitor::initialize(const char* filename, WTSBaseDataMgr* bdMgr, DataManager* dtMgr)
+bool StateMonitor::initialize(const char* filename, VvTSBaseDataMgr* bdMgr, DataManager* dtMgr)
 {
 	_bd_mgr = bdMgr;
 	_dt_mgr = dtMgr;
 
 	if (!StdFile::exists(filename))
 	{
-		WTSLogger::error("State config file {} not exists", filename);
+		VvTSLogger::error("State config file {} not exists", filename);
 		return false;
 	}
 
 	VvTSVariant* config = VvTSCfgLoader::load_from_file(filename);
 	if (config == NULL)
 	{
-		WTSLogger::error("Loading state config failed");
+		VvTSLogger::error("Loading state config failed");
 		return false;
 	}
 
@@ -58,7 +58,7 @@ bool StateMonitor::initialize(const char* filename, WTSBaseDataMgr* bdMgr, DataM
 		VvTSSessionInfo* ssInfo = _bd_mgr->getSession(sid.c_str());
 		if (ssInfo == NULL)
 		{
-			WTSLogger::error("Trading session template [{}] not exists,state control rule skipped", sid);
+			VvTSLogger::error("Trading session template [{}] not exists,state control rule skipped", sid);
 			continue;
 		}
 
@@ -125,7 +125,7 @@ bool StateMonitor::initialize(const char* filename, WTSBaseDataMgr* bdMgr, DataM
 					(ssInfo->getOffsetMins() <= 0 && ! _bd_mgr->isTradingDate(pid, offDate))
 					)
 				{
-					WTSLogger::info("Instrument {} is in holiday", pid);
+					VvTSLogger::info("Instrument {} is in holiday", pid);
 				}
 			}
 		}
@@ -200,7 +200,7 @@ void StateMonitor::run()
 										)
 									{
 										ss_a << pid << ",";
-										WTSLogger::info("Instrument {} is in holiday", pid);
+										VvTSLogger::info("Instrument {} is in holiday", pid);
 									}
 									else
 									{
@@ -212,19 +212,19 @@ void StateMonitor::run()
 							}
 							else
 							{
-								WTSLogger::info("No corresponding instrument of trading session {}[{}], changed into holiday state", sInfo->name(), stateInfo->_session);
+								VvTSLogger::info("No corresponding instrument of trading session {}[{}], changed into holiday state", sInfo->name(), stateInfo->_session);
 								stateInfo->_state = SS_Holiday;
 							}
 
 							if(isAllHoliday)
 							{
-								WTSLogger::info("All instruments of trading session {}[{}] are in holiday, changed into holiday state", sInfo->name(), stateInfo->_session);
+								VvTSLogger::info("All instruments of trading session {}[{}] are in holiday, changed into holiday state", sInfo->name(), stateInfo->_session);
 								stateInfo->_state = SS_Holiday;
 							}
 							else if (offTime >= offCloseTime)
 							{
 								stateInfo->_state = SS_CLOSED;
-								WTSLogger::info("Trading session {}[{}] stopped receiving data", sInfo->name(), stateInfo->_session);
+								VvTSLogger::info("Trading session {}[{}] stopped receiving data", sInfo->name(), stateInfo->_session);
 							}
 							else if (aucStartTime != -1 && offTime >= aucStartTime)
 							{
@@ -235,7 +235,7 @@ void StateMonitor::run()
 									//	_dt_mgr->preloadRtCaches();
 									//}
 									stateInfo->_state = SS_RECEIVING;
-									WTSLogger::info("Trading session {}[{}] started receiving data", sInfo->name(), stateInfo->_session);
+									VvTSLogger::info("Trading session {}[{}] started receiving data", sInfo->name(), stateInfo->_session);
 								}
 								else
 								{
@@ -243,12 +243,12 @@ void StateMonitor::run()
 									if(offTime < sInfo->getCloseTime(true))
 									{
 										stateInfo->_state = SS_PAUSED;
-										WTSLogger::info("Trading session {}[{}] paused receiving data", sInfo->name(), stateInfo->_session);
+										VvTSLogger::info("Trading session {}[{}] paused receiving data", sInfo->name(), stateInfo->_session);
 									}
 									else
 									{//大于市场收盘时间,但是没有大于接收收盘时间,则还要继续接收,主要是要收结算价
 										stateInfo->_state = SS_RECEIVING;
-										WTSLogger::info("Trading session {}[{}] started receiving data", sInfo->name(), stateInfo->_session);
+										VvTSLogger::info("Trading session {}[{}] started receiving data", sInfo->name(), stateInfo->_session);
 									}
 									
 								}
@@ -256,7 +256,7 @@ void StateMonitor::run()
 							else if (offTime >= offInitTime)
 							{
 								stateInfo->_state = SS_INITIALIZED;
-								WTSLogger::info("Trading session {}[{}] initialized", sInfo->name(), stateInfo->_session);
+								VvTSLogger::info("Trading session {}[{}] initialized", sInfo->name(), stateInfo->_session);
 							}
 
 							
@@ -276,7 +276,7 @@ void StateMonitor::run()
 									//}
 									stateInfo->_state = SS_PAUSED;
 
-									WTSLogger::info("Trading session {}[{}] paused receiving data", sInfo->name(), stateInfo->_session);
+									VvTSLogger::info("Trading session {}[{}] paused receiving data", sInfo->name(), stateInfo->_session);
 								}
 								else
 								{
@@ -285,7 +285,7 @@ void StateMonitor::run()
 									//	_dt_mgr->preloadRtCaches();
 									//}
 									stateInfo->_state = SS_RECEIVING;
-									WTSLogger::info("Trading session {}[{}] started receiving data", sInfo->name(), stateInfo->_session);
+									VvTSLogger::info("Trading session {}[{}] started receiving data", sInfo->name(), stateInfo->_session);
 								}
 								
 							}
@@ -299,7 +299,7 @@ void StateMonitor::run()
 							{
 								stateInfo->_state = SS_CLOSED;
 
-								WTSLogger::info("Trading session {}[{}] stopped receiving data", sInfo->name(), stateInfo->_session);
+								VvTSLogger::info("Trading session {}[{}] stopped receiving data", sInfo->name(), stateInfo->_session);
 							}
 							else if (offTime >= sInfo->getAuctionStartTime(true))
 							{
@@ -313,7 +313,7 @@ void StateMonitor::run()
 										//}
 										stateInfo->_state = SS_PAUSED;
 
-										WTSLogger::info("Trading session {}[{}] paused receiving data", sInfo->name(), stateInfo->_session);
+										VvTSLogger::info("Trading session {}[{}] paused receiving data", sInfo->name(), stateInfo->_session);
 									}
 								}
 								else
@@ -343,7 +343,7 @@ void StateMonitor::run()
 										(sInfo->getOffsetMins() <= 0 && ! _bd_mgr->isTradingDate(pid, offDate))
 										)
 									{
-										WTSLogger::info("Instrument {} is in holiday", pid);
+										VvTSLogger::info("Instrument {} is in holiday", pid);
 									}
 									else
 									{
@@ -358,12 +358,12 @@ void StateMonitor::run()
 								if (stateInfo->isInSections(offTime))
 								{
 									stateInfo->_state = SS_RECEIVING;
-									WTSLogger::info("Trading session {}[{}] continued to receive data", sInfo->name(), stateInfo->_session);
+									VvTSLogger::info("Trading session {}[{}] continued to receive data", sInfo->name(), stateInfo->_session);
 								}
 							}
 							else
 							{
-								WTSLogger::info("All instruments of trading session {}[{}] are in holiday, changed into holiday state", sInfo->name(), stateInfo->_session);
+								VvTSLogger::info("All instruments of trading session {}[{}] are in holiday, changed into holiday state", sInfo->name(), stateInfo->_session);
 								stateInfo->_state = SS_Holiday;
 							}
 						}
@@ -378,7 +378,7 @@ void StateMonitor::run()
 								{
 									stateInfo->_state = SS_PROCING;
 
-									WTSLogger::info("Trading session {}[{}] started processing closing task", sInfo->name(), stateInfo->_session);
+									VvTSLogger::info("Trading session {}[{}] started processing closing task", sInfo->name(), stateInfo->_session);
 									_dt_mgr->transHisData(stateInfo->_session);
 								}
 								else
@@ -392,7 +392,7 @@ void StateMonitor::run()
 								{
 									stateInfo->_state = SS_PAUSED;
 
-									WTSLogger::info("Trading session {}[{}] paused receiving data", sInfo->name(), stateInfo->_session);
+									VvTSLogger::info("Trading session {}[{}] paused receiving data", sInfo->name(), stateInfo->_session);
 								}
 							}
 						}
@@ -432,7 +432,7 @@ void StateMonitor::run()
 								if(!isAllHoliday)
 								{
 									stateInfo->_state = SS_ORIGINAL;
-									WTSLogger::info("Trading session {}[{}] state reset", sInfo->name(), stateInfo->_session);
+									VvTSLogger::info("Trading session {}[{}] state reset", sInfo->name(), stateInfo->_session);
 								}
 							}
 						}

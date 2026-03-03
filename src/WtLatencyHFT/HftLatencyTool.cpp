@@ -15,7 +15,7 @@
 #include "../Includes/ITraderApi.h"
 #include "../Includes/VvTSContractInfo.hpp"
 
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 #include "../VvTSUtils/VvTSCfgLoader.h"
 
 #include "../Share/StrUtil.hpp"
@@ -139,7 +139,7 @@ namespace hft
 			}
 			auto total = ticker.nano_seconds();
 			double t2t = total * 1.0 / times;
-			WTSLogger::warn("{} ticks simulated in {:.0f} ns, HftEngine Innner Latency: {:.3f} ns", times, total*1.0, t2t);
+			VvTSLogger::warn("{} ticks simulated in {:.0f} ns, HftEngine Innner Latency: {:.3f} ns", times, total*1.0, t2t);
 		}
 
 	public:
@@ -220,12 +220,12 @@ namespace hft
 
 	bool HftLatencyTool::init()
 	{
-		WTSLogger::init("logcfg.yaml");
+		VvTSLogger::init("logcfg.yaml");
 
 		VvTSVariant* _config = VvTSCfgLoader::load_from_file("config.yaml");
 		if (_config == NULL)
 		{
-			WTSLogger::log_raw(LL_ERROR, "Loading config file config.yaml failed");
+			VvTSLogger::log_raw(LL_ERROR, "Loading config file config.yaml failed");
 			return false;
 		}
 
@@ -270,16 +270,16 @@ namespace hft
 		if (cfgBF->get("hot"))
 		{
 			_hot_mgr.loadHots(cfgBF->getCString("hot"));
-			WTSLogger::log_raw(LL_INFO, "Hot rules loades");
+			VvTSLogger::log_raw(LL_INFO, "Hot rules loades");
 		}
 
 		_act_mgr.init("actpolicy.yaml");
 
 		_times = _config->getUInt32("times");
-		WTSLogger::warn("{} ticks will be simulated", _times);
+		VvTSLogger::warn("{} ticks will be simulated", _times);
 
 		_core = _config->getUInt32("core");
-		WTSLogger::warn("Testing thread will be bind to core {}", _core);
+		VvTSLogger::warn("Testing thread will be bind to core {}", _core);
 
 		initEngine(_config->get("env"));
 		initModules();
@@ -305,7 +305,7 @@ namespace hft
 
 	bool HftLatencyTool::initEngine(VvTSVariant* cfg)
 	{
-		WTSLogger::warn("Trading enviroment initialzied with engine: HFT");
+		VvTSLogger::warn("Trading enviroment initialzied with engine: HFT");
 		_engine.init(cfg, &_bd_mgr, &_dt_mgr, &_hot_mgr, NULL);
 		_engine.set_adapter_mgr(&_traders);
 
@@ -338,7 +338,7 @@ namespace hft
 		{
 			if (!CpuHelper::bind_core(_core - 1))
 			{
-				WTSLogger::error("Binding to core {} failed", _core);
+				VvTSLogger::error("Binding to core {} failed", _core);
 			}
 		}
 

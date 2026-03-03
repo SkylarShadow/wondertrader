@@ -13,9 +13,9 @@
 #include "../WtBtCore/HftMocker.h"
 #include "../WtBtCore/SelMocker.h"
 #include "../WtBtCore/UftMocker.h"
-#include "../WtBtCore/WtHelper.h"
+#include "../WtBtCore/VvtHelper.h"
 
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 #include "../VvTSUtils/SignalHook.hpp"
 
 #include "../VvTSUtils/VvTSCfgLoader.h"
@@ -30,7 +30,7 @@
 int main(int argc, char* argv[])
 {
 #ifdef _MSC_VER
-    CMiniDumper::Enable("WtBtRunner.exe", true, WtHelper::getCWD().c_str());
+    CMiniDumper::Enable("WtBtRunner.exe", true, VvtHelper::getCWD().c_str());
 #endif
 
 	cppcli::Option opt(argc, argv);
@@ -50,10 +50,10 @@ int main(int argc, char* argv[])
 		filename = lParam->get<std::string>();
 	else
 		filename = "./logcfgdt.yaml";
-	WTSLogger::init(filename.c_str());
+	VvTSLogger::init(filename.c_str());
 
 	install_signal_hooks([](const char* message) {
-		WTSLogger::error(message);
+		VvTSLogger::error(message);
 	});
 
 	if (cParam->exists())
@@ -70,7 +70,7 @@ int main(int argc, char* argv[])
 	VvTSVariant* cfg = VvTSCfgLoader::load_from_file(filename.c_str());
 	if (cfg == NULL)
 	{
-		WTSLogger::info("Loading configuration file {} failed", filename);
+		VvTSLogger::info("Loading configuration file {} failed", filename);
 		return -1;
 	}
 
@@ -131,5 +131,5 @@ int main(int argc, char* argv[])
 	printf("press enter key to exit\r\n");
 	getchar();
 
-	WTSLogger::stop();
+	VvTSLogger::stop();
 }

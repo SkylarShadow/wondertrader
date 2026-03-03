@@ -184,7 +184,7 @@
     <ProjectReference Include="..\WtCore\WtCore.vcxproj">
       <Project>{c2086cb3-f8f7-455f-83c8-b806b58e52a8}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\WTSTools\WTSTools.vcxproj">
+    <ProjectReference Include="..\VvTSTools\VvTSTools.vcxproj">
       <Project>{8b249955-de56-41a3-a904-21dbbe40ab34}</Project>
     </ProjectReference>
   </ItemGroup>

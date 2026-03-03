@@ -8,7 +8,7 @@
  * \brief 
  */
 #include "EventNotifier.h"
-#include "WtHelper.h"
+#include "VvtHelper.h"
 
 #include "../Share/TimeUtils.hpp"
 #include "../Share/DLLHelper.hpp"
@@ -17,7 +17,7 @@
 #include "../Includes/VvTSCollection.hpp"
 #include "../Includes/VvTSVariant.hpp"
 
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 #include <rapidjson/document.h>
 #include <rapidjson/prettywriter.h>
@@ -60,15 +60,15 @@ bool EventNotifier::init(VvTSVariant* cfg)
 	_url = cfg->getCString("url");
 	std::string module = DLLHelper::wrap_module("WtMsgQue", "lib");
 	//先看工作目录下是否有对应模块
-	std::string dllpath = WtHelper::getCWD() + module;
+	std::string dllpath = VvtHelper::getCWD() + module;
 	//如果没有,则再看模块目录,即dll同目录下
 	if (!StdFile::exists(dllpath.c_str()))
-		dllpath = WtHelper::getInstDir() + module;
+		dllpath = VvtHelper::getInstDir() + module;
 
 	DllHandle dllInst = DLLHelper::load_library(dllpath.c_str());
 	if (dllInst == NULL)
 	{
-		WTSLogger::error("MQ module {} loading failed", dllpath.c_str());
+		VvTSLogger::error("MQ module {} loading failed", dllpath.c_str());
 		return false;
 	}
 
@@ -76,7 +76,7 @@ bool EventNotifier::init(VvTSVariant* cfg)
 	if (_creator == NULL)
 	{
 		DLLHelper::free_library(dllInst);
-		WTSLogger::error("MQ module {} is not compatible", dllpath.c_str());
+		VvTSLogger::error("MQ module {} is not compatible", dllpath.c_str());
 		return false;
 	}
 
@@ -90,7 +90,7 @@ bool EventNotifier::init(VvTSVariant* cfg)
 	//创建一个MQServer
 	_mq_sid = _creator(_url.c_str());
 
-	WTSLogger::info("EventNotifier initialized with channel {}", _url.c_str());
+	VvTSLogger::info("EventNotifier initialized with channel {}", _url.c_str());
 
 	if (_worker == NULL)
 	{

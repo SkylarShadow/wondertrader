@@ -4,7 +4,7 @@
 
 #include "../Share/TimeUtils.hpp"
 #include "../Share/decimal.h"
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 #define PRICE_DOUBLE_TO_INT_P(x) ((int32_t)((x)*10000.0 + 0.5))
 #define PRICE_DOUBLE_TO_INT_N(x) ((int32_t)((x)*10000.0 - 0.5))
@@ -58,7 +58,7 @@ void MatchEngine::match_orders(VvTSTickData* curTick, OrderIDs& to_erase)
 
 			to_erase.emplace_back(localid);
 
-			WTSLogger::info("订单{}已撤销, 剩余数量: {}", localid, ordInfo._left*(ordInfo._buy ? 1 : -1));
+			VvTSLogger::info("订单{}已撤销, 剩余数量: {}", localid, ordInfo._left*(ordInfo._buy ? 1 : -1));
 			ordInfo._left = 0;
 			continue;
 		}

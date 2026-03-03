@@ -27,7 +27,7 @@
     <ClInclude Include="WtDataManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="WtHelper.h">
+    <ClInclude Include="VvtHelper.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\mdump.h">
@@ -47,7 +47,7 @@
     <ClCompile Include="WtDataManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="WtHelper.cpp">
+    <ClCompile Include="VvtHelper.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\Common\mdump.cpp">

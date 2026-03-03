@@ -4,7 +4,7 @@
 #include "../Share/decimal.h"
 #include "../Includes/VvTSVariant.hpp"
 
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 USING_NS_VVTP;
 
@@ -36,7 +36,7 @@ void WtExecuterMgr::set_positions(vvt_hashmap<std::string, double> target_pos)
 				if (!decimal::eq(desVol, oldVol))
 				{
 					//输出日志
-					WTSLogger::info("[Filters] {} target position reset by code filter: {} -> {}", stdCode.c_str(), oldVol, desVol);
+					VvTSLogger::info("[Filters] {} target position reset by code filter: {} -> {}", stdCode.c_str(), oldVol, desVol);
 				}
 
 				des_port[stdCode] = desVol;
@@ -44,7 +44,7 @@ void WtExecuterMgr::set_positions(vvt_hashmap<std::string, double> target_pos)
 			else
 			{
 				//输出日志
-				WTSLogger::info("[Filters] {} target position ignored by filter", stdCode.c_str());
+				VvTSLogger::info("[Filters] {} target position ignored by filter", stdCode.c_str());
 			}
 		}
 
@@ -57,7 +57,7 @@ void WtExecuterMgr::set_positions(vvt_hashmap<std::string, double> target_pos)
 
 		if (_filter_mgr && _filter_mgr->is_filtered_by_executer(executer->name()))
 		{
-			WTSLogger::info("[Filters] Executer {} is filtered, all signals will be ignored", executer->name());
+			VvTSLogger::info("[Filters] Executer {} is filtered, all signals will be ignored", executer->name());
 			continue;
 		}
 		executer->set_position(target_pos);
@@ -75,7 +75,7 @@ void WtExecuterMgr::handle_pos_change(const char* stdCode, double targetPos, dou
 			if (!decimal::eq(targetPos, oldVol))
 			{
 				//输出日志
-				WTSLogger::info("[Filters] {} target position reset by filter: {} -> {}", stdCode, oldVol, targetPos);
+				VvTSLogger::info("[Filters] {} target position reset by filter: {} -> {}", stdCode, oldVol, targetPos);
 				//差量也要重算
 				diffPos += (targetPos - oldVol);
 			}
@@ -83,7 +83,7 @@ void WtExecuterMgr::handle_pos_change(const char* stdCode, double targetPos, dou
 		else
 		{
 			//输出日志
-			WTSLogger::info("[Filters] {} target position ignored by filter", stdCode);
+			VvTSLogger::info("[Filters] {} target position ignored by filter", stdCode);
 			return;
 		}
 	}
@@ -94,7 +94,7 @@ void WtExecuterMgr::handle_pos_change(const char* stdCode, double targetPos, dou
 
 		if (_filter_mgr && _filter_mgr->is_filtered_by_executer(executer->name()))
 		{
-			WTSLogger::info("[Filters] All signals to executer {} are ignored by executer filter", executer->name());
+			VvTSLogger::info("[Filters] All signals to executer {} are ignored by executer filter", executer->name());
 			continue;
 		}
 
@@ -163,7 +163,7 @@ void WtExecuterMgr::commit_cached_targets(double scale /* = 1.0 */)
 					if (!decimal::eq(desVol, oldVol))
 					{
 						//输出日志
-						WTSLogger::info("[Filters] {} target position reset by code filter: {} -> {}", stdCode.c_str(), oldVol, desVol);
+						VvTSLogger::info("[Filters] {} target position reset by code filter: {} -> {}", stdCode.c_str(), oldVol, desVol);
 					}
 
 					des_port[stdCode] = desVol;
@@ -171,7 +171,7 @@ void WtExecuterMgr::commit_cached_targets(double scale /* = 1.0 */)
 				else
 				{
 					//输出日志
-					WTSLogger::info("[Filters] {} target position ignored by filter", stdCode.c_str());
+					VvTSLogger::info("[Filters] {} target position ignored by filter", stdCode.c_str());
 				}
 			}
 
@@ -185,7 +185,7 @@ void WtExecuterMgr::commit_cached_targets(double scale /* = 1.0 */)
 		ExecCmdPtr& executer = (ExecCmdPtr&)e.second;
 		if (_filter_mgr && _filter_mgr->is_filtered_by_executer(executer->name()))
 		{
-			WTSLogger::info("[Filters] Executer {} is filtered, all signals will be ignored", executer->name());
+			VvTSLogger::info("[Filters] Executer {} is filtered, all signals will be ignored", executer->name());
 			continue;
 		}
 
@@ -223,7 +223,7 @@ bool WtExecuterMgr::load_router_rules(VvTSVariant* config)
 			{
 				const char* execId = itemExec->get(k)->asCString();
 				_router_rules[straName].insert(execId);
-				WTSLogger::info("Signal of strategy {} will be routed to executer {}", straName, execId);
+				VvTSLogger::info("Signal of strategy {} will be routed to executer {}", straName, execId);
 				_routed_executers.insert(execId);
 			}
 		}
@@ -231,12 +231,12 @@ bool WtExecuterMgr::load_router_rules(VvTSVariant* config)
 		{
 			const char* execId = itemExec->asCString();
 			_router_rules[straName].insert(execId);
-			WTSLogger::info("Signal of strategy {} will be routed to executer {}", straName, execId);
+			VvTSLogger::info("Signal of strategy {} will be routed to executer {}", straName, execId);
 			_routed_executers.insert(execId);
 		}
 	}
 
-	WTSLogger::info("{} router rules loaded", _router_rules.size());
+	VvTSLogger::info("{} router rules loaded", _router_rules.size());
 
 	return true;
 }

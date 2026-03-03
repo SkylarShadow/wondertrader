@@ -96,7 +96,7 @@ endif()
 
 #basic libraries
 add_subdirectory(VvTSUtils)
-add_subdirectory(WTSTools)
+add_subdirectory(VvTSTools)
 
 #contract Loade through ctp channel
 add_subdirectory(CTPLoader)

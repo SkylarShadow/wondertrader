@@ -8,7 +8,7 @@
  * \brief 
  */
 #include "ParserAdapter.h"
-#include "WtHelper.h"
+#include "VvtHelper.h"
 #include "WtDtRunner.h"
 
 #include "../Share/StrUtil.hpp"
@@ -21,13 +21,13 @@
 #include "../Includes/VvTSDataDef.hpp"
 #include "../Includes/VvTSVariant.hpp"
 
-#include "../WTSTools/WTSBaseDataMgr.h"
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSBaseDataMgr.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 
 //////////////////////////////////////////////////////////////////////////
 //ParserAdapter
-ParserAdapter::ParserAdapter(WTSBaseDataMgr * bgMgr, WtDtRunner* runner)
+ParserAdapter::ParserAdapter(VvTSBaseDataMgr * bgMgr, WtDtRunner* runner)
 	: _parser_api(NULL)
 	, _remover(NULL)
 	, _stopped(false)
@@ -71,7 +71,7 @@ bool ParserAdapter::initExt(const char* id, IParserApi* api)
 		}
 		else
 		{
-			WTSLogger::log_dyn("parser", _id.c_str(), LL_ERROR, "[{}] Parser initializing failed: api initializing failed...", _id.c_str());
+			VvTSLogger::log_dyn("parser", _id.c_str(), LL_ERROR, "[{}] Parser initializing failed: api initializing failed...", _id.c_str());
 		}
 	}
 
@@ -101,7 +101,7 @@ bool ParserAdapter::init(const char* id, VvTSVariant* cfg)
 
 		if (!StdFile::exists(module.c_str()))
 		{
-			module = WtHelper::get_module_dir();
+			module = VvtHelper::get_module_dir();
 			module += "parsers/";
 			module += DLLHelper::wrap_module(cfg->getCString("module"), "lib");
 		}
@@ -109,25 +109,25 @@ bool ParserAdapter::init(const char* id, VvTSVariant* cfg)
 		DllHandle hInst = DLLHelper::load_library(module.c_str());
 		if (hInst == NULL)
 		{
-			WTSLogger::log_dyn("parser", _id.c_str(), LL_ERROR, "[{}] Parser module {} loading failed", _id.c_str(), module.c_str());
+			VvTSLogger::log_dyn("parser", _id.c_str(), LL_ERROR, "[{}] Parser module {} loading failed", _id.c_str(), module.c_str());
 			return false;
 		}
 		else
 		{
-			WTSLogger::log_dyn("parser", _id.c_str(), LL_INFO, "[{}] Parser module {} loaded", _id.c_str(), module.c_str());
+			VvTSLogger::log_dyn("parser", _id.c_str(), LL_INFO, "[{}] Parser module {} loaded", _id.c_str(), module.c_str());
 		}
 
 		FuncCreateParser pFuncCreateParser = (FuncCreateParser)DLLHelper::get_symbol(hInst, "createParser");
 		if (NULL == pFuncCreateParser)
 		{
-			WTSLogger::log_dyn("parser", _id.c_str(), LL_FATAL, "[{}] Entrance function createParser not found", _id.c_str());
+			VvTSLogger::log_dyn("parser", _id.c_str(), LL_FATAL, "[{}] Entrance function createParser not found", _id.c_str());
 			return false;
 		}
 
 		_parser_api = pFuncCreateParser();
 		if (NULL == _parser_api)
 		{
-			WTSLogger::log_dyn("parser", _id.c_str(), LL_FATAL, "[{}] Creating parser api failed", _id.c_str());
+			VvTSLogger::log_dyn("parser", _id.c_str(), LL_FATAL, "[{}] Creating parser api failed", _id.c_str());
 			return false;
 		}
 
@@ -219,7 +219,7 @@ bool ParserAdapter::init(const char* id, VvTSVariant* cfg)
 
 					ayContract->release();
 
-					WTSLogger::log_dyn("parser", _id.c_str(), LL_INFO, "[{}] {} contracts of {} added to sublist...", _id.c_str(), cnt, exchg);
+					VvTSLogger::log_dyn("parser", _id.c_str(), LL_INFO, "[{}] {} contracts of {} added to sublist...", _id.c_str(), cnt, exchg);
 				}
 			}
 			else
@@ -240,12 +240,12 @@ bool ParserAdapter::init(const char* id, VvTSVariant* cfg)
 		}
 		else
 		{
-			WTSLogger::log_dyn("parser", _id.c_str(), LL_ERROR, "[{}] Parser initializing failed: api initializing failed...", _id.c_str());
+			VvTSLogger::log_dyn("parser", _id.c_str(), LL_ERROR, "[{}] Parser initializing failed: api initializing failed...", _id.c_str());
 		}
 	}
 	else
 	{
-		WTSLogger::log_dyn("parser", _id.c_str(), LL_ERROR, "[{}] Parser initializing failed: creating api failed...", _id.c_str());
+		VvTSLogger::log_dyn("parser", _id.c_str(), LL_ERROR, "[{}] Parser initializing failed: creating api failed...", _id.c_str());
 	}
 
 	return true;
@@ -336,7 +336,7 @@ void ParserAdapter::handleParserLog( VvTSLogLevel ll, const char* message)
 	if (_stopped)
 		return;
 
-	WTSLogger::log_raw_by_cat("parser", ll, message);
+	VvTSLogger::log_raw_by_cat("parser", ll, message);
 }
 
 IBaseDataMgr* ParserAdapter::getBaseDataMgr()
@@ -365,7 +365,7 @@ bool ParserAdapterMgr::addAdapter(const char* id, ParserAdapterPtr& adapter)
 	auto it = _adapters.find(id);
 	if (it != _adapters.end())
 	{
-		WTSLogger::error(" Same name of parsers: %s", id);
+		VvTSLogger::error(" Same name of parsers: %s", id);
 		return false;
 	}
 
@@ -392,5 +392,5 @@ void ParserAdapterMgr::run()
 		it->second->run();
 	}
 
-	WTSLogger::info("{} parsers started", _adapters.size());
+	VvTSLogger::info("{} parsers started", _adapters.size());
 }

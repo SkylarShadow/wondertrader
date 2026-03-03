@@ -9,7 +9,7 @@
  */
 #include "WtDtMgr.h"
 #include "WtEngine.h"
-#include "WtHelper.h"
+#include "VvtHelper.h"
 
 #include "../Share/StrUtil.hpp"
 #include "../Share/CodeHelper.hpp"
@@ -17,11 +17,11 @@
 #include "../Includes/VvTSDataDef.hpp"
 #include "../Includes/VvTSVariant.hpp"
 
-#include "../WTSTools/WTSLogger.h"
-#include "../WTSTools/WTSDataFactory.h"
+#include "../VvTSTools/VvTSLogger.h"
+#include "../VvTSTools/VvTSDataFactory.h"
 
 
-WTSDataFactory g_dataFact;
+VvTSDataFactory g_dataFact;
 
 WtDtMgr::WtDtMgr()
 	: _reader(NULL)
@@ -54,21 +54,21 @@ bool WtDtMgr::initStore(VvTSVariant* cfg)
 
 	std::string module = cfg->getCString("module");
 	if (module.empty())
-		module = WtHelper::getInstDir() + DLLHelper::wrap_module("WtDataStorage");
+		module = VvtHelper::getInstDir() + DLLHelper::wrap_module("WtDataStorage");
 	else
-		module = WtHelper::getInstDir() + DLLHelper::wrap_module(module.c_str());
+		module = VvtHelper::getInstDir() + DLLHelper::wrap_module(module.c_str());
 
 	DllHandle hInst = DLLHelper::load_library(module.c_str());
 	if(hInst == NULL)
 	{
-		WTSLogger::error("Loading data reader module {} failed", module.c_str());
+		VvTSLogger::error("Loading data reader module {} failed", module.c_str());
 		return false;
 	}
 
 	FuncCreateDataReader funcCreator = (FuncCreateDataReader)DLLHelper::get_symbol(hInst, "createDataReader");
 	if(funcCreator == NULL)
 	{
-		WTSLogger::error("Loading data reader module {} failed, entrance function createDataReader not found", module.c_str());
+		VvTSLogger::error("Loading data reader module {} failed, entrance function createDataReader not found", module.c_str());
 		DLLHelper::free_library(hInst);
 		return false;
 	}
@@ -76,7 +76,7 @@ bool WtDtMgr::initStore(VvTSVariant* cfg)
 	_reader = funcCreator();
 	if(_reader == NULL)
 	{
-		WTSLogger::error("Creating instance of data reader module {} failed", module.c_str());
+		VvTSLogger::error("Creating instance of data reader module {} failed", module.c_str());
 		DLLHelper::free_library(hInst);
 		return false;
 	}
@@ -94,9 +94,9 @@ bool WtDtMgr::init(VvTSVariant* cfg, WtEngine* engine, bool bForceCache /* = fal
 
 	_force_cache = bForceCache;
 
-	WTSLogger::info("Resampled bars will be aligned by section: {}", _align_by_section?"yes":" no");
+	VvTSLogger::info("Resampled bars will be aligned by section: {}", _align_by_section?"yes":" no");
 
-	WTSLogger::info("Force to cache bars: {}", _force_cache ? "yes" : " no");
+	VvTSLogger::info("Force to cache bars: {}", _force_cache ? "yes" : " no");
 
 	return initStore(cfg->get("store"));
 }
@@ -106,7 +106,7 @@ void WtDtMgr::on_all_bar_updated(uint32_t updateTime)
 	if (_bar_notifies.empty())
 		return;
 
-	WTSLogger::debug("All bars updated, on_bar will be triggered");
+	VvTSLogger::debug("All bars updated, on_bar will be triggered");
 
 	for (const NotifyItem& item : _bar_notifies)
 	{
@@ -143,7 +143,7 @@ uint32_t WtDtMgr::get_secs()
 
 void WtDtMgr::reader_log(VvTSLogLevel ll, const char* message)
 {
-	WTSLogger::log_raw(ll, message);
+	VvTSLogger::log_raw(ll, message);
 }
 
 void WtDtMgr::on_bar(const char* code, VvTSKlinePeriod period, VvTSBarStruct* newBar)
@@ -454,7 +454,7 @@ VvTSKlineSlice* WtDtMgr::get_kline_slice(const char* stdCode, VvTSKlinePeriod pe
 		{
 			_bars_cache->add(key, kData, false);
 			if(times != 1)
-				WTSLogger::debug("{} bars of {} resampled every {} bars: {} -> {}", 
+				VvTSLogger::debug("{} bars of {} resampled every {} bars: {} -> {}", 
 					PERIOD_NAME[period], stdCode, times, realCount, kData->size());
 		}
 	}

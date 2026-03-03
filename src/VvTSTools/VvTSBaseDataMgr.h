@@ -1,5 +1,5 @@
 ﻿/*!
- * \file WTSBaseDataMgr.h
+ * \file VvTSBaseDataMgr.h
  * \project	WonderTrader
  *
  * \author Wesley
@@ -16,20 +16,20 @@ USING_NS_VVTP;
 
 typedef vvt_hashmap<std::string, TradingDayTpl>	TradingDayTplMap;
 
-typedef VvTSHashMap<std::string>		WTSContractList;
-typedef VvTSHashMap<std::string>		WTSExchgContract;
-typedef VvTSHashMap<std::string>		WTSContractMap;
+typedef VvTSHashMap<std::string>		VvTSContractList;
+typedef VvTSHashMap<std::string>		VvTSExchgContract;
+typedef VvTSHashMap<std::string>		VvTSContractMap;
 
-typedef VvTSHashMap<std::string>		WTSSessionMap;
-typedef VvTSHashMap<std::string>		WTSCommodityMap;
+typedef VvTSHashMap<std::string>		VvTSSessionMap;
+typedef VvTSHashMap<std::string>		VvTSCommodityMap;
 
 typedef vvt_hashmap<std::string, CodeSet> SessionCodeMap;
 
-class WTSBaseDataMgr : public IBaseDataMgr
+class VvTSBaseDataMgr : public IBaseDataMgr
 {
 public:
-	WTSBaseDataMgr();
-	~WTSBaseDataMgr();
+	VvTSBaseDataMgr();
+	~VvTSBaseDataMgr();
 
 public:
 	virtual VvTSCommodityInfo*	getCommodity(const char* stdPID) override;
@@ -72,9 +72,9 @@ private:
 
 	SessionCodeMap		m_mapSessionCode;
 
-	WTSExchgContract*	m_mapExchgContract;
-	WTSSessionMap*		m_mapSessions;
-	WTSCommodityMap*	m_mapCommodities;
-	WTSContractMap*		m_mapContracts;
+	VvTSExchgContract*	m_mapExchgContract;
+	VvTSSessionMap*		m_mapSessions;
+	VvTSCommodityMap*	m_mapCommodities;
+	VvTSContractMap*		m_mapContracts;
 };
 

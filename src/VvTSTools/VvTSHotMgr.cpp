@@ -1,5 +1,5 @@
 ﻿/*!
- * \file WTSHotMgr.cpp
+ * \file VvTSHotMgr.cpp
  * \project	WonderTrader
  *
  * \author Wesley
@@ -7,7 +7,7 @@
  * 
  * \brief 
  */
-#include "WTSHotMgr.h"
+#include "VvTSHotMgr.h"
 #include "../VvTSUtils/VvTSCfgLoader.h"
 
 #include "../Includes/VvTSSwitchItem.hpp"
@@ -20,18 +20,18 @@
 #include "../Share/decimal.h"
 
 
-WTSHotMgr::WTSHotMgr()
+VvTSHotMgr::VvTSHotMgr()
 	: m_mapCustRules(NULL)
 	, m_bInitialized(false)
 {
 }
 
 
-WTSHotMgr::~WTSHotMgr()
+VvTSHotMgr::~VvTSHotMgr()
 {
 }
 
-const char* WTSHotMgr::getRuleTag(const char* stdCode)
+const char* VvTSHotMgr::getRuleTag(const char* stdCode)
 {
 	if (m_mapCustRules == NULL)
 		return "";
@@ -58,16 +58,16 @@ const char* WTSHotMgr::getRuleTag(const char* stdCode)
 	return it->first.c_str();
 }
 
-double WTSHotMgr::getRuleFactor(const char* ruleTag, const char* fullPid, uint32_t uDate /* = 0 */ )
+double VvTSHotMgr::getRuleFactor(const char* ruleTag, const char* fullPid, uint32_t uDate /* = 0 */ )
 {
 	if (m_mapCustRules == NULL)
 		return 1.0;
 
-	WTSProductHotMap* prodMap = (WTSProductHotMap*)m_mapCustRules->get(ruleTag);
+	VvTSProductHotMap* prodMap = (VvTSProductHotMap*)m_mapCustRules->get(ruleTag);
 	if (prodMap == NULL)
 		return 1.0;
 
-	WTSDateHotMap* dtMap = STATIC_CONVERT(prodMap->get(fullPid), WTSDateHotMap*);
+	VvTSDateHotMap* dtMap = STATIC_CONVERT(prodMap->get(fullPid), VvTSDateHotMap*);
 	if (dtMap == NULL)
 		return 1.0;
 
@@ -114,14 +114,14 @@ double WTSHotMgr::getRuleFactor(const char* ruleTag, const char* fullPid, uint32
 }
 
 #pragma region "次主力接口"
-bool WTSHotMgr::loadHots(const char* filename)
+bool VvTSHotMgr::loadHots(const char* filename)
 {
 	loadCustomRules("HOT", filename);
 	m_bInitialized = true;
 	return true;
 }
 
-const char* WTSHotMgr::getPrevRawCode(const char* exchg, const char* pid, uint32_t dt)
+const char* VvTSHotMgr::getPrevRawCode(const char* exchg, const char* pid, uint32_t dt)
 {
 	static thread_local char fullPid[64] = { 0 };
 	fmtutil::format_to(fullPid, "{}.{}", exchg, pid);
@@ -129,7 +129,7 @@ const char* WTSHotMgr::getPrevRawCode(const char* exchg, const char* pid, uint32
 	return getPrevCustomRawCode("HOT", fullPid, dt);
 }
 
-const char* WTSHotMgr::getRawCode(const char* exchg, const char* pid, uint32_t dt)
+const char* VvTSHotMgr::getRawCode(const char* exchg, const char* pid, uint32_t dt)
 {
 	static thread_local char fullPid[64] = { 0 };
 	fmtutil::format_to(fullPid, "{}.{}", exchg, pid);
@@ -137,7 +137,7 @@ const char* WTSHotMgr::getRawCode(const char* exchg, const char* pid, uint32_t d
 	return getCustomRawCode("HOT", fullPid, dt);
 }
 
-bool WTSHotMgr::isHot(const char* exchg, const char* rawCode, uint32_t dt)
+bool VvTSHotMgr::isHot(const char* exchg, const char* rawCode, uint32_t dt)
 {
 	static thread_local char fullCode[64] = { 0 };
 	fmtutil::format_to(fullCode, "{}.{}", exchg, rawCode);
@@ -145,7 +145,7 @@ bool WTSHotMgr::isHot(const char* exchg, const char* rawCode, uint32_t dt)
 	return isCustomHot("HOT", fullCode, dt);
 }
 
-bool WTSHotMgr::splitHotSecions(const char* exchg, const char* pid, uint32_t sDt, uint32_t eDt, HotSections& sections)
+bool VvTSHotMgr::splitHotSecions(const char* exchg, const char* pid, uint32_t sDt, uint32_t eDt, HotSections& sections)
 {
 	static thread_local char fullPid[64] = { 0 };
 	fmtutil::format_to(fullPid, "{}.{}", exchg, pid);
@@ -155,12 +155,12 @@ bool WTSHotMgr::splitHotSecions(const char* exchg, const char* pid, uint32_t sDt
 #pragma endregion "主力接口"
 
 #pragma region "次主力接口"
-bool WTSHotMgr::loadSeconds(const char* filename)
+bool VvTSHotMgr::loadSeconds(const char* filename)
 {
 	return loadCustomRules("2ND", filename);
 }
 
-const char* WTSHotMgr::getPrevSecondRawCode(const char* exchg, const char* pid, uint32_t dt)
+const char* VvTSHotMgr::getPrevSecondRawCode(const char* exchg, const char* pid, uint32_t dt)
 {
 	static thread_local char fullPid[64] = { 0 };
 	fmtutil::format_to(fullPid, "{}.{}", exchg, pid);
@@ -168,7 +168,7 @@ const char* WTSHotMgr::getPrevSecondRawCode(const char* exchg, const char* pid, 
 	return getPrevCustomRawCode("2ND", fullPid, dt);
 }
 
-const char* WTSHotMgr::getSecondRawCode(const char* exchg, const char* pid, uint32_t dt)
+const char* VvTSHotMgr::getSecondRawCode(const char* exchg, const char* pid, uint32_t dt)
 {
 	static thread_local char fullPid[64] = { 0 };
 	fmtutil::format_to(fullPid, "{}.{}", exchg, pid);
@@ -176,7 +176,7 @@ const char* WTSHotMgr::getSecondRawCode(const char* exchg, const char* pid, uint
 	return getCustomRawCode("2ND", fullPid, dt);
 }
 
-bool WTSHotMgr::isSecond(const char* exchg, const char* rawCode, uint32_t dt)
+bool VvTSHotMgr::isSecond(const char* exchg, const char* rawCode, uint32_t dt)
 {
 	static thread_local char fullCode[64] = { 0 };
 	fmtutil::format_to(fullCode, "{}.{}", exchg, rawCode);
@@ -184,7 +184,7 @@ bool WTSHotMgr::isSecond(const char* exchg, const char* rawCode, uint32_t dt)
 	return isCustomHot("2NDT", fullCode, dt);
 }
 
-bool WTSHotMgr::splitSecondSecions(const char* exchg, const char* pid, uint32_t sDt, uint32_t eDt, HotSections& sections)
+bool VvTSHotMgr::splitSecondSecions(const char* exchg, const char* pid, uint32_t sDt, uint32_t eDt, HotSections& sections)
 {
 	static thread_local char fullPid[64] = { 0 };
 	fmtutil::format_to(fullPid, "{}.{}", exchg, pid);
@@ -195,7 +195,7 @@ bool WTSHotMgr::splitSecondSecions(const char* exchg, const char* pid, uint32_t 
 #pragma endregion "次主力接口"
 
 #pragma region "自定义主力接口"
-bool WTSHotMgr::loadCustomRules(const char* tag, const char* filename)
+bool VvTSHotMgr::loadCustomRules(const char* tag, const char* filename)
 {
 	if (!StdFile::exists(filename))
 	{
@@ -207,12 +207,12 @@ bool WTSHotMgr::loadCustomRules(const char* tag, const char* filename)
 		return false;
 
 	if (m_mapCustRules == NULL)
-		m_mapCustRules = WTSCustomSwitchMap::create();
+		m_mapCustRules = VvTSCustomSwitchMap::create();
 
-	WTSProductHotMap* prodMap = (WTSProductHotMap*)m_mapCustRules->get(tag);
+	VvTSProductHotMap* prodMap = (VvTSProductHotMap*)m_mapCustRules->get(tag);
 	if(prodMap == NULL)
 	{
-		prodMap = WTSProductHotMap::create();
+		prodMap = VvTSProductHotMap::create();
 		m_mapCustRules->add(tag, prodMap, false);
 	}
 
@@ -225,7 +225,7 @@ bool WTSHotMgr::loadCustomRules(const char* tag, const char* filename)
 			VvTSVariant* jProduct = jExchg->get(pid);
 			std::string fullPid = fmt::format("{}.{}", exchg, pid);
 
-			WTSDateHotMap* dateMap = WTSDateHotMap::create();
+			VvTSDateHotMap* dateMap = VvTSDateHotMap::create();
 			prodMap->add(fullPid.c_str(), dateMap, false);
 
 			std::string lastCode;
@@ -256,7 +256,7 @@ bool WTSHotMgr::loadCustomRules(const char* tag, const char* filename)
 	return true;
 }
 
-const char* WTSHotMgr::getPrevCustomRawCode(const char* tag, const char* fullPid, uint32_t dt /* = 0 */)
+const char* VvTSHotMgr::getPrevCustomRawCode(const char* tag, const char* fullPid, uint32_t dt /* = 0 */)
 {
 	if (m_mapCustRules == NULL)
 		return "";
@@ -267,15 +267,15 @@ const char* WTSHotMgr::getPrevCustomRawCode(const char* tag, const char* fullPid
 	if (m_mapCustRules == NULL)
 		return "";
 
-	WTSProductHotMap* prodMap = (WTSProductHotMap*)m_mapCustRules->get(tag);
+	VvTSProductHotMap* prodMap = (VvTSProductHotMap*)m_mapCustRules->get(tag);
 	if (prodMap == NULL)
 		return "";
 
-	WTSDateHotMap* dtMap = STATIC_CONVERT(prodMap->get(fullPid), WTSDateHotMap*);
+	VvTSDateHotMap* dtMap = STATIC_CONVERT(prodMap->get(fullPid), VvTSDateHotMap*);
 	if (dtMap == NULL)
 		return "";
 
-	WTSDateHotMap::ConstIterator cit = dtMap->lower_bound(dt);
+	VvTSDateHotMap::ConstIterator cit = dtMap->lower_bound(dt);
 	if (cit != dtMap->end())
 	{
 		if (dt < cit->first)
@@ -305,7 +305,7 @@ const char* WTSHotMgr::getPrevCustomRawCode(const char* tag, const char* fullPid
 	return "";
 }
 
-const char* WTSHotMgr::getCustomRawCode(const char* tag, const char* fullPid, uint32_t dt /* = 0 */)
+const char* VvTSHotMgr::getCustomRawCode(const char* tag, const char* fullPid, uint32_t dt /* = 0 */)
 {
 	if (m_mapCustRules == NULL)
 		return "";
@@ -313,15 +313,15 @@ const char* WTSHotMgr::getCustomRawCode(const char* tag, const char* fullPid, ui
 	if (dt == 0)
 		dt = TimeUtils::getCurDate();
 
-	WTSProductHotMap* prodMap = (WTSProductHotMap*)m_mapCustRules->get(tag);
+	VvTSProductHotMap* prodMap = (VvTSProductHotMap*)m_mapCustRules->get(tag);
 	if (prodMap == NULL)
 		return "";
 
-	WTSDateHotMap* dtMap = STATIC_CONVERT(prodMap->get(fullPid), WTSDateHotMap*);
+	VvTSDateHotMap* dtMap = STATIC_CONVERT(prodMap->get(fullPid), VvTSDateHotMap*);
 	if (dtMap == NULL)
 		return "";
 
-	WTSDateHotMap::ConstIterator cit = dtMap->lower_bound(dt);
+	VvTSDateHotMap::ConstIterator cit = dtMap->lower_bound(dt);
 	if (cit != dtMap->end())
 	{
 		if (dt < cit->first)
@@ -342,7 +342,7 @@ const char* WTSHotMgr::getCustomRawCode(const char* tag, const char* fullPid, ui
 	return "";
 }
 
-bool WTSHotMgr::isCustomHot(const char* tag, const char* fullCode, uint32_t dt /* = 0 */)
+bool VvTSHotMgr::isCustomHot(const char* tag, const char* fullCode, uint32_t dt /* = 0 */)
 {
 	if (m_mapCustRules == NULL)
 		return false;
@@ -366,15 +366,15 @@ bool WTSHotMgr::isCustomHot(const char* tag, const char* fullCode, uint32_t dt /
 	fullPid += ".";
 	fullPid += CodeHelper::rawMonthCodeToRawCommID(rawCode);
 
-	WTSProductHotMap* prodMap = (WTSProductHotMap*)m_mapCustRules->get(tag);
+	VvTSProductHotMap* prodMap = (VvTSProductHotMap*)m_mapCustRules->get(tag);
 	if (prodMap == NULL)
 		return "";
 
-	WTSDateHotMap* dtMap = STATIC_CONVERT(prodMap->get(fullPid), WTSDateHotMap*);
+	VvTSDateHotMap* dtMap = STATIC_CONVERT(prodMap->get(fullPid), VvTSDateHotMap*);
 	if (dtMap == NULL)
 		return "";
 
-	WTSDateHotMap::ConstIterator cit = dtMap->lower_bound(dt);
+	VvTSDateHotMap::ConstIterator cit = dtMap->lower_bound(dt);
 	if (cit != dtMap->end())
 	{
 		VvTSSwitchItem* pItem = STATIC_CONVERT(cit->second, VvTSSwitchItem*);
@@ -397,16 +397,16 @@ bool WTSHotMgr::isCustomHot(const char* tag, const char* fullCode, uint32_t dt /
 	return false;
 }
 
-bool WTSHotMgr::splitCustomSections(const char* tag, const char* fullPid, uint32_t sDt, uint32_t eDt, HotSections& sections)
+bool VvTSHotMgr::splitCustomSections(const char* tag, const char* fullPid, uint32_t sDt, uint32_t eDt, HotSections& sections)
 {
 	if (m_mapCustRules == NULL)
 		return false;
 
-	WTSProductHotMap* prodMap = (WTSProductHotMap*)m_mapCustRules->get(tag);
+	VvTSProductHotMap* prodMap = (VvTSProductHotMap*)m_mapCustRules->get(tag);
 	if (prodMap == NULL)
 		return false;
 
-	WTSDateHotMap* dtMap = STATIC_CONVERT(prodMap->get(fullPid), WTSDateHotMap*);
+	VvTSDateHotMap* dtMap = STATIC_CONVERT(prodMap->get(fullPid), VvTSDateHotMap*);
 	if (dtMap == NULL)
 		return false;
 
@@ -449,7 +449,7 @@ bool WTSHotMgr::splitCustomSections(const char* tag, const char* fullPid, uint32
 }
 #pragma endregion "自定义主力接口"
 
-void WTSHotMgr::release()
+void VvTSHotMgr::release()
 {
 	//if (m_pExchgHotMap)
 	//{

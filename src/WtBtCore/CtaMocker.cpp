@@ -8,7 +8,7 @@
  * \brief 
  */
 #include "CtaMocker.h"
-#include "WtHelper.h"
+#include "VvtHelper.h"
 #include "EventNotifier.h"
 
 #include <exception>
@@ -21,7 +21,7 @@
 #include "../Share/decimal.h"
 #include "../Share/StrUtil.hpp"
 
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 #include <rapidjson/document.h>
 #include <rapidjson/prettywriter.h>
@@ -205,7 +205,7 @@ void CtaMocker::dump_stradata()
 
 	if(_persist_data)
 	{
-		std::string folder = WtHelper::getOutputDir();
+		std::string folder = VvtHelper::getOutputDir();
 		folder += _name;
 		folder += "/";
 
@@ -307,7 +307,7 @@ void CtaMocker::dump_chartdata()
 
 	if(_persist_data)
 	{
-		std::string folder = WtHelper::getOutputDir();
+		std::string folder = VvtHelper::getOutputDir();
 		folder += _name;
 		folder += "/";
 
@@ -341,7 +341,7 @@ void CtaMocker::dump_outputs()
 	if (!_persist_data)
 		return;
 
-	std::string folder = WtHelper::getOutputDir();
+	std::string folder = VvtHelper::getOutputDir();
 	folder += _name;
 	folder += "/";
 	boost::filesystem::create_directories(folder.c_str());
@@ -440,7 +440,7 @@ bool CtaMocker::init_cta_factory(VvTSVariant* cfg)
 		_strategy = _factory._fact->createStrategy(cfgStra->getCString("name"), cfgStra->getCString("id"));
 		if(_strategy)
 		{
-			WTSLogger::info("Strategy {}.{} is created,strategy ID: {}", _factory._fact->getName(), _strategy->getName(), _strategy->id());
+			VvTSLogger::info("Strategy {}.{} is created,strategy ID: {}", _factory._fact->getName(), _strategy->getName(), _strategy->id());
 		}
 		_strategy->init(cfgStra->get("params"));
 		_name = _strategy->id();
@@ -451,10 +451,10 @@ bool CtaMocker::init_cta_factory(VvTSVariant* cfg)
 
 void CtaMocker::load_incremental_data(const char* incremental_backtest_base)
 {
-	std::string folder = WtHelper::getOutputDir();
+	std::string folder = VvtHelper::getOutputDir();
 	folder += incremental_backtest_base;
 	folder += "/";
-	WTSLogger::info("loading incremental data from: {}", folder);
+	VvTSLogger::info("loading incremental data from: {}", folder);
 
 	std::string tradesFilename = folder + "trades.csv";
 	if (boost::filesystem::exists(tradesFilename))
@@ -524,7 +524,7 @@ void CtaMocker::load_incremental_data(const char* incremental_backtest_base)
 	std::string strategyDumpFilename = folder + fmtutil::format("{}.json", incremental_backtest_base);
 	if (boost::filesystem::exists(strategyDumpFilename))
 	{
-		WTSLogger::info("load incremental data json: {}", strategyDumpFilename);
+		VvTSLogger::info("load incremental data json: {}", strategyDumpFilename);
 		FILE* fp = fopen(strategyDumpFilename.c_str(), "rb");
 		char readBuffer[65536];
 		rj::FileReadStream strategyDumpFile(fp, readBuffer, sizeof(readBuffer));
@@ -615,7 +615,7 @@ void CtaMocker::load_incremental_data(const char* incremental_backtest_base)
 	}
 	else
 	{
-		WTSLogger::warn("fail load incremental data json: {}", strategyDumpFilename);
+		VvTSLogger::warn("fail load incremental data json: {}", strategyDumpFilename);
 	}
 }
 
@@ -662,13 +662,13 @@ void CtaMocker::handle_replay_done()
 
 	if(_emit_times > 0)
 	{
-		WTSLogger::log_dyn("strategy", _name.c_str(), LL_INFO, 
+		VvTSLogger::log_dyn("strategy", _name.c_str(), LL_INFO, 
 			"Strategy has been scheduled {} times, totally taking {} us, {:.3f} us each time",
 			_emit_times, _total_calc_time, _total_calc_time*1.0 / _emit_times);
 	}
 	else
 	{
-		WTSLogger::log_dyn("strategy", _name.c_str(), LL_INFO, 
+		VvTSLogger::log_dyn("strategy", _name.c_str(), LL_INFO, 
 			"Strategy has been scheduled for {} times", _emit_times);
 	}
 
@@ -680,13 +680,13 @@ void CtaMocker::handle_replay_done()
 
 	if (_has_hook && _hook_valid)
 	{
-		WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_DEBUG, "Replay done, notify control thread");
+		VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_DEBUG, "Replay done, notify control thread");
 		while(_wait_calc)
 			_cond_calc.notify_all();
-		WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_DEBUG, "Notify control thread the end done");
+		VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_DEBUG, "Notify control thread the end done");
 	}
 
-	WTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Notify strategy the end of backtest");
+	VvTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Notify strategy the end of backtest");
 	this->on_bactest_end();
 }
 
@@ -845,7 +845,7 @@ void CtaMocker::proc_tick(const char* stdCode, double last_px, double cur_px)
 			double price = curPrice;
 			double curQty = stra_get_position(stdCode);
 			//_replayer->is_tick_enabled() ? newTick->price() : entrust._target;	//如果开启了tick回测,则用tick数据的价格,如果没有开启,则只能用条件单价格
-			WTSLogger::log_dyn("strategy", _name.c_str(), LL_INFO,
+			VvTSLogger::log_dyn("strategy", _name.c_str(), LL_INFO,
 				"Condition order triggered[newprice: {}{}{}], instrument: {}, {} {}",
 				curPrice, CMP_ALG_NAMES[entrust._alg], entrust._target, stdCode, ACTION_NAMES[entrust._action], entrust._qty);
 			switch (entrust._action)
@@ -965,7 +965,7 @@ void CtaMocker::on_init()
 	if (_strategy)
 		_strategy->on_init(this);
 
-	WTSLogger::info("CTA Strategy initialized with {} slippage: {}", _ratio_slippage?"ratio":"absolute", _slippage);
+	VvTSLogger::info("CTA Strategy initialized with {} slippage: {}", _ratio_slippage?"ratio":"absolute", _slippage);
 }
 
 void CtaMocker::update_dyn_profit(const char* stdCode, double price)
@@ -1042,14 +1042,14 @@ void CtaMocker::enable_hook(bool bEnabled /* = true */)
 {
 	_hook_valid = bEnabled;
 
-	WTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Calculating hook {}", bEnabled?"enabled":"disabled");
+	VvTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Calculating hook {}", bEnabled?"enabled":"disabled");
 }
 
 void CtaMocker::install_hook()
 {
 	_has_hook = true;
 
-	WTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "CTA hook installed");
+	VvTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "CTA hook installed");
 }
 
 bool CtaMocker::step_calc()
@@ -1070,7 +1070,7 @@ bool CtaMocker::step_calc()
 	}
 
 	if(bNotify)
-		WTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Notify calc thread, wait for calc done");
+		VvTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Notify calc thread, wait for calc done");
 
 	if(_in_backtest)
 	{
@@ -1078,7 +1078,7 @@ bool CtaMocker::step_calc()
 		StdUniqueLock lock(_mtx_calc);
 		_cond_calc.wait(_mtx_calc);
 		_wait_calc = false;
-		WTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Calc done notified");
+		VvTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Calc done notified");
 		_cur_step = (_cur_step + 1) % 4;
 
 		return true;
@@ -1086,7 +1086,7 @@ bool CtaMocker::step_calc()
 	else
 	{
 		_hook_valid = false;
-		WTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Backtest exit automatically");
+		VvTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Backtest exit automatically");
 		return false;
 	}
 }
@@ -1134,10 +1134,10 @@ bool CtaMocker::on_schedule(uint32_t curDate, uint32_t curTime)
 				_condtions.clear();
 				if(_has_hook && _hook_valid)
 				{
-					WTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Waiting for resume notify");
+					VvTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Waiting for resume notify");
 					StdUniqueLock lock(_mtx_calc);
 					_cond_calc.wait(_mtx_calc);
-					WTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Calc resumed");
+					VvTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Calc resumed");
 					_cur_step = 1;
 				}
 
@@ -1145,14 +1145,14 @@ bool CtaMocker::on_schedule(uint32_t curDate, uint32_t curTime)
 
 				if (_has_hook && _hook_valid)
 				{
-					WTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Calc done, notify control thread");
+					VvTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Calc done, notify control thread");
 					while (_cur_step==1)
 						_cond_calc.notify_all();
 
-					WTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Waiting for resume notify");
+					VvTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Waiting for resume notify");
 					StdUniqueLock lock(_mtx_calc);
 					_cond_calc.wait(_mtx_calc);
-					WTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Calc resumed");
+					VvTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Calc resumed");
 					_cur_step = 3;
 				}
 
@@ -1192,14 +1192,14 @@ bool CtaMocker::on_schedule(uint32_t curDate, uint32_t curTime)
 
 				if (_has_hook && _hook_valid)
 				{
-					WTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Calc done, notify control thread");
+					VvTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Calc done, notify control thread");
 					while(_cur_step == 3)
 						_cond_calc.notify_all();
 				}
 			}
 			else
 			{
-				WTSLogger::log_dyn("strategy", _name.c_str(), LL_INFO, "{} is not trading time,strategy will not be scheduled", curTime);
+				VvTSLogger::log_dyn("strategy", _name.c_str(), LL_INFO, "{} is not trading time,strategy will not be scheduled", curTime);
 			}
 			break;
 		}
@@ -1543,7 +1543,7 @@ void CtaMocker::stra_set_position(const char* stdCode, double qty, const char* u
 		//如果是T+1规则，则目标仓位不能小于冻结仓位
 		if(decimal::lt(qty, frozen))
 		{
-			WTSLogger::log_dyn("strategy", _name.c_str(), LL_ERROR, "New position of {} cannot be set to {} due to {} being frozen", stdCode, qty, frozen);
+			VvTSLogger::log_dyn("strategy", _name.c_str(), LL_ERROR, "New position of {} cannot be set to {} due to {} being frozen", stdCode, qty, frozen);
 			return;
 		}
 	}
@@ -1787,7 +1787,7 @@ VvTSKlineSlice* CtaMocker::stra_get_bars(const char* stdCode, const char* period
 			_main_key = key;
 		else if (_main_key != key)
 		{
-			WTSLogger::error("Main k bars can only be setup once");
+			VvTSLogger::error("Main k bars can only be setup once");
 			return NULL;
 		}
 
@@ -1899,22 +1899,22 @@ double CtaMocker::stra_get_fund_data(int flag)
 
 void CtaMocker::stra_log_info(const char* message)
 {
-	WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_INFO, message);
+	VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_INFO, message);
 }
 
 void CtaMocker::stra_log_debug(const char* message)
 {
-	WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_DEBUG, message);
+	VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_DEBUG, message);
 }
 
 void CtaMocker::stra_log_warn(const char* message)
 {
-	WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_WARN, message);
+	VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_WARN, message);
 }
 
 void CtaMocker::stra_log_error(const char* message)
 {
-	WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_ERROR, message);
+	VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_ERROR, message);
 }
 
 const char* CtaMocker::stra_load_user_data(const char* key, const char* defVal /*= ""*/)
@@ -2148,7 +2148,7 @@ void CtaMocker::add_chart_mark(double price, const char* icon, const char* tag)
 {
 	if (!_is_in_schedule)
 	{
-		WTSLogger::error("Marks can be added only during schedule");
+		VvTSLogger::error("Marks can be added only during schedule");
 		return;
 	}
 
@@ -2170,7 +2170,7 @@ bool CtaMocker::register_index_line(const char* idxName, const char* lineName, u
 	auto it = _chart_indice.find(idxName);
 	if (it == _chart_indice.end())
 	{
-		WTSLogger::error("Index {} not registered", idxName);
+		VvTSLogger::error("Index {} not registered", idxName);
 		return false;
 	}
 
@@ -2186,7 +2186,7 @@ bool CtaMocker::add_index_baseline(const char* idxName, const char* lineName, do
 	auto it = _chart_indice.find(idxName);
 	if (it == _chart_indice.end())
 	{
-		WTSLogger::error("Index {} not registered", idxName);
+		VvTSLogger::error("Index {} not registered", idxName);
 		return false;
 	}
 
@@ -2199,14 +2199,14 @@ bool CtaMocker::set_index_value(const char* idxName, const char* lineName, doubl
 {
 	if (!_is_in_schedule)
 	{
-		WTSLogger::error("Marks can be added only during schedule");
+		VvTSLogger::error("Marks can be added only during schedule");
 		return false;
 	}
 
 	auto ait = _chart_indice.find(idxName);
 	if (ait == _chart_indice.end())
 	{
-		WTSLogger::error("Index {} not registered", idxName);
+		VvTSLogger::error("Index {} not registered", idxName);
 		return false;
 	}
 
@@ -2214,7 +2214,7 @@ bool CtaMocker::set_index_value(const char* idxName, const char* lineName, doubl
 	auto bit = cIndex._lines.find(lineName);
 	if (bit == cIndex._lines.end())
 	{
-		WTSLogger::error("Line {} of index {} not registered", lineName, idxName);
+		VvTSLogger::error("Line {} of index {} not registered", lineName, idxName);
 		return false;
 	}
 

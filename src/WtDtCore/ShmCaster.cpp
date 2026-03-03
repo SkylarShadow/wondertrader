@@ -3,7 +3,7 @@
 #include "../Includes/VvTSDataDef.hpp"
 #include "../Share/StdUtils.hpp"
 #include "../Share/BoostFile.hpp"
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 bool ShmCaster::init(VvTSVariant* cfg)
 {
@@ -35,7 +35,7 @@ bool ShmCaster::init(VvTSVariant* cfg)
 #endif
 
 	_inited = true;
-	WTSLogger::info("ShmCaste initialized @ {}", _path.c_str());
+	VvTSLogger::info("ShmCaste initialized @ {}", _path.c_str());
 
 	return true;
 }

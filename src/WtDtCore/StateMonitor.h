@@ -72,7 +72,7 @@ typedef struct _StateInfo
 typedef std::shared_ptr<StateInfo> StatePtr;
 typedef vvtp::vvt_hashmap<std::string, StatePtr>	StateMap;
 
-class WTSBaseDataMgr;
+class VvTSBaseDataMgr;
 class DataManager;
 
 class StateMonitor
@@ -82,7 +82,7 @@ public:
 	~StateMonitor();
 
 public:
-	bool initialize(const char* filename, WTSBaseDataMgr* bdMgr, DataManager* dtMgr);
+	bool initialize(const char* filename, VvTSBaseDataMgr* bdMgr, DataManager* dtMgr);
 	void run();
 	void stop();
 
@@ -124,7 +124,7 @@ public:
 
 private:
 	StateMap		_map;
-	WTSBaseDataMgr*	_bd_mgr;
+	VvTSBaseDataMgr*	_bd_mgr;
 	DataManager*	_dt_mgr;
 
 	StdThreadPtr	_thrd;

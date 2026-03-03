@@ -9,7 +9,7 @@
 */
 #include "SelStraBaseCtx.h"
 #include "WtSelEngine.h"
-#include "WtHelper.h"
+#include "VvtHelper.h"
 
 #include <exception>
 #include <rapidjson/document.h>
@@ -22,7 +22,7 @@
 #include "../Share/decimal.h"
 #include "../Share/CodeHelper.hpp"
 
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 namespace rj = rapidjson;
 
@@ -54,7 +54,7 @@ SelStraBaseCtx::~SelStraBaseCtx()
 
 void SelStraBaseCtx::init_outputs()
 {
-	std::string folder = WtHelper::getOutputDir();
+	std::string folder = VvtHelper::getOutputDir();
 	folder += _name;
 	folder += "//";
 	BoostFile::create_directories(folder.c_str());
@@ -179,7 +179,7 @@ void SelStraBaseCtx::save_userdata()
 	}
 
 	{
-		std::string filename = WtHelper::getStraUsrDatDir();
+		std::string filename = VvtHelper::getStraUsrDatDir();
 		filename += "ud_";
 		filename += _name;
 		filename += ".json";
@@ -198,7 +198,7 @@ void SelStraBaseCtx::save_userdata()
 
 void SelStraBaseCtx::load_userdata()
 {
-	std::string filename = WtHelper::getStraUsrDatDir();
+	std::string filename = VvtHelper::getStraUsrDatDir();
 	filename += "ud_";
 	filename += _name;
 	filename += ".json";
@@ -229,7 +229,7 @@ void SelStraBaseCtx::load_userdata()
 
 void SelStraBaseCtx::load_data(uint32_t flag /* = 0xFFFFFFFF */)
 {
-	std::string filename = WtHelper::getStraDataDir();
+	std::string filename = VvtHelper::getStraDataDir();
 	filename += _name;
 	filename += ".json";
 
@@ -465,7 +465,7 @@ void SelStraBaseCtx::save_data(uint32_t flag /* = 0xFFFFFFFF */)
 	}
 
 	{
-		std::string filename = WtHelper::getStraDataDir();
+		std::string filename = VvtHelper::getStraDataDir();
 		filename += _name;
 		filename += ".json";
 
@@ -1046,22 +1046,22 @@ double SelStraBaseCtx::stra_get_fund_data(int flag)
 
 void SelStraBaseCtx::stra_log_info(const char* message)
 {
-	WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_INFO, message);
+	VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_INFO, message);
 }
 
 void SelStraBaseCtx::stra_log_debug(const char* message)
 {
-	WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_DEBUG, message);
+	VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_DEBUG, message);
 }
 
 void SelStraBaseCtx::stra_log_warn(const char* message)
 {
-	WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_WARN, message);
+	VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_WARN, message);
 }
 
 void SelStraBaseCtx::stra_log_error(const char* message)
 {
-	WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_ERROR, message);
+	VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_ERROR, message);
 }
 
 const char* SelStraBaseCtx::stra_load_user_data(const char* key, const char* defVal /*= ""*/)

@@ -12,7 +12,7 @@ SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_T
 file(GLOB SRCS *.cpp ./gtest/*.cc)
 
 SET(LIBS
-    WTSTools
+    VvTSTools
 	VvTSUtils
     WtShareHelper)
 IF (MSVC)

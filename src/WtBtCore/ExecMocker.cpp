@@ -8,12 +8,12 @@
  * \brief 
  */
 #include "ExecMocker.h"
-#include "WtHelper.h"
+#include "VvtHelper.h"
 
 #include "../Includes/VvTSVariant.hpp"
 #include "../Share/TimeUtils.hpp"
 #include "../Share/decimal.h"
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 #include <boost/filesystem.hpp>
 
@@ -113,7 +113,7 @@ void ExecMocker::handle_session_end(uint32_t curTDate)
 	_matcher.clear();
 	_undone = 0;
 
-	WTSLogger::info("Total entrust:{}, total quantity:{}, total cancels:{}, total cancel quantity:{}, total signals:{}", 
+	VvTSLogger::info("Total entrust:{}, total quantity:{}, total cancels:{}, total cancel quantity:{}, total signals:{}", 
 		_ord_cnt, _ord_qty, _cacl_cnt, _cacl_qty, _sig_cnt);
 }
 
@@ -155,7 +155,7 @@ void ExecMocker::handle_init()
 	_sig_time = (uint64_t)_replayer->get_date() * 10000 + _replayer->get_raw_time();
 
 	_exec_unit->set_position(_code.c_str(), _volunit);
-	WTSLogger::info("Target position updated at the beginning: {}", _volunit);
+	VvTSLogger::info("Target position updated at the beginning: {}", _volunit);
 }
 
 void ExecMocker::handle_schedule(uint32_t uDate, uint32_t uTime)
@@ -185,7 +185,7 @@ void ExecMocker::handle_schedule(uint32_t uDate, uint32_t uTime)
 	}
 
 	_exec_unit->set_position(_code.c_str(), _target);
-	WTSLogger::info("Target position updated @{}.{}: {}", uDate, uTime, _volunit);
+	VvTSLogger::info("Target position updated @{}.{}: {}", uDate, uTime, _volunit);
 	_sig_cnt++;
 }
 
@@ -225,7 +225,7 @@ OrderIDs ExecMocker::buy(const char* stdCode, double price, double qty, bool bFo
 		_ord_qty += qty;
 
 		_undone += (int32_t)qty;
-		WTSLogger::info("{}, undone orders updated: {}", __FUNCTION__, _undone);
+		VvTSLogger::info("{}, undone orders updated: {}", __FUNCTION__, _undone);
 	}
 
 	return ret;
@@ -242,7 +242,7 @@ OrderIDs ExecMocker::sell(const char* stdCode, double price, double qty, bool bF
 		_ord_qty += qty;
 	
 		_undone -= (int32_t)qty;
-		WTSLogger::info("{}, undone orders updated: {}", __FUNCTION__, _undone);
+		VvTSLogger::info("{}, undone orders updated: {}", __FUNCTION__, _undone);
 	}
 
 	return ret;
@@ -257,7 +257,7 @@ bool ExecMocker::cancel(uint32_t localid)
 	_undone -= change;
 	_cacl_cnt++;
 	_cacl_qty += abs(change);
-	WTSLogger::info("{}, undone orders updated: {}", __FUNCTION__, _undone);
+	VvTSLogger::info("{}, undone orders updated: {}", __FUNCTION__, _undone);
 
 	return true;
 }
@@ -270,14 +270,14 @@ OrderIDs ExecMocker::cancel(const char* stdCode, bool isBuy, double qty /*= 0*/)
 		_cacl_cnt++;
 		_cacl_qty += abs(change);
 	});
-	WTSLogger::info("{}, undone orders updated: {}", __FUNCTION__, _undone);
+	VvTSLogger::info("{}, undone orders updated: {}", __FUNCTION__, _undone);
 
 	return ret;
 }
 
 void ExecMocker::writeLog(const char* message)
 {
-	WTSLogger::log_dyn_raw("executer", _id.c_str(), LL_INFO, message);
+	VvTSLogger::log_dyn_raw("executer", _id.c_str(), LL_INFO, message);
 }
 
 void ExecMocker::handle_entrust(uint32_t localid, const char* stdCode, bool bSuccess, const char* message, uint64_t ordTime)
@@ -313,7 +313,7 @@ void ExecMocker::handle_order(uint32_t localid, const char* stdCode, bool isBuy,
 			<< "true" << std::endl;
 
 		_undone -= leftover * (isBuy ? 1 : -1);
-		WTSLogger::info("{}, undone orders updated: {}", __FUNCTION__, _undone);
+		VvTSLogger::info("{}, undone orders updated: {}", __FUNCTION__, _undone);
 	}
 
 	_exec_unit->on_order(localid, stdCode, isBuy, leftover, price, isCanceled);
@@ -346,15 +346,15 @@ void ExecMocker::handle_trade(uint32_t localid, const char* stdCode, bool isBuy,
 
 	_position += vol* (isBuy?1:-1);
 	_undone -= vol * (isBuy ? 1 : -1);
-	WTSLogger::info("{}, undone orders updated: {}", __FUNCTION__, _undone);
-	WTSLogger::info("Position updated: {}", _position);
+	VvTSLogger::info("{}, undone orders updated: {}", __FUNCTION__, _undone);
+	VvTSLogger::info("Position updated: {}", _position);
 
 	_exec_unit->on_trade(localid, stdCode, isBuy, vol, price);
 }
 
 void ExecMocker::handle_replay_done()
 {
-	std::string folder = WtHelper::getOutputDir();
+	std::string folder = VvtHelper::getOutputDir();
 	folder += "exec/";
 	boost::filesystem::create_directories(folder.c_str());
 

@@ -12,7 +12,7 @@
 #include "../Share/StrUtil.hpp"
 #include "../Share/StdUtils.hpp"
 
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 #include <boost/filesystem.hpp>
 
@@ -30,7 +30,7 @@ bool SelStrategyMgr::loadFactories(const char* path)
 {
 	if (!StdFile::exists(path))
 	{
-		WTSLogger::error("Directory {} of SEL strategy factory not exists", path);
+		VvTSLogger::error("Directory {} of SEL strategy factory not exists", path);
 		return false;
 	}
 
@@ -71,7 +71,7 @@ bool SelStrategyMgr::loadFactories(const char* path)
 			fInfo._remover = (FuncDeleteSelStraFact)DLLHelper::get_symbol(hInst, "deleteMfStrategyFact");
 			fInfo._fact = fact;
 
-			WTSLogger::info("SEL strategy factory[{}] loaded", fact->getName());
+			VvTSLogger::info("SEL strategy factory[{}] loaded", fact->getName());
 
 			count++;
 		}
@@ -83,7 +83,7 @@ bool SelStrategyMgr::loadFactories(const char* path)
 
 	}
 
-	WTSLogger::info("{} SEL strategy factories in directory[{}] loaded", count, path);
+	VvTSLogger::info("{} SEL strategy factories in directory[{}] loaded", count, path);
 
 	return true;
 }

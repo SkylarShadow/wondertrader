@@ -3,23 +3,23 @@
 #include "../WtDtCore/StateMonitor.h"
 #include "../WtDtCore/UDPCaster.h"
 #include "../WtDtCore/ShmCaster.h"
-#include "../WtDtCore/WtHelper.h"
+#include "../WtDtCore/VvtHelper.h"
 #include "../WtDtCore/IndexFactory.h"
 
 #include "../Includes/VvTSSessionInfo.hpp"
 #include "../Includes/VvTSVariant.hpp"
 
-#include "../WTSTools/WTSHotMgr.h"
-#include "../WTSTools/WTSBaseDataMgr.h"
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSHotMgr.h"
+#include "../VvTSTools/VvTSBaseDataMgr.h"
+#include "../VvTSTools/VvTSLogger.h"
 #include "../VvTSUtils/VvTSCfgLoader.h"
 #include "../Share/StrUtil.hpp"
 #include "../Share/cppcli.hpp"
 
 #include "../VvTSUtils/SignalHook.hpp"
 
-WTSBaseDataMgr	g_baseDataMgr;
-WTSHotMgr		g_hotMgr;
+VvTSBaseDataMgr	g_baseDataMgr;
+VvTSHotMgr		g_hotMgr;
 StateMonitor	g_stateMon;
 UDPCaster		g_udpCaster;
 ShmCaster		g_shmCaster;
@@ -90,17 +90,17 @@ void initParsers(VvTSVariant* cfg)
 		g_parsers.addAdapter(realid.c_str(), adapter);
 	}
 
-	WTSLogger::info("{} market data parsers loaded in total", g_parsers.size());
+	VvTSLogger::info("{} market data parsers loaded in total", g_parsers.size());
 }
 
 void initialize(const std::string& filename)
 {
-	WtHelper::set_module_dir(getBinDir());
+	VvtHelper::set_module_dir(getBinDir());
 
 	VvTSVariant* config = VvTSCfgLoader::load_from_file(filename.c_str());
 	if(config == NULL)
 	{
-		WTSLogger::error("Loading config file {} failed", filename);
+		VvTSLogger::error("Loading config file {} failed", filename);
 		return;
 	}
 
@@ -109,7 +109,7 @@ void initialize(const std::string& filename)
 	if (cfgBF->get("session"))
 	{
 		g_baseDataMgr.loadSessions(cfgBF->getCString("session"));
-		WTSLogger::info("Trading sessions loaded");
+		VvTSLogger::info("Trading sessions loaded");
 	}
 
 	VvTSVariant* cfgItem = cfgBF->get("commodity");
@@ -147,18 +147,18 @@ void initialize(const std::string& filename)
 	if (cfgBF->get("holiday"))
 	{
 		g_baseDataMgr.loadHolidays(cfgBF->getCString("holiday"));
-		WTSLogger::info("Holidays loaded");
+		VvTSLogger::info("Holidays loaded");
 	}
 	if (cfgBF->get("hot"))
 	{
 		g_hotMgr.loadHots(cfgBF->getCString("hot"));
-		WTSLogger::log_raw(LL_INFO, "Hot rules loaded");
+		VvTSLogger::log_raw(LL_INFO, "Hot rules loaded");
 	}
 
 	if (cfgBF->get("second"))
 	{
 		g_hotMgr.loadSeconds(cfgBF->getCString("second"));
-		WTSLogger::log_raw(LL_INFO, "Second rules loaded");
+		VvTSLogger::log_raw(LL_INFO, "Second rules loaded");
 	}
 
 	if (cfgBF->has("rules"))
@@ -168,7 +168,7 @@ void initialize(const std::string& filename)
 		for (const std::string& ruleTag : tags)
 		{
 			g_hotMgr.loadCustomRules(ruleTag.c_str(), cfgRules->getCString(ruleTag.c_str()));
-			WTSLogger::info("{} rules loaded from {}", ruleTag, cfgRules->getCString(ruleTag.c_str()));
+			VvTSLogger::info("{} rules loaded from {}", ruleTag, cfgRules->getCString(ruleTag.c_str()));
 		}
 	}
 
@@ -194,7 +194,7 @@ void initialize(const std::string& filename)
 	}
 	else
 	{
-		WTSLogger::info("QuoteFactory will run in allday mode");
+		VvTSLogger::info("QuoteFactory will run in allday mode");
 	}
 	initDataMgr(config->get("writer"), bAlldayMode);
 
@@ -202,7 +202,7 @@ void initialize(const std::string& filename)
 	{
 		//如果存在指数模块要，配置指数
 		const char* filename = config->getCString("index");
-		WTSLogger::info("Reading index config from {}...", filename);
+		VvTSLogger::info("Reading index config from {}...", filename);
 		VvTSVariant* var = VvTSCfgLoader::load_from_file(filename);
 		if (var)
 		{
@@ -211,7 +211,7 @@ void initialize(const std::string& filename)
 		}
 		else
 		{
-			WTSLogger::error("Loading index config {} failed", filename);
+			VvTSLogger::error("Loading index config {} failed", filename);
 		}		
 	}
 
@@ -223,7 +223,7 @@ void initialize(const std::string& filename)
 			const char* filename = cfgParser->asCString();
 			if (StdFile::exists(filename))
 			{
-				WTSLogger::info("Reading parser config from {}...", filename);
+				VvTSLogger::info("Reading parser config from {}...", filename);
 				VvTSVariant* var = VvTSCfgLoader::load_from_file(filename);
 				if (var)
 				{
@@ -232,12 +232,12 @@ void initialize(const std::string& filename)
 				}
 				else
 				{
-					WTSLogger::error("Loading parser config {} failed", filename);
+					VvTSLogger::error("Loading parser config {} failed", filename);
 				}
 			}
 			else
 			{
-				WTSLogger::error("Parser configuration {} not exists", filename);
+				VvTSLogger::error("Parser configuration {} not exists", filename);
 			}
 		}
 		else if (cfgParser->type() == VvTSVariant::VT_Array)
@@ -277,7 +277,7 @@ int main(int argc, char* argv[])
 		filename = lParam->get<std::string>();
 	else
 		filename = "./logcfgdt.yaml";
-	WTSLogger::init(filename.c_str());
+	VvTSLogger::init(filename.c_str());
 
 #ifdef _MSC_VER
 	_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
@@ -296,13 +296,13 @@ int main(int argc, char* argv[])
 	bool bExit = false;
 	install_signal_hooks([&bExit](const char* message) {
 		if(!bExit)
-			WTSLogger::error(message);
+			VvTSLogger::error(message);
 	}, [&bExit](bool toExit) {
 		if (bExit)
 			return;
 
 		bExit = toExit;
-		WTSLogger::info("Exit flag is {}", bExit);
+		VvTSLogger::info("Exit flag is {}", bExit);
 	});
 
 	if (cParam->exists())

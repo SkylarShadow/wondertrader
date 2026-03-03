@@ -21,7 +21,7 @@ NS_VVTP_END
 
 USING_NS_VVTP;
 
-class WTSBaseDataMgr;
+class VvTSBaseDataMgr;
 class DataManager;
 
 class UDPCaster : public IDataCaster
@@ -56,7 +56,7 @@ private:
 	void	do_broadcast(VvTSObject* data, uint32_t dataType);
 
 public:
-	bool	init(VvTSVariant* cfg, WTSBaseDataMgr* bdMgr, DataManager* dtMgr);
+	bool	init(VvTSVariant* cfg, VvTSBaseDataMgr* bdMgr, DataManager* dtMgr);
 	void	start(int bport);
 	void	stop();
 
@@ -101,7 +101,7 @@ private:
 	StdUniqueMutex	m_mtxCast;
 	bool			m_bTerminated;
 
-	WTSBaseDataMgr*	m_bdMgr;
+	VvTSBaseDataMgr*	m_bdMgr;
 	DataManager*	m_dtMgr;
 
 	typedef struct _CastData

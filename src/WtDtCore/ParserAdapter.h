@@ -20,14 +20,14 @@ NS_VVTP_END
 
 USING_NS_VVTP;
 class wxMainFrame;
-class WTSBaseDataMgr;
+class VvTSBaseDataMgr;
 class DataManager;
 class IndexFactory;
 
 class ParserAdapter : public IParserSpi, private boost::noncopyable
 {
 public:
-	ParserAdapter(WTSBaseDataMgr * bgMgr, DataManager* dtMgr, IndexFactory *idxFactory);
+	ParserAdapter(VvTSBaseDataMgr * bgMgr, DataManager* dtMgr, IndexFactory *idxFactory);
 	~ParserAdapter();
 
 public:
@@ -59,7 +59,7 @@ public:
 private:
 	IParserApi*			_parser_api;
 	FuncDeleteParser	_remover;
-	WTSBaseDataMgr*		_bd_mgr;
+	VvTSBaseDataMgr*		_bd_mgr;
 	DataManager*		_dt_mgr;
 	IndexFactory*		_idx_fact;
 

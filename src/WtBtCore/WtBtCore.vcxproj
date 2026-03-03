@@ -28,7 +28,7 @@
     <ClCompile Include="MatchEngine.cpp" />
     <ClCompile Include="SelMocker.cpp" />
     <ClCompile Include="UftMocker.cpp" />
-    <ClCompile Include="WtHelper.cpp" />
+    <ClCompile Include="VvtHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CtaMocker.h" />
@@ -40,7 +40,7 @@
     <ClInclude Include="MatchEngine.h" />
     <ClInclude Include="SelMocker.h" />
     <ClInclude Include="UftMocker.h" />
-    <ClInclude Include="WtHelper.h" />
+    <ClInclude Include="VvtHelper.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{220C7C79-C4E8-44C2-95B8-DAB2D4B0D385}</ProjectGuid>

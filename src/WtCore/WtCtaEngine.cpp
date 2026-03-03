@@ -12,7 +12,7 @@
 #include "WtCtaEngine.h"
 #include "WtDtMgr.h"
 #include "WtCtaTicker.h"
-#include "WtHelper.h"
+#include "VvtHelper.h"
 #include "TraderAdapter.h"
 #include "EventNotifier.h"
 
@@ -25,7 +25,7 @@
 #include "../Includes/VvTSRiskDef.hpp"
 #include "../Share/decimal.h"
 
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 #include <rapidjson/document.h>
 #include <rapidjson/prettywriter.h>
@@ -89,7 +89,7 @@ void WtCtaEngine::run()
 
 		root.AddMember("engine", rj::Value("CTA", allocator), allocator);
 
-		std::string filename = WtHelper::getBaseDir();
+		std::string filename = VvtHelper::getBaseDir();
 		filename += "marker.json";
 
 		rj::StringBuffer sb;
@@ -119,7 +119,7 @@ void WtCtaEngine::init(VvTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, 
 	{
 		_pool.reset(new boost::threadpool::pool(poolsize));
 	}
-	WTSLogger::info("Engine task poolsize is {}", poolsize);
+	VvTSLogger::info("Engine task poolsize is {}", poolsize);
 }
 
 void WtCtaEngine::addContext(CtaContextPtr ctx)
@@ -157,7 +157,7 @@ void WtCtaEngine::on_init()
 				if (!decimal::eq(qty, oldQty))
 				{
 					//输出日志
-					WTSLogger::info("[Filters] Target position of {} of strategy {} reset by strategy filter: {} -> {}", 
+					VvTSLogger::info("[Filters] Target position of {} of strategy {} reset by strategy filter: {} -> {}", 
 						stdCode, ctx->name(), oldQty, qty);
 				}
 
@@ -175,7 +175,7 @@ void WtCtaEngine::on_init()
 			else
 			{
 				//输出日志
-				WTSLogger::info("[Filters] Target position of {} of strategy {} ignored by strategy filter", stdCode, ctx->name());
+				VvTSLogger::info("[Filters] Target position of {} of strategy {} ignored by strategy filter", stdCode, ctx->name());
 			}
 		}, true);
 	}
@@ -183,7 +183,7 @@ void WtCtaEngine::on_init()
 	bool bRiskEnabled = false;
 	if (!decimal::eq(_risk_volscale, 1.0) && _risk_date == _cur_tdate)
 	{
-		WTSLogger::log_by_cat("risk", LL_INFO, "Risk scale of portfolio is {:.2f}", _risk_volscale);
+		VvTSLogger::log_by_cat("risk", LL_INFO, "Risk scale of portfolio is {:.2f}", _risk_volscale);
 		bRiskEnabled = true;
 	}
 
@@ -199,7 +199,7 @@ void WtCtaEngine::on_init()
 	//		pos = decimal::rnd(abs(pos)*_risk_volscale)*symbol;
 	//	}
 
-	//	WTSLogger::info("Portfolio initial position of {} is {}", stdCode.c_str(), pos);
+	//	VvTSLogger::info("Portfolio initial position of {} is {}", stdCode.c_str(), pos);
 	//}
 
 	_exec_mgr.commit_cached_targets(bRiskEnabled?_risk_volscale:1.0);
@@ -210,7 +210,7 @@ void WtCtaEngine::on_init()
 
 void WtCtaEngine::on_session_begin()
 {
-	WTSLogger::info("Trading day {} begun", _cur_tdate);
+	VvTSLogger::info("Trading day {} begun", _cur_tdate);
 	for (auto it = _ctx_map.begin(); it != _ctx_map.end(); it++)
 	{
 		CtaContextPtr& ctx = (CtaContextPtr&)it->second;
@@ -233,7 +233,7 @@ void WtCtaEngine::on_session_end()
 		ctx->on_session_end(_cur_tdate);
 	}
 
-	WTSLogger::info("Trading day {} ended", _cur_tdate);
+	VvTSLogger::info("Trading day {} ended", _cur_tdate);
 	if (_evt_listener)
 		_evt_listener->on_session_event(_cur_tdate, false);
 }
@@ -280,7 +280,7 @@ void WtCtaEngine::on_schedule(uint32_t curDate, uint32_t curTime)
 					if (!decimal::eq(qty, oldQty))
 					{
 						//输出日志
-						WTSLogger::info("[Filters] Target position of {} of strategy {} reset by strategy filter: {} -> {}",
+						VvTSLogger::info("[Filters] Target position of {} of strategy {} reset by strategy filter: {} -> {}",
 							stdCode, ctx->name(), oldQty, qty);
 					}
 
@@ -300,7 +300,7 @@ void WtCtaEngine::on_schedule(uint32_t curDate, uint32_t curTime)
 				else
 				{
 					//输出日志
-					WTSLogger::info("[Filters] Target position of {} of strategy {} ignored by strategy filter", stdCode, ctx->name());
+					VvTSLogger::info("[Filters] Target position of {} of strategy {} ignored by strategy filter", stdCode, ctx->name());
 				}
 			}, true);
 		}
@@ -321,7 +321,7 @@ void WtCtaEngine::on_schedule(uint32_t curDate, uint32_t curTime)
 					if (!decimal::eq(qty, oldQty))
 					{
 						//输出日志
-						WTSLogger::info("[Filters] Target position of {} of strategy {} reset by strategy filter: {} -> {}",
+						VvTSLogger::info("[Filters] Target position of {} of strategy {} reset by strategy filter: {} -> {}",
 							stdCode, ctx->name(), oldQty, qty);
 					}
 
@@ -341,7 +341,7 @@ void WtCtaEngine::on_schedule(uint32_t curDate, uint32_t curTime)
 				else
 				{
 					//输出日志
-					WTSLogger::info("[Filters] Target position of {} of strategy {} ignored by strategy filter", stdCode, ctx->name());
+					VvTSLogger::info("[Filters] Target position of {} of strategy {} ignored by strategy filter", stdCode, ctx->name());
 				}
 			}, true);
 		}
@@ -351,7 +351,7 @@ void WtCtaEngine::on_schedule(uint32_t curDate, uint32_t curTime)
 	bool bRiskEnabled = false;
 	if(!decimal::eq(_risk_volscale, 1.0) && _risk_date == _cur_tdate)
 	{
-		WTSLogger::log_by_cat("risk", LL_INFO, "Risk scale of strategy group is {:.2f}", _risk_volscale);
+		VvTSLogger::log_by_cat("risk", LL_INFO, "Risk scale of strategy group is {:.2f}", _risk_volscale);
 		bRiskEnabled = true;
 	}
 
@@ -380,7 +380,7 @@ void WtCtaEngine::on_schedule(uint32_t curDate, uint32_t curTime)
 				//这里是通知WtEngine去更新组合持仓数据
 				append_signal(stdCode.c_str(), 0, true);
 
-				WTSLogger::error("Instrument {} not in target positions, setup to 0 automatically", stdCode.c_str());
+				VvTSLogger::error("Instrument {} not in target positions, setup to 0 automatically", stdCode.c_str());
 			}
 
 			//因为组合持仓里会有过期的合约代码存在，所以这里在丢给执行以前要做一个检查
@@ -424,7 +424,7 @@ void WtCtaEngine::handle_pos_change(const char* straName, const char* stdCode, d
 	if(_filter_mgr.is_filtered_by_strategy(straName, diffPos, true))
 	{
 		//输出日志
-		WTSLogger::info("[Filters] Target position of {} of strategy {} ignored by strategy filter", stdCode, straName);
+		VvTSLogger::info("[Filters] Target position of {} of strategy {} ignored by strategy filter", stdCode, straName);
 		return;
 	}
 
@@ -447,7 +447,7 @@ void WtCtaEngine::handle_pos_change(const char* straName, const char* stdCode, d
 	bool bRiskEnabled = false;
 	if (!decimal::eq(_risk_volscale, 1.0) && _risk_date == _cur_tdate)
 	{
-		WTSLogger::log_by_cat("risk", LL_INFO, "Risk scale of portfolio is {:.2f}", _risk_volscale);
+		VvTSLogger::log_by_cat("risk", LL_INFO, "Risk scale of portfolio is {:.2f}", _risk_volscale);
 		bRiskEnabled = true;
 	}
 
@@ -652,7 +652,7 @@ void WtCtaEngine::on_bar(const char* stdCode, const char* period, uint32_t times
 	if (_pool)
 		_pool->wait();
 
-	WTSLogger::info("KBar [{}] @ {} closed", key, period[0] == 'd' ? newBar->date : newBar->time);
+	VvTSLogger::info("KBar [{}] @ {} closed", key, period[0] == 'd' ? newBar->date : newBar->time);
 }
 
 bool WtCtaEngine::isInTrading()

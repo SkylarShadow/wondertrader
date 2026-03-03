@@ -190,7 +190,7 @@
     <ProjectReference Include="..\WtBtCore\WtBtCore.vcxproj">
       <Project>{220c7c79-c4e8-44c2-95b8-dab2d4b0d385}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\WTSTools\WTSTools.vcxproj">
+    <ProjectReference Include="..\VvTSTools\VvTSTools.vcxproj">
       <Project>{8b249955-de56-41a3-a904-21dbbe40ab34}</Project>
     </ProjectReference>
   </ItemGroup>

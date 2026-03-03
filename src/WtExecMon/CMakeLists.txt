@@ -21,7 +21,7 @@ ADD_LIBRARY(WtExecMon SHARED ${SRCS} ${HDRS})
 
 SET(LIBS
 	WtCore
-	WTSTools
+	VvTSTools
 	VvTSUtils)
 
 IF (MSVC)

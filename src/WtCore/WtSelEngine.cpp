@@ -2,9 +2,9 @@
 #include "WtDtMgr.h"
 #include "WtSelTicker.h"
 #include "TraderAdapter.h"
-#include "WtHelper.h"
+#include "VvtHelper.h"
 
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 #include "../Share/TimeUtils.hpp"
 #include "../Includes/IBaseDataMgr.h"
 #include "../Includes/IHotMgr.h"
@@ -84,7 +84,7 @@ void WtSelEngine::on_bar(const char* stdCode, const char* period, uint32_t times
 		}
 	}
 
-	WTSLogger::info("KBar [{}] @ {} closed", key, period[0] == 'd' ? newBar->date : newBar->time);
+	VvTSLogger::info("KBar [{}] @ {} closed", key, period[0] == 'd' ? newBar->date : newBar->time);
 }
 
 void WtSelEngine::on_tick(const char* stdCode, VvTSTickData* curTick)
@@ -350,7 +350,7 @@ void WtSelEngine::run()
 
 		root.AddMember("engine", rj::Value("SEL", allocator), allocator);
 
-		std::string filename = WtHelper::getBaseDir();
+		std::string filename = VvtHelper::getBaseDir();
 		filename += "marker.json";
 
 		rj::StringBuffer sb;
@@ -378,7 +378,7 @@ void WtSelEngine::addContext(SelContextPtr ctx, uint32_t date, uint32_t time, Ta
 	auto it = _tasks.find(ctx->id());
 	if(it != _tasks.end())
 	{
-		WTSLogger::error("Task registration failed: task id {} already registered", ctx->id());
+		VvTSLogger::error("Task registration failed: task id {} already registered", ctx->id());
 		return;
 	}
 
@@ -413,7 +413,7 @@ void WtSelEngine::handle_pos_change(const char* straName, const char* stdCode, d
 	if (_filter_mgr.is_filtered_by_strategy(straName, diffQty, true))
 	{
 		//输出日志
-		WTSLogger::info("[Filters] Target position of {} of strategy {} ignored by strategy filter", stdCode, straName);
+		VvTSLogger::info("[Filters] Target position of {} of strategy {} ignored by strategy filter", stdCode, straName);
 		return;
 	}
 
@@ -444,7 +444,7 @@ void WtSelEngine::handle_pos_change(const char* straName, const char* stdCode, d
 	bool bRiskEnabled = false;
 	if (!decimal::eq(_risk_volscale, 1.0) && _risk_date == _cur_tdate)
 	{
-		WTSLogger::log_by_cat("risk", LL_INFO, "Risk scale of portfolio is {:.2f}", _risk_volscale);
+		VvTSLogger::log_by_cat("risk", LL_INFO, "Risk scale of portfolio is {:.2f}", _risk_volscale);
 		bRiskEnabled = true;
 	}
 	if (bRiskEnabled && diffQty != 0)

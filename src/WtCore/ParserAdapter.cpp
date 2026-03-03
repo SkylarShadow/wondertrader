@@ -10,7 +10,7 @@
 #include "ParserAdapter.h"
 #include "WtEngine.h"
 #include "WtCtaTicker.h"
-#include "WtHelper.h"
+#include "VvtHelper.h"
 
 #include "../Share/CodeHelper.hpp"
 #include "../Share/TimeUtils.hpp"
@@ -21,7 +21,7 @@
 #include "../Includes/IBaseDataMgr.h"
 #include "../Includes/IHotMgr.h"
 
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 USING_NS_VVTP;
 
@@ -75,7 +75,7 @@ bool ParserAdapter::initExt(const char* id, IParserApi* api, IParserStub* stub, 
 		}
 		else
 		{
-			WTSLogger::log_dyn("parser", _id.c_str(), LL_ERROR, "[{}] Parser initializing failed: api initializing failed...", _id.c_str());
+			VvTSLogger::log_dyn("parser", _id.c_str(), LL_ERROR, "[{}] Parser initializing failed: api initializing failed...", _id.c_str());
 		}
 	}
 
@@ -108,33 +108,33 @@ bool ParserAdapter::init(const char* id, VvTSVariant* cfg, IParserStub* stub, IB
 		std::string module = DLLHelper::wrap_module(cfg->getCString("module"), "lib");;
 
 		//先看工作目录下是否有交易模块
-		std::string dllpath = WtHelper::getModulePath(module.c_str(), "parsers", true);
+		std::string dllpath = VvtHelper::getModulePath(module.c_str(), "parsers", true);
 		//如果没有,则再看模块目录,即dll同目录下
 		if (!StdFile::exists(dllpath.c_str()))
-			dllpath = WtHelper::getModulePath(module.c_str(), "parsers", false);
+			dllpath = VvtHelper::getModulePath(module.c_str(), "parsers", false);
 
 		DllHandle hInst = DLLHelper::load_library(dllpath.c_str());
 		if (hInst == NULL)
 		{
-			WTSLogger::log_dyn("parser", _id.c_str(), LL_ERROR, "[{}] Parser module {} loading failed", _id.c_str(), dllpath.c_str());
+			VvTSLogger::log_dyn("parser", _id.c_str(), LL_ERROR, "[{}] Parser module {} loading failed", _id.c_str(), dllpath.c_str());
 			return false;
 		}
 		else
 		{
-			WTSLogger::log_dyn("parser", _id.c_str(), LL_INFO, "[{}] Parser module {} loaded", _id.c_str(), dllpath.c_str());
+			VvTSLogger::log_dyn("parser", _id.c_str(), LL_INFO, "[{}] Parser module {} loaded", _id.c_str(), dllpath.c_str());
 		}
 
 		FuncCreateParser pFuncCreateParser = (FuncCreateParser)DLLHelper::get_symbol(hInst, "createParser");
 		if (NULL == pFuncCreateParser)
 		{
-			WTSLogger::log_dyn("parser", _id.c_str(), LL_FATAL, "[{}] Entrance function createParser not found", _id.c_str());
+			VvTSLogger::log_dyn("parser", _id.c_str(), LL_FATAL, "[{}] Entrance function createParser not found", _id.c_str());
 			return false;
 		}
 
 		_parser_api = pFuncCreateParser();
 		if (NULL == _parser_api)
 		{
-			WTSLogger::log_dyn("parser", _id.c_str(), LL_FATAL, "[{}] Creating parser api failed", _id.c_str());
+			VvTSLogger::log_dyn("parser", _id.c_str(), LL_FATAL, "[{}] Creating parser api failed", _id.c_str());
 			return false;
 		}
 
@@ -243,15 +243,15 @@ bool ParserAdapter::init(const char* id, VvTSVariant* cfg, IParserStub* stub, IB
 		}
 		else
 		{
-			WTSLogger::log_dyn("parser", _id.c_str(), LL_ERROR, "[{}] Parser initializing failed: api initializing failed...", _id.c_str());
+			VvTSLogger::log_dyn("parser", _id.c_str(), LL_ERROR, "[{}] Parser initializing failed: api initializing failed...", _id.c_str());
 		}
 	}
 	else
 	{
-		WTSLogger::log_dyn("parser", _id.c_str(), LL_ERROR, "[{}] Parser initializing failed: creating api failed...", _id.c_str());
+		VvTSLogger::log_dyn("parser", _id.c_str(), LL_ERROR, "[{}] Parser initializing failed: creating api failed...", _id.c_str());
 	}
 
-	WTSLogger::log_dyn("parser", _id.c_str(), LL_INFO, "[{}] Parser initialzied, check_time: {}", _id.c_str(), _check_time);
+	VvTSLogger::log_dyn("parser", _id.c_str(), LL_INFO, "[{}] Parser initialzied, check_time: {}", _id.c_str(), _check_time);
 
 	return true;
 }
@@ -315,7 +315,7 @@ void ParserAdapter::handleQuote(VvTSTickData *quote, uint32_t procFlag)
 		 */
 		if (tick_time - local_time > RESONABLE_MILLISECS)
 		{
-			WTSLogger::warn("Tick of {} with wrong timestamp {}.{} received, skipped", cInfo->getFullCode(), quote->actiondate(), quote->actiontime());
+			VvTSLogger::warn("Tick of {} with wrong timestamp {}.{} received, skipped", cInfo->getFullCode(), quote->actiondate(), quote->actiontime());
 			return;
 		}
 	}
@@ -414,7 +414,7 @@ void ParserAdapter::handleParserLog(VvTSLogLevel ll, const char* message)
 	if (_stopped)
 		return;
 
-	WTSLogger::log_dyn_raw("parser", _id.c_str(), ll, message);
+	VvTSLogger::log_dyn_raw("parser", _id.c_str(), ll, message);
 }
 
 
@@ -438,7 +438,7 @@ bool ParserAdapterMgr::addAdapter(const char* id, ParserAdapterPtr& adapter)
 	auto it = _adapters.find(id);
 	if (it != _adapters.end())
 	{
-		WTSLogger::error(" Same name of parsers: {}", id);
+		VvTSLogger::error(" Same name of parsers: {}", id);
 		return false;
 	}
 
@@ -466,5 +466,5 @@ void ParserAdapterMgr::run()
 		it->second->run();
 	}
 
-	WTSLogger::info("{} parsers started", _adapters.size());
+	VvTSLogger::info("{} parsers started", _adapters.size());
 }

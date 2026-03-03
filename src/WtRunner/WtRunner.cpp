@@ -9,14 +9,14 @@
  */
 #include "WtRunner.h"
 
-#include "../WtCore/WtHelper.h"
+#include "../WtCore/VvtHelper.h"
 #include "../WtCore/CtaStraContext.h"
 #include "../WtCore/HftStraContext.h"
 #include "../WtCore/WtDiffExecuter.h"
 
 #include "../Includes/VvTSVariant.hpp"
 #include "../Includes/VvTSContractInfo.hpp"
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 #include "../VvTSUtils/VvTSCfgLoader.h"
 #include "../VvTSUtils/SignalHook.hpp"
 #include "../Share/StrUtil.hpp"
@@ -44,10 +44,10 @@ WtRunner::WtRunner()
 	, _to_exit(false)
 {
 	install_signal_hooks([](const char* message) {
-		WTSLogger::error(message);
+		VvTSLogger::error(message);
 	}, [this](bool bStopped) {
 		_to_exit = bStopped;
-		WTSLogger::info("Exit flag is {}", _to_exit);
+		VvTSLogger::info("Exit flag is {}", _to_exit);
 	});
 }
 
@@ -58,13 +58,13 @@ WtRunner::~WtRunner()
 
 void WtRunner::init(const std::string& filename)
 {
-	WTSLogger::init(filename.c_str());
+	VvTSLogger::init(filename.c_str());
 
-	WtHelper::setInstDir(getBinDir());
+	VvtHelper::setInstDir(getBinDir());
 
 	if(!StdFile::exists(filename.c_str()))
 	{
-		WTSLogger::warn("logging configure {} not exists", filename);
+		VvTSLogger::warn("logging configure {} not exists", filename);
 	}
 }
 
@@ -73,7 +73,7 @@ bool WtRunner::config(const std::string& filename)
 	_config = VvTSCfgLoader::load_from_file(filename);
 	if(_config == NULL)
 	{
-		WTSLogger::error("Loading config file {} failed", filename);
+		VvTSLogger::error("Loading config file {} failed", filename);
 		return false;
 	}
 
@@ -149,7 +149,7 @@ bool WtRunner::config(const std::string& filename)
 		for (const std::string& ruleTag : tags)
 		{
 			_hot_mgr.loadCustomRules(ruleTag.c_str(), cfgRules->getCString(ruleTag.c_str()));
-			WTSLogger::info("{} rules loaded from {}", ruleTag, cfgRules->getCString(ruleTag.c_str()));
+			VvTSLogger::info("{} rules loaded from {}", ruleTag, cfgRules->getCString(ruleTag.c_str()));
 		}
 	}
 
@@ -171,22 +171,22 @@ bool WtRunner::config(const std::string& filename)
 			const char* filename = cfgParser->asCString();
 			if (StdFile::exists(filename))
 			{
-				WTSLogger::info("Reading parser config from {}...", filename);
+				VvTSLogger::info("Reading parser config from {}...", filename);
 				VvTSVariant* var = VvTSCfgLoader::load_from_file(filename);
 				if(var)
 				{
 					if (!initParsers(var->get("parsers")))
-						WTSLogger::error("Loading parsers failed");
+						VvTSLogger::error("Loading parsers failed");
 					var->release();
 				}
 				else
 				{
-					WTSLogger::error("Loading parser config {} failed", filename);
+					VvTSLogger::error("Loading parser config {} failed", filename);
 				}
 			}
 			else
 			{
-				WTSLogger::error("Parser configuration {} not exists", filename);
+				VvTSLogger::error("Parser configuration {} not exists", filename);
 			}
 		}
 		else if (cfgParser->type() == VvTSVariant::VT_Array)
@@ -204,22 +204,22 @@ bool WtRunner::config(const std::string& filename)
 			const char* filename = cfgTraders->asCString();
 			if (StdFile::exists(filename))
 			{
-				WTSLogger::info("Reading trader config from {}...", filename);
+				VvTSLogger::info("Reading trader config from {}...", filename);
 				VvTSVariant* var = VvTSCfgLoader::load_from_file(filename);
 				if (var)
 				{
 					if (!initTraders(var->get("traders")))
-						WTSLogger::error("Loading traders failed");
+						VvTSLogger::error("Loading traders failed");
 					var->release();
 				}
 				else
 				{
-					WTSLogger::error("Loading trader config {} failed", filename);
+					VvTSLogger::error("Loading trader config {} failed", filename);
 				}
 			}
 			else
 			{
-				WTSLogger::error("Trader configuration {} not exists", filename);
+				VvTSLogger::error("Trader configuration {} not exists", filename);
 			}
 		}
 		else if (cfgTraders->type() == VvTSVariant::VT_Array)
@@ -241,12 +241,12 @@ bool WtRunner::config(const std::string& filename)
 				const char* filename = cfgExec->asCString();
 				if (StdFile::exists(filename))
 				{
-					WTSLogger::info("Reading executer config from {}...", filename);
+					VvTSLogger::info("Reading executer config from {}...", filename);
 					VvTSVariant* var = VvTSCfgLoader::load_from_file(filename);
 					if (var)
 					{
 						if (!initExecuters(var->get("executers")))
-							WTSLogger::error("Loading executers failed");
+							VvTSLogger::error("Loading executers failed");
 
 						VvTSVariant* c = var->get("routers");
 						if (c != NULL)
@@ -256,12 +256,12 @@ bool WtRunner::config(const std::string& filename)
 					}
 					else
 					{
-						WTSLogger::error("Loading executer config {} failed", filename);
+						VvTSLogger::error("Loading executer config {} failed", filename);
 					}
 				}
 				else
 				{
-					WTSLogger::error("Trader configuration {} not exists", filename);
+					VvTSLogger::error("Trader configuration {} not exists", filename);
 				}
 			}
 			else if (cfgExec->type() == VvTSVariant::VT_Array)
@@ -293,7 +293,7 @@ bool WtRunner::initCtaStrategies()
 	if (cfg == NULL || cfg->type() != VvTSVariant::VT_Array)
 		return false;
 
-	std::string path = WtHelper::getCWD() + "cta/";
+	std::string path = VvtHelper::getCWD() + "cta/";
 	_cta_stra_mgr.loadFactories(path.c_str());
 
 	for (uint32_t idx = 0; idx < cfg->size(); idx++)
@@ -325,7 +325,7 @@ bool WtRunner::initHftStrategies()
 	if (cfg == NULL || cfg->type() != VvTSVariant::VT_Array)
 		return false;
 
-	std::string path = WtHelper::getCWD() + "hft/";
+	std::string path = VvtHelper::getCWD() + "hft/";
 	_hft_stra_mgr.loadFactories(path.c_str());
 
 	for (uint32_t idx = 0; idx < cfg->size(); idx++)
@@ -355,7 +355,7 @@ bool WtRunner::initHftStrategies()
 		}
 		else
 		{
-			WTSLogger::error("Trader {} not exists, binding trader to HFT strategy failed", traderid);
+			VvTSLogger::error("Trader {} not exists, binding trader to HFT strategy failed", traderid);
 		}
 
 		_hft_engine.addContext(HftContextPtr(ctx));
@@ -389,19 +389,19 @@ bool WtRunner::initEngine()
 
 	if (_is_hft)
 	{
-		WTSLogger::info("Trading enviroment initialzied with engine: HFT");
+		VvTSLogger::info("Trading enviroment initialzied with engine: HFT");
 		_hft_engine.init(cfg, &_bd_mgr, &_data_mgr, &_hot_mgr, &_notifier);
 		_engine = &_hft_engine;
 	}
 	else if (_is_sel)
 	{
-		WTSLogger::info("Trading enviroment initialzied with engine: SEL");
+		VvTSLogger::info("Trading enviroment initialzied with engine: SEL");
 		_sel_engine.init(cfg, &_bd_mgr, &_data_mgr, &_hot_mgr, &_notifier);
 		_engine = &_sel_engine;
 	}
 	else
 	{
-		WTSLogger::info("Trading enviroment initialzied with engine: CTA");
+		VvTSLogger::info("Trading enviroment initialzied with engine: CTA");
 		_cta_engine.init(cfg, &_bd_mgr, &_data_mgr, &_hot_mgr, &_notifier);
 		_engine = &_cta_engine;
 	}
@@ -423,7 +423,7 @@ bool WtRunner::initDataMgr()
 		return false;
 
 	_data_mgr.init(cfg, _engine);
-	WTSLogger::info("Data manager initialized");
+	VvTSLogger::info("Data manager initialized");
 
 	return true;
 }
@@ -457,7 +457,7 @@ bool WtRunner::initParsers(VvTSVariant* cfgParser)
 		count++;
 	}
 
-	WTSLogger::info("{} parsers loaded", count);
+	VvTSLogger::info("{} parsers loaded", count);
 	return true;
 }
 
@@ -466,7 +466,7 @@ bool WtRunner::initExecuters(VvTSVariant* cfgExecuter)
 	if (cfgExecuter == NULL || cfgExecuter->type() != VvTSVariant::VT_Array)
 		return false;
 
-	std::string path = WtHelper::getCWD() + "executer/";
+	std::string path = VvtHelper::getCWD() + "executer/";
 	_exe_factory.loadFactories(path.c_str());
 
 	uint32_t count = 0;
@@ -490,7 +490,7 @@ bool WtRunner::initExecuters(VvTSVariant* cfgExecuter)
 			const char* tid = cfgItem->getCString("trader");
 			if (strlen(tid) == 0)
 			{
-				WTSLogger::error("No Trader configured for Executer {}", id);
+				VvTSLogger::error("No Trader configured for Executer {}", id);
 			}
 			else
 			{
@@ -502,7 +502,7 @@ bool WtRunner::initExecuters(VvTSVariant* cfgExecuter)
 				}
 				else
 				{
-					WTSLogger::error("Trader {} not exists, cannot configured for executer %s", tid, id);
+					VvTSLogger::error("Trader {} not exists, cannot configured for executer %s", tid, id);
 				}
 			}
 
@@ -517,7 +517,7 @@ bool WtRunner::initExecuters(VvTSVariant* cfgExecuter)
 			const char* tid = cfgItem->getCString("trader");
 			if (strlen(tid) == 0)
 			{
-				WTSLogger::error("No Trader configured for Executer {}", id);
+				VvTSLogger::error("No Trader configured for Executer {}", id);
 			}
 			else
 			{
@@ -529,7 +529,7 @@ bool WtRunner::initExecuters(VvTSVariant* cfgExecuter)
 				}
 				else
 				{
-					WTSLogger::error("Trader {} not exists, cannot configured for executer %s", tid, id);
+					VvTSLogger::error("Trader {} not exists, cannot configured for executer %s", tid, id);
 				}
 			}
 
@@ -546,7 +546,7 @@ bool WtRunner::initExecuters(VvTSVariant* cfgExecuter)
 		count++;
 	}
 
-	WTSLogger::info("{} executers loaded", count);
+	VvTSLogger::info("{} executers loaded", count);
 
 	return true;
 }
@@ -573,7 +573,7 @@ bool WtRunner::initTraders(VvTSVariant* cfgTrader)
 		count++;
 	}
 
-	WTSLogger::info("{} traders loaded", count);
+	VvTSLogger::info("{} traders loaded", count);
 
 	return true;
 }
@@ -598,7 +598,7 @@ void WtRunner::run(bool bAsync /* = false */)
 	catch (...)
 	{
 		print_stack_trace([](const char* message) {
-			WTSLogger::error(message);
+			VvTSLogger::error(message);
 		});
 	}
 }

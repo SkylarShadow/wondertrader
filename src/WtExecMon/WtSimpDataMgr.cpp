@@ -9,7 +9,7 @@
  */
 #include "WtSimpDataMgr.h"
 #include "WtExecRunner.h"
-#include "../WtCore/WtHelper.h"
+#include "../WtCore/VvtHelper.h"
 
 #include "../Share/StrUtil.hpp"
 #include "../Includes/VvTSDataDef.hpp"
@@ -17,13 +17,13 @@
 #include "../Share/DLLHelper.hpp"
 #include "../Includes/VvTSSessionInfo.hpp"
 
-#include "../WTSTools/WTSLogger.h"
-#include "../WTSTools/WTSDataFactory.h"
+#include "../VvTSTools/VvTSLogger.h"
+#include "../VvTSTools/VvTSDataFactory.h"
 
 USING_NS_VVTP;
 
 
-WTSDataFactory g_dataFact;
+VvTSDataFactory g_dataFact;
 
 WtSimpDataMgr::WtSimpDataMgr()
 	: _reader(NULL)
@@ -47,21 +47,21 @@ bool WtSimpDataMgr::initStore(VvTSVariant* cfg)
 
 	std::string module = cfg->getCString("module");
 	if (module.empty())
-		module = WtHelper::getInstDir() + DLLHelper::wrap_module("WtDataStorage");
+		module = VvtHelper::getInstDir() + DLLHelper::wrap_module("WtDataStorage");
 	else
-		module = WtHelper::getInstDir() + DLLHelper::wrap_module(module.c_str());
+		module = VvtHelper::getInstDir() + DLLHelper::wrap_module(module.c_str());
 
 	DllHandle hInst = DLLHelper::load_library(module.c_str());
 	if (hInst == NULL)
 	{
-		WTSLogger::error("Data reader {} loading failed", module.c_str());
+		VvTSLogger::error("Data reader {} loading failed", module.c_str());
 		return false;
 	}
 
 	FuncCreateDataReader funcCreator = (FuncCreateDataReader)DLLHelper::get_symbol(hInst, "createDataReader");
 	if (funcCreator == NULL)
 	{
-		WTSLogger::error("Data reader {} loading failed: entrance function createDataReader not found", module.c_str());
+		VvTSLogger::error("Data reader {} loading failed: entrance function createDataReader not found", module.c_str());
 		DLLHelper::free_library(hInst);
 		return false;
 	}
@@ -69,7 +69,7 @@ bool WtSimpDataMgr::initStore(VvTSVariant* cfg)
 	_reader = funcCreator();
 	if (_reader == NULL)
 	{
-		WTSLogger::error("Data reader {} creating api failed", module.c_str());
+		VvTSLogger::error("Data reader {} creating api failed", module.c_str());
 		DLLHelper::free_library(hInst);
 		return false;
 	}
@@ -119,7 +119,7 @@ uint32_t WtSimpDataMgr::get_secs()
 
 void WtSimpDataMgr::reader_log(VvTSLogLevel ll, const char* message)
 {
-	WTSLogger::log_raw(ll, message);
+	VvTSLogger::log_raw(ll, message);
 }
 
 void WtSimpDataMgr::on_bar(const char* code, VvTSKlinePeriod period, VvTSBarStruct* newBar)

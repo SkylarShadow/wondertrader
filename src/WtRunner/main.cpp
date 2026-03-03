@@ -10,7 +10,7 @@
 
 #include "WtRunner.h"
 
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 #ifdef _MSC_VER
 #include "../Common/mdump.h"

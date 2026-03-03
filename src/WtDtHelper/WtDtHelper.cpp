@@ -14,8 +14,8 @@
 
 #include "../WtDataStorage/DataDefine.h"
 #include "../VvTSUtils/VvTSCmpHelper.hpp"
-#include "../WTSTools/CsvHelper.h"
-#include "../WTSTools/WTSDataFactory.h"
+#include "../VvTSTools/CsvHelper.h"
+#include "../VvTSTools/VvTSDataFactory.h"
 
 #include "../Includes/VvTSDataDef.hpp"
 #include "../Includes/VvTSSessionInfo.hpp"
@@ -994,7 +994,7 @@ VvTUInt32 resample_bars(VvTString barFile, FuncGetBarsCallback cb, FuncCountData
 
 	uint32_t hitCnt = eIdx - sIdx + 1;
 	VvTSKlineSlice* slice = VvTSKlineSlice::create("", kp, 1, &bars[sIdx], hitCnt);
-	WTSDataFactory fact;
+	VvTSDataFactory fact;
 	VvTSKlineData* kline = fact.extractKlineData(slice, kp, times, sInfo, true, bAlignSec);
 	if(kline == NULL)
 	{

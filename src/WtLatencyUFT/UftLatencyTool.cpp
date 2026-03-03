@@ -15,7 +15,7 @@
 #include "../Includes/ITraderApi.h"
 #include "../Includes/VvTSContractInfo.hpp"
 
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 #include "../VvTSUtils/VvTSCfgLoader.h"
 
 #include "../Share/StrUtil.hpp"
@@ -139,7 +139,7 @@ namespace uft
 			}
 			auto total = ticker.nano_seconds();
 			double t2t = total * 1.0 / times;
-			WTSLogger::warn("{} ticks simulated in {:.0f} ns, UftEngine Innner Latency: {:.3f} ns", times, total*1.0, t2t);
+			VvTSLogger::warn("{} ticks simulated in {:.0f} ns, UftEngine Innner Latency: {:.3f} ns", times, total*1.0, t2t);
 		}
 
 	public:
@@ -173,7 +173,7 @@ namespace uft
 
 		virtual int orderInsert(VvTSEntrust* eutrust) override
 		{
-			//WTSLogger::debug("{}", __FUNCTION__);
+			//VvTSLogger::debug("{}", __FUNCTION__);
 			return 0;
 		}
 
@@ -204,7 +204,7 @@ namespace uft
 
 		virtual void on_tick(IUftStraCtx* ctx, const char* code, VvTSTickData* newTick)
 		{
-			//WTSLogger::debug("{}", __FUNCTION__);
+			//VvTSLogger::debug("{}", __FUNCTION__);
 			ctx->stra_enter_long("SHFE.rb2205", 2300, 1, 0);
 			//ctx->stra_enter_short("SHFE.rb2205", 2300, 1, 0);
 		}
@@ -222,14 +222,14 @@ namespace uft
 
 	bool UftLatencyTool::init()
 	{
-		WTSLogger::init("logcfg.yaml");
+		VvTSLogger::init("logcfg.yaml");
 
 		std::string cfgFile = "config.yaml";
 
 		VvTSVariant* _config = VvTSCfgLoader::load_from_file(cfgFile);
 		if (_config == NULL)
 		{
-			WTSLogger::error("Loading config file {} failed", cfgFile);
+			VvTSLogger::error("Loading config file {} failed", cfgFile);
 			return false;
 		}
 
@@ -271,10 +271,10 @@ namespace uft
 		}
 
 		_times = _config->getUInt32("times");
-		WTSLogger::warn("{} ticks will be simulated", _times);
+		VvTSLogger::warn("{} ticks will be simulated", _times);
 
 		_core = _config->getUInt32("core");
-		WTSLogger::warn("Testing thread will be bind to core {}", _core);
+		VvTSLogger::warn("Testing thread will be bind to core {}", _core);
 
 		initEngine(_config->get("env"));
 		initModules();
@@ -300,7 +300,7 @@ namespace uft
 
 	bool UftLatencyTool::initEngine(VvTSVariant* cfg)
 	{
-		WTSLogger::warn("Trading enviroment initialzied with engine: UFT");
+		VvTSLogger::warn("Trading enviroment initialzied with engine: UFT");
 		_engine.init(cfg, &_bd_mgr, NULL, NULL);
 		_engine.set_adapter_mgr(&_traders);
 
@@ -333,7 +333,7 @@ namespace uft
 		{
 			if(!CpuHelper::bind_core(_core-1))
 			{
-				WTSLogger::error("Binding to core {} failed", _core);
+				VvTSLogger::error("Binding to core {} failed", _core);
 			}
 		}
 

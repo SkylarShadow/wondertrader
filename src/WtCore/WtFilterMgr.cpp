@@ -4,7 +4,7 @@
 #include "../Share/CodeHelper.hpp"
 #include "../Includes/VvTSVariant.hpp"
 #include "../VvTSUtils/VvTSCfgLoader.h"
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 #include <boost/filesystem.hpp>
 
@@ -20,7 +20,7 @@ void WtFilterMgr::load_filters(const char* fileName)
 
 	if (!StdFile::exists(_filter_file.c_str()))
 	{
-		WTSLogger::debug("Filters configuration file {} not exists", _filter_file);
+		VvTSLogger::debug("Filters configuration file {} not exists", _filter_file);
 		return;
 	}
 
@@ -30,7 +30,7 @@ void WtFilterMgr::load_filters(const char* fileName)
 
 	if (_filter_timestamp != 0)
 	{
-		WTSLogger::info("Filters configuration file {} modified, will be reloaded", _filter_file);
+		VvTSLogger::info("Filters configuration file {} modified, will be reloaded", _filter_file);
 		if (_notifier)
 			_notifier->notify_event("Filter file has been reloaded");
 	}
@@ -60,7 +60,7 @@ void WtFilterMgr::load_filters(const char* fileName)
 
 			if (fAct == FA_None)
 			{
-				WTSLogger::error("Action {} of strategy filter {} not recognized", action, key);
+				VvTSLogger::error("Action {} of strategy filter {} not recognized", action, key);
 				continue;
 			}
 
@@ -69,7 +69,7 @@ void WtFilterMgr::load_filters(const char* fileName)
 			fItem._action = fAct;
 			fItem._target = cfgItem->getDouble("target");
 
-			WTSLogger::info("Strategy filter {} loaded", key);
+			VvTSLogger::info("Strategy filter {} loaded", key);
 		}
 	}
 
@@ -91,7 +91,7 @@ void WtFilterMgr::load_filters(const char* fileName)
 
 			if (fAct == FA_None)
 			{
-				WTSLogger::error("Action {} of code filter {} not recognized", action, stdCode);
+				VvTSLogger::error("Action {} of code filter {} not recognized", action, stdCode);
 				continue;
 			}
 
@@ -100,7 +100,7 @@ void WtFilterMgr::load_filters(const char* fileName)
 			fItem._action = fAct;
 			fItem._target = cfgItem->getDouble("target");
 
-			WTSLogger::info("Code filter {} loaded", stdCode);
+			VvTSLogger::info("Code filter {} loaded", stdCode);
 		}
 	}
 
@@ -112,7 +112,7 @@ void WtFilterMgr::load_filters(const char* fileName)
 		for (const std::string& execid : executer_ids)
 		{
 			bool bDisabled = filterExecuters->getBoolean(execid.c_str());
-			WTSLogger::info("Executer {} is %s", execid, bDisabled?"disabled":"enabled");
+			VvTSLogger::info("Executer {} is %s", execid, bDisabled?"disabled":"enabled");
 			_exec_filters[execid] = bDisabled;
 		}
 	}
@@ -144,11 +144,11 @@ bool WtFilterMgr::is_filtered_by_strategy(const char* straName, double& targetPo
 		if(isDiff)
 		{
 			//如果过滤器触发，并且是增量头寸，则直接过滤掉
-			WTSLogger::info("[Filters] Strategy filter {} triggered, the change of position ignored directly", straName);
+			VvTSLogger::info("[Filters] Strategy filter {} triggered, the change of position ignored directly", straName);
 			return true;
 		}
 
-		WTSLogger::info("[Filters] Strategy filter {} triggered, action: {}", straName, fItem._action <= FA_Redirect ? FLTACT_NAMEs[fItem._action] : "Unknown");
+		VvTSLogger::info("[Filters] Strategy filter {} triggered, action: {}", straName, fItem._action <= FA_Redirect ? FLTACT_NAMEs[fItem._action] : "Unknown");
 		if (fItem._action == FA_Ignore)
 		{
 			return true;
@@ -172,7 +172,7 @@ bool WtFilterMgr::is_filtered_by_code(const char* stdCode, double& targetPos)
 	if (cit != _code_filters.end())
 	{
 		const FilterItem& fItem = cit->second;
-		WTSLogger::info("[Filters] Code filter {} triggered, action: {}", stdCode, fItem._action <= FA_Redirect ? FLTACT_NAMEs[fItem._action] : "Unknown");
+		VvTSLogger::info("[Filters] Code filter {} triggered, action: {}", stdCode, fItem._action <= FA_Redirect ? FLTACT_NAMEs[fItem._action] : "Unknown");
 		if (fItem._action == FA_Ignore)
 		{
 			return true;
@@ -189,7 +189,7 @@ bool WtFilterMgr::is_filtered_by_code(const char* stdCode, double& targetPos)
 	if (cit != _code_filters.end())
 	{
 		const FilterItem& fItem = cit->second;
-		WTSLogger::info("[Filters] CommID filter {} triggered, action: {}", cInfo.stdCommID(), fItem._action <= FA_Redirect ? FLTACT_NAMEs[fItem._action] : "Unknown");
+		VvTSLogger::info("[Filters] CommID filter {} triggered, action: {}", cInfo.stdCommID(), fItem._action <= FA_Redirect ? FLTACT_NAMEs[fItem._action] : "Unknown");
 		if (fItem._action == FA_Ignore)
 		{
 			return true;

@@ -8,7 +8,7 @@
  * \brief 
  */
 #include "HftMocker.h"
-#include "WtHelper.h"
+#include "VvtHelper.h"
 
 #include <stdarg.h>
 
@@ -21,7 +21,7 @@
 #include "../Share/StrUtil.hpp"
 #include "../Share/StdUtils.hpp"
 
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 #include <rapidjson/document.h>
 #include <rapidjson/prettywriter.h>
@@ -313,14 +313,14 @@ void HftMocker::enable_hook(bool bEnabled /* = true */)
 {
 	_hook_valid = bEnabled;
 
-	WTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Calculating hook {}", bEnabled ? "enabled" : "disabled");
+	VvTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Calculating hook {}", bEnabled ? "enabled" : "disabled");
 }
 
 void HftMocker::install_hook()
 {
 	_has_hook = true;
 
-	WTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "HFT hook installed");
+	VvTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "HFT hook installed");
 }
 
 void HftMocker::step_tick()
@@ -328,14 +328,14 @@ void HftMocker::step_tick()
 	if (!_has_hook)
 		return;
 
-	WTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Notify calc thread, wait for calc done");
+	VvTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Notify calc thread, wait for calc done");
 	while (!_resumed)
 		_cond_calc.notify_all();
 
 	{
 		StdUniqueLock lock(_mtx_calc);
 		_cond_calc.wait(_mtx_calc);
-		WTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Calc done notified");
+		VvTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Calc done notified");
 		_resumed = false;
 	}
 }
@@ -358,10 +358,10 @@ void HftMocker::on_tick(const char* stdCode, VvTSTickData* newTick)
 	{
 		if (_has_hook && _hook_valid)
 		{
-			WTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Waiting for resume notify");
+			VvTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Waiting for resume notify");
 			StdUniqueLock lock(_mtx_calc);
 			_cond_calc.wait(_mtx_calc);
-			WTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Calc resumed");
+			VvTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Calc resumed");
 			_resumed = true;
 		}
 
@@ -408,10 +408,10 @@ void HftMocker::on_tick(const char* stdCode, VvTSTickData* newTick)
 
 		if (_has_hook && _hook_valid)
 		{
-			WTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Waiting for resume notify");
+			VvTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Waiting for resume notify");
 			StdUniqueLock lock(_mtx_calc);
 			_cond_calc.wait(_mtx_calc);
-			WTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Calc resumed");
+			VvTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Calc resumed");
 			_resumed = true;
 		}
 
@@ -422,7 +422,7 @@ void HftMocker::on_tick(const char* stdCode, VvTSTickData* newTick)
 
 	if (_has_hook && _hook_valid)
 	{
-		WTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Calc done, notify control thread");
+		VvTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "Calc done, notify control thread");
 		while (_resumed)
 			_cond_calc.notify_all();
 	}
@@ -984,22 +984,22 @@ void HftMocker::stra_sub_transactions(const char* stdCode)
 
 void HftMocker::stra_log_info(const char* message)
 {
-	WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_INFO, message);
+	VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_INFO, message);
 }
 
 void HftMocker::stra_log_debug(const char* message)
 {
-	WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_DEBUG, message);
+	VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_DEBUG, message);
 }
 
 void HftMocker::stra_log_warn(const char* message)
 {
-	WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_WARN, message);
+	VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_WARN, message);
 }
 
 void HftMocker::stra_log_error(const char* message)
 {
-	WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_ERROR, message);
+	VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_ERROR, message);
 }
 
 const char* HftMocker::stra_load_user_data(const char* key, const char* defVal /*= ""*/)
@@ -1019,7 +1019,7 @@ void HftMocker::stra_save_user_data(const char* key, const char* val)
 
 void HftMocker::dump_outputs()
 {
-	std::string folder = WtHelper::getOutputDir();
+	std::string folder = VvtHelper::getOutputDir();
 	folder += _name;
 	folder += "/";
 	boost::filesystem::create_directories(folder.c_str());

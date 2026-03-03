@@ -10,8 +10,8 @@
 #include "WtPorter.h"
 #include "WtRtRunner.h"
 
-#include "../WtCore/WtHelper.h"
-#include "../WTSTools/WTSLogger.h"
+#include "../WtCore/VvtHelper.h"
+#include "../VvTSTools/VvTSLogger.h"
 #include "../Includes/VvTSTradeDef.hpp"
 #include "../Includes/VvTSVersion.h"
 
@@ -91,7 +91,7 @@ void feed_adj_factors(VvTString stdCode, VvTUInt32* dates, double* factors, VvTU
 
 void feed_raw_ticks(VvTSTickStruct* ticks, VvTUInt32 count)
 {
-	WTSLogger::error("API not implemented");
+	VvTSLogger::error("API not implemented");
 }
 
 void init_porter(const char* logProfile, bool isFile, const char* genDir)
@@ -149,11 +149,11 @@ void write_log(VvTUInt32 level, const char* message, const char* catName)
 {
 	if (strlen(catName) > 0)
 	{
-		WTSLogger::log_raw_by_cat(catName, (VvTSLogLevel)level, message);
+		VvTSLogger::log_raw_by_cat(catName, (VvTSLogLevel)level, message);
 	}
 	else
 	{
-		WTSLogger::log_raw((VvTSLogLevel)level, message);
+		VvTSLogger::log_raw((VvTSLogLevel)level, message);
 	}
 }
 

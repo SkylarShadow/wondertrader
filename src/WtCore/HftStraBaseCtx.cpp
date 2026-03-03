@@ -10,7 +10,7 @@
 #include "HftStraBaseCtx.h"
 #include "WtHftEngine.h"
 #include "TraderAdapter.h"
-#include "WtHelper.h"
+#include "VvtHelper.h"
 
 #include "../Includes/VvTSContractInfo.hpp"
 #include "../Includes/IBaseDataMgr.h"
@@ -18,8 +18,8 @@
 #include "../Share/CodeHelper.hpp"
 #include "../Share/decimal.h"
 
-#include "../WTSTools/WTSLogger.h"
-#include "../WTSTools/WTSHotMgr.h"
+#include "../VvTSTools/VvTSLogger.h"
+#include "../VvTSTools/VvTSHotMgr.h"
 
 #include <rapidjson/document.h>
 #include <rapidjson/prettywriter.h>
@@ -62,7 +62,7 @@ void HftStraBaseCtx::init_outputs()
 	if (!_data_agent)
 		return;
 
-	std::string folder = WtHelper::getOutputDir();
+	std::string folder = VvtHelper::getOutputDir();
 	folder += _name;
 	folder += "//";
 	BoostFile::create_directories(folder.c_str());
@@ -510,22 +510,22 @@ void HftStraBaseCtx::stra_sub_transactions(const char* stdCode)
 
 void HftStraBaseCtx::stra_log_info(const char* message)
 {
-	WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_INFO, message);
+	VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_INFO, message);
 }
 
 void HftStraBaseCtx::stra_log_debug(const char* message)
 {
-	WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_DEBUG, message);
+	VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_DEBUG, message);
 }
 
 void HftStraBaseCtx::stra_log_warn(const char* message)
 {
-	WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_WARN, message);
+	VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_WARN, message);
 }
 
 void HftStraBaseCtx::stra_log_error(const char* message)
 {
-	WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_ERROR, message);
+	VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_ERROR, message);
 }
 
 void HftStraBaseCtx::on_trade(uint32_t localid, const char* stdCode, bool isBuy, double vol, double price)
@@ -729,7 +729,7 @@ void HftStraBaseCtx::save_userdata()
 	}
 
 	{
-		std::string filename = WtHelper::getStraUsrDatDir();
+		std::string filename = VvtHelper::getStraUsrDatDir();
 		filename += "ud_";
 		filename += _name;
 		filename += ".json";
@@ -748,7 +748,7 @@ void HftStraBaseCtx::save_userdata()
 
 void HftStraBaseCtx::load_userdata()
 {
-	std::string filename = WtHelper::getStraUsrDatDir();
+	std::string filename = VvtHelper::getStraUsrDatDir();
 	filename += "ud_";
 	filename += _name;
 	filename += ".json";

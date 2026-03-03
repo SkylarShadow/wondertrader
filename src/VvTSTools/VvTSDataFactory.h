@@ -1,5 +1,5 @@
 ﻿/*!
- * \file WTSDataFactory.h
+ * \file VvTSDataFactory.h
  * \project	WonderTrader
  *
  * \author Wesley
@@ -12,7 +12,7 @@
 
 USING_NS_VVTP;
 
-class WTSDataFactory : public IDataFactory
+class VvTSDataFactory : public IDataFactory
 {
 public:
 	/*

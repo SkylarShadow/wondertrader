@@ -3,7 +3,7 @@
 #include "../Includes/VvTSVariant.hpp"
 
 #include "../Share/decimal.h"
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 USING_NS_VVTP;
 
@@ -43,7 +43,7 @@ void WtDistExecuter::set_position(const vvt_hashmap<std::string, double>& target
 		_target_pos[stdCode] = newVol;
 		if (!decimal::eq(oldVol, newVol))
 		{
-			WTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "[{}]{}目标仓位更新: {} -> {}", _name.c_str(), stdCode, oldVol, newVol);
+			VvTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "[{}]{}目标仓位更新: {} -> {}", _name.c_str(), stdCode, oldVol, newVol);
 		}
 
 		//这里广播目标仓位
@@ -59,7 +59,7 @@ void WtDistExecuter::on_position_changed(const char* stdCode, double targetPos)
 
 	if (!decimal::eq(oldVol, targetPos))
 	{
-		WTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "[{}]{}目标仓位更新: {} -> {}", _name.c_str(), stdCode, oldVol, targetPos);
+		VvTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "[{}]{}目标仓位更新: {} -> {}", _name.c_str(), stdCode, oldVol, targetPos);
 	}
 
 	//这里广播目标仓位

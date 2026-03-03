@@ -10,8 +10,8 @@
 #include "WtDtServo.h"
 #include "WtDtRunner.h"
 
-#include "../WtDtCore/WtHelper.h"
-#include "../WTSTools/WTSLogger.h"
+#include "../WtDtCore/VvtHelper.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 #include "../Share/ModuleHelper.hpp"
 #include "../Includes/VvTSVersion.h"

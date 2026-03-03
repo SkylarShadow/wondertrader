@@ -24,7 +24,7 @@ NS_VVTP_END
 
 USING_NS_VVTP;
 
-class WTSBaseDataMgr;
+class VvTSBaseDataMgr;
 class StateMonitor;
 class UDPCaster;
 
@@ -35,7 +35,7 @@ public:
 	~DataManager();
 
 public:
-	bool init(VvTSVariant* params, WTSBaseDataMgr* bdMgr, StateMonitor* stMonitor);
+	bool init(VvTSVariant* params, VvTSBaseDataMgr* bdMgr, StateMonitor* stMonitor);
 
 	void add_ext_dumper(const char* id, IHisDataDumper* dumper);
 
@@ -92,7 +92,7 @@ public:
 private:
 	IDataWriter*		_writer;
 	FuncDeleteWriter	_remover;
-	WTSBaseDataMgr*		_bd_mgr;
+	VvTSBaseDataMgr*		_bd_mgr;
 	StateMonitor*		_state_mon;
 	std::vector<IDataCaster*>	_casters;
 };

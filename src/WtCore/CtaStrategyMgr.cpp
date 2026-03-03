@@ -12,7 +12,7 @@
 #include "../Share/StrUtil.hpp"
 #include "../Share/StdUtils.hpp"
 
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 #include <boost/filesystem.hpp>
 
@@ -30,7 +30,7 @@ bool CtaStrategyMgr::loadFactories(const char* path)
 {
 	if (!StdFile::exists(path))
 	{
-		WTSLogger::error("Directory {} of CTA strategy factory not exists", path);
+		VvTSLogger::error("Directory {} of CTA strategy factory not exists", path);
 		return false;
 	}
 
@@ -71,7 +71,7 @@ bool CtaStrategyMgr::loadFactories(const char* path)
 			fInfo._remover = (FuncDeleteStraFact)DLLHelper::get_symbol(hInst, "deleteStrategyFact");
 			fInfo._fact = fact;
 
-			WTSLogger::info("CTA strategy factory[{}] loaded", fact->getName());
+			VvTSLogger::info("CTA strategy factory[{}] loaded", fact->getName());
 
 			count++;
 		}
@@ -83,7 +83,7 @@ bool CtaStrategyMgr::loadFactories(const char* path)
 		
 	}
 
-	WTSLogger::info("{} CTA strategy factories in directory[{}] loaded", count, path);
+	VvTSLogger::info("{} CTA strategy factories in directory[{}] loaded", count, path);
 
 	return true;
 }

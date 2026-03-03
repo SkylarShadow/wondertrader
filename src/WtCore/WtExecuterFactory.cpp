@@ -2,7 +2,7 @@
 
 #include "../Share/StdUtils.hpp"
 #include "../Share/StrUtil.hpp"
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 #include <boost/filesystem.hpp>
 
@@ -15,7 +15,7 @@ bool WtExecuterFactory::loadFactories(const char* path)
 {
 	if (!StdFile::exists(path))
 	{
-		WTSLogger::error("Directory {} of executer factory not exists", path);
+		VvTSLogger::error("Directory {} of executer factory not exists", path);
 		return false;
 	}
 
@@ -58,7 +58,7 @@ bool WtExecuterFactory::loadFactories(const char* path)
 
 		_factories[fInfo._fact->getName()] = fInfo;
 
-		WTSLogger::info("Executer factory {} loaded", fInfo._fact->getName());
+		VvTSLogger::info("Executer factory {} loaded", fInfo._fact->getName());
 	}
 
 	return true;
@@ -74,7 +74,7 @@ ExecuteUnitPtr WtExecuterFactory::createExeUnit(const char* factname, const char
 	ExecuteUnit* unit = fInfo._fact->createExeUnit(unitname);
 	if (unit == NULL)
 	{
-		WTSLogger::error("Createing execution unit failed: {}.{}", factname, unitname);
+		VvTSLogger::error("Createing execution unit failed: {}.{}", factname, unitname);
 		return ExecuteUnitPtr();
 	}
 	return ExecuteUnitPtr(new ExeUnitWrapper(unit, fInfo._fact));
@@ -90,7 +90,7 @@ ExecuteUnitPtr WtExecuterFactory::createDiffExeUnit(const char* factname, const 
 	ExecuteUnit* unit = fInfo._fact->createDiffExeUnit(unitname);
 	if (unit == NULL)
 	{
-		WTSLogger::error("Createing diff execution unit failed: {}.{}", factname, unitname);
+		VvTSLogger::error("Createing diff execution unit failed: {}.{}", factname, unitname);
 		return ExecuteUnitPtr();
 	}
 	return ExecuteUnitPtr(new ExeUnitWrapper(unit, fInfo._fact));
@@ -106,7 +106,7 @@ ExecuteUnitPtr WtExecuterFactory::createArbiExeUnit(const char* factname, const 
 	ExecuteUnit* unit = fInfo._fact->createArbiExeUnit(unitname);
 	if (unit == NULL)
 	{
-		WTSLogger::error("Createing arbi execution unit failed: {}.{}", factname, unitname);
+		VvTSLogger::error("Createing arbi execution unit failed: {}.{}", factname, unitname);
 		return ExecuteUnitPtr();
 	}
 	return ExecuteUnitPtr(new ExeUnitWrapper(unit, fInfo._fact));
@@ -129,7 +129,7 @@ ExecuteUnitPtr WtExecuterFactory::createExeUnit(const char* name)
 	ExecuteUnit* unit = fInfo._fact->createExeUnit(unitname);
 	if (unit == NULL)
 	{
-		WTSLogger::error("Createing execution unit failed: {}", name);
+		VvTSLogger::error("Createing execution unit failed: {}", name);
 		return ExecuteUnitPtr();
 	}
 	return ExecuteUnitPtr(new ExeUnitWrapper(unit, fInfo._fact));
@@ -152,7 +152,7 @@ ExecuteUnitPtr WtExecuterFactory::createDiffExeUnit(const char* name)
 	ExecuteUnit* unit = fInfo._fact->createDiffExeUnit(unitname);
 	if (unit == NULL)
 	{
-		WTSLogger::error("Createing execution unit failed: {}", name);
+		VvTSLogger::error("Createing execution unit failed: {}", name);
 		return ExecuteUnitPtr();
 	}
 	return ExecuteUnitPtr(new ExeUnitWrapper(unit, fInfo._fact));
@@ -175,7 +175,7 @@ ExecuteUnitPtr WtExecuterFactory::createArbiExeUnit(const char* name)
 	ExecuteUnit* unit = fInfo._fact->createArbiExeUnit(unitname);
 	if (unit == NULL)
 	{
-		WTSLogger::error("Createing execution unit failed: {}", name);
+		VvTSLogger::error("Createing execution unit failed: {}", name);
 		return ExecuteUnitPtr();
 	}
 	return ExecuteUnitPtr(new ExeUnitWrapper(unit, fInfo._fact));

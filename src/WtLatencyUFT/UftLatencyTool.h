@@ -13,7 +13,7 @@
 #include "../WtUftCore/TraderAdapter.h"
 #include "../WtUftCore/ParserAdapter.h"
 
-#include "../WTSTools/WTSBaseDataMgr.h"
+#include "../VvTSTools/VvTSBaseDataMgr.h"
 
 NS_VVTP_BEGIN
 class VvTSVariant;
@@ -48,7 +48,7 @@ namespace uft
 
 		WtUftEngine			_engine;
 
-		WTSBaseDataMgr		_bd_mgr;
+		VvTSBaseDataMgr		_bd_mgr;
 
 		uint32_t			_times;
 		uint32_t			_core;

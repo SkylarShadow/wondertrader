@@ -20,7 +20,7 @@ LINK_DIRECTORIES(${LNKS})
 ADD_LIBRARY(TraderDumper SHARED ${SRCS} ${HDRS})
 
 SET(LIBS
-	WTSTools
+	VvTSTools
 	VvTSUtils
 	)
 IF(MSVC)

@@ -1,21 +1,21 @@
 ﻿#include "HisDataMgr.h"
-#include "WtHelper.h"
+#include "VvtHelper.h"
 #include "../Share/DLLHelper.hpp"
 #include "../Includes/VvTSVariant.hpp"
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 void HisDataMgr::reader_log(VvTSLogLevel ll, const char* message)
 {
-	WTSLogger::log_raw(ll, message);
+	VvTSLogger::log_raw(ll, message);
 }
 
 bool HisDataMgr::init(VvTSVariant* cfg)
 {
 	std::string module = cfg->getCString("module");
 	if (module.empty())
-		module = WtHelper::getInstDir() + DLLHelper::wrap_module("WtDataStorage");
+		module = VvtHelper::getInstDir() + DLLHelper::wrap_module("WtDataStorage");
 	else
-		module = WtHelper::getInstDir() + DLLHelper::wrap_module(module.c_str());
+		module = VvtHelper::getInstDir() + DLLHelper::wrap_module(module.c_str());
 
 	DllHandle libParser = DLLHelper::load_library(module.c_str());
 	if (libParser)
@@ -23,7 +23,7 @@ bool HisDataMgr::init(VvTSVariant* cfg)
 		FuncCreateBtDtReader pFuncCreator = (FuncCreateBtDtReader)DLLHelper::get_symbol(libParser, "createBtDtReader");
 		if (pFuncCreator == NULL)
 		{
-			WTSLogger::error("Initializing of backtest data reader failed: function createBtDtReader not found...");
+			VvTSLogger::error("Initializing of backtest data reader failed: function createBtDtReader not found...");
 		}
 
 		if (pFuncCreator)
@@ -31,11 +31,11 @@ bool HisDataMgr::init(VvTSVariant* cfg)
 			_reader = pFuncCreator();
 		}
 
-		WTSLogger::debug("Back data storage module {} loaded", module);
+		VvTSLogger::debug("Back data storage module {} loaded", module);
 	}
 	else
 	{
-		WTSLogger::error("Loading module back data storage module {} failed", module);
+		VvTSLogger::error("Loading module back data storage module {} failed", module);
 
 	}
 
@@ -48,7 +48,7 @@ bool HisDataMgr::load_raw_bars(const char* exchg, const char* code, VvTSKlinePer
 {
 	if(_reader == NULL)
 	{
-		WTSLogger::log_raw(LL_ERROR, "Backtest Data Reader not initialized");
+		VvTSLogger::log_raw(LL_ERROR, "Backtest Data Reader not initialized");
 		return false;
 	}
 
@@ -63,7 +63,7 @@ bool HisDataMgr::load_raw_ticks(const char* exchg, const char* code, uint32_t uD
 {
 	if (_reader == NULL)
 	{
-		WTSLogger::log_raw(LL_ERROR, "Backtest Data Reader not initialized");
+		VvTSLogger::log_raw(LL_ERROR, "Backtest Data Reader not initialized");
 		return false;
 	}
 
@@ -78,7 +78,7 @@ bool HisDataMgr::load_raw_trans(const char* exchg, const char* code, uint32_t uD
 {
 	if (_reader == NULL)
 	{
-		WTSLogger::log_raw(LL_ERROR, "Backtest Data Reader not initialized");
+		VvTSLogger::log_raw(LL_ERROR, "Backtest Data Reader not initialized");
 		return false;
 	}
 
@@ -93,7 +93,7 @@ bool HisDataMgr::load_raw_ordque(const char* exchg, const char* code, uint32_t u
 {
 	if (_reader == NULL)
 	{
-		WTSLogger::log_raw(LL_ERROR, "Backtest Data Reader not initialized");
+		VvTSLogger::log_raw(LL_ERROR, "Backtest Data Reader not initialized");
 		return false;
 	}
 
@@ -108,7 +108,7 @@ bool HisDataMgr::load_raw_orddtl(const char* exchg, const char* code, uint32_t u
 {
 	if (_reader == NULL)
 	{
-		WTSLogger::log_raw(LL_ERROR, "Backtest Data Reader not initialized");
+		VvTSLogger::log_raw(LL_ERROR, "Backtest Data Reader not initialized");
 		return false;
 	}
 

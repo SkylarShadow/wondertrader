@@ -165,10 +165,10 @@
     <ClCompile Include="Dumper.cpp" />
     <ClCompile Include="TraderAdapter.cpp" />
     <ClCompile Include="TraderDumper.cpp" />
-    <ClCompile Include="WtHelper.cpp" />
+    <ClCompile Include="VvtHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\WTSTools\WTSTools.vcxproj">
+    <ProjectReference Include="..\VvTSTools\VvTSTools.vcxproj">
       <Project>{8b249955-de56-41a3-a904-21dbbe40ab34}</Project>
     </ProjectReference>
   </ItemGroup>
@@ -177,7 +177,7 @@
     <ClInclude Include="PorterDefs.h" />
     <ClInclude Include="TraderAdapter.h" />
     <ClInclude Include="TraderDumper.h" />
-    <ClInclude Include="WtHelper.h" />
+    <ClInclude Include="VvtHelper.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

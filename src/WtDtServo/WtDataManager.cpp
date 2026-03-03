@@ -9,7 +9,7 @@
  */
 #include "WtDataManager.h"
 #include "WtDtRunner.h"
-#include "WtHelper.h"
+#include "VvtHelper.h"
 
 #include "../Includes/VvTSDataDef.hpp"
 #include "../Includes/VvTSVariant.hpp"
@@ -20,11 +20,11 @@
 #include "../Share/CodeHelper.hpp"
 #include "../Share/DLLHelper.hpp"
 
-#include "../WTSTools/WTSLogger.h"
-#include "../WTSTools/WTSDataFactory.h"
+#include "../VvTSTools/VvTSLogger.h"
+#include "../VvTSTools/VvTSDataFactory.h"
 
 
-WTSDataFactory g_dataFact;
+VvTSDataFactory g_dataFact;
 
 WtDataManager::WtDataManager()
 	: _bd_mgr(NULL)
@@ -55,20 +55,20 @@ bool WtDataManager::initStore(VvTSVariant* cfg)
 	if (module.empty())
 		module = "WtDataStorage";
 
-	module = WtHelper::get_module_dir() + DLLHelper::wrap_module(module.c_str());
+	module = VvtHelper::get_module_dir() + DLLHelper::wrap_module(module.c_str());
 	DllHandle libParser = DLLHelper::load_library(module.c_str());
 	if (libParser)
 	{
 		FuncCreateRdmDtReader pFuncCreateReader = (FuncCreateRdmDtReader)DLLHelper::get_symbol(libParser, "createRdmDtReader");
 		if (pFuncCreateReader == NULL)
 		{
-			WTSLogger::error("Initializing of random data reader failed: function createRdmDtReader not found...");
+			VvTSLogger::error("Initializing of random data reader failed: function createRdmDtReader not found...");
 		}
 
 		FuncDeleteRdmDtReader pFuncDeleteReader = (FuncDeleteRdmDtReader)DLLHelper::get_symbol(libParser, "deleteRdmDtReader");
 		if (pFuncDeleteReader == NULL)
 		{
-			WTSLogger::error("Initializing of random data reader failed: function deleteRdmDtReader not found...");
+			VvTSLogger::error("Initializing of random data reader failed: function deleteRdmDtReader not found...");
 		}
 
 		if (pFuncCreateReader && pFuncDeleteReader)
@@ -80,7 +80,7 @@ bool WtDataManager::initStore(VvTSVariant* cfg)
 	}
 	else
 	{
-		WTSLogger::error("Initializing of random data reader failed: loading module {} failed...", module);
+		VvTSLogger::error("Initializing of random data reader failed: loading module {} failed...", module);
 
 	}
 
@@ -99,14 +99,14 @@ bool WtDataManager::init(VvTSVariant* cfg, WtDtRunner* runner)
 
 	_align_by_section = cfg->getBoolean("align_by_section");
 
-	WTSLogger::info("Resampled bars will be aligned by section: {}", _align_by_section ? "yes" : " no");
+	VvTSLogger::info("Resampled bars will be aligned by section: {}", _align_by_section ? "yes" : " no");
 
 	return initStore(cfg->get("store"));
 }
 
 void WtDataManager::reader_log(VvTSLogLevel ll, const char* message)
 {
-	WTSLogger::log_raw(ll, message);
+	VvTSLogger::log_raw(ll, message);
 }
 
 VvTSTickSlice* WtDataManager::get_tick_slices_by_range(const char* stdCode,uint64_t stime, uint64_t etime /* = 0 */)
@@ -353,11 +353,11 @@ VvTSKlineSlice* WtDataManager::get_kline_slice_by_count(const char* stdCode, VvT
 	if (barCache._bars == NULL)
 	{
 		//第一次将全部数据缓存到内存中
-		WTSLogger::info("Caching all {} bars of {}...", tag, stdCode);
+		VvTSLogger::info("Caching all {} bars of {}...", tag, stdCode);
 		VvTSKlineSlice* rawData = _reader->readKlineSliceByCount(stdCode, period, UINT_MAX, 0);
 		if (rawData != NULL)
 		{
-			WTSLogger::info("Resampling {} {} bars by {}-TO-1 of {}...", rawData->size(), tag, times, stdCode);
+			VvTSLogger::info("Resampling {} {} bars by {}-TO-1 of {}...", rawData->size(), tag, times, stdCode);
 			VvTSKlineData* kData = g_dataFact.extractKlineData(rawData, period, times, sInfo, true);
 			barCache._bars = kData;
 
@@ -398,7 +398,7 @@ VvTSKlineSlice* WtDataManager::get_kline_slice_by_count(const char* stdCode, VvT
 		VvTSKlineSlice* rawData = _reader->readKlineSliceByRange(stdCode, period, barCache._last_bartime, 0);
 		if (rawData != NULL)
 		{
-			WTSLogger::info("{} {} bars of {} updated, adding to cache...", rawData->size(), tag, stdCode);
+			VvTSLogger::info("{} {} bars of {} updated, adding to cache...", rawData->size(), tag, stdCode);
 			for (int32_t idx = 0; idx < rawData->size(); idx++)
 			{
 				uint64_t barTime = 0;
@@ -554,7 +554,7 @@ void WtDataManager::subscribe_bar(const char* stdCode, VvTSKlinePeriod period, u
 		}
 	}
 
-	WTSLogger::info("Realtime bar {} has subscribed", key);
+	VvTSLogger::info("Realtime bar {} has subscribed", key);
 }
 
 void WtDataManager::clear_subbed_bars()
@@ -608,10 +608,10 @@ void WtDataManager::clear_cache()
 {
 	if (_reader == NULL)
 	{
-		WTSLogger::warn("DataReader not initialized, clearing canceled");
+		VvTSLogger::warn("DataReader not initialized, clearing canceled");
 		return;
 	}
 
 	_reader->clearCache();
-	WTSLogger::warn("All cache cleared");
+	VvTSLogger::warn("All cache cleared");
 }

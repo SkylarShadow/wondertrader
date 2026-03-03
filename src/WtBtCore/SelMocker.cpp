@@ -8,7 +8,7 @@
 * \brief
 */
 #include "SelMocker.h"
-#include "WtHelper.h"
+#include "VvtHelper.h"
 
 #include <exception>
 #include <boost/filesystem.hpp>
@@ -20,7 +20,7 @@
 #include "../Includes/VvTSSessionInfo.hpp"
 #include "../Includes/VvTSVariant.hpp"
 
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 #include <rapidjson/document.h>
 #include <rapidjson/prettywriter.h>
@@ -139,7 +139,7 @@ void SelMocker::dump_stradata()
 	}
 
 	{
-		std::string folder = WtHelper::getOutputDir();
+		std::string folder = VvtHelper::getOutputDir();
 		folder += _name;
 		folder += "/";
 
@@ -157,7 +157,7 @@ void SelMocker::dump_stradata()
 
 void SelMocker::dump_outputs()
 {
-	std::string folder = WtHelper::getOutputDir();
+	std::string folder = VvtHelper::getOutputDir();
 	folder += _name;
 	folder += "/";
 	boost::filesystem::create_directories(folder.c_str());
@@ -257,7 +257,7 @@ bool SelMocker::init_sel_factory(VvTSVariant* cfg)
 		_strategy = _factory._fact->createStrategy(cfgStra->getCString("name"), cfgStra->getCString("id"));
 		if (_strategy)
 		{
-			WTSLogger::info("Strategy {}.{} created,strategy ID: {}", _factory._fact->getName(), _strategy->getName(), _strategy->id());
+			VvTSLogger::info("Strategy {}.{} created,strategy ID: {}", _factory._fact->getName(), _strategy->getName(), _strategy->id());
 		}
 		_strategy->init(cfgStra->get("params"));
 		_name = _strategy->id();
@@ -298,7 +298,7 @@ void SelMocker::handle_session_end(uint32_t uCurDate)
 
 void SelMocker::handle_replay_done()
 {
-	WTSLogger::log_dyn("strategy", _name.c_str(), LL_INFO, 
+	VvTSLogger::log_dyn("strategy", _name.c_str(), LL_INFO, 
 		"Strategy has been scheduled for {} times,totally taking {} microsecs,average of {} microsecs",
 		_emit_times, _total_calc_time, _total_calc_time / _emit_times);
 
@@ -399,7 +399,7 @@ void SelMocker::on_init()
 	if (_strategy)
 		_strategy->on_init(this);
 
-	WTSLogger::info("SEL Strategy initialized with {} slippage: {}", _ratio_slippage ? "ratio" : "absolute", _slippage);
+	VvTSLogger::info("SEL Strategy initialized with {} slippage: {}", _ratio_slippage ? "ratio" : "absolute", _slippage);
 }
 
 void SelMocker::update_dyn_profit(const char* stdCode, double price)
@@ -612,7 +612,7 @@ void SelMocker::stra_set_position(const char* stdCode, double qty, const char* u
 		//如果是T+1规则，则目标仓位不能小于冻结仓位
 		if (decimal::lt(qty, frozen))
 		{
-			WTSLogger::log_dyn("strategy", _name.c_str(), LL_ERROR, 
+			VvTSLogger::log_dyn("strategy", _name.c_str(), LL_ERROR, 
 				"New position of {} cannot be set to {} due to {} being frozen", stdCode, qty, frozen);
 			return;
 		}
@@ -926,22 +926,22 @@ double SelMocker::stra_get_fund_data(int flag)
 
 void SelMocker::stra_log_info(const char* message)
 {
-	WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_INFO, message);
+	VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_INFO, message);
 }
 
 void SelMocker::stra_log_debug(const char* message)
 {
-	WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_DEBUG, message);
+	VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_DEBUG, message);
 }
 
 void SelMocker::stra_log_warn(const char* message)
 {
-	WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_WARN, message);
+	VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_WARN, message);
 }
 
 void SelMocker::stra_log_error(const char* message)
 {
-	WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_ERROR, message);
+	VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_ERROR, message);
 }
 
 const char* SelMocker::stra_load_user_data(const char* key, const char* defVal /*= ""*/)

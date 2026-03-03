@@ -13,7 +13,7 @@ LINK_DIRECTORIES(${LNKS})
 
 SET(LIBS
 	WtBtCore
-	WTSTools
+	VvTSTools
 	VvTSUtils
 )
 

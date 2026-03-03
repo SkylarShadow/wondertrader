@@ -188,7 +188,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="..\WTSTools\WTSTools.vcxproj">
+    <ProjectReference Include="..\VvTSTools\VvTSTools.vcxproj">
       <Project>{8b249955-de56-41a3-a904-21dbbe40ab34}</Project>
     </ProjectReference>
     <ProjectReference Include="..\VvTSUtils\VvTSUtils.vcxproj">

@@ -31,8 +31,8 @@
 #include "../WtCore/WtDtMgr.h"
 #include "../WtCore/ActionPolicyMgr.h"
 
-#include "../WTSTools/WTSHotMgr.h"
-#include "../WTSTools/WTSBaseDataMgr.h"
+#include "../VvTSTools/VvTSHotMgr.h"
+#include "../VvTSTools/VvTSBaseDataMgr.h"
 
 NS_VVTP_BEGIN
 class VvTSVariant;
@@ -246,8 +246,8 @@ private:
 
 	WtDtMgr				_data_mgr;
 
-	WTSBaseDataMgr		_bd_mgr;
-	WTSHotMgr			_hot_mgr;
+	VvTSBaseDataMgr		_bd_mgr;
+	VvTSHotMgr			_hot_mgr;
 	EventNotifier		_notifier;
 
 	CtaStrategyMgr		_cta_mgr;

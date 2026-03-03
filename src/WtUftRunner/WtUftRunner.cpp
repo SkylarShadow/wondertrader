@@ -10,11 +10,11 @@
 #include "WtUftRunner.h"
 #include "../WtUftCore/ShareManager.h"
 
-#include "../WtUftCore/WtHelper.h"
+#include "../WtUftCore/VvtHelper.h"
 #include "../WtUftCore/UftStraContext.h"
 
 #include "../Includes/VvTSVariant.hpp"
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 #include "../VvTSUtils/VvTSCfgLoader.h"
 #include "../VvTSUtils/SignalHook.hpp"
 #include "../Share/StrUtil.hpp"
@@ -38,10 +38,10 @@ WtUftRunner::WtUftRunner()
 	:_to_exit(false)
 {
 	install_signal_hooks([](const char* message) {
-		WTSLogger::error(message);
+		VvTSLogger::error(message);
 	}, [this](bool bStopped) {
 		_to_exit = bStopped;
-		WTSLogger::info("Exit flag is {}", _to_exit);
+		VvTSLogger::info("Exit flag is {}", _to_exit);
 	});
 }
 
@@ -52,9 +52,9 @@ WtUftRunner::~WtUftRunner()
 
 void WtUftRunner::init(const std::string& filename)
 {
-	WTSLogger::init(filename.c_str());
+	VvTSLogger::init(filename.c_str());
 
-	WtHelper::setInstDir(getBinDir());
+	VvtHelper::setInstDir(getBinDir());
 }
 
 bool WtUftRunner::config(const std::string& filename)
@@ -62,7 +62,7 @@ bool WtUftRunner::config(const std::string& filename)
 	_config = VvTSCfgLoader::load_from_file(filename.c_str());
 	if(_config == NULL)
 	{
-		WTSLogger::error("Loading config file {} failed", filename);
+		VvTSLogger::error("Loading config file {} failed", filename);
 		return false;
 	}
 
@@ -123,7 +123,7 @@ bool WtUftRunner::config(const std::string& filename)
 
 	if(!_act_policy.init(_config->getCString("bspolicy")))
 	{
-		WTSLogger::error("ActionPolicyMgr init failed, please check config");
+		VvTSLogger::error("ActionPolicyMgr init failed, please check config");
 	}
 
 	//初始化行情通道
@@ -135,22 +135,22 @@ bool WtUftRunner::config(const std::string& filename)
 			const char* filename = cfgParser->asCString();
 			if (StdFile::exists(filename))
 			{
-				WTSLogger::info("Reading parser config from {}...", filename);
+				VvTSLogger::info("Reading parser config from {}...", filename);
 				VvTSVariant* var = VvTSCfgLoader::load_from_file(filename);
 				if(var)
 				{
 					if (!initParsers(var->get("parsers")))
-						WTSLogger::error("Loading parsers failed");
+						VvTSLogger::error("Loading parsers failed");
 					var->release();
 				}
 				else
 				{
-					WTSLogger::error("Loading parser config {} failed", filename);
+					VvTSLogger::error("Loading parser config {} failed", filename);
 				}
 			}
 			else
 			{
-				WTSLogger::error("Parser configuration {} not exists", filename);
+				VvTSLogger::error("Parser configuration {} not exists", filename);
 			}
 		}
 		else if (cfgParser->type() == VvTSVariant::VT_Array)
@@ -168,22 +168,22 @@ bool WtUftRunner::config(const std::string& filename)
 			const char* filename = cfgTraders->asCString();
 			if (StdFile::exists(filename))
 			{
-				WTSLogger::info("Reading trader config from {}...", filename);
+				VvTSLogger::info("Reading trader config from {}...", filename);
 				VvTSVariant* var = VvTSCfgLoader::load_from_file(filename);
 				if (var)
 				{
 					if (!initTraders(var->get("traders")))
-						WTSLogger::error("Loading traders failed");
+						VvTSLogger::error("Loading traders failed");
 					var->release();
 				}
 				else
 				{
-					WTSLogger::error("Loading trader config {} failed", filename);
+					VvTSLogger::error("Loading trader config {} failed", filename);
 				}
 			}
 			else
 			{
-				WTSLogger::error("Trader configuration {} not exists", filename);
+				VvTSLogger::error("Trader configuration {} not exists", filename);
 			}
 		}
 		else if (cfgTraders->type() == VvTSVariant::VT_Array)
@@ -207,7 +207,7 @@ bool WtUftRunner::initUftStrategies()
 	if (cfg == NULL || cfg->type() != VvTSVariant::VT_Array)
 		return false;
 
-	std::string path = WtHelper::getCWD() + "uft/";
+	std::string path = VvtHelper::getCWD() + "uft/";
 	_uft_stra_mgr.loadFactories(path.c_str());
 
 	for (uint32_t idx = 0; idx < cfg->size(); idx++)
@@ -220,12 +220,12 @@ bool WtUftRunner::initUftStrategies()
 		UftStrategyPtr stra = _uft_stra_mgr.createStrategy(name, id);
 		if (stra == NULL)
 		{
-			WTSLogger::error("UFT Strategy {} create failed", name);
+			VvTSLogger::error("UFT Strategy {} create failed", name);
 			continue;
 		}
 		else
 		{
-			WTSLogger::info("UFT Strategy {}({}) created", name, id);
+			VvTSLogger::info("UFT Strategy {}({}) created", name, id);
 		}
 
 		stra->self()->init(cfgItem->get("params"));
@@ -241,7 +241,7 @@ bool WtUftRunner::initUftStrategies()
 		}
 		else
 		{
-			WTSLogger::error("Trader {} not exists, binding trader to UFT strategy failed", traderid);
+			VvTSLogger::error("Trader {} not exists, binding trader to UFT strategy failed", traderid);
 		}
 
 		_uft_engine.addContext(UftContextPtr(ctx));
@@ -256,7 +256,7 @@ bool WtUftRunner::initEngine()
 	if (cfg == NULL)
 		return false;
 
-	WTSLogger::info("Trading enviroment initialzied with engine: UFT");
+	VvTSLogger::info("Trading enviroment initialzied with engine: UFT");
 	_uft_engine.init(cfg, &_bd_mgr, &_data_mgr, &_notifier);
 
 	_uft_engine.set_adapter_mgr(&_traders);
@@ -272,7 +272,7 @@ bool WtUftRunner::initDataMgr()
 		return false;
 
 	_data_mgr.init(cfg, &_uft_engine);
-	WTSLogger::info("Data manager initialized");
+	VvTSLogger::info("Data manager initialized");
 
 	return true;
 }
@@ -306,7 +306,7 @@ bool WtUftRunner::initParsers(VvTSVariant* cfgParser)
 		count++;
 	}
 
-	WTSLogger::info("{} parsers loaded", count);
+	VvTSLogger::info("{} parsers loaded", count);
 	return true;
 }
 
@@ -332,7 +332,7 @@ bool WtUftRunner::initTraders(VvTSVariant* cfgTrader)
 		count++;
 	}
 
-	WTSLogger::info("{} traders loaded", count);
+	VvTSLogger::info("{} traders loaded", count);
 
 	return true;
 }
@@ -367,7 +367,7 @@ void WtUftRunner::run(bool bAsync /* = false */)
 	catch (...)
 	{
 		print_stack_trace([](const char* message) {
-			WTSLogger::error(message);
+			VvTSLogger::error(message);
 		});
 	}
 }

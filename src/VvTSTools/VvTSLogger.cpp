@@ -1,5 +1,5 @@
 ﻿/*!
- * \file WTSLogger.cpp
+ * \file VvTSLogger.cpp
  * \project	WonderTrader
  *
  * \author Wesley
@@ -16,7 +16,7 @@
 #include <sys/time.h>
 #endif
 
-#include "WTSLogger.h"
+#include "VvTSLogger.h"
 #include "../VvTSUtils/VvTSCfgLoader.h"
 #include "../Includes/ILogHandler.h"
 #include "../Includes/VvTSVariant.hpp"
@@ -34,15 +34,15 @@
 
 const char* DYN_PATTERN = "dyn_pattern";
 
-ILogHandler*		WTSLogger::m_logHandler	= NULL;
-VvTSLogLevel			WTSLogger::m_logLevel	= LL_NONE;
-bool				WTSLogger::m_bStopped = false;
-bool				WTSLogger::m_bInited = false;
-bool				WTSLogger::m_bTpInited = false;
-SpdLoggerPtr		WTSLogger::m_rootLogger = NULL;
-WTSLogger::LogPatterns*	WTSLogger::m_mapPatterns = NULL;
-thread_local char	WTSLogger::m_buffer[];
-std::set<std::string>	WTSLogger::m_setDynLoggers;
+ILogHandler*		VvTSLogger::m_logHandler	= NULL;
+VvTSLogLevel			VvTSLogger::m_logLevel	= LL_NONE;
+bool				VvTSLogger::m_bStopped = false;
+bool				VvTSLogger::m_bInited = false;
+bool				VvTSLogger::m_bTpInited = false;
+SpdLoggerPtr		VvTSLogger::m_rootLogger = NULL;
+VvTSLogger::LogPatterns*	VvTSLogger::m_mapPatterns = NULL;
+thread_local char	VvTSLogger::m_buffer[];
+std::set<std::string>	VvTSLogger::m_setDynLoggers;
 
 inline spdlog::level::level_enum str_to_level( const char* slvl)
 {
@@ -125,14 +125,14 @@ inline void print_timetag(bool bWithSpace = true)
 		fmt::print(" ");
 }
 
-void WTSLogger::print_message(const char* buffer)
+void VvTSLogger::print_message(const char* buffer)
 {
 	print_timetag(true);
 	fmt::print(buffer);
 	fmt::print("\r\n");
 }
 
-void WTSLogger::initLogger(const char* catName, VvTSVariant* cfgLogger)
+void VvTSLogger::initLogger(const char* catName, VvTSVariant* cfgLogger)
 {
 	bool bAsync = cfgLogger->getBoolean("async");
 	const char* level = cfgLogger->getCString("level");
@@ -200,7 +200,7 @@ void WTSLogger::initLogger(const char* catName, VvTSVariant* cfgLogger)
 	}
 }
 
-void WTSLogger::init(const char* propFile /* = "logcfg.json" */, bool isFile /* = true */, ILogHandler* handler /* = NULL */)
+void VvTSLogger::init(const char* propFile /* = "logcfg.json" */, bool isFile /* = true */, ILogHandler* handler /* = NULL */)
 {
 	if (m_bInited)
 		return;
@@ -246,12 +246,12 @@ void WTSLogger::init(const char* propFile /* = "logcfg.json" */, bool isFile /* 
 	m_bInited = true;
 }
 
-void WTSLogger::registerHandler(ILogHandler* handler /* = NULL */)
+void VvTSLogger::registerHandler(ILogHandler* handler /* = NULL */)
 {
 	m_logHandler = handler;
 }
 
-void WTSLogger::stop()
+void VvTSLogger::stop()
 {
 	m_bStopped = true;
 	if (m_mapPatterns)
@@ -259,7 +259,7 @@ void WTSLogger::stop()
 	spdlog::shutdown();
 }
 
-void WTSLogger::debug_imp(SpdLoggerPtr logger, const char* message)
+void VvTSLogger::debug_imp(SpdLoggerPtr logger, const char* message)
 {
 	if (logger)
 		logger->debug(message);
@@ -271,7 +271,7 @@ void WTSLogger::debug_imp(SpdLoggerPtr logger, const char* message)
 		m_logHandler->handleLogAppend(LL_DEBUG, message);
 }
 
-void WTSLogger::info_imp(SpdLoggerPtr logger, const char* message)
+void VvTSLogger::info_imp(SpdLoggerPtr logger, const char* message)
 {
 	if (logger)
 		logger->info(message);
@@ -283,7 +283,7 @@ void WTSLogger::info_imp(SpdLoggerPtr logger, const char* message)
 		m_logHandler->handleLogAppend(LL_INFO, message);
 }
 
-void WTSLogger::warn_imp(SpdLoggerPtr logger, const char* message)
+void VvTSLogger::warn_imp(SpdLoggerPtr logger, const char* message)
 {
 	if (logger)
 		logger->warn(message);
@@ -295,7 +295,7 @@ void WTSLogger::warn_imp(SpdLoggerPtr logger, const char* message)
 		m_logHandler->handleLogAppend(LL_WARN, message);
 }
 
-void WTSLogger::error_imp(SpdLoggerPtr logger, const char* message)
+void VvTSLogger::error_imp(SpdLoggerPtr logger, const char* message)
 {
 	if (logger)
 		logger->error(message);
@@ -307,7 +307,7 @@ void WTSLogger::error_imp(SpdLoggerPtr logger, const char* message)
 		m_logHandler->handleLogAppend(LL_ERROR, message);
 }
 
-void WTSLogger::fatal_imp(SpdLoggerPtr logger, const char* message)
+void VvTSLogger::fatal_imp(SpdLoggerPtr logger, const char* message)
 {
 	if (logger)
 		logger->critical(message);
@@ -319,7 +319,7 @@ void WTSLogger::fatal_imp(SpdLoggerPtr logger, const char* message)
 		m_logHandler->handleLogAppend(LL_FATAL, message);
 }
 
-void WTSLogger::log_raw(VvTSLogLevel ll, const char* message)
+void VvTSLogger::log_raw(VvTSLogLevel ll, const char* message)
 {
 	if (m_logLevel > ll || m_bStopped)
 		return;
@@ -352,7 +352,7 @@ void WTSLogger::log_raw(VvTSLogLevel ll, const char* message)
 	}
 }
 
-void WTSLogger::log_raw_by_cat(const char* catName, VvTSLogLevel ll, const char* message)
+void VvTSLogger::log_raw_by_cat(const char* catName, VvTSLogLevel ll, const char* message)
 {
 	if (m_logLevel > ll || m_bStopped)
 		return;
@@ -394,7 +394,7 @@ void WTSLogger::log_raw_by_cat(const char* catName, VvTSLogLevel ll, const char*
 	}	
 }
 
-void WTSLogger::log_dyn_raw(const char* patttern, const char* catName, VvTSLogLevel ll, const char* message)
+void VvTSLogger::log_dyn_raw(const char* patttern, const char* catName, VvTSLogLevel ll, const char* message)
 {
 	if (m_logLevel > ll || m_bStopped)
 		return;
@@ -434,7 +434,7 @@ void WTSLogger::log_dyn_raw(const char* patttern, const char* catName, VvTSLogLe
 }
 
 
-SpdLoggerPtr WTSLogger::getLogger(const char* logger, const char* pattern /* = "" */)
+SpdLoggerPtr VvTSLogger::getLogger(const char* logger, const char* pattern /* = "" */)
 {
 	SpdLoggerPtr ret = spdlog::get(logger);
 	if (ret == NULL && strlen(pattern) > 0)
@@ -457,7 +457,7 @@ SpdLoggerPtr WTSLogger::getLogger(const char* logger, const char* pattern /* = "
 	return ret;
 }
 
-void WTSLogger::freeAllDynLoggers()
+void VvTSLogger::freeAllDynLoggers()
 {
 	for(const std::string& logger : m_setDynLoggers)
 	{

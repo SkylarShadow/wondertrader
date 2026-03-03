@@ -8,7 +8,7 @@
  * \brief 
  */
 #include "UftMocker.h"
-#include "WtHelper.h"
+#include "VvtHelper.h"
 
 #include <stdarg.h>
 
@@ -20,7 +20,7 @@
 #include "../Share/TimeUtils.hpp"
 #include "../Share/StrUtil.hpp"
 
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 extern uint32_t makeLocalOrderID();
 
@@ -1086,23 +1086,23 @@ void UftMocker::stra_sub_transactions(const char* stdCode)
 
 void UftMocker::stra_log_info(const char* message)
 {
-	WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_INFO, message);
+	VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_INFO, message);
 }
 
 void UftMocker::stra_log_debug(const char* message)
 {
-	WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_DEBUG, message);
+	VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_DEBUG, message);
 }
 
 void UftMocker::stra_log_error(const char* message)
 {
-	WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_ERROR, message);
+	VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_ERROR, message);
 }
 
 
 void UftMocker::dump_outputs()
 {
-	std::string folder = WtHelper::getOutputDir();
+	std::string folder = VvtHelper::getOutputDir();
 	folder += _name;
 	folder += "/";
 	boost::filesystem::create_directories(folder.c_str());

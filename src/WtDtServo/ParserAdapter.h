@@ -19,13 +19,13 @@ class VvTSVariant;
 NS_VVTP_END
 
 USING_NS_VVTP;
-class WTSBaseDataMgr;
+class VvTSBaseDataMgr;
 class WtDtRunner;
 
 class ParserAdapter : public IParserSpi, private boost::noncopyable
 {
 public:
-	ParserAdapter(WTSBaseDataMgr * bgMgr, WtDtRunner* runner);
+	ParserAdapter(VvTSBaseDataMgr * bgMgr, WtDtRunner* runner);
 	~ParserAdapter();
 
 public:
@@ -57,7 +57,7 @@ public:
 private:
 	IParserApi*			_parser_api;
 	FuncDeleteParser	_remover;
-	WTSBaseDataMgr*		_bd_mgr;
+	VvTSBaseDataMgr*		_bd_mgr;
 	WtDtRunner*			_dt_runner;
 
 	bool				_stopped;

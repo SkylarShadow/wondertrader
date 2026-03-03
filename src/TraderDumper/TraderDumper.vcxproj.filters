@@ -24,7 +24,7 @@
     <ClCompile Include="Dumper.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="WtHelper.cpp">
+    <ClCompile Include="VvtHelper.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,7 +41,7 @@
     <ClInclude Include="Dumper.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="WtHelper.h">
+    <ClInclude Include="VvtHelper.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

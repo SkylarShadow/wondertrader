@@ -10,7 +10,7 @@
 #include "WtDiffExecuter.h"
 #include "TraderAdapter.h"
 #include "WtEngine.h"
-#include "WtHelper.h"
+#include "VvtHelper.h"
 
 #include "../Share/CodeHelper.hpp"
 #include "../Includes/IDataManager.h"
@@ -19,7 +19,7 @@
 #include "../Includes/IBaseDataMgr.h"
 #include "../Share/decimal.h"
 
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 #include <rapidjson/document.h>
 #include <rapidjson/prettywriter.h>
@@ -72,7 +72,7 @@ bool WtDiffExecuter::init(VvTSVariant* params)
 
 	load_data();
 
-	WTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "[{}] Diff executer inited, scale: {}, thread poolsize: {}", _name, _scale, poolsize);
+	VvTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "[{}] Diff executer inited, scale: {}, thread poolsize: {}", _name, _scale, poolsize);
 
 	return true;
 }
@@ -80,7 +80,7 @@ bool WtDiffExecuter::init(VvTSVariant* params)
 void WtDiffExecuter::load_data()
 {
 	//读取执行器的理论部位，以及待执行的差量
-	std::string filename = WtHelper::getExecDataDir();
+	std::string filename = VvtHelper::getExecDataDir();
 	filename += _name + ".json";
 
 	if (!StdFile::exists(filename.c_str()))
@@ -109,7 +109,7 @@ void WtDiffExecuter::load_data()
 			VvTSContractInfo* ct = _bd_mgr->getContract(cInfo._code, cInfo._exchg);
 			if (ct == NULL)
 			{
-				WTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "[{}] Ticker {} is not valid", _name, stdCode);
+				VvTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "[{}] Ticker {} is not valid", _name, stdCode);
 				continue;
 			}
 
@@ -128,7 +128,7 @@ void WtDiffExecuter::load_data()
 			VvTSContractInfo* ct = _bd_mgr->getContract(cInfo._code, cInfo._exchg);
 			if (ct == NULL)
 			{
-				WTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "[{}] Ticker {} is not valid", _name, stdCode);
+				VvTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "[{}] Ticker {} is not valid", _name, stdCode);
 				continue;
 			}
 
@@ -140,7 +140,7 @@ void WtDiffExecuter::load_data()
 
 void WtDiffExecuter::save_data()
 {
-	std::string filename = WtHelper::getExecDataDir();
+	std::string filename = VvtHelper::getExecDataDir();
 	filename += _name + ".json";
 
 	rj::Document root(rj::kObjectType);
@@ -177,7 +177,7 @@ void WtDiffExecuter::save_data()
 	}
 
 	{
-		std::string filename = WtHelper::getExecDataDir();
+		std::string filename = VvtHelper::getExecDataDir();
 		filename += _name + ".json";
 
 		BoostFile bf;
@@ -227,7 +227,7 @@ ExecuteUnitPtr WtDiffExecuter::getUnit(const char* stdCode, bool bAutoCreate /* 
 		}
 		else
 		{
-			WTSLogger::error("Creating ExecUnit {} failed", name);
+			VvTSLogger::error("Creating ExecUnit {} failed", name);
 		}
 		return unit;
 	}
@@ -317,7 +317,7 @@ void WtDiffExecuter::writeLog(const char* message)
 {
 	static thread_local char szBuf[2048] = { 0 };
 	fmtutil::format_to(szBuf, "[{}] {}", _name.c_str(), message);
-	WTSLogger::log_dyn_raw("executer", _name.c_str(), LL_INFO, szBuf);
+	VvTSLogger::log_dyn_raw("executer", _name.c_str(), LL_INFO, szBuf);
 }
 
 VvTSCommodityInfo* WtDiffExecuter::getCommodityInfo(const char* stdCode)
@@ -366,11 +366,11 @@ void WtDiffExecuter::on_position_changed(const char* stdCode, double diffPos)
 	double prevDiff = thisDiff;
 	thisDiff += diffPos;
 
-	WTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "[{}] Target position of {} changed additonally: {} -> {}, diff postion changed: {} -> {}", _name, stdCode, oldVol, targetPos, prevDiff, thisDiff);
+	VvTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "[{}] Target position of {} changed additonally: {} -> {}, diff postion changed: {} -> {}", _name, stdCode, oldVol, targetPos, prevDiff, thisDiff);
 
 	if (_trader && !_trader->checkOrderLimits(stdCode))
 	{
-		WTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "[{}] {} is disabled", _name, stdCode);
+		VvTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "[{}] {} is disabled", _name, stdCode);
 		return;
 	}
 
@@ -409,11 +409,11 @@ void WtDiffExecuter::set_position(const vvt_hashmap<std::string, double>& target
 		double prevDiff = thisDiff;
 		thisDiff += (newVol - oldVol);
 
-		WTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "[{}] Target position of {} changed: {} -> {}, diff postion changed: {} -> {}", _name, stdCode, oldVol, newVol, prevDiff, thisDiff);
+		VvTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "[{}] Target position of {} changed: {} -> {}, diff postion changed: {} -> {}", _name, stdCode, oldVol, newVol, prevDiff, thisDiff);
 
 		if (_trader && !_trader->checkOrderLimits(stdCode))
 		{
-			WTSLogger::log_dyn("executer", _name.c_str(), LL_WARN, "[{}] {} is disabled due to entrust limit control ", _name, stdCode);
+			VvTSLogger::log_dyn("executer", _name.c_str(), LL_WARN, "[{}] {} is disabled due to entrust limit control ", _name, stdCode);
 			continue;
 		}
 
@@ -446,7 +446,7 @@ void WtDiffExecuter::set_position(const vvt_hashmap<std::string, double>& target
 
 		if(pos != 0)
 		{
-			WTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "[{}] {} is not in target, set to 0 automatically", _name, stdCode);
+			VvTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "[{}] {} is not in target, set to 0 automatically", _name, stdCode);
 
 			ExecuteUnitPtr unit = getUnit(stdCode);
 			if (unit == NULL)
@@ -456,7 +456,7 @@ void WtDiffExecuter::set_position(const vvt_hashmap<std::string, double>& target
 			double& thisDiff = _diff_pos[stdCode];
 			double prevDiff = thisDiff;
 
-			//WTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "[DiffExecuter][set_position][{}] {} is not in target, thisDiff: {}, prevDiff: {}, pos: {}, new thisDiff: {}", _name, stdCode, thisDiff, prevDiff, pos, thisDiff + pos);
+			//VvTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "[DiffExecuter][set_position][{}] {} is not in target, thisDiff: {}, prevDiff: {}, pos: {}, new thisDiff: {}", _name, stdCode, thisDiff, prevDiff, pos, thisDiff + pos);
 
 			thisDiff -= -pos;
 			pos = 0;
@@ -513,7 +513,7 @@ void WtDiffExecuter::on_trade(uint32_t localid, const char* stdCode, bool isBuy,
 	double prevDiff = curDiff;
 	curDiff -= vol * (isBuy ? 1 : -1);
 
-	WTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "[{}] Diff of {} updated by trade: {} -> {}", _name, stdCode, prevDiff, curDiff);
+	VvTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "[{}] Diff of {} updated by trade: {} -> {}", _name, stdCode, prevDiff, curDiff);
 	save_data();
 
 	if (_pool)
@@ -610,7 +610,7 @@ void WtDiffExecuter::on_channel_ready()
 			unit->self()->set_position(stdCode, thisDiff);
 		}
 
-		WTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "[{}] Diff of {} recovered to {}", _name, stdCode, thisDiff);
+		VvTSLogger::log_dyn("executer", _name.c_str(), LL_INFO, "[{}] Diff of {} recovered to {}", _name, stdCode, thisDiff);
 	}
 }
 

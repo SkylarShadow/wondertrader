@@ -31,7 +31,7 @@
     <ClInclude Include="ITrdNotifySink.h" />
     <ClInclude Include="ParserAdapter.h" />
     <ClInclude Include="TraderAdapter.h" />
-    <ClInclude Include="WtHelper.h" />
+    <ClInclude Include="VvtHelper.h" />
     <ClInclude Include="WtUftDtMgr.h" />
     <ClInclude Include="WtUftEngine.h" />
     <ClInclude Include="WtUftTicker.h" />
@@ -44,7 +44,7 @@
     <ClCompile Include="UftStrategyMgr.cpp" />
     <ClCompile Include="ParserAdapter.cpp" />
     <ClCompile Include="TraderAdapter.cpp" />
-    <ClCompile Include="WtHelper.cpp" />
+    <ClCompile Include="VvtHelper.cpp" />
     <ClCompile Include="WtUftDtMgr.cpp" />
     <ClCompile Include="WtUftEngine.cpp" />
     <ClCompile Include="WtUftTicker.cpp" />

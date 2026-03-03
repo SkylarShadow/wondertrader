@@ -10,7 +10,7 @@
 #include "UftStraContext.h"
 #include "WtUftEngine.h"
 #include "TraderAdapter.h"
-#include "WtHelper.h"
+#include "VvtHelper.h"
 #include "ShareManager.h"
 
 #include "../Includes/UftStrategyDefs.h"
@@ -22,7 +22,7 @@
 #include "../Share/decimal.h"
 #include "../Share/TimeUtils.hpp"
 
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 #include "../VvTSUtils/VvTSCfgLoader.h"
 
 static const uint32_t DATA_SIZE_STEP = 8000;	//信息量每天最多4000
@@ -1010,17 +1010,17 @@ void UftStraContext::stra_sub_transactions(const char* stdCode)
 
 void UftStraContext::stra_log_info(const char* message)
 {
-	WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_INFO, message);
+	VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_INFO, message);
 }
 
 void UftStraContext::stra_log_debug(const char* message)
 {
-	WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_DEBUG, message);
+	VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_DEBUG, message);
 }
 
 void UftStraContext::stra_log_error(const char* message)
 {
-	WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_ERROR, message);
+	VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_ERROR, message);
 }
 
 void UftStraContext::load_local_data()
@@ -1028,7 +1028,7 @@ void UftStraContext::load_local_data()
 	if (_tradingday == 0)
 		return;
 
-	std::string folder = fmtutil::format("{}{}/", WtHelper::getOutputDir(), _name);
+	std::string folder = fmtutil::format("{}{}/", VvtHelper::getOutputDir(), _name);
 	if (!StdFile::exists(folder.c_str()))
 		BoostFile::create_directories(folder.c_str());
 
@@ -1042,12 +1042,12 @@ void UftStraContext::load_local_data()
 		if (!StdFile::exists(mannualfile.c_str()))
 			break;
 
-		WTSLogger::log_dyn("strategy", _name.c_str(), LL_WARN, "{} detected, positions will be overwrited", mannualfile);
+		VvTSLogger::log_dyn("strategy", _name.c_str(), LL_WARN, "{} detected, positions will be overwrited", mannualfile);
 
 		VvTSVariant* manual = VvTSCfgLoader::load_from_file(mannualfile);
 		if (manual == NULL)
 		{
-			WTSLogger::log_dyn("strategy", _name.c_str(), LL_ERROR, "parsing mannual file {} failed", mannualfile);
+			VvTSLogger::log_dyn("strategy", _name.c_str(), LL_ERROR, "parsing mannual file {} failed", mannualfile);
 			break;
 		}
 
@@ -1090,7 +1090,7 @@ void UftStraContext::load_local_data()
 				VvTSContractInfo* cInfo = _engine->get_basedata_mgr()->getContract(code, exchg);
 				if(cInfo == NULL)
 				{
-					WTSLogger::log_dyn("strategy", _name.c_str(), LL_ERROR, "{}.{} not exist, skip this details", exchg, code);
+					VvTSLogger::log_dyn("strategy", _name.c_str(), LL_ERROR, "{}.{} not exist, skip this details", exchg, code);
 					continue;
 				}
 
@@ -1107,7 +1107,7 @@ void UftStraContext::load_local_data()
 			}
 		}
 
-		WTSLogger::log_dyn("strategy", _name.c_str(), LL_WARN, "loading mannual file {} done, {} details imported", mannualfile, _pos_blk._block->_size);
+		VvTSLogger::log_dyn("strategy", _name.c_str(), LL_WARN, "loading mannual file {} done, {} details imported", mannualfile, _pos_blk._block->_size);
 
 		//把mmap释放掉，不影响后面的逻辑
 		{
@@ -1124,7 +1124,7 @@ void UftStraContext::load_local_data()
 	{
 		SpinLock lock(_pos_blk._mutex);
 		std::string filename = folder + "position.membin";
-		WTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "loading local positions from {}", filename);
+		VvTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "loading local positions from {}", filename);
 		bool isNew = false;
 		if(!StdFile::exists(filename.c_str()))
 		{
@@ -1151,7 +1151,7 @@ void UftStraContext::load_local_data()
 			//复用原文件的好处就是，mmap文件大小会满足历史出现过的单日最高数据量，以后再扩的概率就很低了
 			if(_pos_blk._block->_date != 0 && _pos_blk._block->_date != _tradingday)
 			{	
-				WTSLogger::log_dyn("strategy", _name.c_str(), LL_INFO, "Clearing local position of {}", _pos_blk._block->_date);
+				VvTSLogger::log_dyn("strategy", _name.c_str(), LL_INFO, "Clearing local position of {}", _pos_blk._block->_date);
 				//如果日期不同，先读进来未完成的持仓，再清理掉原始数据
 				std::vector<uft::DetailStruct> details;
 				for(uint32_t i = 0; i < _pos_blk._block->_size; i++)
@@ -1212,7 +1212,7 @@ void UftStraContext::load_local_data()
 	{
 		SpinLock lock(_ord_blk._mutex);
 		std::string filename = folder + "order.membin";
-		WTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "loading local orders from {}", filename);
+		VvTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "loading local orders from {}", filename);
 		bool isNew = false;
 		if (!StdFile::exists(filename.c_str()))
 		{
@@ -1260,7 +1260,7 @@ void UftStraContext::load_local_data()
 	{
 		SpinLock lock(_trd_blk._mutex);
 		std::string filename = folder + "trade.membin";
-		WTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "loading local trades from {}", filename);
+		VvTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "loading local trades from {}", filename);
 		bool isNew = false;
 		if (!StdFile::exists(filename.c_str()))
 		{
@@ -1308,7 +1308,7 @@ void UftStraContext::load_local_data()
 	{
 		SpinLock lock(_rnd_blk._mutex);
 		std::string filename = folder + "round.membin";
-		WTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "loading local rouds from {}", filename);
+		VvTSLogger::log_dyn("strategy", _name.c_str(), LL_DEBUG, "loading local rouds from {}", filename);
 		bool isNew = false;
 		if (!StdFile::exists(filename.c_str()))
 		{

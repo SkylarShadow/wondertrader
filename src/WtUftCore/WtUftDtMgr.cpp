@@ -9,17 +9,17 @@
  */
 #include "WtUftDtMgr.h"
 #include "WtUftEngine.h"
-#include "WtHelper.h"
+#include "VvtHelper.h"
 
 #include "../Share/StrUtil.hpp"
 #include "../Includes/VvTSDataDef.hpp"
 #include "../Includes/VvTSVariant.hpp"
 
-#include "../WTSTools/WTSLogger.h"
-#include "../WTSTools/WTSDataFactory.h"
+#include "../VvTSTools/VvTSLogger.h"
+#include "../VvTSTools/VvTSDataFactory.h"
 
 
-WTSDataFactory g_dataFact;
+VvTSDataFactory g_dataFact;
 
 WtUftDtMgr::WtUftDtMgr()
 	: _engine(NULL)

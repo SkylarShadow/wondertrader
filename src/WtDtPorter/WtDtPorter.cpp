@@ -10,8 +10,8 @@
 #include "WtDtPorter.h"
 #include "WtDtRunner.h"
 
-#include "../WtDtCore/WtHelper.h"
-#include "../WTSTools/WTSLogger.h"
+#include "../WtDtCore/VvtHelper.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 #include "../Share/ModuleHelper.hpp"
 #include "../Includes/VvTSVersion.h"
@@ -53,7 +53,7 @@ WtDtRunner& getRunner()
 void initialize(VvTString cfgFile, VvTString logCfg, bool bCfgFile, bool bLogCfgFile)
 {
 #ifdef _MSC_VER
-	CMiniDumper::Enable(getModuleName(), true, WtHelper::get_cwd());
+	CMiniDumper::Enable(getModuleName(), true, VvtHelper::get_cwd());
 #endif
 	getRunner().initialize(cfgFile, logCfg, getBinDir(), bCfgFile, bLogCfgFile);
 }
@@ -83,11 +83,11 @@ void write_log(unsigned int level, const char* message, const char* catName)
 {
 	if (strlen(catName) > 0)
 	{
-		WTSLogger::log_raw_by_cat(catName, (VvTSLogLevel)level, message);
+		VvTSLogger::log_raw_by_cat(catName, (VvTSLogLevel)level, message);
 	}
 	else
 	{
-		WTSLogger::log_raw((VvTSLogLevel)level, message);
+		VvTSLogger::log_raw((VvTSLogLevel)level, message);
 	}
 }
 

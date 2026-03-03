@@ -9,7 +9,7 @@
  */
 #include "WtEngine.h"
 #include "WtDtMgr.h"
-#include "WtHelper.h"
+#include "VvtHelper.h"
 
 #include "../Share/TimeUtils.hpp"
 #include "../Share/StrUtil.hpp"
@@ -26,7 +26,7 @@
 #include "../Includes/VvTSDataDef.hpp"
 #include "../Includes/VvTSRiskDef.hpp"
 
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 #include "../VvTSUtils/VvTSCfgLoader.h"
 
 #include <rapidjson/document.h>
@@ -53,7 +53,7 @@ WtEngine::WtEngine()
 	_cur_raw_time = _cur_time;
 	_cur_tdate = _cur_date;
 
-	WtHelper::setTime(_cur_date, _cur_time, _cur_secs);
+	VvtHelper::setTime(_cur_date, _cur_time, _cur_secs);
 }
 
 void WtEngine::set_date_time(uint32_t curDate, uint32_t curTime, uint32_t curSecs /* = 0 */, uint32_t rawTime /* = 0 */)
@@ -67,14 +67,14 @@ void WtEngine::set_date_time(uint32_t curDate, uint32_t curTime, uint32_t curSec
 
 	_cur_raw_time = rawTime;
 
-	WtHelper::setTime(_cur_date, _cur_raw_time, _cur_secs);
+	VvtHelper::setTime(_cur_date, _cur_raw_time, _cur_secs);
 }
 
 void WtEngine::set_trading_date(uint32_t curTDate)
 {
 	_cur_tdate = curTDate; 
 
-	WtHelper::setTDate(curTDate);
+	VvtHelper::setTDate(curTDate);
 }
 
 VvTSCommodityInfo* WtEngine::get_commodity_info(const char* stdCode)
@@ -237,7 +237,7 @@ void WtEngine::writeRiskLog(const char* message)
 	static thread_local char szBuf[2048] = { 0 };
 	auto len = vvt_strcpy(szBuf, "[RiskControl] ");
 	vvt_strcpy(szBuf + len, message);
-	WTSLogger::log_raw_by_cat("risk", LL_INFO, szBuf);
+	VvTSLogger::log_raw_by_cat("risk", LL_INFO, szBuf);
 }
 
 uint32_t WtEngine::getCurDate()
@@ -266,7 +266,7 @@ void WtEngine::setVolScale(double scale)
 	_risk_volscale = scale;
 	_risk_date = _cur_tdate;
 
-	WTSLogger::log_by_cat("risk", LL_INFO, "Position risk scale updated: {} - > {}", oldScale, scale);
+	VvTSLogger::log_by_cat("risk", LL_INFO, "Position risk scale updated: {} - > {}", oldScale, scale);
 	save_datas();
 }
 
@@ -285,7 +285,7 @@ void WtEngine::init(VvTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHo
 	_hot_mgr = hotMgr;
 	_notifier = notifier;
 
-	WTSLogger::info("Running mode: Production");
+	VvTSLogger::info("Running mode: Production");
 
 	_filter_mgr.set_notifier(notifier);
 
@@ -307,7 +307,7 @@ void WtEngine::init(VvTSVariant* cfg, IBaseDataMgr* bdMgr, WtDtMgr* dataMgr, IHo
 		//如果没有配置风控线程，则需要自己更新浮动盈亏
 		//把更新时间间隔设置为5s
 		_fund_udt_span = 5;
-		WTSLogger::log_raw(LL_WARN, "RiskMon is not configured, portfilio fund will be updated every 5s");
+		VvTSLogger::log_raw(LL_WARN, "RiskMon is not configured, portfilio fund will be updated every 5s");
 	}
 }
 
@@ -317,7 +317,7 @@ void WtEngine::on_session_end()
 	VvTSFundStruct& fundInfo = _port_fund->fundInfo();
 	if (fundInfo._last_date < _cur_tdate)
 	{
-		std::string filename = WtHelper::getPortifolioDir();
+		std::string filename = VvtHelper::getPortifolioDir();
 		filename += "funds.csv";
 		BoostFilePtr fund_log(new BoostFile());
 		{
@@ -451,7 +451,7 @@ void WtEngine::save_datas()
 	}
 
 	{
-		std::string filename = WtHelper::getPortifolioDir();
+		std::string filename = VvtHelper::getPortifolioDir();
 		filename += "datas.json";
 
 		BoostFile bf;
@@ -470,7 +470,7 @@ void WtEngine::load_datas()
 {
 	_port_fund = VvTSPortFundInfo::create();
 
-	std::string filename = WtHelper::getPortifolioDir();
+	std::string filename = VvtHelper::getPortifolioDir();
 	filename += "datas.json";
 
 	if (!StdFile::exists(filename.c_str()))
@@ -563,14 +563,14 @@ void WtEngine::load_datas()
 					pInfo->_details.emplace_back(dInfo);
 				}
 
-				WTSLogger::debug("Porfolio position confirmed,{} -> {}", stdCode, pInfo->_volume);
+				VvTSLogger::debug("Porfolio position confirmed,{} -> {}", stdCode, pInfo->_volume);
 			}
 		}
 
 		VvTSFundStruct& fundInfo = _port_fund->fundInfo();
 		fundInfo._dynprofit = total_dynprofit;
 
-		WTSLogger::debug("{} position info of portfolio loaded", _pos_map.size());
+		VvTSLogger::debug("{} position info of portfolio loaded", _pos_map.size());
 	}
 
 	if(root.HasMember("riskmon"))
@@ -842,14 +842,14 @@ void WtEngine::load_fees(const char* filename)
 
 	if (!StdFile::exists(filename))
 	{
-		WTSLogger::error("Fee templates file {} not exists", filename);
+		VvTSLogger::error("Fee templates file {} not exists", filename);
 		return;
 	}
 
 	VvTSVariant* cfg = VvTSCfgLoader::load_from_file(filename);
 	if (cfg == NULL)
 	{
-		WTSLogger::error("Fee templates file {} loading failed", filename);
+		VvTSLogger::error("Fee templates file {} loading failed", filename);
 		return;
 	}
 
@@ -868,7 +868,7 @@ void WtEngine::load_fees(const char* filename)
 
 	cfg->release();
 
-	WTSLogger::info("{} fee templates loaded", _fee_map.size());
+	VvTSLogger::info("{} fee templates loaded", _fee_map.size());
 }
 
 double WtEngine::calc_fee(const char* stdCode, double price, double qty, uint32_t offset)
@@ -878,7 +878,7 @@ double WtEngine::calc_fee(const char* stdCode, double price, double qty, uint32_
 	auto it = _fee_map.find(stdPID);
 	if (it == _fee_map.end())
 	{
-		WTSLogger::warn("Fee template of {} not found, return 0.0 as default", stdPID);
+		VvTSLogger::warn("Fee template of {} not found, return 0.0 as default", stdPID);
 		return 0.0;
 	}
 
@@ -1127,15 +1127,15 @@ bool WtEngine::init_riskmon(VvTSVariant* cfg)
 
 	std::string module = DLLHelper::wrap_module(cfg->getCString("module"));
 	//先看工作目录下是否有对应模块
-	std::string dllpath = WtHelper::getCWD() + module;
+	std::string dllpath = VvtHelper::getCWD() + module;
 	//如果没有,则再看模块目录,即dll同目录下
 	if (!StdFile::exists(dllpath.c_str()))
-		dllpath = WtHelper::getInstDir() + module;
+		dllpath = VvtHelper::getInstDir() + module;
 
 	DllHandle hInst = DLLHelper::load_library(dllpath.c_str());
 	if (hInst == NULL)
 	{
-		WTSLogger::log_by_cat("risk", LL_ERROR, "Riskmon module {} loading failed", dllpath.c_str());
+		VvTSLogger::log_by_cat("risk", LL_ERROR, "Riskmon module {} loading failed", dllpath.c_str());
 		return false;
 	}
 
@@ -1143,7 +1143,7 @@ bool WtEngine::init_riskmon(VvTSVariant* cfg)
 	if (creator == NULL)
 	{
 		DLLHelper::free_library(hInst);
-		WTSLogger::log_by_cat("risk", LL_ERROR, "Riskmon module {} is not compatible", module.c_str());
+		VvTSLogger::log_by_cat("risk", LL_ERROR, "Riskmon module {} is not compatible", module.c_str());
 		return false;
 	}
 
@@ -1163,7 +1163,7 @@ bool WtEngine::init_riskmon(VvTSVariant* cfg)
 
 void WtEngine::init_outputs()
 {
-	std::string folder = WtHelper::getPortifolioDir();
+	std::string folder = VvtHelper::getPortifolioDir();
 	std::string filename = folder + "trades.csv";
 	_trade_logs.reset(new BoostFile());
 	{

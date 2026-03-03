@@ -9,7 +9,7 @@
  */
 #include "CtaStraBaseCtx.h"
 #include "WtCtaEngine.h"
-#include "WtHelper.h"
+#include "VvtHelper.h"
 
 #include <exception>
 #include <rapidjson/document.h>
@@ -24,7 +24,7 @@ namespace rj = rapidjson;
 #include "../Share/decimal.h"
 #include "../Share/CodeHelper.hpp"
 
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 const char* CMP_ALG_NAMES[] =
 {
@@ -73,7 +73,7 @@ CtaStraBaseCtx::~CtaStraBaseCtx()
 
 void CtaStraBaseCtx::init_outputs()
 {
-	std::string folder = WtHelper::getOutputDir();
+	std::string folder = VvtHelper::getOutputDir();
 	folder += _name;
 	folder += "//";
 	BoostFile::create_directories(folder.c_str());	
@@ -228,7 +228,7 @@ void CtaStraBaseCtx::save_userdata()
 	}
 
 	{
-		std::string filename = WtHelper::getStraUsrDatDir();
+		std::string filename = VvtHelper::getStraUsrDatDir();
 		filename += "ud_";
 		filename += _name;
 		filename += ".json";
@@ -247,7 +247,7 @@ void CtaStraBaseCtx::save_userdata()
 
 void CtaStraBaseCtx::load_userdata()
 {
-	std::string filename = WtHelper::getStraUsrDatDir();
+	std::string filename = VvtHelper::getStraUsrDatDir();
 	filename += "ud_";
 	filename += _name;
 	filename += ".json";
@@ -278,7 +278,7 @@ void CtaStraBaseCtx::load_userdata()
 
 void CtaStraBaseCtx::load_data(uint32_t flag /* = 0xFFFFFFFF */)
 {
-	std::string filename = WtHelper::getStraDataDir();
+	std::string filename = VvtHelper::getStraDataDir();
 	filename += _name;
 	filename += ".json";
 	
@@ -628,7 +628,7 @@ void CtaStraBaseCtx::save_data(uint32_t flag /* = 0xFFFFFFFF */)
 	}
 
 	{
-		std::string filename = WtHelper::getStraDataDir();
+		std::string filename = VvtHelper::getStraDataDir();
 		filename += _name;
 		filename += ".json";
 
@@ -735,7 +735,7 @@ void CtaStraBaseCtx::dump_chart_info()
 		root.AddMember("index", jIndice, allocator);
 	}
 
-	std::string folder = WtHelper::getOutputDir();
+	std::string folder = VvtHelper::getOutputDir();
 	folder += _name;
 	folder += "/";
 
@@ -1727,22 +1727,22 @@ double CtaStraBaseCtx::stra_get_fund_data(int flag )
 
 void CtaStraBaseCtx::stra_log_info(const char* message)
 {
-	WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_INFO, message);
+	VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_INFO, message);
 }
 
 void CtaStraBaseCtx::stra_log_debug(const char* message)
 {
-	WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_DEBUG, message);
+	VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_DEBUG, message);
 }
 
 void CtaStraBaseCtx::stra_log_warn(const char* message)
 {
-	WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_WARN, message);
+	VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_WARN, message);
 }
 
 void CtaStraBaseCtx::stra_log_error(const char* message)
 {
-	WTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_ERROR, message);
+	VvTSLogger::log_dyn_raw("strategy", _name.c_str(), LL_ERROR, message);
 }
 
 const char* CtaStraBaseCtx::stra_load_user_data(const char* key, const char* defVal /*= ""*/)
@@ -1829,7 +1829,7 @@ double CtaStraBaseCtx::stra_get_position(const char* stdCode, bool bOnlyValid /*
 	auto sit = _sig_map.find(stdCode);
 	if(sit != _sig_map.end())
 	{
-		WTSLogger::warn("{} has untouched signal, [userTag] will be ignored", stdCode);
+		VvTSLogger::warn("{} has untouched signal, [userTag] will be ignored", stdCode);
 		totalPos = sit->second._volume;
 	}
 
@@ -1975,7 +1975,7 @@ void CtaStraBaseCtx::add_chart_mark(double price, const char* icon, const char* 
 {
 	if (!_is_in_schedule)
 	{
-		WTSLogger::error("Marks can be added only during schedule");
+		VvTSLogger::error("Marks can be added only during schedule");
 		return;
 	}
 
@@ -2004,7 +2004,7 @@ bool CtaStraBaseCtx::register_index_line(const char* idxName, const char* lineNa
 	auto it = _chart_indice.find(idxName);
 	if (it == _chart_indice.end())
 	{
-		WTSLogger::error("Index {} not registered", idxName);
+		VvTSLogger::error("Index {} not registered", idxName);
 		return false;
 	}
 
@@ -2020,7 +2020,7 @@ bool CtaStraBaseCtx::add_index_baseline(const char* idxName, const char* lineNam
 	auto it = _chart_indice.find(idxName);
 	if (it == _chart_indice.end())
 	{
-		WTSLogger::error("Index {} not registered", idxName);
+		VvTSLogger::error("Index {} not registered", idxName);
 		return false;
 	}
 
@@ -2033,14 +2033,14 @@ bool CtaStraBaseCtx::set_index_value(const char* idxName, const char* lineName, 
 {
 	if (!_is_in_schedule)
 	{
-		WTSLogger::error("Marks can be added only during schedule");
+		VvTSLogger::error("Marks can be added only during schedule");
 		return false;
 	}
 
 	auto ait = _chart_indice.find(idxName);
 	if (ait == _chart_indice.end())
 	{
-		WTSLogger::error("Index {} not registered", idxName);
+		VvTSLogger::error("Index {} not registered", idxName);
 		return false;
 	}
 
@@ -2048,7 +2048,7 @@ bool CtaStraBaseCtx::set_index_value(const char* idxName, const char* lineName, 
 	auto bit = cIndex._lines.find(lineName);
 	if (bit == cIndex._lines.end())
 	{
-		WTSLogger::error("Line {} of index {} not registered", lineName, idxName);
+		VvTSLogger::error("Line {} of index {} not registered", lineName, idxName);
 		return false;
 	}
 

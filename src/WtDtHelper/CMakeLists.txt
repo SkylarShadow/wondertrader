@@ -17,7 +17,7 @@ ADD_LIBRARY(WtDtHelper SHARED ${SRCS} ${HDRS})
 
 SET(LIBS
 	VvTSUtils
-    WTSTools
+    VvTSTools
 )
 IF (MSVC)
 ELSE (GNUCC)

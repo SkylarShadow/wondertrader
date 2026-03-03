@@ -1,5 +1,5 @@
 ﻿/*!
- * \file WTSHotMgr.h
+ * \file VvTSHotMgr.h
  * \project	WonderTrader
  *
  * \author Wesley
@@ -20,20 +20,20 @@ NS_VVTP_END
 USING_NS_VVTP;
 
 //换月主力映射
-typedef VvTSMap<uint32_t>			WTSDateHotMap;
+typedef VvTSMap<uint32_t>			VvTSDateHotMap;
 //品种主力映射
-typedef VvTSHashMap<std::string>		WTSProductHotMap;
+typedef VvTSHashMap<std::string>		VvTSProductHotMap;
 //分市场主力映射
-typedef VvTSHashMap<std::string>		WTSExchgHotMap;
+typedef VvTSHashMap<std::string>		VvTSExchgHotMap;
 
 //自定义切换规则映射
-typedef VvTSHashMap<std::string>		WTSCustomSwitchMap;
+typedef VvTSHashMap<std::string>		VvTSCustomSwitchMap;
 
-class WTSHotMgr : public IHotMgr
+class VvTSHotMgr : public IHotMgr
 {
 public:
-	WTSHotMgr();
-	~WTSHotMgr();
+	VvTSHotMgr();
+	~VvTSHotMgr();
 
 public:
 	bool loadHots(const char* filename);
@@ -81,13 +81,13 @@ public:
 
 
 private:
-	//WTSExchgHotMap*	m_pExchgHotMap;
-	//WTSExchgHotMap*	m_pExchgScndMap;
+	//VvTSExchgHotMap*	m_pExchgHotMap;
+	//VvTSExchgHotMap*	m_pExchgScndMap;
 	//vvt_hashset<std::string>	m_curHotCodes;
 	//vvt_hashset<std::string>	m_curSecCodes;
 	bool			m_bInitialized;
 
-	WTSCustomSwitchMap*	m_mapCustRules;
+	VvTSCustomSwitchMap*	m_mapCustRules;
 	typedef vvt_hashmap<std::string, vvt_hashset<std::string>>	CustomSwitchCodes;
 	CustomSwitchCodes	m_mapCustCodes;
 };

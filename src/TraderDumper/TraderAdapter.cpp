@@ -8,12 +8,12 @@
  * \brief 
  */
 #include "TraderAdapter.h"
-#include "WtHelper.h"
+#include "VvtHelper.h"
 #include "Dumper.h"
 
 #include <atomic>
 
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 #include "../Share/CodeHelper.hpp"
 #include "../Includes/VvTSError.hpp"
@@ -74,7 +74,7 @@ bool TraderAdapter::init(const char* id, VvTSVariant* params, IBaseDataMgr* bdMg
 
 	if (!StdFile::exists(module.c_str()))
 	{
-		module = WtHelper::get_module_dir();
+		module = VvtHelper::get_module_dir();
 		module += "traders/";
 		module += DLLHelper::wrap_module(params->getCString("module"), "lib");
 	}
@@ -82,21 +82,21 @@ bool TraderAdapter::init(const char* id, VvTSVariant* params, IBaseDataMgr* bdMg
 	DllHandle hInst = DLLHelper::load_library(module.c_str());
 	if (hInst == NULL)
 	{
-		WTSLogger::error("[{}]交易模块{}加载失败", _id.c_str(), module.c_str());
+		VvTSLogger::error("[{}]交易模块{}加载失败", _id.c_str(), module.c_str());
 		return false;
 	}
 
 	FuncCreateTrader pFunCreateTrader = (FuncCreateTrader)DLLHelper::get_symbol(hInst, "createTrader");
 	if (NULL == pFunCreateTrader)
 	{
-		WTSLogger::error("[{}]交易接口创建函数读取失败", _id.c_str());
+		VvTSLogger::error("[{}]交易接口创建函数读取失败", _id.c_str());
 		return false;
 	}
 
 	_trader_api = pFunCreateTrader();
 	if (NULL == _trader_api)
 	{
-		WTSLogger::error("[{}]交易接口创建失败", _id.c_str());
+		VvTSLogger::error("[{}]交易接口创建失败", _id.c_str());
 		return false;
 	}
 
@@ -106,11 +106,11 @@ bool TraderAdapter::init(const char* id, VvTSVariant* params, IBaseDataMgr* bdMg
 	params->append("quick", true);
 	if (!_trader_api->init(params))
 	{
-		WTSLogger::error("[{}]交易接口启动失败: 交易接口初始化失败", id);
+		VvTSLogger::error("[{}]交易接口启动失败: 交易接口初始化失败", id);
 		return false;
 	}
 
-	WTSLogger::info("[{}]交易接口初始化成功", id);
+	VvTSLogger::info("[{}]交易接口初始化成功", id);
 	return true;
 }
 
@@ -145,14 +145,14 @@ void TraderAdapter::handleEvent(VvTSTraderEvent e, int32_t ec)
 		}
 		else
 		{
-			WTSLogger::error("[{}]交易账号连接失败: {}", _id.c_str(), ec);
+			VvTSLogger::error("[{}]交易账号连接失败: {}", _id.c_str(), ec);
 			_mgr->decAlive();
 			_done = true;
 		}
 	}
 	else if(e == VvTE_Close)
 	{
-		WTSLogger::error("[{}]交易账号连接已断开: {}", _id.c_str(), ec);
+		VvTSLogger::error("[{}]交易账号连接已断开: {}", _id.c_str(), ec);
 	}
 }
 
@@ -160,14 +160,14 @@ void TraderAdapter::onLoginResult(bool bSucc, const char* msg, uint32_t tradingd
 {
 	if(!bSucc)
 	{
-		WTSLogger::error("[{}]交易账号登录失败: {}", _id.c_str(), msg);
+		VvTSLogger::error("[{}]交易账号登录失败: {}", _id.c_str(), msg);
 		_mgr->decAlive();
 		_done = true;
 	}
 	else
 	{
 		_date = tradingdate;
-		WTSLogger::info("[{}]交易账号登录成功, 当前交易日:{}", _id.c_str(), tradingdate);
+		VvTSLogger::info("[{}]交易账号登录成功, 当前交易日:{}", _id.c_str(), tradingdate);
 
 		_trader_api->queryPositions();	//查持仓
 	}
@@ -207,7 +207,7 @@ void TraderAdapter::onRspAccount(VvTSArray* ayAccounts)
 		}
 	}
 
-	WTSLogger::info("[{}]资金数据已更新", _id.c_str());
+	VvTSLogger::info("[{}]资金数据已更新", _id.c_str());
 
 	if(!_done)
 		_trader_api->queryTrades();
@@ -241,7 +241,7 @@ void TraderAdapter::onRspTrades(const VvTSArray* ayTrades)
 		}
 	}
 
-	WTSLogger::info("[{}]成交明细已更新", _id.c_str());
+	VvTSLogger::info("[{}]成交明细已更新", _id.c_str());
 
 	_trader_api->queryOrders();
 }
@@ -263,7 +263,7 @@ void TraderAdapter::onRspOrders(const VvTSArray* ayOrders)
 		}
 	}
 
-	WTSLogger::info("[{}]订单明细已更新", _id.c_str());
+	VvTSLogger::info("[{}]订单明细已更新", _id.c_str());
 	_mgr->decAlive();
 	_done = true;
 }
@@ -304,7 +304,7 @@ void TraderAdapter::onRspPosition(const VvTSArray* ayPositions)
 		}
 	}
 
-	WTSLogger::info("[{}]持仓数据已更新", _id.c_str());
+	VvTSLogger::info("[{}]持仓数据已更新", _id.c_str());
 
 	if (!_done)
 		_trader_api->queryAccount();
@@ -313,7 +313,7 @@ void TraderAdapter::onRspPosition(const VvTSArray* ayPositions)
 void TraderAdapter::onTraderError(VvTSError* err, void* pData /* = NULL */)
 {
 	if(err)
-		WTSLogger::error("[{}]交易通道出现错误: {}", _id.c_str(), err->getMessage());
+		VvTSLogger::error("[{}]交易通道出现错误: {}", _id.c_str(), err->getMessage());
 }
 
 IBaseDataMgr* TraderAdapter::getBaseDataMgr()
@@ -323,7 +323,7 @@ IBaseDataMgr* TraderAdapter::getBaseDataMgr()
 
 void TraderAdapter::handleTraderLog(VvTSLogLevel ll, const char* message)
 {
-	WTSLogger::log_raw(ll, message);
+	VvTSLogger::log_raw(ll, message);
 }
 
 #pragma endregion "ITraderSpi接口"
@@ -339,7 +339,7 @@ bool TraderAdapterMgr::addAdapter(const char* tname, TraderAdapterPtr& adapter)
 	auto it = _adapters.find(tname);
 	if(it != _adapters.end())
 	{
-		WTSLogger::error("交易通道名称相同: {}", tname);
+		VvTSLogger::error("交易通道名称相同: {}", tname);
 		return false;
 	}
 
@@ -367,7 +367,7 @@ void TraderAdapterMgr::run()
 		it->second->run();
 	}
 
-	WTSLogger::info("{}个交易通道已启动", _adapters.size());
+	VvTSLogger::info("{}个交易通道已启动", _adapters.size());
 }
 
 void TraderAdapterMgr::release()
@@ -393,11 +393,11 @@ void TraderAdapterMgr::decAlive()
 		{
 			TraderAdapterPtr trader = it->second;
 			if (!trader->isDone())
-				WTSLogger::info("{} is still undone", trader->id());
+				VvTSLogger::info("{} is still undone", trader->id());
 		}
 	}
 
-	WTSLogger::info("{}/{}", left, _adapters.size());
+	VvTSLogger::info("{}/{}", left, _adapters.size());
 }
 
 void TraderAdapterMgr::refresh()

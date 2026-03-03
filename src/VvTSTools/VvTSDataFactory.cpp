@@ -1,5 +1,5 @@
 ﻿/*!
- * \file WTSDataFactory.cpp
+ * \file VvTSDataFactory.cpp
  * \project	WonderTrader
  *
  * \author Wesley
@@ -7,7 +7,7 @@
  * 
  * \brief 
  */
-#include "WTSDataFactory.h"
+#include "VvTSDataFactory.h"
 #include "../Includes/VvTSDataDef.hpp"
 #include "../Includes/VvTSContractInfo.hpp"
 #include "../Includes/VvTSSessionInfo.hpp"
@@ -16,7 +16,7 @@
 using namespace std;
 
 
-VvTSBarStruct* WTSDataFactory::updateKlineData(VvTSKlineData* klineData, VvTSTickData* tick, VvTSSessionInfo* sInfo, bool bAlignSec/* = false*/)
+VvTSBarStruct* VvTSDataFactory::updateKlineData(VvTSKlineData* klineData, VvTSTickData* tick, VvTSSessionInfo* sInfo, bool bAlignSec/* = false*/)
 {
 	if(klineData == NULL || tick == NULL)
 		return NULL;
@@ -47,7 +47,7 @@ VvTSBarStruct* WTSDataFactory::updateKlineData(VvTSKlineData* klineData, VvTSTic
 	}
 }
 
-VvTSBarStruct* WTSDataFactory::updateKlineData(VvTSKlineData* klineData, VvTSBarStruct* newBasicBar, VvTSSessionInfo* sInfo, bool bAlignSec/* = false*/)
+VvTSBarStruct* VvTSDataFactory::updateKlineData(VvTSKlineData* klineData, VvTSBarStruct* newBasicBar, VvTSSessionInfo* sInfo, bool bAlignSec/* = false*/)
 {
 	if (klineData == NULL || newBasicBar == NULL)
 		return NULL;
@@ -67,7 +67,7 @@ VvTSBarStruct* WTSDataFactory::updateKlineData(VvTSKlineData* klineData, VvTSBar
 	}
 }
 
-VvTSBarStruct* WTSDataFactory::updateMin1Data(VvTSSessionInfo* sInfo, VvTSKlineData* klineData, VvTSBarStruct* newBasicBar, bool bAlignSec/* = false*/)
+VvTSBarStruct* VvTSDataFactory::updateMin1Data(VvTSSessionInfo* sInfo, VvTSKlineData* klineData, VvTSBarStruct* newBasicBar, bool bAlignSec/* = false*/)
 {
 	if (sInfo == NULL)
 		return NULL;
@@ -184,7 +184,7 @@ VvTSBarStruct* WTSDataFactory::updateMin1Data(VvTSSessionInfo* sInfo, VvTSKlineD
 	return NULL;
 }
 
-VvTSBarStruct* WTSDataFactory::updateMin1Data(VvTSSessionInfo* sInfo, VvTSKlineData* klineData, VvTSTickData* tick, bool bAlignSec /* = false */)
+VvTSBarStruct* VvTSDataFactory::updateMin1Data(VvTSSessionInfo* sInfo, VvTSKlineData* klineData, VvTSTickData* tick, bool bAlignSec /* = false */)
 {
 	//uint32_t curTime = tick->actiontime()/100000;
 
@@ -299,7 +299,7 @@ VvTSBarStruct* WTSDataFactory::updateMin1Data(VvTSSessionInfo* sInfo, VvTSKlineD
 	}
 }
 
-VvTSBarStruct* WTSDataFactory::updateMin5Data(VvTSSessionInfo* sInfo, VvTSKlineData* klineData, VvTSBarStruct* newBasicBar, bool bAlignSec/* = false*/)
+VvTSBarStruct* VvTSDataFactory::updateMin5Data(VvTSSessionInfo* sInfo, VvTSKlineData* klineData, VvTSBarStruct* newBasicBar, bool bAlignSec/* = false*/)
 {
 	if (sInfo == NULL)
 		return NULL;
@@ -415,7 +415,7 @@ VvTSBarStruct* WTSDataFactory::updateMin5Data(VvTSSessionInfo* sInfo, VvTSKlineD
 	return NULL;
 }
 
-VvTSBarStruct* WTSDataFactory::updateMin5Data(VvTSSessionInfo* sInfo, VvTSKlineData* klineData, VvTSTickData* tick, bool bAlignSec /* = false */)
+VvTSBarStruct* VvTSDataFactory::updateMin5Data(VvTSSessionInfo* sInfo, VvTSKlineData* klineData, VvTSTickData* tick, bool bAlignSec /* = false */)
 {
 	auto secMins = sInfo->getSecMinList();
 
@@ -504,7 +504,7 @@ VvTSBarStruct* WTSDataFactory::updateMin5Data(VvTSSessionInfo* sInfo, VvTSKlineD
 	}
 }
 
-VvTSBarStruct* WTSDataFactory::updateDayData(VvTSSessionInfo* sInfo, VvTSKlineData* klineData, VvTSTickData* tick)
+VvTSBarStruct* VvTSDataFactory::updateDayData(VvTSSessionInfo* sInfo, VvTSKlineData* klineData, VvTSTickData* tick)
 {
 	uint32_t curDate = tick->tradingdate();
 	uint32_t lastDate = klineData->date(klineData->size()-1);
@@ -541,7 +541,7 @@ VvTSBarStruct* WTSDataFactory::updateDayData(VvTSSessionInfo* sInfo, VvTSKlineDa
 	}
 }
 
-VvTSBarStruct* WTSDataFactory::updateSecData(VvTSSessionInfo* sInfo, VvTSKlineData* klineData, VvTSTickData* tick)
+VvTSBarStruct* VvTSDataFactory::updateSecData(VvTSSessionInfo* sInfo, VvTSKlineData* klineData, VvTSTickData* tick)
 {
 	uint32_t seconds = klineData->times();
 	uint32_t curSeconds = sInfo->timeToSeconds(tick->actiontime()/1000);
@@ -588,7 +588,7 @@ VvTSBarStruct* WTSDataFactory::updateSecData(VvTSSessionInfo* sInfo, VvTSKlineDa
 	}
 }
 
-uint32_t WTSDataFactory::getPrevMinute(uint32_t curMinute, int period /* = 1 */)
+uint32_t VvTSDataFactory::getPrevMinute(uint32_t curMinute, int period /* = 1 */)
 {
 	uint32_t h = curMinute/100;
 	uint32_t m = curMinute%100;
@@ -605,7 +605,7 @@ uint32_t WTSDataFactory::getPrevMinute(uint32_t curMinute, int period /* = 1 */)
 	}
 }
 
-VvTSKlineData* WTSDataFactory::extractKlineData(VvTSKlineSlice* baseKline, VvTSKlinePeriod period, uint32_t times, VvTSSessionInfo* sInfo, 
+VvTSKlineData* VvTSDataFactory::extractKlineData(VvTSKlineSlice* baseKline, VvTSKlinePeriod period, uint32_t times, VvTSSessionInfo* sInfo, 
 		bool bIncludeOpen /* = true */, bool bAlignSec /* = false */)
 {
 	if(baseKline == NULL || baseKline->size() == 0)
@@ -633,7 +633,7 @@ VvTSKlineData* WTSDataFactory::extractKlineData(VvTSKlineSlice* baseKline, VvTSK
 	return NULL;
 }
 
-VvTSKlineData* WTSDataFactory::extractMin1Data(VvTSKlineSlice* baseKline, uint32_t times, VvTSSessionInfo* sInfo, bool bIncludeOpen /* = true */, bool bAlignSec /* = false */)
+VvTSKlineData* VvTSDataFactory::extractMin1Data(VvTSKlineSlice* baseKline, uint32_t times, VvTSSessionInfo* sInfo, bool bIncludeOpen /* = true */, bool bAlignSec /* = false */)
 {
 	//根据合约代码获取市场信息
 	if(sInfo == NULL)
@@ -759,7 +759,7 @@ VvTSKlineData* WTSDataFactory::extractMin1Data(VvTSKlineSlice* baseKline, uint32
 	return ret;
 }
 
-VvTSKlineData* WTSDataFactory::extractMin5Data(VvTSKlineSlice* baseKline, uint32_t times, VvTSSessionInfo* sInfo, bool bIncludeOpen /* = true */, bool bAlignSec /* = false */)
+VvTSKlineData* VvTSDataFactory::extractMin5Data(VvTSKlineSlice* baseKline, uint32_t times, VvTSSessionInfo* sInfo, bool bIncludeOpen /* = true */, bool bAlignSec /* = false */)
 {
 	if(sInfo == NULL)
 		return NULL;
@@ -881,7 +881,7 @@ VvTSKlineData* WTSDataFactory::extractMin5Data(VvTSKlineSlice* baseKline, uint32
 	return ret;
 }
 
-VvTSKlineData* WTSDataFactory::extractDayData(VvTSKlineSlice* baseKline, uint32_t times, bool bIncludeOpen /* = true */)
+VvTSKlineData* VvTSDataFactory::extractDayData(VvTSKlineSlice* baseKline, uint32_t times, bool bIncludeOpen /* = true */)
 {
 	//计算时间步长
 	uint32_t steplen = times;
@@ -942,7 +942,7 @@ VvTSKlineData* WTSDataFactory::extractDayData(VvTSKlineSlice* baseKline, uint32_
 	return ret;
 }
 
-VvTSKlineData* WTSDataFactory::extractKlineData(VvTSTickSlice* ayTicks, uint32_t seconds, 
+VvTSKlineData* VvTSDataFactory::extractKlineData(VvTSTickSlice* ayTicks, uint32_t seconds, 
 	VvTSSessionInfo* sInfo, bool bUnixTime /* = false */, bool bAlignSec /* = false */)
 {
 	if(ayTicks == NULL || ayTicks->size() == 0)
@@ -1026,7 +1026,7 @@ VvTSKlineData* WTSDataFactory::extractKlineData(VvTSTickSlice* ayTicks, uint32_t
 	return ret;
 }
 
-bool WTSDataFactory::mergeKlineData(VvTSKlineData* klineData, VvTSKlineData* newKline)
+bool VvTSDataFactory::mergeKlineData(VvTSKlineData* klineData, VvTSKlineData* newKline)
 {
 	if (klineData == NULL || newKline == NULL)
 		return false;

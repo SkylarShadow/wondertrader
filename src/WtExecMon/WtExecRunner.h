@@ -7,8 +7,8 @@
 #include "../WtCore/ParserAdapter.h"
 #include "../WtCore/ActionPolicyMgr.h"
 
-#include "../WTSTools/WTSHotMgr.h"
-#include "../WTSTools/WTSBaseDataMgr.h"
+#include "../VvTSTools/VvTSHotMgr.h"
+#include "../VvTSTools/VvTSBaseDataMgr.h"
 
 NS_VVTP_BEGIN
 class VvTSVariant;
@@ -77,8 +77,8 @@ private:
 
 	WtSimpDataMgr		_data_mgr;
 
-	WTSBaseDataMgr		_bd_mgr;
-	WTSHotMgr			_hot_mgr;
+	VvTSBaseDataMgr		_bd_mgr;
+	VvTSHotMgr			_hot_mgr;
 	ActionPolicyMgr		_act_policy;
 
 	vvt_hashmap<std::string, double> _positions;

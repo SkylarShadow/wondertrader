@@ -1,5 +1,5 @@
 ﻿/*!
- * \file WTSLogger.h
+ * \file VvTSLogger.h
  * \project	WonderTrader
  *
  * \author Wesley
@@ -34,7 +34,7 @@ USING_NS_VVTP;
 #define MAX_LOG_BUF_SIZE 2048
 
 
-class WTSLogger
+class VvTSLogger
 {
 private:
 	static void debug_imp(SpdLoggerPtr logger, const char* message);

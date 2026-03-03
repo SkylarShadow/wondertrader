@@ -10,7 +10,7 @@
 #include "WtDtRunner.h"
 #include "ExpParser.h"
 
-#include "../WtDtCore/WtHelper.h"
+#include "../WtDtCore/VvtHelper.h"
 
 #include "../Includes/VvTSSessionInfo.hpp"
 #include "../Includes/VvTSVariant.hpp"
@@ -20,7 +20,7 @@
 #include "../Share/StrUtil.hpp"
 
 #include "../VvTSUtils/VvTSCfgLoader.h"
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 #include "../VvTSUtils/SignalHook.hpp"
 
 
@@ -47,12 +47,12 @@ void WtDtRunner::start(bool bAsync /* = false */, bool bAlldayMode /* = false */
     {
 		install_signal_hooks([this](const char* message) {
 			if(!_to_exit)
-				WTSLogger::error(message);
+				VvTSLogger::error(message);
 		}, [this](bool toExit) {
 			if (_to_exit)
 				return;
 			_to_exit = toExit;
-			WTSLogger::info("Exit flag is {}", _to_exit);
+			VvTSLogger::info("Exit flag is {}", _to_exit);
 		});
 
 		_async_io.post([this, bAlldayMode]() {
@@ -85,8 +85,8 @@ void WtDtRunner::start(bool bAsync /* = false */, bool bAlldayMode /* = false */
 
 void WtDtRunner::initialize(const char* cfgFile, const char* logCfg, const char* modDir /* = "" */, bool bCfgFile /* = true */, bool bLogCfgFile /* = true */)
 {
-	WTSLogger::init(logCfg, bLogCfgFile);
-	WtHelper::set_module_dir(modDir);
+	VvTSLogger::init(logCfg, bLogCfgFile);
+	VvtHelper::set_module_dir(modDir);
 
 	VvTSVariant* config = NULL;
 	if (bCfgFile)
@@ -96,7 +96,7 @@ void WtDtRunner::initialize(const char* cfgFile, const char* logCfg, const char*
 
 	if(config == NULL)
 	{
-		WTSLogger::error("Loading config file {} failed", cfgFile);
+		VvTSLogger::error("Loading config file {} failed", cfgFile);
 		return;
 	}
 
@@ -105,7 +105,7 @@ void WtDtRunner::initialize(const char* cfgFile, const char* logCfg, const char*
 	if (cfgBF->get("session"))
 	{
 		_bd_mgr.loadSessions(cfgBF->getCString("session"));
-		WTSLogger::info("Trading sessions loaded");
+		VvTSLogger::info("Trading sessions loaded");
 	}
 
 	VvTSVariant* cfgItem = cfgBF->get("commodity");
@@ -143,20 +143,20 @@ void WtDtRunner::initialize(const char* cfgFile, const char* logCfg, const char*
 	if (cfgBF->get("holiday"))
 	{
 		_bd_mgr.loadHolidays(cfgBF->getCString("holiday"));
-		WTSLogger::info("Holidays loaded");
+		VvTSLogger::info("Holidays loaded");
 	}
 
 
 	if (cfgBF->get("hot"))
 	{
 		_hot_mgr.loadHots(cfgBF->getCString("hot"));
-		WTSLogger::log_raw(LL_INFO, "Hot rules loaded");
+		VvTSLogger::log_raw(LL_INFO, "Hot rules loaded");
 	}
 
 	if (cfgBF->get("second"))
 	{
 		_hot_mgr.loadSeconds(cfgBF->getCString("second"));
-		WTSLogger::log_raw(LL_INFO, "Second rules loaded");
+		VvTSLogger::log_raw(LL_INFO, "Second rules loaded");
 	}
 
 	if (cfgBF->has("rules"))
@@ -166,7 +166,7 @@ void WtDtRunner::initialize(const char* cfgFile, const char* logCfg, const char*
 		for (const std::string& ruleTag : tags)
 		{
 			_hot_mgr.loadCustomRules(ruleTag.c_str(), cfgRules->getCString(ruleTag.c_str()));
-			WTSLogger::info("{} rules loaded from {}", ruleTag, cfgRules->getCString(ruleTag.c_str()));
+			VvTSLogger::info("{} rules loaded from {}", ruleTag, cfgRules->getCString(ruleTag.c_str()));
 		}
 	}
 
@@ -191,7 +191,7 @@ void WtDtRunner::initialize(const char* cfgFile, const char* logCfg, const char*
 	}
 	else
 	{
-		WTSLogger::info("datakit will run in allday mode");
+		VvTSLogger::info("datakit will run in allday mode");
 	}
 
 	initDataMgr(config->get("writer"), bAlldayMode);
@@ -200,7 +200,7 @@ void WtDtRunner::initialize(const char* cfgFile, const char* logCfg, const char*
 	{
 		//如果存在指数模块要，配置指数
 		const char* filename = config->getCString("index");
-		WTSLogger::info("Reading index config from {}...", filename);
+		VvTSLogger::info("Reading index config from {}...", filename);
 		VvTSVariant* var = VvTSCfgLoader::load_from_file(filename);
 		if (var)
 		{
@@ -209,7 +209,7 @@ void WtDtRunner::initialize(const char* cfgFile, const char* logCfg, const char*
 		}
 		else
 		{
-			WTSLogger::error("Loading index config {} failed", filename);
+			VvTSLogger::error("Loading index config {} failed", filename);
 		}
 	}
 
@@ -221,7 +221,7 @@ void WtDtRunner::initialize(const char* cfgFile, const char* logCfg, const char*
 			const char* filename = cfgParser->asCString();
 			if (StdFile::exists(filename))
 			{
-				WTSLogger::info("Reading parser config from {}...", filename);
+				VvTSLogger::info("Reading parser config from {}...", filename);
 				VvTSVariant* var = VvTSCfgLoader::load_from_file(filename);
 				if (var)
 				{
@@ -230,12 +230,12 @@ void WtDtRunner::initialize(const char* cfgFile, const char* logCfg, const char*
 				}
 				else
 				{
-					WTSLogger::error("Loading parser config {} failed", filename);
+					VvTSLogger::error("Loading parser config {} failed", filename);
 				}
 			}
 			else
 			{
-				WTSLogger::error("Parser configuration {} not exists", filename);
+				VvTSLogger::error("Parser configuration {} not exists", filename);
 			}
 		}
 		else if (cfgParser->type() == VvTSVariant::VT_Array)
@@ -244,7 +244,7 @@ void WtDtRunner::initialize(const char* cfgFile, const char* logCfg, const char*
 		}
 	}
 	else
-		WTSLogger::log_raw(LL_WARN, "No parsers config, skipped loading parsers");
+		VvTSLogger::log_raw(LL_WARN, "No parsers config, skipped loading parsers");
 
 	config->release();
 }
@@ -278,7 +278,7 @@ void WtDtRunner::initParsers(VvTSVariant* cfg)
 		_parsers.addAdapter(realid.c_str(), adapter);
 	}
 
-	WTSLogger::info("{} market data parsers loaded in total", _parsers.size());
+	VvTSLogger::info("{} market data parsers loaded in total", _parsers.size());
 }
 
 #pragma region "Extended Parser"
@@ -287,7 +287,7 @@ void WtDtRunner::registerParserPorter(FuncParserEvtCallback cbEvt, FuncParserSub
 	_cb_parser_evt = cbEvt;
 	_cb_parser_sub = cbSub;
 
-	WTSLogger::info("Callbacks of Extented Parser registration done");
+	VvTSLogger::info("Callbacks of Extented Parser registration done");
 }
 
 void WtDtRunner::parser_init(const char* id)
@@ -337,7 +337,7 @@ void WtDtRunner::on_ext_parser_quote(const char* id, VvTSTickStruct* curTick, ui
 	}
 	else
 	{
-		WTSLogger::warn("Parser {} not exists", id);
+		VvTSLogger::warn("Parser {} not exists", id);
 	}
 }
 
@@ -347,7 +347,7 @@ bool WtDtRunner::createExtParser(const char* id)
 	ExpParser* parser = new ExpParser(id);
 	adapter->initExt(id, parser);
 	_parsers.addAdapter(id, adapter);
-	WTSLogger::info("Extended parser {} created", id);
+	VvTSLogger::info("Extended parser {} created", id);
 	return true;
 }
 
@@ -360,7 +360,7 @@ bool WtDtRunner::createExtDumper(const char* id)
 
 	_data_mgr.add_ext_dumper(id, dumper.get());
 
-	WTSLogger::info("Extended dumper {} created", id);
+	VvTSLogger::info("Extended dumper {} created", id);
 	return true;
 }
 
@@ -381,7 +381,7 @@ bool WtDtRunner::dumpHisTicks(const char* id, const char* stdCode, uint32_t uDat
 {
 	if (NULL == _dumper_for_ticks)
 	{
-		WTSLogger::error("Extended tick dumper not enabled");
+		VvTSLogger::error("Extended tick dumper not enabled");
 		return false;
 	}
 
@@ -392,7 +392,7 @@ bool WtDtRunner::dumpHisBars(const char* id, const char* stdCode, const char* pe
 {
 	if (NULL == _dumper_for_bars)
 	{
-		WTSLogger::error("Extended bar dumper not enabled");
+		VvTSLogger::error("Extended bar dumper not enabled");
 		return false;
 	}
 
@@ -403,7 +403,7 @@ bool WtDtRunner::dumpHisOrdDtl(const char* id, const char* stdCode, uint32_t uDa
 {
 	if (NULL == _dumper_for_orddtl)
 	{
-		WTSLogger::error("Extended order detail dumper not enabled");
+		VvTSLogger::error("Extended order detail dumper not enabled");
 		return false;
 	}
 
@@ -414,7 +414,7 @@ bool WtDtRunner::dumpHisOrdQue(const char* id, const char* stdCode, uint32_t uDa
 {
 	if (NULL == _dumper_for_ordque)
 	{
-		WTSLogger::error("Extended order queue dumper not enabled");
+		VvTSLogger::error("Extended order queue dumper not enabled");
 		return false;
 	}
 
@@ -425,7 +425,7 @@ bool WtDtRunner::dumpHisTrans(const char* id, const char* stdCode, uint32_t uDat
 {
 	if (NULL == _dumper_for_trans)
 	{
-		WTSLogger::error("Extended transaction dumper not enabled");
+		VvTSLogger::error("Extended transaction dumper not enabled");
 		return false;
 	}
 

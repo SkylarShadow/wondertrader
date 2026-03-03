@@ -13,7 +13,7 @@
 #include "WtUftTicker.h"
 #include "WtUftDtMgr.h"
 #include "TraderAdapter.h"
-#include "WtHelper.h"
+#include "VvtHelper.h"
 
 #include "../Share/decimal.h"
 #include "../Share/StrUtil.hpp"
@@ -23,7 +23,7 @@
 #include "../Includes/IBaseDataMgr.h"
 #include "../Includes/VvTSContractInfo.hpp"
 
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 USING_NS_VVTP;
 
@@ -38,7 +38,7 @@ WtUftEngine::WtUftEngine()
 	_cur_raw_time = _cur_time;
 	_cur_tdate = _cur_date;
 
-	WtHelper::setTime(_cur_date, _cur_time, _cur_secs);
+	VvtHelper::setTime(_cur_date, _cur_time, _cur_secs);
 }
 
 
@@ -66,14 +66,14 @@ void WtUftEngine::set_date_time(uint32_t curDate, uint32_t curTime, uint32_t cur
 
 	_cur_raw_time = rawTime;
 
-	WtHelper::setTime(_cur_date, _cur_raw_time, _cur_secs);
+	VvtHelper::setTime(_cur_date, _cur_raw_time, _cur_secs);
 }
 
 void WtUftEngine::set_trading_date(uint32_t curTDate)
 {
 	_cur_tdate = curTDate;
 
-	WtHelper::setTDate(curTDate);
+	VvtHelper::setTDate(curTDate);
 }
 
 VvTSCommodityInfo* WtUftEngine::get_commodity_info(const char* stdCode)
@@ -306,7 +306,7 @@ void WtUftEngine::sub_transaction(uint32_t sid, const char* stdCode)
 
 void WtUftEngine::on_session_begin()
 {
-	WTSLogger::info("Trading day {} begun", _cur_tdate);
+	VvTSLogger::info("Trading day {} begun", _cur_tdate);
 
 	for (auto it = _ctx_map.begin(); it != _ctx_map.end(); it++)
 	{
@@ -323,7 +323,7 @@ void WtUftEngine::on_session_end()
 		ctx->on_session_end(_cur_tdate);
 	}
 
-	WTSLogger::info("Trading day {} ended", _cur_tdate);
+	VvTSLogger::info("Trading day {} ended", _cur_tdate);
 }
 
 void WtUftEngine::on_tick(const char* stdCode, VvTSTickData* curTick)

@@ -9,11 +9,11 @@
 #include "../Share/DLLHelper.hpp"
 #include "../Share/StrUtil.hpp"
 
-#include "../WTSTools/WTSBaseDataMgr.h"
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSBaseDataMgr.h"
+#include "../VvTSTools/VvTSLogger.h"
 #include "../VvTSUtils/VvTSCfgLoader.h"
 
-WTSBaseDataMgr	g_bdMgr;
+VvTSBaseDataMgr	g_bdMgr;
 
 USING_NS_VVTP;
 
@@ -73,21 +73,21 @@ public:
         DllHandle hInst = DLLHelper::load_library(moduleName);
 		if (hInst == NULL)
 		{
-			WTSLogger::error("Loading module {} failed", moduleName);
+			VvTSLogger::error("Loading module {} failed", moduleName);
 			return false;
 		}
 
 		FuncCreateParser pCreator = (FuncCreateParser)DLLHelper::get_symbol(hInst, "createParser");
 		if (NULL == pCreator)
 		{
-			WTSLogger::error("Entry function createParser not found");
+			VvTSLogger::error("Entry function createParser not found");
 			return false;
 		}
 
 		_api = pCreator();
 		if (NULL == _api)
 		{
-			WTSLogger::error("Creating parser api failed");
+			VvTSLogger::error("Creating parser api failed");
 			return false;
 		}
 
@@ -98,12 +98,12 @@ public:
 public:
 	virtual void handleParserLog(VvTSLogLevel ll, const char* message) override
 	{
-		WTSLogger::log_raw(ll, message);
+		VvTSLogger::log_raw(ll, message);
 	}
 
 	virtual void handleQuote(VvTSTickData *quote, uint32_t procFlag) override
 	{
-		WTSLogger::info("{}@{}.{}, price:{}, voume:{}", quote->code(), quote->actiondate(), quote->actiontime(), quote->price(), quote->totalvolume());
+		VvTSLogger::info("{}@{}.{}, price:{}, voume:{}", quote->code(), quote->actiondate(), quote->actiontime(), quote->price(), quote->totalvolume());
 	}
 
 	virtual void handleSymbolList(const VvTSArray* aySymbols) override
@@ -140,12 +140,12 @@ std::string getBaseFolder()
 
 int main()
 {
-	WTSLogger::init("logcfg.yaml");
+	VvTSLogger::init("logcfg.yaml");
 
 	VvTSVariant* root = VvTSCfgLoader::load_from_file("config.yaml");
 	if (root == NULL)
 	{
-		WTSLogger::log_raw(LL_ERROR, "Loading config.yaml failed");
+		VvTSLogger::log_raw(LL_ERROR, "Loading config.yaml failed");
 		return 0;
 	}
 
@@ -164,7 +164,7 @@ int main()
 	VvTSVariant* params = root->get(profile.c_str());
 	if (params == NULL)
 	{
-		WTSLogger::error("Configure {} not exist", profile);
+		VvTSLogger::error("Configure {} not exist", profile);
 		return 0;
 	}
 

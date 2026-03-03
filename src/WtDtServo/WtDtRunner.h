@@ -8,8 +8,8 @@
  * \brief 
  */
 #pragma once
-#include "../WTSTools/WTSHotMgr.h"
-#include "../WTSTools/WTSBaseDataMgr.h"
+#include "../VvTSTools/VvTSHotMgr.h"
+#include "../VvTSTools/VvTSBaseDataMgr.h"
 #include "../Share/StdUtils.hpp"
 
 #include "PorterDefs.h"
@@ -34,8 +34,8 @@ public:
 				FuncOnTickCallback cbTick = NULL, FuncOnBarCallback cbBar = NULL);
 	void	start();
 
-	inline WTSBaseDataMgr& getBaseDataMgr() { return _bd_mgr; }
-	inline WTSHotMgr& getHotMgr() { return _hot_mgr; }
+	inline VvTSBaseDataMgr& getBaseDataMgr() { return _bd_mgr; }
+	inline VvTSHotMgr& getHotMgr() { return _hot_mgr; }
 
 public:
 	void	proc_tick(VvTSTickData* curTick);
@@ -68,8 +68,8 @@ private:
 private:
 	FuncOnTickCallback	_cb_tick;
 	FuncOnBarCallback	_cb_bar;
-	WTSBaseDataMgr	_bd_mgr;
-	WTSHotMgr		_hot_mgr;
+	VvTSBaseDataMgr	_bd_mgr;
+	VvTSHotMgr		_hot_mgr;
 
 	WtDataStorage*	_data_store;
 	WtDataManager	_data_mgr;

@@ -13,7 +13,7 @@
 #include "WtHftTicker.h"
 #include "WtDtMgr.h"
 #include "TraderAdapter.h"
-#include "WtHelper.h"
+#include "VvtHelper.h"
 
 #include "../Share/decimal.h"
 #include "../Share/CodeHelper.hpp"
@@ -21,7 +21,7 @@
 #include "../Includes/VvTSVariant.hpp"
 #include "../Includes/VvTSContractInfo.hpp"
 
-#include "../WTSTools/WTSLogger.h"
+#include "../VvTSTools/VvTSLogger.h"
 
 #include <rapidjson/document.h>
 #include <rapidjson/prettywriter.h>
@@ -94,7 +94,7 @@ void WtHftEngine::run()
 
 		root.AddMember("engine", rj::Value("HFT", allocator), allocator);
 
-		std::string filename = WtHelper::getBaseDir();
+		std::string filename = VvtHelper::getBaseDir();
 		filename += "marker.json";
 
 		rj::StringBuffer sb;
@@ -297,7 +297,7 @@ void WtHftEngine::on_bar(const char* stdCode, const char* period, uint32_t times
 
 void WtHftEngine::on_session_begin()
 {
-	WTSLogger::info("Trading day {} begun", _cur_tdate);
+	VvTSLogger::info("Trading day {} begun", _cur_tdate);
 	WtEngine::on_session_begin();
 
 	for (auto it = _ctx_map.begin(); it != _ctx_map.end(); it++)
@@ -322,7 +322,7 @@ void WtHftEngine::on_session_end()
 		ctx->on_session_end(_cur_tdate);
 	}
 
-	WTSLogger::info("Trading day {} ended", _cur_tdate);
+	VvTSLogger::info("Trading day {} ended", _cur_tdate);
 	if (_evt_listener)
 		_evt_listener->on_session_event(_cur_tdate, false);
 }

@@ -21,7 +21,7 @@ ADD_LIBRARY(WtDtPorter SHARED ${SRCS} ${HDRS})
 
 SET(LIBS
 	WtDtCore
-	WTSTools
+	VvTSTools
 	VvTSUtils
 	)
 IF(MSVC)
