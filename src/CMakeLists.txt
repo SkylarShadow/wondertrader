@@ -1,22 +1,19 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(WonderTrader LANGUAGES CXX)
+PROJECT(VvonTrader LANGUAGES CXX)
 
-# ========= 基本信息 =========
-message(STATUS "Generator: ${CMAKE_GENERATOR}")
-message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
-
-# ========= C++ 标准 =========
+#C++标准
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# ========= 架构判断 =========
+# 架构判断
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
     set(PLATFORM x64)
 else()
     set(PLATFORM x86)
 endif()
+
 
 # ========= 编译器判断 =========
 if(MSVC)
@@ -33,40 +30,36 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     message(STATUS "Compiler: Clang")
 endif()
 
-# ========= 依赖路径 =========
-# TODO: 根据需要调整依赖路径
-set(DEPS_DIR ${CMAKE_SOURCE_DIR}/../deps/v142)
 
+#依赖
+set(DEPS_DIR ${CMAKE_SOURCE_DIR}/../deps/v142)
 set(INCS ${DEPS_DIR}/include)
 set(LNKS ${DEPS_DIR}/lib/${PLATFORM})
 set(BINS ${DEPS_DIR}/bin/${PLATFORM})
 
 message(STATUS "Deps root: ${DEPS_DIR}")
-message(STATUS "Deps include: ${DEPS_INCLUDE_DIR}")
-message(STATUS "Deps lib: ${DEPS_LIB_DIR}")
+message(STATUS "Deps Include: ${INCS}")
+message(STATUS "Deps lib: ${LNKS}")
 
 
-# ========= 前后缀统一处理 =========
-if(WIN32)
+#库的前后缀
+if (WIN32)	
+
+	set(PREFIX )
+	set(SUFFIX .dll)
+	
+elseif(UNIX)
+    set(LNKS ${DEPS_DIR}/lib)
+    set(PREFIX lib)
+    set(SUFFIX .so)
+else()
+    set(PREFIX lib)
     set(SUFFIX .dll)
-else() #UNIX
-	set(LNKS ${DEPS_DIR}/lib)
-	set(SUFFIX .so)
-
 endif()
-set(PREFIX lib)
 
-message(STATUS "Shared suffix: ${SHARED_SUFFIX}")
-message(STATUS "Library prefix: ${LIB_PREFIX}")
-
-
-
-# ========= 全局 include / link =========
-# 全局include 可能会有污染，后面看一下是否要优化
-include_directories(${DEPS_INCLUDE_DIR})
-link_directories(${DEPS_LIB_DIR})
-
-
+#include / link
+include_directories(${INCS})
+link_directories(${LNKS})
 
 #basic libraries
 add_subdirectory(VvTSUtils)
