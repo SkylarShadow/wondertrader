@@ -1,11 +1,9 @@
+cmake_minimum_required(VERSION 3.10)
 
-#1. 确定CMake的最低版本需求
-cmake_minimum_required(VERSION 3.0.0)
-
-#2. 确定工程名
 project(CTPOptLoader LANGUAGES CXX)
-SET(CMAKE_CXX_STANDARD 17)
 
+SET(CMAKE_CXX_STANDARD 17)
+# bin输出目录
 SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/Loader)
 
 #7. 添加源码
@@ -15,33 +13,43 @@ SET(SRC
 	${PROJECT_SOURCE_DIR}/TraderSpi.h
 )
 
-INCLUDE_DIRECTORIES(${INCS})
-LINK_DIRECTORIES(${LNKS})
+
+add_library(CTPOptLoader SHARED ${SRC})
+include_directories(${INCS})
+link_directories(${LNKS})
 
 SET(LIBS	
-	# boost_filesystem #临时过构建
+	# boost_filesystem
     ZTSUtils
-	#dl
 )
 
-IF(WIN32) 
-#LIST(APPEND LIBS iconv) #临时过构建
-ENDIF()
+# 链接，通用依赖
+target_link_libraries(CTPOptLoader
+    PRIVATE
+        ${LIBS}
+)
 
-#9. 生成可执行文件
-ADD_LIBRARY(CTPOptLoader SHARED ${SRC})
-IF (MSVC)
-	TARGET_LINK_LIBRARIES(CTPOptLoader ${LIBS}) #临时过构建
-ELSE (GNUCC)
-	TARGET_LINK_LIBRARIES(CTPOptLoader ${LIBS})
-ENDIF ()
+# 平台相关依赖
+if(MSVC)
+else
+	if(WIN32)
+	    target_link_libraries(CTPOptLoader
+            PRIVATE
+                dl
+        )
+    endif()
+    target_link_libraries(CTPOptLoader
+        PRIVATE
+            iconv
+    )
+endif()
 
-IF (MSVC)
-ELSE (GNUCC)
-	SET_TARGET_PROPERTIES(CTPOptLoader PROPERTIES
+
+if (MSVC)
+else (GNUCC)
+	set_target_properties(CTPOptLoader PROPERTIES
 		CXX_VISIBILITY_PRESET hidden
 		C_VISIBILITY_PRESET hidden
 		VISIBILITY_INLINES_HIDDEN 1
         LINK_FLAGS_RELEASE -s)
 ENDIF ()
-

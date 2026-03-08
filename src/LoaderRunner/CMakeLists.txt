@@ -1,15 +1,13 @@
-
-#1. 确定CMake的最低版本需求
-CMAKE_MINIMUM_REQUIRED(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.10)
 
 #2. 确定工程名
-PROJECT(LoaderRunner LANGUAGES CXX)
-SET(CMAKE_CXX_STANDARD 17)
+project(LoaderRunner LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
 
-SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/Loader)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/Loader)
 
-INCLUDE_DIRECTORIES(${INCS})
-LINK_DIRECTORIES(${LNKS})
+include_directories(${INCS})
+link_directories(${LNKS})
 
 SET(LIBS
 	ZtBtCore
@@ -17,14 +15,14 @@ SET(LIBS
 	ZTSUtils
 )
 
-IF(MSVC)
-ELSE(GNUCC)
+if(MSVC)
+else(GNUCC)
 	LIST(APPEND LIBS
 		dl)
 	if(WIN32)
 		LIST(APPEND LIBS iconv)
-	ENDIF()
-ENDIF()
+	endif()
+endif()
 
 #添加源码
 file(GLOB SRCS *.cpp)

@@ -1,48 +1,57 @@
+cmake_minimum_required(VERSION 3.10)
 
-#1. 确定CMake的最低版本需求
-cmake_minimum_required(VERSION 3.0.0)
-
-#2. 确定工程名
 project(CTPLoader LANGUAGES CXX)
-SET(CMAKE_CXX_STANDARD 17)
 
+SET(CMAKE_CXX_STANDARD 17)
+# bin输出目录
 SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/Loader)
 
-#7. 添加源码
-SET(SRC  
+#添加源码
+set(SRC  
 	${PROJECT_SOURCE_DIR}/CTPLoader.cpp
 	${PROJECT_SOURCE_DIR}/TraderSpi.cpp
 	${PROJECT_SOURCE_DIR}/TraderSpi.h
 )
 
-INCLUDE_DIRECTORIES(${INCS})
-LINK_DIRECTORIES(${LNKS})
+
+add_library(CTPLoader SHARED ${SRC})
+include_directories(${INCS})
+link_directories(${LNKS})
 
 SET(LIBS
-	#boost_filesystem #临时过构建
+	#boost_filesystem 
     ZTSUtils
-	#dl #临时过构建
 )
 
-IF(WIN32)
-# LIST(APPEND LIBS iconv)  #临时过构建
-ENDIF()
+# 链接，通用依赖
+target_link_libraries(CTPLoader
+    PRIVATE
+        ${LIBS}
+)
 
-#9. 生成可执行文件
-ADD_LIBRARY(CTPLoader SHARED ${SRC})
-IF (MSVC)
-	TARGET_LINK_LIBRARIES(CTPLoader ${LIBS}) ##临时过构建
-ELSE (GNUCC)
-	TARGET_LINK_LIBRARIES(CTPLoader ${LIBS})
-ENDIF ()
+# 平台相关依赖
+if(MSVC)
+else
+	if(WIN32)
+	    target_link_libraries(CTPLoader
+            PRIVATE
+                dl
+        )
+    endif()
+    target_link_libraries(CTPLoader
+        PRIVATE
+            iconv
+    )
+endif()
 
-IF (MSVC)
-ELSE (GNUCC)
-	SET_TARGET_PROPERTIES(CTPLoader PROPERTIES
+
+if (MSVC)
+else (GNUCC)
+	set_target_properties(CTPLoader PROPERTIES
 		CXX_VISIBILITY_PRESET hidden
 		C_VISIBILITY_PRESET hidden
 		VISIBILITY_INLINES_HIDDEN 1
         LINK_FLAGS_RELEASE -s)
-ENDIF ()
+endif ()
 
 
