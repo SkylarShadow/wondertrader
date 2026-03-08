@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include <string.h>
-#include "VvTSMarcos.h"
+#include "ZTSMarcos.h"
 #include "../FasterLibs/tsl/robin_map.h"
 #include "../FasterLibs/tsl/robin_set.h"
 
@@ -24,7 +24,7 @@
   * https://martin.ankerl.com/2022/08/27/hashmap-bench-01/#benchmark-results-table
   */
 
-NS_VVTP_BEGIN
+NS_ZTP_BEGIN
 
 struct string_hash
 {
@@ -113,4 +113,4 @@ public:
 	vvt_hashset() :Container() {}
 };
 
-NS_VVTP_END
+NS_ZTP_END

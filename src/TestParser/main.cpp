@@ -2,27 +2,27 @@
 #include <boost/filesystem.hpp>
 
 #include "../Includes/IParserApi.h"
-#include "../Includes/VvTSVariant.hpp"
-#include "../Includes/VvTSContractInfo.hpp"
-#include "../Includes/VvTSDataDef.hpp"
+#include "../Includes/ZTSVariant.hpp"
+#include "../Includes/ZTSContractInfo.hpp"
+#include "../Includes/ZTSDataDef.hpp"
 
 #include "../Share/DLLHelper.hpp"
 #include "../Share/StrUtil.hpp"
 
-#include "../VvTSTools/VvTSBaseDataMgr.h"
-#include "../VvTSTools/VvTSLogger.h"
-#include "../VvTSUtils/VvTSCfgLoader.h"
+#include "../ZTSTools/ZTSBaseDataMgr.h"
+#include "../ZTSTools/ZTSLogger.h"
+#include "../ZTSUtils/ZTSCfgLoader.h"
 
-VvTSBaseDataMgr	g_bdMgr;
+ZTSBaseDataMgr	g_bdMgr;
 
-USING_NS_VVTP;
+USING_NS_ZTP;
 
 class ParserSpi : public IParserSpi
 {
 public:
 	ParserSpi(){}
 
-	bool init(VvTSVariant* params, const char* ttype)
+	bool init(ZTSVariant* params, const char* ttype)
 	{
 		m_pParams = params;
 		if (m_pParams)
@@ -55,11 +55,11 @@ public:
 		}
 
 		ContractSet contractSet;
-		VvTSArray* ayContract = g_bdMgr.getContracts();
-		VvTSArray::Iterator it = ayContract->begin();
+		ZTSArray* ayContract = g_bdMgr.getContracts();
+		ZTSArray::Iterator it = ayContract->begin();
 		for (; it != ayContract->end(); it++)
 		{
-			VvTSContractInfo* contract = STATIC_CONVERT(*it, VvTSContractInfo*);
+			ZTSContractInfo* contract = STATIC_CONVERT(*it, ZTSContractInfo*);
 			contractSet.insert(contract->getFullCode());
 		}
 
@@ -73,21 +73,21 @@ public:
         DllHandle hInst = DLLHelper::load_library(moduleName);
 		if (hInst == NULL)
 		{
-			VvTSLogger::error("Loading module {} failed", moduleName);
+			ZTSLogger::error("Loading module {} failed", moduleName);
 			return false;
 		}
 
 		FuncCreateParser pCreator = (FuncCreateParser)DLLHelper::get_symbol(hInst, "createParser");
 		if (NULL == pCreator)
 		{
-			VvTSLogger::error("Entry function createParser not found");
+			ZTSLogger::error("Entry function createParser not found");
 			return false;
 		}
 
 		_api = pCreator();
 		if (NULL == _api)
 		{
-			VvTSLogger::error("Creating parser api failed");
+			ZTSLogger::error("Creating parser api failed");
 			return false;
 		}
 
@@ -96,17 +96,17 @@ public:
 	}
 
 public:
-	virtual void handleParserLog(VvTSLogLevel ll, const char* message) override
+	virtual void handleParserLog(ZTSLogLevel ll, const char* message) override
 	{
-		VvTSLogger::log_raw(ll, message);
+		ZTSLogger::log_raw(ll, message);
 	}
 
-	virtual void handleQuote(VvTSTickData *quote, uint32_t procFlag) override
+	virtual void handleQuote(ZTSTickData *quote, uint32_t procFlag) override
 	{
-		VvTSLogger::info("{}@{}.{}, price:{}, voume:{}", quote->code(), quote->actiondate(), quote->actiontime(), quote->price(), quote->totalvolume());
+		ZTSLogger::info("{}@{}.{}, price:{}, voume:{}", quote->code(), quote->actiondate(), quote->actiontime(), quote->price(), quote->totalvolume());
 	}
 
-	virtual void handleSymbolList(const VvTSArray* aySymbols) override
+	virtual void handleSymbolList(const ZTSArray* aySymbols) override
 	{
 
 	}
@@ -122,7 +122,7 @@ private:
 	IParserApi*			_api;
 	FuncDeleteParser	m_funcRemover;
 	std::string			m_strModule;
-	VvTSVariant*			m_pParams;
+	ZTSVariant*			m_pParams;
 };
 
 std::string getBaseFolder()
@@ -140,16 +140,16 @@ std::string getBaseFolder()
 
 int main()
 {
-	VvTSLogger::init("logcfg.yaml");
+	ZTSLogger::init("logcfg.yaml");
 
-	VvTSVariant* root = VvTSCfgLoader::load_from_file("config.yaml");
+	ZTSVariant* root = ZTSCfgLoader::load_from_file("config.yaml");
 	if (root == NULL)
 	{
-		VvTSLogger::log_raw(LL_ERROR, "Loading config.yaml failed");
+		ZTSLogger::log_raw(LL_ERROR, "Loading config.yaml failed");
 		return 0;
 	}
 
-	VvTSVariant* cfg = root->get("config");
+	ZTSVariant* cfg = root->get("config");
 	if (cfg->has("session"))
 		g_bdMgr.loadSessions(cfg->getCString("session"));
 
@@ -161,10 +161,10 @@ int main()
 
 	std::string module = cfg->getCString("parser");
 	std::string profile = cfg->getCString("profile");
-	VvTSVariant* params = root->get(profile.c_str());
+	ZTSVariant* params = root->get(profile.c_str());
 	if (params == NULL)
 	{
-		VvTSLogger::error("Configure {} not exist", profile);
+		ZTSLogger::error("Configure {} not exist", profile);
 		return 0;
 	}
 

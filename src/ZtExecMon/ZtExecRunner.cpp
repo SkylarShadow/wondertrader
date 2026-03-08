@@ -1,0 +1,455 @@
+﻿#include "ZtExecRunner.h"
+
+#include "../ZtCore/ZtHelper.h"
+#include "../ZtCore/ZtDiffExecuter.h"
+#include "../ZtCore/ZtDistExecuter.h"
+
+#include "../ZTSTools/ZTSLogger.h"
+#include "../ZTSUtils/ZTSCfgLoader.h"
+
+#include "../Includes/ZTSContractInfo.hpp"
+#include "../Includes/ZTSVariant.hpp"
+#include "../Share/CodeHelper.hpp"
+#include "../Share/ModuleHelper.hpp"
+#include "../Share/TimeUtils.hpp"
+#include "../ZTSUtils/SignalHook.hpp"
+
+#ifdef _MSC_VER
+#include "../Common/mdump.h"
+#include <boost/filesystem.hpp>
+const char* getModuleName()
+{
+	static char MODULE_NAME[250] = { 0 };
+	if (strlen(MODULE_NAME) == 0)
+	{
+
+		GetModuleFileName(g_dllModule, MODULE_NAME, 250);
+		boost::filesystem::path p(MODULE_NAME);
+		strcpy(MODULE_NAME, p.filename().string().c_str());
+	}
+
+	return MODULE_NAME;
+}
+#endif
+
+ZtExecRunner::ZtExecRunner()
+{
+	install_signal_hooks([](const char* message) {
+		ZTSLogger::error(message);
+	});
+}
+
+bool ZtExecRunner::init(const char* logCfg /* = "logcfgexec.json" */, bool isFile /* = true */)
+{
+#ifdef _MSC_VER
+	CMiniDumper::Enable(getModuleName(), true, ZtHelper::getCWD().c_str());
+#endif
+
+	if(isFile)
+	{
+		std::string path = ZtHelper::getCWD() + logCfg;
+		ZTSLogger::init(path.c_str(), true);
+	}
+	else
+	{
+		ZTSLogger::init(logCfg, false);
+	}
+	
+
+	ZtHelper::setInstDir(getBinDir());
+	return true;
+}
+
+bool ZtExecRunner::config(const char* cfgFile, bool isFile /* = true */)
+{
+	_config = isFile ? ZTSCfgLoader::load_from_file(cfgFile) : ZTSCfgLoader::load_from_content(cfgFile, false);
+	if(_config == NULL)
+	{
+		ZTSLogger::log_raw(LL_ERROR, "Loading config file failed");
+		return false;
+	}
+
+	//基础数据文件
+	ZTSVariant* cfgBF = _config->get("basefiles");
+	if (cfgBF->get("session"))
+	{
+		_bd_mgr.loadSessions(cfgBF->getCString("session"));
+		ZTSLogger::info("Trading sessions loaded");
+	}
+
+	ZTSVariant* cfgItem = cfgBF->get("commodity");
+	if (cfgItem)
+	{
+		if (cfgItem->type() == ZTSVariant::VT_String)
+		{
+			_bd_mgr.loadCommodities(cfgItem->asCString());
+		}
+		else if (cfgItem->type() == ZTSVariant::VT_Array)
+		{
+			for (uint32_t i = 0; i < cfgItem->size(); i++)
+			{
+				_bd_mgr.loadCommodities(cfgItem->get(i)->asCString());
+			}
+		}
+	}
+
+	cfgItem = cfgBF->get("contract");
+	if (cfgItem)
+	{
+		if (cfgItem->type() == ZTSVariant::VT_String)
+		{
+			_bd_mgr.loadContracts(cfgItem->asCString());
+		}
+		else if (cfgItem->type() == ZTSVariant::VT_Array)
+		{
+			for (uint32_t i = 0; i < cfgItem->size(); i++)
+			{
+				_bd_mgr.loadContracts(cfgItem->get(i)->asCString());
+			}
+		}
+	}
+
+	if (cfgBF->get("holiday"))
+	{
+		_bd_mgr.loadHolidays(cfgBF->getCString("holiday"));
+		ZTSLogger::info("Holidays loaded");
+	}
+
+
+	//初始化数据管理
+	initDataMgr();
+
+	//初始化开平策略
+	if (!initActionPolicy())
+		return false;
+
+	//初始化行情通道
+	const char* cfgParser = _config->getCString("parsers");
+	if (StdFile::exists(cfgParser))
+	{
+		ZTSLogger::info("Reading parser config from {}...", cfgParser);
+		ZTSVariant* var = ZTSCfgLoader::load_from_file(cfgParser);
+		if (var)
+		{
+			if (!initParsers(var))
+				ZTSLogger::error("Loading parsers failed");
+			var->release();
+		}
+		else
+		{
+			ZTSLogger::error("Loading parser config {} failed", cfgParser);
+		}
+	}
+
+	//初始化交易通道
+	const char* cfgTraders = _config->getCString("traders");
+	if (StdFile::exists(cfgTraders))
+	{
+		ZTSLogger::info("Reading trader config from {}...", cfgTraders);
+		ZTSVariant* var = ZTSCfgLoader::load_from_file(cfgTraders);
+		if (var)
+		{
+			if (!initTraders(var))
+				ZTSLogger::error("Loading traders failed");
+			var->release();
+		}
+		else
+		{
+			ZTSLogger::error("Loading trader config {} failed", cfgTraders);
+		}
+	}
+
+	const char* cfgExecuters = _config->getCString("executers");
+	if (StdFile::exists(cfgExecuters))
+	{
+		ZTSLogger::info("Reading executer config from {}...", cfgExecuters);
+		ZTSVariant* var = ZTSCfgLoader::load_from_file(cfgExecuters);
+		if (var)
+		{
+			if (!initExecuters(var))
+				ZTSLogger::error("Loading executers failed");
+			var->release();
+		}
+		else
+		{
+			ZTSLogger::error("Loading executer config {} failed", cfgExecuters);
+		}
+	}
+
+	return true;
+}
+
+
+void ZtExecRunner::run()
+{
+	try
+	{
+		_parsers.run();
+		_traders.run();
+	}
+	catch (...)
+	{
+		print_stack_trace([](const char* message) {
+			ZTSLogger::error(message);
+		});
+	}
+}
+
+bool ZtExecRunner::initParsers(ZTSVariant* cfgParser)
+{
+	ZTSVariant* cfg = cfgParser->get("parsers");
+	if (cfg == NULL)
+		return false;
+
+	uint32_t count = 0;
+	for (uint32_t idx = 0; idx < cfg->size(); idx++)
+	{
+		ZTSVariant* cfgItem = cfg->get(idx);
+		if (!cfgItem->getBoolean("active"))
+			continue;
+
+		const char* id = cfgItem->getCString("id");
+
+		// By Wesley @ 2021.12.14
+		// 如果id为空，则生成自动id
+		std::string realid = id;
+		if (realid.empty())
+		{
+			static uint32_t auto_parserid = 1000;
+			realid = StrUtil::printf("auto_parser_%u", auto_parserid++);
+		}
+
+		ParserAdapterPtr adapter(new ParserAdapter);
+		adapter->init(realid.c_str(), cfgItem, this, &_bd_mgr, &_hot_mgr);
+		_parsers.addAdapter(realid.c_str(), adapter);
+
+		count++;
+	}
+
+	ZTSLogger::info("{} parsers loaded", count);
+
+	return true;
+}
+
+bool ZtExecRunner::initExecuters(ZTSVariant* cfgExecuter)
+{
+	ZTSVariant* cfg = cfgExecuter->get("executers");
+	if (cfg == NULL || cfg->type() != ZTSVariant::VT_Array)
+		return false;
+
+	//先加载自带的执行器工厂
+	std::string path = ZtHelper::getInstDir() + "executer//";
+	_exe_factory.loadFactories(path.c_str());
+
+	uint32_t count = 0;
+	for (uint32_t idx = 0; idx < cfg->size(); idx++)
+	{
+		ZTSVariant* cfgItem = cfg->get(idx);
+		if (!cfgItem->getBoolean("active"))
+			continue;
+
+		const char* id = cfgItem->getCString("id");
+		std::string name = cfgItem->getCString("name");	//local,diff,dist
+		if (name.empty())
+			name = "local";
+
+		if (name == "local")
+		{
+			ZtLocalExecuter* executer = new ZtLocalExecuter(&_exe_factory, id, &_data_mgr);
+			if (!executer->init(cfgItem))
+				return false;
+
+			const char* tid = cfgItem->getCString("trader");
+			if (strlen(tid) == 0)
+			{
+				ZTSLogger::error("No Trader configured for Executer {}", id);
+			}
+			else
+			{
+				TraderAdapterPtr trader = _traders.getAdapter(tid);
+				if (trader)
+				{
+					executer->setTrader(trader.get());
+					trader->addSink(executer);
+				}
+				else
+				{
+					ZTSLogger::error("Trader {} not exists, cannot configured for executer %s", tid, id);
+				}
+			}
+
+			executer->setStub(this);
+			_exe_mgr.add_executer(ExecCmdPtr(executer));
+		}
+		else if (name == "diff")
+		{
+			ZtDiffExecuter* executer = new ZtDiffExecuter(&_exe_factory, id, &_data_mgr, &_bd_mgr);
+			if (!executer->init(cfgItem))
+				return false;
+
+			const char* tid = cfgItem->getCString("trader");
+			if (strlen(tid) == 0)
+			{
+				ZTSLogger::error("No Trader configured for Executer {}", id);
+			}
+			else
+			{
+				TraderAdapterPtr trader = _traders.getAdapter(tid);
+				if (trader)
+				{
+					executer->setTrader(trader.get());
+					trader->addSink(executer);
+				}
+				else
+				{
+					ZTSLogger::error("Trader {} not exists, cannot configured for executer %s", tid, id);
+				}
+			}
+
+			executer->setStub(this);
+			_exe_mgr.add_executer(ExecCmdPtr(executer));
+		}
+		else
+		{
+			ZtDistExecuter* executer = new ZtDistExecuter(id);
+			if (!executer->init(cfgItem))
+				return false;
+
+			executer->setStub(this);
+			_exe_mgr.add_executer(ExecCmdPtr(executer));
+		}
+		count++;
+	}
+
+	ZTSLogger::info("{} executers loaded", count);
+
+	return true;
+}
+
+bool ZtExecRunner::initTraders(ZTSVariant* cfgTrader)
+{
+	ZTSVariant* cfg = cfgTrader->get("traders");
+	if (cfg == NULL || cfg->type() != ZTSVariant::VT_Array)
+		return false;
+
+	uint32_t count = 0;
+	for (uint32_t idx = 0; idx < cfg->size(); idx++)
+	{
+		ZTSVariant* cfgItem = cfg->get(idx);
+		if (!cfgItem->getBoolean("active"))
+			continue;
+
+		const char* id = cfgItem->getCString("id");
+
+		TraderAdapterPtr adapter(new TraderAdapter);
+		adapter->init(id, cfgItem, &_bd_mgr, &_act_policy);
+
+		_traders.addAdapter(id, adapter);
+		count++;
+	}
+
+	ZTSLogger::info("{} traders loaded", count);
+
+	return true;
+}
+
+bool ZtExecRunner::initDataMgr()
+{
+	ZTSVariant* cfg = _config->get("data");
+	if (cfg == NULL)
+		return false;
+
+	_data_mgr.init(cfg, this);
+
+	ZTSLogger::info("Data Manager initialized");
+	return true;
+}
+
+bool ZtExecRunner::addExeFactories(const char* folder)
+{
+	return _exe_factory.loadFactories(folder);
+}
+
+ZTSSessionInfo* ZtExecRunner::get_session_info(const char* sid, bool isCode /* = true */)
+{
+	if (!isCode)
+		return _bd_mgr.getSession(sid);
+
+	CodeHelper::CodeInfo codeInfo = CodeHelper::extractStdCode(sid, NULL);
+	ZTSCommodityInfo* cInfo = _bd_mgr.getCommodity(codeInfo._exchg, codeInfo._product);
+	if (cInfo == NULL)
+		return NULL;
+
+	return cInfo->getSessionInfo();
+}
+
+void ZtExecRunner::handle_push_quote(ZTSTickData* quote)
+{
+	if (quote == NULL)
+		return;
+
+	uint32_t uDate = quote->actiondate();
+	uint32_t uTime = quote->actiontime();
+	uint32_t curMin = uTime / 100000;
+	uint32_t curSec = uTime % 100000;
+	ZtHelper::setTime(uDate, curMin, curSec);
+	ZtHelper::setTDate(quote->tradingdate());
+
+	_data_mgr.handle_push_quote(quote->code(), quote);
+
+	_exe_mgr.handle_tick(quote->code(), quote);
+}
+
+void ZtExecRunner::release()
+{
+	ZTSLogger::stop();
+}
+
+
+void ZtExecRunner::setPosition(const char* stdCode, double targetPos)
+{
+	_positions[stdCode] = targetPos;
+}
+
+void ZtExecRunner::commitPositions()
+{
+	_exe_mgr.set_positions(_positions);
+	_positions.clear();
+}
+
+bool ZtExecRunner::initActionPolicy()
+{
+	const char* action_file = _config->getCString("bspolicy");
+	if (strlen(action_file) <= 0)
+		return false;
+
+	bool ret = _act_policy.init(action_file);
+	ZTSLogger::info("Action policies initialized");
+	return ret;
+}
+
+uint64_t ZtExecRunner::get_real_time()
+{
+	return TimeUtils::makeTime(_data_mgr.get_date(), _data_mgr.get_raw_time() * 100000 + _data_mgr.get_secs());
+}
+
+ZTSCommodityInfo* ZtExecRunner::get_comm_info(const char* stdCode)
+{
+	CodeHelper::CodeInfo codeInfo = CodeHelper::extractStdCode(stdCode, NULL);
+	return _bd_mgr.getCommodity(codeInfo._exchg, codeInfo._product);
+}
+
+ZTSSessionInfo* ZtExecRunner::get_sess_info(const char* stdCode)
+{
+	CodeHelper::CodeInfo codeInfo = CodeHelper::extractStdCode(stdCode, NULL);
+	ZTSCommodityInfo* cInfo = _bd_mgr.getCommodity(codeInfo._exchg, codeInfo._product);
+	if (cInfo == NULL)
+		return NULL;
+
+	return cInfo->getSessionInfo();
+}
+
+uint32_t ZtExecRunner::get_trading_day()
+{
+	return _data_mgr.get_trading_day();
+}

@@ -12,9 +12,9 @@ SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_T
 file(GLOB SRCS *.cpp ./gtest/*.cc)
 
 SET(LIBS
-    VvTSTools
-	VvTSUtils
-    VvtShareHelper)
+    ZTSTools
+	ZTSUtils
+    ZtShareHelper)
 IF (MSVC)
 ELSE(GNUCC)
     LIST(APPEND LIBS pthread boost_filesystem)

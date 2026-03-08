@@ -9,10 +9,10 @@
  */
 #pragma once
 
-#include "VvTSMarcos.h"
+#include "ZTSMarcos.h"
 
-NS_VVTP_BEGIN
-class VvTSSessionInfo;
+NS_ZTP_BEGIN
+class ZTSSessionInfo;
 
 /*
  *	时间模板管理器接口
@@ -27,6 +27,6 @@ public:
 	 *
 	 *	返回值	时间模板指针,不存在则为NULL
 	 */
-	virtual VvTSSessionInfo* getSession(const char* code, const char* exchg = "")	= 0;
+	virtual ZTSSessionInfo* getSession(const char* code, const char* exchg = "")	= 0;
 };
-NS_VVTP_END
+NS_ZTP_END

@@ -69,27 +69,27 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\VvtPorter\</OutDir>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\ZtPorter\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <IncludePath>$(MyDepends141)\include;$(ProjectDir)\gtest;$(IncludePath)</IncludePath>
     <LibraryPath>$(MyDepends141)\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\VvtPorter\</OutDir>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\ZtPorter\</OutDir>
     <IncludePath>$(MyDepends141)\include;$(ProjectDir)\gtest;$(IncludePath)</IncludePath>
     <LibraryPath>$(MyDepends141)\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\VvtPorter\</OutDir>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\ZtPorter\</OutDir>
     <IncludePath>$(MyDepends141)\include;$(ProjectDir)\gtest;$(IncludePath)</IncludePath>
     <LibraryPath>$(MyDepends141)\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\VvtPorter\</OutDir>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\ZtPorter\</OutDir>
     <IncludePath>$(MyDepends141)\include;$(ProjectDir)\gtest;$(IncludePath)</IncludePath>
     <LibraryPath>$(MyDepends141)\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
@@ -203,13 +203,13 @@
     <ClInclude Include="gtest\gtest-internal-inl.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\VvtShareHelper\VvtShareHelper.vcxproj">
+    <ProjectReference Include="..\ZtShareHelper\ZtShareHelper.vcxproj">
       <Project>{3b8eba76-b27b-4def-bf80-c2de6a03748f}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\VvTSTools\VvTSTools.vcxproj">
+    <ProjectReference Include="..\ZTSTools\ZTSTools.vcxproj">
       <Project>{8b249955-de56-41a3-a904-21dbbe40ab34}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\VvTSUtils\VvTSUtils.vcxproj">
+    <ProjectReference Include="..\ZTSUtils\ZTSUtils.vcxproj">
       <Project>{9f0b15cc-34c6-46da-9575-d4ae11453b84}</Project>
     </ProjectReference>
   </ItemGroup>

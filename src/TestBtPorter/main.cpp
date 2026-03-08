@@ -1,14 +1,14 @@
 ﻿#ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
 #endif
-#include "../VvtBtPorter/VvtBtPorter.h"
+#include "../ZtBtPorter/ZtBtPorter.h"
 
-#include "../Includes/VvTSStruct.h"
+#include "../Includes/ZTSStruct.h"
 #include "../Share/DLLHelper.hpp"
 #include "../Share/StdUtils.hpp"
 #include "../Share/fmtlib.h"
 
-void on_getbar(CtxHandler ctxid, const char* code, const char* period, VvTSBarStruct* bar, VvTUInt32 count, bool isLast)
+void on_getbar(CtxHandler ctxid, const char* code, const char* period, ZTSBarStruct* bar, ZTUInt32 count, bool isLast)
 {
 	if (bar)
 		fmt::print("on_getbar@{}.{}\n", bar->date, bar->time);
@@ -16,7 +16,7 @@ void on_getbar(CtxHandler ctxid, const char* code, const char* period, VvTSBarSt
 		int x = 1;
 }
 
-void on_gettick(CtxHandler ctxid, const char* code, VvTSTickStruct* tick, bool isLast)
+void on_gettick(CtxHandler ctxid, const char* code, ZTSTickStruct* tick, bool isLast)
 {
 	if (tick)
 		fmt::print("on_gettick@{}\n", tick->action_time);
@@ -29,38 +29,38 @@ void on_init(CtxHandler ctxid)
 	//cta_log_text(ctxid, "this is a test message");
 }
 
-void on_tick(CtxHandler ctxid, const char* stdCode, VvTSTickStruct* newTick)
+void on_tick(CtxHandler ctxid, const char* stdCode, ZTSTickStruct* newTick)
 {
 	//fmt::print("on_tick\n");
 }
 
-void on_calc(CtxHandler ctxid, VvTUInt32 curDate, VvTUInt32 curTime)
+void on_calc(CtxHandler ctxid, ZTUInt32 curDate, ZTUInt32 curTime)
 {
 	fmt::print("on_calc @ {}.{}\n", curDate, curTime);
 	//cta_get_ticks(ctxid, "CFFEX.IF.HOT", 100, on_gettick);
 }
 
-void on_calc_done(CtxHandler ctxid, VvTUInt32 curDate, VvTUInt32 curTime)
+void on_calc_done(CtxHandler ctxid, ZTUInt32 curDate, ZTUInt32 curTime)
 {
 	fmt::print("on_calc_done @ {}.{}\n", curDate, curTime);
 	//cta_get_ticks(ctxid, "CFFEX.IF.HOT", 100, on_gettick);
 }
 
 
-void on_bar(CtxHandler ctxid, const char* code, const char* period, VvTSBarStruct* newBar)
+void on_bar(CtxHandler ctxid, const char* code, const char* period, ZTSBarStruct* newBar)
 {
 	//fmt::print("on_bar\n");
 }
 
-void on_session_event(CtxHandler cHandle, VvTUInt32 curTDate, bool isBegin)
+void on_session_event(CtxHandler cHandle, ZTUInt32 curTDate, bool isBegin)
 {
 
 }
 
 bool on_load_his_bars(const char* stdCode, const char* period)
 {
-	VvTSBarStruct bars[10];
-	memset(&bars[0], 0, sizeof(VvTSBarStruct) * 10);
+	ZTSBarStruct bars[10];
+	memset(&bars[0], 0, sizeof(ZTSBarStruct) * 10);
 
 	for(int i = 0; i < 10; i++)
 	{
@@ -76,9 +76,9 @@ bool on_load_his_bars(const char* stdCode, const char* period)
 void run_bt()
 {
 #ifdef _WIN32
-	DLLHelper::load_library("VvtBtPorter.dll");
+	DLLHelper::load_library("ZtBtPorter.dll");
 #else
-	DLLHelper::load_library("libVvtBtPorter.so");
+	DLLHelper::load_library("libZtBtPorter.so");
 #endif
 	register_cta_callbacks(on_init, on_tick, on_calc, on_bar, on_session_event, on_calc_done);
 

@@ -8,13 +8,13 @@
  * \brief 日志转发模块接口定义
  */
 #pragma once
-#include "VvTSMarcos.h"
-#include "VvTSTypes.h"
+#include "ZTSMarcos.h"
+#include "ZTSTypes.h"
 
-NS_VVTP_BEGIN
+NS_ZTP_BEGIN
 class ILogHandler
 {
 public:
-	virtual void handleLogAppend(VvTSLogLevel ll, const char* msg)	= 0;
+	virtual void handleLogAppend(ZTSLogLevel ll, const char* msg)	= 0;
 };
-NS_VVTP_END
+NS_ZTP_END

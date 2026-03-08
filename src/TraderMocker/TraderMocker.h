@@ -8,14 +8,14 @@
 #include "../Includes/FasterDefs.h"
 #include "../Includes/ITraderApi.h"
 #include "../Share/StdUtils.hpp"
-#include "../Includes/VvTSCollection.hpp"
+#include "../Includes/ZTSCollection.hpp"
 
 
-NS_VVTP_BEGIN
-	class VvTSTickData;
-NS_VVTP_END
+NS_ZTP_BEGIN
+	class ZTSTickData;
+NS_ZTP_END
 
-USING_NS_VVTP;
+USING_NS_ZTP;
 
 /*
  *	仿真交易器
@@ -60,12 +60,12 @@ private:
 	double			_max_qty;
 	double			_min_qty;
 
-	VvTSArray*		_orders;
-	VvTSArray*		_trades;
-	typedef VvTSHashMap<std::string> TickCache;
+	ZTSArray*		_orders;
+	ZTSArray*		_trades;
+	typedef ZTSHashMap<std::string> TickCache;
 	TickCache*		_ticks;
 
-	typedef VvTSHashMap<std::string> OrderCache;
+	typedef ZTSHashMap<std::string> OrderCache;
 	OrderCache*			_awaits;
 	StdUniqueMutex	_mtx_awaits;
 
@@ -116,7 +116,7 @@ private:
 //////////////////////////////////////////////////////////////////////////
 //ITraderApi
 public:
-	virtual bool init(VvTSVariant *params) override;
+	virtual bool init(ZTSVariant *params) override;
 
 	virtual void release() override;
 
@@ -134,9 +134,9 @@ public:
 
 	virtual int logout() override;
 
-	virtual int orderInsert(VvTSEntrust* eutrust) override;
+	virtual int orderInsert(ZTSEntrust* eutrust) override;
 
-	virtual int orderAction(VvTSEntrustAction* action) override;
+	virtual int orderAction(ZTSEntrustAction* action) override;
 
 	virtual int queryAccount() override;
 

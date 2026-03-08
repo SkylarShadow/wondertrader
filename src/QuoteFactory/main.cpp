@@ -1,25 +1,25 @@
-﻿#include "../VvtDtCore/ParserAdapter.h"
-#include "../VvtDtCore/DataManager.h"
-#include "../VvtDtCore/StateMonitor.h"
-#include "../VvtDtCore/UDPCaster.h"
-#include "../VvtDtCore/ShmCaster.h"
-#include "../VvtDtCore/VvtHelper.h"
-#include "../VvtDtCore/IndexFactory.h"
+﻿#include "../ZtDtCore/ParserAdapter.h"
+#include "../ZtDtCore/DataManager.h"
+#include "../ZtDtCore/StateMonitor.h"
+#include "../ZtDtCore/UDPCaster.h"
+#include "../ZtDtCore/ShmCaster.h"
+#include "../ZtDtCore/ZtHelper.h"
+#include "../ZtDtCore/IndexFactory.h"
 
-#include "../Includes/VvTSSessionInfo.hpp"
-#include "../Includes/VvTSVariant.hpp"
+#include "../Includes/ZTSSessionInfo.hpp"
+#include "../Includes/ZTSVariant.hpp"
 
-#include "../VvTSTools/VvTSHotMgr.h"
-#include "../VvTSTools/VvTSBaseDataMgr.h"
-#include "../VvTSTools/VvTSLogger.h"
-#include "../VvTSUtils/VvTSCfgLoader.h"
+#include "../ZTSTools/ZTSHotMgr.h"
+#include "../ZTSTools/ZTSBaseDataMgr.h"
+#include "../ZTSTools/ZTSLogger.h"
+#include "../ZTSUtils/ZTSCfgLoader.h"
 #include "../Share/StrUtil.hpp"
 #include "../Share/cppcli.hpp"
 
-#include "../VvTSUtils/SignalHook.hpp"
+#include "../ZTSUtils/SignalHook.hpp"
 
-VvTSBaseDataMgr	g_baseDataMgr;
-VvTSHotMgr		g_hotMgr;
+ZTSBaseDataMgr	g_baseDataMgr;
+ZTSHotMgr		g_hotMgr;
 StateMonitor	g_stateMon;
 UDPCaster		g_udpCaster;
 ShmCaster		g_shmCaster;
@@ -61,17 +61,17 @@ const char* getBinDir()
 }
 
 
-void initDataMgr(VvTSVariant* config, bool bAlldayMode = false)
+void initDataMgr(ZTSVariant* config, bool bAlldayMode = false)
 {
 	//如果是全天模式，则不传递状态机给DataManager
 	g_dataMgr.init(config, &g_baseDataMgr, bAlldayMode ? NULL : &g_stateMon);
 }
 
-void initParsers(VvTSVariant* cfg)
+void initParsers(ZTSVariant* cfg)
 {
 	for (uint32_t idx = 0; idx < cfg->size(); idx++)
 	{
-		VvTSVariant* cfgItem = cfg->get(idx);
+		ZTSVariant* cfgItem = cfg->get(idx);
 		if (!cfgItem->getBoolean("active"))
 			continue;
 
@@ -90,36 +90,36 @@ void initParsers(VvTSVariant* cfg)
 		g_parsers.addAdapter(realid.c_str(), adapter);
 	}
 
-	VvTSLogger::info("{} market data parsers loaded in total", g_parsers.size());
+	ZTSLogger::info("{} market data parsers loaded in total", g_parsers.size());
 }
 
 void initialize(const std::string& filename)
 {
-	VvtHelper::set_module_dir(getBinDir());
+	ZtHelper::set_module_dir(getBinDir());
 
-	VvTSVariant* config = VvTSCfgLoader::load_from_file(filename.c_str());
+	ZTSVariant* config = ZTSCfgLoader::load_from_file(filename.c_str());
 	if(config == NULL)
 	{
-		VvTSLogger::error("Loading config file {} failed", filename);
+		ZTSLogger::error("Loading config file {} failed", filename);
 		return;
 	}
 
 	//加载市场信息
-	VvTSVariant* cfgBF = config->get("basefiles");
+	ZTSVariant* cfgBF = config->get("basefiles");
 	if (cfgBF->get("session"))
 	{
 		g_baseDataMgr.loadSessions(cfgBF->getCString("session"));
-		VvTSLogger::info("Trading sessions loaded");
+		ZTSLogger::info("Trading sessions loaded");
 	}
 
-	VvTSVariant* cfgItem = cfgBF->get("commodity");
+	ZTSVariant* cfgItem = cfgBF->get("commodity");
 	if (cfgItem)
 	{
-		if (cfgItem->type() == VvTSVariant::VT_String)
+		if (cfgItem->type() == ZTSVariant::VT_String)
 		{
 			g_baseDataMgr.loadCommodities(cfgItem->asCString());
 		}
-		else if (cfgItem->type() == VvTSVariant::VT_Array)
+		else if (cfgItem->type() == ZTSVariant::VT_Array)
 		{
 			for (uint32_t i = 0; i < cfgItem->size(); i++)
 			{
@@ -131,11 +131,11 @@ void initialize(const std::string& filename)
 	cfgItem = cfgBF->get("contract");
 	if (cfgItem)
 	{
-		if (cfgItem->type() == VvTSVariant::VT_String)
+		if (cfgItem->type() == ZTSVariant::VT_String)
 		{
 			g_baseDataMgr.loadContracts(cfgItem->asCString());
 		}
-		else if (cfgItem->type() == VvTSVariant::VT_Array)
+		else if (cfgItem->type() == ZTSVariant::VT_Array)
 		{
 			for (uint32_t i = 0; i < cfgItem->size(); i++)
 			{
@@ -147,18 +147,18 @@ void initialize(const std::string& filename)
 	if (cfgBF->get("holiday"))
 	{
 		g_baseDataMgr.loadHolidays(cfgBF->getCString("holiday"));
-		VvTSLogger::info("Holidays loaded");
+		ZTSLogger::info("Holidays loaded");
 	}
 	if (cfgBF->get("hot"))
 	{
 		g_hotMgr.loadHots(cfgBF->getCString("hot"));
-		VvTSLogger::log_raw(LL_INFO, "Hot rules loaded");
+		ZTSLogger::log_raw(LL_INFO, "Hot rules loaded");
 	}
 
 	if (cfgBF->get("second"))
 	{
 		g_hotMgr.loadSeconds(cfgBF->getCString("second"));
-		VvTSLogger::log_raw(LL_INFO, "Second rules loaded");
+		ZTSLogger::log_raw(LL_INFO, "Second rules loaded");
 	}
 
 	if (cfgBF->has("rules"))
@@ -168,7 +168,7 @@ void initialize(const std::string& filename)
 		for (const std::string& ruleTag : tags)
 		{
 			g_hotMgr.loadCustomRules(ruleTag.c_str(), cfgRules->getCString(ruleTag.c_str()));
-			VvTSLogger::info("{} rules loaded from {}", ruleTag, cfgRules->getCString(ruleTag.c_str()));
+			ZTSLogger::info("{} rules loaded from {}", ruleTag, cfgRules->getCString(ruleTag.c_str()));
 		}
 	}
 
@@ -194,7 +194,7 @@ void initialize(const std::string& filename)
 	}
 	else
 	{
-		VvTSLogger::info("QuoteFactory will run in allday mode");
+		ZTSLogger::info("QuoteFactory will run in allday mode");
 	}
 	initDataMgr(config->get("writer"), bAlldayMode);
 
@@ -202,8 +202,8 @@ void initialize(const std::string& filename)
 	{
 		//如果存在指数模块要，配置指数
 		const char* filename = config->getCString("index");
-		VvTSLogger::info("Reading index config from {}...", filename);
-		VvTSVariant* var = VvTSCfgLoader::load_from_file(filename);
+		ZTSLogger::info("Reading index config from {}...", filename);
+		ZTSVariant* var = ZTSCfgLoader::load_from_file(filename);
 		if (var)
 		{
 			g_idxFactory.init(var, &g_hotMgr, &g_baseDataMgr, &g_dataMgr);
@@ -211,20 +211,20 @@ void initialize(const std::string& filename)
 		}
 		else
 		{
-			VvTSLogger::error("Loading index config {} failed", filename);
+			ZTSLogger::error("Loading index config {} failed", filename);
 		}		
 	}
 
-	VvTSVariant* cfgParser = config->get("parsers");
+	ZTSVariant* cfgParser = config->get("parsers");
 	if (cfgParser)
 	{
-		if (cfgParser->type() == VvTSVariant::VT_String)
+		if (cfgParser->type() == ZTSVariant::VT_String)
 		{
 			const char* filename = cfgParser->asCString();
 			if (StdFile::exists(filename))
 			{
-				VvTSLogger::info("Reading parser config from {}...", filename);
-				VvTSVariant* var = VvTSCfgLoader::load_from_file(filename);
+				ZTSLogger::info("Reading parser config from {}...", filename);
+				ZTSVariant* var = ZTSCfgLoader::load_from_file(filename);
 				if (var)
 				{
 					initParsers(var->get("parsers"));
@@ -232,15 +232,15 @@ void initialize(const std::string& filename)
 				}
 				else
 				{
-					VvTSLogger::error("Loading parser config {} failed", filename);
+					ZTSLogger::error("Loading parser config {} failed", filename);
 				}
 			}
 			else
 			{
-				VvTSLogger::error("Parser configuration {} not exists", filename);
+				ZTSLogger::error("Parser configuration {} not exists", filename);
 			}
 		}
-		else if (cfgParser->type() == VvTSVariant::VT_Array)
+		else if (cfgParser->type() == ZTSVariant::VT_Array)
 		{
 			initParsers(cfgParser);
 		}
@@ -277,7 +277,7 @@ int main(int argc, char* argv[])
 		filename = lParam->get<std::string>();
 	else
 		filename = "./logcfgdt.yaml";
-	VvTSLogger::init(filename.c_str());
+	ZTSLogger::init(filename.c_str());
 
 #ifdef _MSC_VER
 	_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
@@ -296,13 +296,13 @@ int main(int argc, char* argv[])
 	bool bExit = false;
 	install_signal_hooks([&bExit](const char* message) {
 		if(!bExit)
-			VvTSLogger::error(message);
+			ZTSLogger::error(message);
 	}, [&bExit](bool toExit) {
 		if (bExit)
 			return;
 
 		bExit = toExit;
-		VvTSLogger::info("Exit flag is {}", bExit);
+		ZTSLogger::info("Exit flag is {}", bExit);
 	});
 
 	if (cParam->exists())

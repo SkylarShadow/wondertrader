@@ -10,12 +10,12 @@
 #include "TraderATP.h"
 
 #include "../Includes/IBaseDataMgr.h"
-#include "../Includes/VvTSContractInfo.hpp"
-#include "../Includes/VvTSSessionInfo.hpp"
-#include "../Includes/VvTSTradeDef.hpp"
-#include "../Includes/VvTSError.hpp"
-#include "../Includes/VvTSVariant.hpp"
-#include "../Includes/VvTSRiskDef.hpp"
+#include "../Includes/ZTSContractInfo.hpp"
+#include "../Includes/ZTSSessionInfo.hpp"
+#include "../Includes/ZTSTradeDef.hpp"
+#include "../Includes/ZTSError.hpp"
+#include "../Includes/ZTSVariant.hpp"
+#include "../Includes/ZTSRiskDef.hpp"
 
 #include "../Share/ModuleHelper.hpp"
 
@@ -33,7 +33,7 @@
  //By Wesley @ 2022.01.05
 #include "../Share/fmtlib.h"
 template<typename... Args>
-inline void write_log(ITraderSpi* sink, VvTSLogLevel ll, const char* format, const Args&... args)
+inline void write_log(ITraderSpi* sink, ZTSLogLevel ll, const char* format, const Args&... args)
 {
 	if (sink == NULL)
 		return;
@@ -95,7 +95,7 @@ TraderATP::~TraderATP()
 }
 
 
-inline VvTSDirectionType wrapATPSide(const ATPSideType side)
+inline ZTSDirectionType wrapATPSide(const ATPSideType side)
 {
 	if (side == ATPSideConst::kBuy || side == ATPSideConst::kFinancingBuy)
 		return WDT_LONG;
@@ -105,7 +105,7 @@ inline VvTSDirectionType wrapATPSide(const ATPSideType side)
 		return WDT_NET;
 }
 
-inline VvTSDirectionType wrapDirectionType(ATPSideType side, ATPPositionEffectType pe)
+inline ZTSDirectionType wrapDirectionType(ATPSideType side, ATPPositionEffectType pe)
 {
 	if (ATPSideConst::kBuy == side) {
 		if (pe == ATPPositionEffectConst::kOpen)
@@ -121,7 +121,7 @@ inline VvTSDirectionType wrapDirectionType(ATPSideType side, ATPPositionEffectTy
 	}
 }
 
-inline ATPSideType wrapDirectionType(VvTSDirectionType dirType, VvTSOffsetType offsetType)
+inline ATPSideType wrapDirectionType(ZTSDirectionType dirType, ZTSOffsetType offsetType)
 {
 	if (WDT_LONG == dirType)
 		if (offsetType == WOT_OPEN)
@@ -135,7 +135,7 @@ inline ATPSideType wrapDirectionType(VvTSDirectionType dirType, VvTSOffsetType o
 			return ATPSideConst::kBuy;
 }
 
-inline VvTSOffsetType wrapOffsetType(const ATPPositionEffectType dirType)
+inline ZTSOffsetType wrapOffsetType(const ATPPositionEffectType dirType)
 {
 	if (dirType == ATPPositionEffectConst::kOpen)
 		return WOT_OPEN;
@@ -143,7 +143,7 @@ inline VvTSOffsetType wrapOffsetType(const ATPPositionEffectType dirType)
 		return WOT_CLOSE;
 }
 
-inline ATPPositionEffectType wrapOffsetType(VvTSOffsetType offType)
+inline ATPPositionEffectType wrapOffsetType(ZTSOffsetType offType)
 {
 	if (WOT_OPEN == offType)
 		return ATPPositionEffectConst::kOpen;
@@ -157,7 +157,7 @@ inline ATPPositionEffectType wrapOffsetType(VvTSOffsetType offType)
 		return ATPPositionEffectConst::kDefault;
 }
 
-inline ATPOrdTypeType wrapOrdType(VvTSPriceType priceType, VvTSOrderFlag flag)
+inline ATPOrdTypeType wrapOrdType(ZTSPriceType priceType, ZTSOrderFlag flag)
 {
 
 	if (WPT_LIMITPRICE == priceType && flag == WOF_NOR)
@@ -178,7 +178,7 @@ inline ATPOrdTypeType wrapOrdType(VvTSPriceType priceType, VvTSOrderFlag flag)
 	return ATPOrdTypeConst::kDefault;
 }
 
-inline VvTSPriceType wrapOrdType(ATPOrdTypeType ordType)
+inline ZTSPriceType wrapOrdType(ATPOrdTypeType ordType)
 {
 	if (ordType == ATPOrdTypeConst::kFixedNew || ordType == ATPOrdTypeConst::kSzBiddingFixed || ordType == ATPOrdTypeConst::kShBiddingFixed || ordType == ATPOrdTypeConst::kFixedFullDealOrCancel || ordType == ATPOrdTypeConst::kFixed)
 		return WPT_LIMITPRICE;
@@ -208,7 +208,7 @@ inline ATPLoginModeType wrapLoginMode(int loginMode)
 	return login_mode;
 }
 
-inline VvTSOrderState wrapOrdStatus(ATPOrdStatusType orderState)
+inline ZTSOrderState wrapOrdStatus(ATPOrdStatusType orderState)
 {
 	switch (orderState)
 	{
@@ -232,16 +232,16 @@ inline VvTSOrderState wrapOrdStatus(ATPOrdStatusType orderState)
 	}
 }
 
-VvTSEntrust* TraderATP::makeEntrust(const ATPRspOrderStatusAckMsg* order_info)
+ZTSEntrust* TraderATP::makeEntrust(const ATPRspOrderStatusAckMsg* order_info)
 {
 	const std::string code(order_info->security_id);
 	const std::string exchg = (order_info->market_id == ATPMarketIDConst::kShangHai) ? "SSE" : "SZSE";
 
-	VvTSContractInfo* ct = _bd_mgr->getContract(code.c_str(), exchg.c_str());
+	ZTSContractInfo* ct = _bd_mgr->getContract(code.c_str(), exchg.c_str());
 	if (ct == NULL)
 		return NULL;
 
-	VvTSEntrust* pRet = VvTSEntrust::create(
+	ZTSEntrust* pRet = ZTSEntrust::create(
 		code.c_str(),
 		(uint32_t)order_info->order_qty,
 		order_info->price,
@@ -261,16 +261,16 @@ VvTSEntrust* TraderATP::makeEntrust(const ATPRspOrderStatusAckMsg* order_info)
 	return pRet;
 }
 
-VvTSOrderInfo* TraderATP::makeOrderInfo(const APIOrderUnit* order_info)
+ZTSOrderInfo* TraderATP::makeOrderInfo(const APIOrderUnit* order_info)
 {
 	const std::string code(order_info->security_id);
 	const std::string exchg = (order_info->market_id == ATPMarketIDConst::kShangHai) ? "SSE" : "SZSE";
 
-	VvTSContractInfo* contract = _bd_mgr->getContract(code.c_str(), exchg.c_str());
+	ZTSContractInfo* contract = _bd_mgr->getContract(code.c_str(), exchg.c_str());
 	if (contract == NULL)
 		return NULL;
 
-	VvTSOrderInfo* pRet = VvTSOrderInfo::create();
+	ZTSOrderInfo* pRet = ZTSOrderInfo::create();
 	pRet->setContractInfo(contract);
 	pRet->setPrice(order_info->order_price / 10000);
 	pRet->setVolume((uint32_t)order_info->order_qty / 100);
@@ -319,16 +319,16 @@ VvTSOrderInfo* TraderATP::makeOrderInfo(const APIOrderUnit* order_info)
 	return pRet;
 }
 
-VvTSOrderInfo* TraderATP::makeOrderInfo(const ATPRspOrderStatusAckMsg *order_status_ack)
+ZTSOrderInfo* TraderATP::makeOrderInfo(const ATPRspOrderStatusAckMsg *order_status_ack)
 {
 	const std::string code(order_status_ack->security_id);
 	const std::string exchg = (order_status_ack->market_id == ATPMarketIDConst::kShangHai) ? "SSE" : "SZSE";
 
-	VvTSContractInfo* contract = _bd_mgr->getContract(code.c_str(), exchg.c_str());
+	ZTSContractInfo* contract = _bd_mgr->getContract(code.c_str(), exchg.c_str());
 	if (contract == NULL)
 		return NULL;
 
-	VvTSOrderInfo* pRet = VvTSOrderInfo::create();
+	ZTSOrderInfo* pRet = ZTSOrderInfo::create();
 	pRet->setContractInfo(contract);
 	pRet->setPrice(order_status_ack->price);
 	pRet->setVolume((uint32_t)order_status_ack->order_qty / 100);
@@ -378,16 +378,16 @@ VvTSOrderInfo* TraderATP::makeOrderInfo(const ATPRspOrderStatusAckMsg *order_sta
 	return pRet;
 }
 
-VvTSTradeInfo* TraderATP::makeTradeInfo(const APITradeOrderUnit* trade_info)
+ZTSTradeInfo* TraderATP::makeTradeInfo(const APITradeOrderUnit* trade_info)
 {
 	const std::string code(trade_info->security_id);
 	const std::string exchg = (trade_info->market_id == ATPMarketIDConst::kShangHai) ? "SSE" : "SZSE";
 
-	VvTSContractInfo* contract = _bd_mgr->getContract(code.c_str(), exchg.c_str());
+	ZTSContractInfo* contract = _bd_mgr->getContract(code.c_str(), exchg.c_str());
 	if (contract == NULL)
 		return NULL;
 
-	VvTSTradeInfo *pRet = VvTSTradeInfo::create(code.c_str(), exchg.c_str());
+	ZTSTradeInfo *pRet = ZTSTradeInfo::create(code.c_str(), exchg.c_str());
 	pRet->setVolume((uint32_t)trade_info->last_qty / 100.0);
 	pRet->setPrice(trade_info->last_px / 10000.0);
 	pRet->setTradeID(trade_info->exec_id);
@@ -400,12 +400,12 @@ VvTSTradeInfo* TraderATP::makeTradeInfo(const APITradeOrderUnit* trade_info)
 	pRet->setTradeDate(uDate);
 	pRet->setTradeTime(TimeUtils::makeTime(uDate, uTime));
 
-	VvTSDirectionType dType = wrapATPSide(trade_info->side);
+	ZTSDirectionType dType = wrapATPSide(trade_info->side);
 	pRet->setDirection(dType);
 
 	//pRet->setOffsetType(wrapOffsetType(trade_info->side));
 	pRet->setRefOrder(fmt::format("{}", trade_info->order_id).c_str());
-	pRet->setTradeType(VvTT_Common);
+	pRet->setTradeType(ZTT_Common);
 
 	const char* usertag = m_oidCache.get(StrUtil::trim(pRet->getRefOrder()).c_str());
 	if (strlen(usertag))
@@ -414,16 +414,16 @@ VvTSTradeInfo* TraderATP::makeTradeInfo(const APITradeOrderUnit* trade_info)
 	return pRet;
 }
 
-VvTSTradeInfo* TraderATP::makeTradeRecord(const ATPRspCashAuctionTradeERMsg *cash_auction_trade_er)
+ZTSTradeInfo* TraderATP::makeTradeRecord(const ATPRspCashAuctionTradeERMsg *cash_auction_trade_er)
 {
 	const std::string code(cash_auction_trade_er->security_id);
 	const std::string exchg = (cash_auction_trade_er->market_id == ATPMarketIDConst::kShangHai) ? "SSE" : "SZSE";
 
-	VvTSContractInfo* contract = _bd_mgr->getContract(code.c_str(), exchg.c_str());
+	ZTSContractInfo* contract = _bd_mgr->getContract(code.c_str(), exchg.c_str());
 	if (contract == NULL)
 		return NULL;
 
-	VvTSTradeInfo *pRet = VvTSTradeInfo::create(code.c_str(), exchg.c_str());
+	ZTSTradeInfo *pRet = ZTSTradeInfo::create(code.c_str(), exchg.c_str());
 	pRet->setVolume((uint32_t)cash_auction_trade_er->last_qty / 100);  // 成交数量
 	pRet->setPrice(cash_auction_trade_er->last_px / 10000.0);  // 成交价格
 	pRet->setTradeID(cash_auction_trade_er->exec_id);
@@ -435,11 +435,11 @@ VvTSTradeInfo* TraderATP::makeTradeRecord(const ATPRspCashAuctionTradeERMsg *cas
 	pRet->setTradeDate(uDate);
 	pRet->setTradeTime(TimeUtils::makeTime(uDate, uTime));
 
-	VvTSDirectionType dType = wrapATPSide(cash_auction_trade_er->side);
+	ZTSDirectionType dType = wrapATPSide(cash_auction_trade_er->side);
 	pRet->setDirection(dType);
 	//pRet->setOffsetType(wrapOffsetType(cash_auction_trade_er->side));
 	fmtutil::format_to(pRet->getRefOrder(), "{}", cash_auction_trade_er->cl_ord_id);
-	pRet->setTradeType(VvTT_Common);
+	pRet->setTradeType(ZTT_Common);
 
 	double amount = cash_auction_trade_er->total_value_traded / 10000.0;   //成交金额
 	pRet->setAmount(amount);
@@ -454,7 +454,7 @@ VvTSTradeInfo* TraderATP::makeTradeRecord(const ATPRspCashAuctionTradeERMsg *cas
 void TraderATP::OnLogin(const std::string& reason)
 {
 	if (_sink)
-		_sink->handleEvent(VvTE_Connect, 0);
+		_sink->handleEvent(ZTE_Connect, 0);
 
 	_state = TS_LOGINED;  // 已登录
 	write_log(_sink, LL_WARN, "[TraderATP] {} login success: {}...", _user, reason);
@@ -463,7 +463,7 @@ void TraderATP::OnLogin(const std::string& reason)
 void TraderATP::OnLogout(const std::string& reason)
 {
 	if (_sink)
-		_sink->handleEvent(VvTE_Logout, 0);
+		_sink->handleEvent(ZTE_Logout, 0);
 
 	_state = TS_NOTLOGIN;
 	write_log(_sink, LL_WARN, "[TraderATP] {} logout: {}...", _user, reason);
@@ -472,7 +472,7 @@ void TraderATP::OnLogout(const std::string& reason)
 void TraderATP::OnConnectFailure(const std::string& reason)
 {
 	if (_sink)
-		_sink->handleEvent(VvTE_Connect, -1);
+		_sink->handleEvent(ZTE_Connect, -1);
 
 	_state = TS_LOGINFAILED;
 	write_log(_sink, LL_WARN, "[TraderATP] Connect failed {}...", reason);
@@ -481,7 +481,7 @@ void TraderATP::OnConnectFailure(const std::string& reason)
 void TraderATP::OnConnectTimeOut(const std::string& reason)
 {
 	if (_sink)
-		_sink->handleEvent(VvTE_Connect, -1);
+		_sink->handleEvent(ZTE_Connect, -1);
 
 	_state = TS_LOGINFAILED;
 	write_log(_sink, LL_WARN, "[TraderATP] Connect timeout {}...", reason);
@@ -501,7 +501,7 @@ void TraderATP::OnClosed(const std::string& reason)
 void TraderATP::OnEndOfConnection(const std::string& reason)
 {
 	if (_sink)
-		_sink->handleEvent(VvTE_Close, -1);
+		_sink->handleEvent(ZTE_Close, -1);
 
 	write_log(_sink, LL_WARN, "[TraderATP] Connection ended {}...", reason);
 
@@ -598,13 +598,13 @@ void TraderATP::OnRspOrderStatusInternalAck(const ATPRspOrderStatusAckMsg& order
 
 	if (order_status_ack.reject_reason_code != ATPRejectReasonCodeConst::kNormal)
 	{
-		VvTSEntrust* entrust = makeEntrust(&order_status_ack);
+		ZTSEntrust* entrust = makeEntrust(&order_status_ack);
 
 		if (order_status_ack.orig_cl_ord_no != 0)  // 可以根据orig_cl_ord_no是否为0来判断是否为撤单委托，需要注意撤单传入的orig_cl_ord_no不能为0
 		{
 			// 对应撤单回调
 			write_log(_sink, LL_ERROR, "[TraderATP][{}] Cancelling order error, cl_ord_no: {}, orig_cl_ord_no: {}, reject code: {}, reject reason: {}", order_status_ack.account_id, order_status_ack.cl_ord_no, order_status_ack.orig_cl_ord_no, order_status_ack.reject_reason_code, order_status_ack.ord_rej_reason);
-			VvTSError* error = VvTSError::create(WEC_ORDERCANCEL, order_status_ack.ord_rej_reason);
+			ZTSError* error = ZTSError::create(WEC_ORDERCANCEL, order_status_ack.ord_rej_reason);
 			_sink->onRspEntrust(entrust, error);
 			error->release();
 
@@ -613,7 +613,7 @@ void TraderATP::OnRspOrderStatusInternalAck(const ATPRspOrderStatusAckMsg& order
 		else
 		{
 			write_log(_sink, LL_INFO, "[TraderATP][{}] Inserting order error, cl_ord_no: {}, orig_cl_ord_no: {}, reject code: {}, reject reason: {}", order_status_ack.account_id, order_status_ack.cl_ord_no, order_status_ack.orig_cl_ord_no, order_status_ack.reject_reason_code, order_status_ack.ord_rej_reason);
-			VvTSError* error = VvTSError::create(WEC_ORDERINSERT, order_status_ack.ord_rej_reason);
+			ZTSError* error = ZTSError::create(WEC_ORDERINSERT, order_status_ack.ord_rej_reason);
 			_sink->onRspEntrust(entrust, error);
 			error->release();
 
@@ -624,7 +624,7 @@ void TraderATP::OnRspOrderStatusInternalAck(const ATPRspOrderStatusAckMsg& order
 	{
 		write_log(_sink, LL_INFO, "[TraderATP][{}] Order success, cl_ord_no: {}, orig_cl_ord_no: {}, reject code: {}, reject reason: {}", order_status_ack.account_id, order_status_ack.cl_ord_no, order_status_ack.orig_cl_ord_no, order_status_ack.reject_reason_code, order_status_ack.ord_rej_reason);
 
-		VvTSOrderInfo *orderInfo = makeOrderInfo(&order_status_ack);
+		ZTSOrderInfo *orderInfo = makeOrderInfo(&order_status_ack);
 		if (orderInfo)
 		{
 			//if (_sink)
@@ -653,13 +653,13 @@ void TraderATP::OnRspOrderStatusAck(const ATPRspOrderStatusAckMsg& order_status_
 
 	if (order_status_ack.reject_reason_code != ATPRejectReasonCodeConst::kNormal)
 	{
-		VvTSEntrust* entrust = makeEntrust(&order_status_ack);
+		ZTSEntrust* entrust = makeEntrust(&order_status_ack);
 
 		if (order_status_ack.orig_cl_ord_no != 0)  // 可以根据orig_cl_ord_no是否为0来判断是否为撤单委托，需要注意撤单传入的orig_cl_ord_no不能为0
 		{
 			// 对应撤单回调
 			write_log(_sink, LL_ERROR, "[OnRspOrderStatusAck][{}] Cancelling order error, cl_ord_no: {}, orig_cl_ord_no: {}, reject code: {}, reject reason: {}", order_status_ack.account_id, order_status_ack.cl_ord_no, order_status_ack.orig_cl_ord_no, order_status_ack.reject_reason_code, order_status_ack.ord_rej_reason);
-			VvTSError* error = VvTSError::create(WEC_ORDERCANCEL, order_status_ack.ord_rej_reason);
+			ZTSError* error = ZTSError::create(WEC_ORDERCANCEL, order_status_ack.ord_rej_reason);
 			_sink->onRspEntrust(entrust, error);
 			error->release();
 
@@ -668,7 +668,7 @@ void TraderATP::OnRspOrderStatusAck(const ATPRspOrderStatusAckMsg& order_status_
 		else
 		{
 			write_log(_sink, LL_ERROR, "[OnRspOrderStatusAck][{}] Inserting order error, cl_ord_no: {}, orig_cl_ord_no: {}, reject code: {}, reject reason: {}", order_status_ack.account_id, order_status_ack.cl_ord_no, order_status_ack.orig_cl_ord_no, order_status_ack.reject_reason_code, order_status_ack.ord_rej_reason);
-			VvTSError* error = VvTSError::create(WEC_ORDERINSERT, order_status_ack.ord_rej_reason);
+			ZTSError* error = ZTSError::create(WEC_ORDERINSERT, order_status_ack.ord_rej_reason);
 			_sink->onRspEntrust(entrust, error);
 			error->release();
 
@@ -679,7 +679,7 @@ void TraderATP::OnRspOrderStatusAck(const ATPRspOrderStatusAckMsg& order_status_
 	{
 		write_log(_sink, LL_INFO, "[OnRspOrderStatusAck][{}] Order success, cl_ord_no: {}, orig_cl_ord_no: {}, reject code: {}, reject reason: {}", order_status_ack.account_id, order_status_ack.cl_ord_no, order_status_ack.orig_cl_ord_no, order_status_ack.reject_reason_code, order_status_ack.ord_rej_reason);
 
-		VvTSOrderInfo *orderInfo = makeOrderInfo(&order_status_ack);
+		ZTSOrderInfo *orderInfo = makeOrderInfo(&order_status_ack);
 		if (orderInfo)
 		{
 			//if (_sink)
@@ -707,7 +707,7 @@ void TraderATP::OnRspCashAuctionTradeER(const ATPRspCashAuctionTradeERMsg& cash_
 		cash_auction_trade_er.security_id, cash_auction_trade_er.price, cash_auction_trade_er.order_qty, cash_auction_trade_er.cum_qty, cash_auction_trade_er.leaves_qty, cash_auction_trade_er.ord_status,
 		cash_auction_trade_er.cl_ord_no, cash_auction_trade_er.order_id, cash_auction_trade_er.cl_ord_id);
 
-	VvTSTradeInfo *tRecord = makeTradeRecord(&cash_auction_trade_er);
+	ZTSTradeInfo *tRecord = makeTradeRecord(&cash_auction_trade_er);
 	if (tRecord)
 	{
 		_asyncio.post([this, tRecord] {
@@ -733,8 +733,8 @@ void TraderATP::OnRspFundQueryResult(const ATPRspFundQueryResultMsg &msg)
 {
 	write_log(_sink, LL_INFO, "[OnRspFundQueryResult][{}] OnRspFundQueryResult.", msg.account_id);
 
-	VvTSArray* ayFunds = VvTSArray::create();
-	VvTSAccountInfo* fundInfo = VvTSAccountInfo::create();
+	ZTSArray* ayFunds = ZTSArray::create();
+	ZTSAccountInfo* fundInfo = ZTSAccountInfo::create();
 	fundInfo->setPreBalance(msg.init_leaves_value / 10000.0);
 	fundInfo->setBalance(msg.leaves_value / 10000.0);
 	fundInfo->setAvailable(msg.available_tall / 10000.0);
@@ -753,11 +753,11 @@ void TraderATP::OnRspOrderQueryResult(const ATPRspOrderQueryResultMsg &msg)
 	_return_nums = msg.total_num;
 
 	if (ayOrders == NULL)
-		ayOrders = VvTSArray::create();
+		ayOrders = ZTSArray::create();
 
 	for (const auto& unit : msg.order_array)
 	{
-		VvTSOrderInfo* ordInfo = makeOrderInfo(&unit);
+		ZTSOrderInfo* ordInfo = makeOrderInfo(&unit);
 		if (ordInfo == NULL)
 			continue;
 
@@ -782,13 +782,13 @@ void TraderATP::OnRspTradeOrderQueryResult(const ATPRspTradeOrderQueryResultMsg 
 	_return_nums = msg.total_num;
 
 	if (ayTrades == NULL)
-		ayTrades = VvTSArray::create();
+		ayTrades = ZTSArray::create();
 
 	//write_log(_sink, LL_INFO, "[TraderATP][{}] OnRspTradeOrderQueryResult, last index: {}, total nums: {}", msg.account_id, msg.last_index, msg.total_num);
 
 	for (const auto& unit : msg.order_array)
 	{
-		VvTSTradeInfo* trdInfo = makeTradeInfo(&unit);
+		ZTSTradeInfo* trdInfo = makeTradeInfo(&unit);
 		if (trdInfo == NULL)
 			continue;
 
@@ -833,7 +833,7 @@ void TraderATP::OnRspShareQueryResult(const ATPRspShareQueryResultMsg &msg)
 	_return_nums = msg.total_num;
 
 	if (ayTrades == NULL)
-		ayTrades = VvTSArray::create();
+		ayTrades = ZTSArray::create();
 
 	if (NULL == _positions)
 		_positions = PositionMap::create();
@@ -841,15 +841,15 @@ void TraderATP::OnRspShareQueryResult(const ATPRspShareQueryResultMsg &msg)
 	for (auto &unit : msg.order_array) {
 		const std::string exchg = (unit.market_id == ATPMarketIDConst::kShangHai) ? "SSE" : "SZSE";
 
-		VvTSContractInfo* contract = _bd_mgr->getContract(unit.security_id, exchg.c_str());
+		ZTSContractInfo* contract = _bd_mgr->getContract(unit.security_id, exchg.c_str());
 		if (contract)
 		{
-			VvTSCommodityInfo* commInfo = contract->getCommInfo();
+			ZTSCommodityInfo* commInfo = contract->getCommInfo();
 			std::string key = fmt::format("{}-{}", unit.security_id, exchg.c_str());
-			VvTSPositionItem* pos = (VvTSPositionItem*)_positions->get(key);
+			ZTSPositionItem* pos = (ZTSPositionItem*)_positions->get(key);
 			if (pos == NULL)
 			{
-				pos = VvTSPositionItem::create(unit.security_id, commInfo->getCurrency(), commInfo->getExchg());
+				pos = ZTSPositionItem::create(unit.security_id, commInfo->getCurrency(), commInfo->getExchg());
 				pos->setContractInfo(contract);
 				_positions->add(key, pos, false);
 			}
@@ -876,7 +876,7 @@ void TraderATP::OnRspShareQueryResult(const ATPRspShareQueryResultMsg &msg)
 	if ((msg.last_index + 1) == msg.total_num)  // 查询完毕
 	{
 		_asyncio.post([this] {
-			VvTSArray* ayPos = VvTSArray::create();
+			ZTSArray* ayPos = ZTSArray::create();
 
 			if (_positions && _positions->size() > 0)
 			{
@@ -901,7 +901,7 @@ void TraderATP::OnRspShareQueryResult(const ATPRspShareQueryResultMsg &msg)
 }
 
 #pragma region "ITraderApi"
-bool TraderATP::init(VvTSVariant *params)
+bool TraderATP::init(ZTSVariant *params)
 {
 	_user = params->getCString("user");
 	_pass = params->getCString("pass");
@@ -920,7 +920,7 @@ bool TraderATP::init(VvTSVariant *params)
 	_front = params->getCString("front");
 	_front2 = params->getCString("front_backup");
 
-	VvTSArray* ayPos = VvTSArray::create();
+	ZTSArray* ayPos = ZTSArray::create();
 
 	std::string module = params->getCString("atpmodule");
 	std::string dllpath;
@@ -1157,7 +1157,7 @@ int TraderATP::logout()
 	return 0;
 }
 
-int TraderATP::orderInsert(VvTSEntrust* entrust)
+int TraderATP::orderInsert(ZTSEntrust* entrust)
 {
 	if (_api == NULL || _state != TS_ALLREADY)
 	{
@@ -1216,7 +1216,7 @@ int TraderATP::orderInsert(VvTSEntrust* entrust)
 	return 0;
 }
 
-int TraderATP::orderAction(VvTSEntrustAction* action)
+int TraderATP::orderAction(ZTSEntrustAction* action)
 {
 	if (_api == NULL || _state != TS_ALLREADY)
 	{

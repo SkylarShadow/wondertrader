@@ -1,7 +1,7 @@
 ﻿#include "../Share/TimeUtils.hpp"
 #include "../Share/fmtlib.h"
 #include "gtest/gtest/gtest.h"
-#include "../Includes/VvTSMarcos.h"
+#include "../Includes/ZTSMarcos.h"
 
 void run_test(uint32_t times, uint32_t len)
 {

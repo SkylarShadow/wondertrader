@@ -9,7 +9,7 @@
  */
 #pragma once
 #include "../Includes/IParserApi.h"
-#include "../Includes/VvTSCollection.hpp"
+#include "../Includes/ZTSCollection.hpp"
 #include "../Share/StdUtils.hpp"
 
 #include <queue>
@@ -18,7 +18,7 @@
 #include <boost/array.hpp>
 #include <boost/asio/io_service.hpp>
 
-USING_NS_VVTP;
+USING_NS_ZTP;
 using namespace boost::asio;
 
 class ParserXeleSkt : public IParserApi
@@ -29,7 +29,7 @@ public:
 
 	//IQuoteParser ½Ó¿Ú
 public:
-	virtual bool init(VvTSVariant* config) override;
+	virtual bool init(ZTSVariant* config) override;
 
 	virtual void release() override;
 
@@ -85,7 +85,7 @@ private:
 	CodeSet			_set_subs;
 	StdThreadPtr	_thrd_parser;
 
-	typedef VvTSHashMap<int>	TickCache;
+	typedef ZTSHashMap<int>	TickCache;
 	TickCache*		_tick_cache;
 
 	vvt_hashmap<int, double> _price_scales;

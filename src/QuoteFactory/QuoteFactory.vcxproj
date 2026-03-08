@@ -200,13 +200,13 @@
     <ClInclude Include="..\Common\mdump.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\VvtDtCore\VvtDtCore.vcxproj">
+    <ProjectReference Include="..\ZtDtCore\ZtDtCore.vcxproj">
       <Project>{a869d9f7-a05d-4f9f-8d26-57c97245915a}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\VvTSTools\VvTSTools.vcxproj">
+    <ProjectReference Include="..\ZTSTools\ZTSTools.vcxproj">
       <Project>{8b249955-de56-41a3-a904-21dbbe40ab34}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\VvTSUtils\VvTSUtils.vcxproj">
+    <ProjectReference Include="..\ZTSUtils\ZTSUtils.vcxproj">
       <Project>{9f0b15cc-34c6-46da-9575-d4ae11453b84}</Project>
     </ProjectReference>
   </ItemGroup>

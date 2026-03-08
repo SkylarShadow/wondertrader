@@ -8,9 +8,9 @@
 #include "../Share/fmtlib.h"
 #include "../Share/charconv.hpp"
 #include "../Includes/LoaderDef.hpp"
-#include "../Includes/VvTSVariant.hpp"
+#include "../Includes/ZTSVariant.hpp"
 
-#include "../VvTSUtils/VvTSCfgLoader.h"
+#include "../ZTSUtils/ZTSCfgLoader.h"
 
 #include <rapidjson/document.h>
 #include <rapidjson/prettywriter.h>
@@ -31,7 +31,7 @@ inline const char* encode_text(const char* s)
 
 
 
-USING_NS_VVTP;
+USING_NS_ZTP;
 
 extern std::map<std::string, std::string>	MAP_NAME;
 extern std::map<std::string, std::string>	MAP_SESSION;
@@ -382,15 +382,15 @@ void CTraderSpi::LoadFromJson()
 {
 	std::string path = SAVEPATH;
 	path += COMM_FILE;
-	VvTSVariant* root = VvTSCfgLoader::load_from_file(path);
+	ZTSVariant* root = ZTSCfgLoader::load_from_file(path);
 	if(root)
 	{
 		for(const auto& exchg : root->memberNames())
 		{
-			VvTSVariant* jExchg = root->get(exchg.c_str());
+			ZTSVariant* jExchg = root->get(exchg.c_str());
 			for(const auto& pid : jExchg->memberNames())
 			{
-				VvTSVariant* pComm = jExchg->get(pid.c_str());
+				ZTSVariant* pComm = jExchg->get(pid.c_str());
 				std::string key = fmt::format("{}.{}", exchg, pid);
 
 				Commodity& commInfo = _commodities[key];
@@ -419,16 +419,16 @@ void CTraderSpi::LoadFromJson()
 
 	path = SAVEPATH;
 	path += CONT_FILE;
-	root = VvTSCfgLoader::load_from_file(path);
+	root = ZTSCfgLoader::load_from_file(path);
 	if (root)
 	{
-		VvTSVariant* root = VvTSCfgLoader::load_from_file(path);
+		ZTSVariant* root = ZTSCfgLoader::load_from_file(path);
 		for (const auto& exchg_id : root->memberNames())
 		{
-			VvTSVariant* jExchg = root->get(exchg_id.c_str());
+			ZTSVariant* jExchg = root->get(exchg_id.c_str());
 			for (const auto& inst_id : jExchg->memberNames())
 			{
-				VvTSVariant* pCont = jExchg->get(inst_id.c_str());
+				ZTSVariant* pCont = jExchg->get(inst_id.c_str());
 				std::string key = fmt::format("{}.{}", exchg_id, inst_id);
 
 				Contract& contract = _contracts[key];

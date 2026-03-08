@@ -13,18 +13,18 @@
 #include "../Share/TimeUtils.hpp"
 #include "../Share/ModuleHelper.hpp"
 
-#include "../Includes/VvTSDataDef.hpp"
-#include "../Includes/VvTSContractInfo.hpp"
-#include "../Includes/VvTSVariant.hpp"
+#include "../Includes/ZTSDataDef.hpp"
+#include "../Includes/ZTSContractInfo.hpp"
+#include "../Includes/ZTSVariant.hpp"
 #include "../Includes/IBaseDataMgr.h"
-#include "../Includes/VvTSVersion.h"
+#include "../Includes/ZTSVersion.h"
 
 #include <boost/filesystem.hpp>
 
  //By Wesley @ 2022.01.05
 #include "../Share/fmtlib.h"
 template<typename... Args>
-inline void write_log(IParserSpi* sink, VvTSLogLevel ll, const char* format, const Args&... args)
+inline void write_log(IParserSpi* sink, ZTSLogLevel ll, const char* format, const Args&... args)
 {
 	if (sink == NULL)
 		return;
@@ -91,7 +91,7 @@ ParserCTPMini::~ParserCTPMini()
 	m_pUserAPI = NULL;
 }
 
-bool ParserCTPMini::init(VvTSVariant* config)
+bool ParserCTPMini::init(ZTSVariant* config)
 {
 	m_strFrontAddr = config->getCString("front");
 	m_strBroker = config->getCString("broker");
@@ -168,7 +168,7 @@ void ParserCTPMini::OnFrontConnected()
 	if(m_sink)
 	{
 		write_log(m_sink, LL_INFO, "[ParserCTPMini] Market data server connected");
-		m_sink->handleEvent(VvPE_Connect, 0);
+		m_sink->handleEvent(ZPE_Connect, 0);
 	}
 
 	ReqUserLogin();
@@ -182,7 +182,7 @@ void ParserCTPMini::OnRspUserLogin( CThostFtdcRspUserLoginField *pRspUserLogin, 
 		
 		if(m_sink)
 		{
-			m_sink->handleEvent(VvPE_Login, 0);
+			m_sink->handleEvent(ZPE_Login, 0);
 		}
 
 		//订阅行情数据
@@ -194,7 +194,7 @@ void ParserCTPMini::OnRspUserLogout(CThostFtdcUserLogoutField *pUserLogout, CTho
 {
 	if(m_sink)
 	{
-		m_sink->handleEvent(VvPE_Logout, 0);
+		m_sink->handleEvent(ZPE_Logout, 0);
 	}
 }
 
@@ -203,7 +203,7 @@ void ParserCTPMini::OnFrontDisconnected( int nReason )
 	if(m_sink)
 	{
 		write_log(m_sink, LL_ERROR, "[ParserCTPMini] Market data server disconnected: {}", nReason);
-		m_sink->handleEvent(VvPE_Close, 0);
+		m_sink->handleEvent(ZPE_Close, 0);
 	}
 }
 
@@ -253,20 +253,20 @@ void ParserCTPMini::OnRtnDepthMarketData( CThostFtdcDepthMarketDataField *pDepth
 		}
 	}
 
-	VvTSContractInfo* contract = m_pBaseDataMgr->getContract(pDepthMarketData->InstrumentID, pDepthMarketData->ExchangeID);
+	ZTSContractInfo* contract = m_pBaseDataMgr->getContract(pDepthMarketData->InstrumentID, pDepthMarketData->ExchangeID);
 	if (contract == NULL)
 		return;
 
-	VvTSCommodityInfo* pCommInfo = contract->getCommInfo();
+	ZTSCommodityInfo* pCommInfo = contract->getCommInfo();
 
 	//if (strcmp(contract->getExchg(), "CZCE") == 0)
 	//{
 	//	actTime += (uint32_t)(TimeUtils::getLocalTimeNow() % 1000);
 	//}
 
-	VvTSTickData* tick = VvTSTickData::create(pDepthMarketData->InstrumentID);
+	ZTSTickData* tick = ZTSTickData::create(pDepthMarketData->InstrumentID);
 	tick->setContractInfo(contract);
-	VvTSTickStruct& quote = tick->getTickStruct();
+	ZTSTickStruct& quote = tick->getTickStruct();
 	strcpy(quote.exchg, pCommInfo->getExchg());
 	
 	quote.action_date = actDate;
@@ -363,7 +363,7 @@ void ParserCTPMini::ReqUserLogin()
 	strcpy(req.BrokerID, m_strBroker.c_str());
 	strcpy(req.UserID, m_strUserID.c_str());
 	strcpy(req.Password, m_strPassword.c_str());
-	strcpy(req.UserProductInfo, VVT_PRODUCT);
+	strcpy(req.UserProductInfo, ZT_PRODUCT);
 	int iResult = m_pUserAPI->ReqUserLogin(&req, ++m_iRequestID);
 	if(iResult != 0)
 	{

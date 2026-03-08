@@ -18,9 +18,9 @@
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/strand.hpp>
 
-#include "../Includes/VvTSTypes.h"
+#include "../Includes/ZTSTypes.h"
 #include "../Includes/ITraderApi.h"
-#include "../Includes/VvTSCollection.hpp"
+#include "../Includes/ZTSCollection.hpp"
 
 #include "../API/FixApi/include/FixApi.h"
 
@@ -28,7 +28,7 @@
 #include "../Share/StdUtils.hpp"
 #include "../Share/DLLHelper.hpp"
 
-USING_NS_VVTP;
+USING_NS_ZTP;
 
 class TraderDD : public ITraderApi
 {
@@ -64,7 +64,7 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	//ITraderApi接口
 public:
-	virtual bool init(VvTSVariant* params) override;
+	virtual bool init(ZTSVariant* params) override;
 
 	virtual void release() override;
 
@@ -82,9 +82,9 @@ public:
 
 	virtual int logout() override;
 
-	virtual int orderInsert(VvTSEntrust* eutrust) override;
+	virtual int orderInsert(ZTSEntrust* eutrust) override;
 
-	virtual int orderAction(VvTSEntrustAction* action) override;
+	virtual int orderAction(ZTSEntrustAction* action) override;
 
 	virtual int queryAccount() override;
 
@@ -123,7 +123,7 @@ protected:
 	ITraderSpi*		m_traderSink;
 	uint64_t		m_uLastQryTime;
 
-	typedef VvTSHashMap<std::string> TradeDataMap;
+	typedef ZTSHashMap<std::string> TradeDataMap;
 	TradeDataMap*	m_mapLives;
 	std::unordered_set<std::string>	m_tradeids;
 

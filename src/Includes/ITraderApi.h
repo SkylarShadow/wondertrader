@@ -12,21 +12,21 @@
 #include <map>
 #include <stdint.h>
 #include <functional>
-#include "VvTSTypes.h"
+#include "ZTSTypes.h"
 
-NS_VVTP_BEGIN
-class VvTSVariant;
-class VvTSEntrust;
-class VvTSOrderInfo;
-class VvTSTradeInfo;
-class VvTSEntrustAction;
-class VvTSAccountInfo;
-class VvTSPositionItem;
-class VvTSContractInfo;
-class VvTSError;
-class VvTSTickData;
-class VvTSNotify;
-class VvTSArray;
+NS_ZTP_BEGIN
+class ZTSVariant;
+class ZTSEntrust;
+class ZTSOrderInfo;
+class ZTSTradeInfo;
+class ZTSEntrustAction;
+class ZTSAccountInfo;
+class ZTSPositionItem;
+class ZTSContractInfo;
+class ZTSError;
+class ZTSTickData;
+class ZTSNotify;
+class ZTSArray;
 class IBaseDataMgr;
 
 typedef std::function<void()>	CommonExecuter;
@@ -60,9 +60,9 @@ class IStkTraderApi
 class IOptTraderSpi
 {
 public:
-	virtual void onRspEntrustOpt(VvTSEntrust* entrust, VvTSError *err) {}
-	virtual void onRspOrdersOpt(const VvTSArray* ayOrders) {}
-	virtual void onPushOrderOpt(VvTSOrderInfo* orderInfo) {}
+	virtual void onRspEntrustOpt(ZTSEntrust* entrust, ZTSError *err) {}
+	virtual void onRspOrdersOpt(const ZTSArray* ayOrders) {}
+	virtual void onPushOrderOpt(ZTSOrderInfo* orderInfo) {}
 };
 
 /*
@@ -78,18 +78,18 @@ public:
 	 *	下单接口
 	 *	entrust 下单的具体数据结构
 	 */
-	virtual int orderInsertOpt(VvTSEntrust* eutrust) { return -1; }
+	virtual int orderInsertOpt(ZTSEntrust* eutrust) { return -1; }
 
 	/*
 	 *	订单操作接口
 	 *	action	操作的具体数据结构
 	 */
-	virtual int orderActionOpt(VvTSEntrustAction* action) { return -1; }
+	virtual int orderActionOpt(ZTSEntrustAction* action) { return -1; }
 
 	/*
 	 *	查询期权订单
 	 */
-	virtual int	queryOrdersOpt(VvTSBusinessType bType) { return -1; }
+	virtual int	queryOrdersOpt(ZTSBusinessType bType) { return -1; }
 };
 #pragma endregion
 
@@ -106,7 +106,7 @@ public:
 	/*
 	 *	处理交易接口的日志
 	 */
-	virtual void handleTraderLog(VvTSLogLevel ll, const char* message){}
+	virtual void handleTraderLog(ZTSLogLevel ll, const char* message){}
 
 	/*
 	 *	获取股票交易接口Spi
@@ -122,7 +122,7 @@ public:
 	/*
 	 *	处理交易接口事件
 	 */
-	virtual void handleEvent(VvTSTraderEvent e, int32_t ec) = 0;
+	virtual void handleEvent(ZTSTraderEvent e, int32_t ec) = 0;
 
 	/*
 	 *	登录回报
@@ -137,27 +137,27 @@ public:
 	/*
 	 *	委托回报
 	 */
-	virtual void onRspEntrust(VvTSEntrust* entrust, VvTSError *err){}
+	virtual void onRspEntrust(ZTSEntrust* entrust, ZTSError *err){}
 
 	/*
 	 * 资金查询回报
 	 */
-	virtual void onRspAccount(VvTSArray* ayAccounts) {}
+	virtual void onRspAccount(ZTSArray* ayAccounts) {}
 
 	/*
 	 *	持仓查询回报
 	 */
-	virtual void onRspPosition(const VvTSArray* ayPositions){}
+	virtual void onRspPosition(const ZTSArray* ayPositions){}
 
 	/*
 	 *	订单查询回报
 	 */
-	virtual void onRspOrders(const VvTSArray* ayOrders){}
+	virtual void onRspOrders(const ZTSArray* ayOrders){}
 
 	/*
 	 *	成交查询回报
 	 */
-	virtual void onRspTrades(const VvTSArray* ayTrades){}
+	virtual void onRspTrades(const ZTSArray* ayTrades){}
 
 	/*
 	 *	结算单查询回报
@@ -167,22 +167,22 @@ public:
 	/*
 	 *	订单回报推送
 	 */
-	virtual void onPushOrder(VvTSOrderInfo* orderInfo){}
+	virtual void onPushOrder(ZTSOrderInfo* orderInfo){}
 
 	/*
 	 *	成交回报推送
 	 */
-	virtual void onPushTrade(VvTSTradeInfo* tradeRecord){}
+	virtual void onPushTrade(ZTSTradeInfo* tradeRecord){}
 
 	/*
 	 *	交易接口错误回报
 	 */
-	virtual void onTraderError(VvTSError* err, void* pData = NULL){}
+	virtual void onTraderError(ZTSError* err, void* pData = NULL){}
 
 	/*
 	 *	合约状态推送
 	 */
-	virtual void onPushInstrumentStatus(const char* exchg, const char* code, VvTSTradeStatus state) {}
+	virtual void onPushInstrumentStatus(const char* exchg, const char* code, ZTSTradeStatus state) {}
 };
 
 //下单接口管理接口
@@ -198,7 +198,7 @@ public:
 	/*
 	 *	初始化解析管理器
 	 */
-	virtual bool init(VvTSVariant *params) { return false; }
+	virtual bool init(ZTSVariant *params) { return false; }
 
 	/*
 	 *	释放解析管理器
@@ -245,13 +245,13 @@ public:
 	 *	下单接口
 	 *	entrust 下单的具体数据结构
 	 */
-	virtual int orderInsert(VvTSEntrust* eutrust) { return -1; }
+	virtual int orderInsert(ZTSEntrust* eutrust) { return -1; }
 
 	/*
 	 *	订单操作接口
 	 *	action	操作的具体数据结构
 	 */
-	virtual int orderAction(VvTSEntrustAction* action) { return -1; }
+	virtual int orderAction(ZTSEntrustAction* action) { return -1; }
 
 	/*
 	 *	查询账户信息
@@ -280,7 +280,7 @@ public:
 
 };
 
-NS_VVTP_END
+NS_ZTP_END
 
 //获取IDataMgr的函数指针类型
 typedef vvtp::ITraderApi* (*FuncCreateTrader)();

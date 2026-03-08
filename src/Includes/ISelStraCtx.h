@@ -10,15 +10,15 @@
 #pragma once
 #include <stdint.h>
 #include <functional>
-#include "../Includes/VvTSMarcos.h"
+#include "../Includes/ZTSMarcos.h"
 
-NS_VVTP_BEGIN
-class VvTSCommodityInfo;
-class VvTSSessionInfo;
-class VvTSTickData;
-struct VvTSBarStruct;
-class VvTSKlineSlice;
-class VvTSTickSlice;
+NS_ZTP_BEGIN
+class ZTSCommodityInfo;
+class ZTSSessionInfo;
+class ZTSTickData;
+struct ZTSBarStruct;
+class ZTSKlineSlice;
+class ZTSTickSlice;
 
 //typedef void(*FuncEnumPositionCallBack)(const char* stdCode, int32_t qty);
 typedef std::function<void(const char*, double)> FuncEnumSelPositionCallBack;
@@ -38,8 +38,8 @@ public:
 	virtual void on_init() = 0;
 	virtual void on_session_begin(uint32_t uTDate) = 0;
 	virtual void on_session_end(uint32_t uTDate) = 0;
-	virtual void on_tick(const char* stdCode, VvTSTickData* newTick, bool bEmitStrategy = true) = 0;
-	virtual void on_bar(const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar) = 0;
+	virtual void on_tick(const char* stdCode, ZTSTickData* newTick, bool bEmitStrategy = true) = 0;
+	virtual void on_bar(const char* stdCode, const char* period, uint32_t times, ZTSBarStruct* newBar) = 0;
 	virtual bool on_schedule(uint32_t curDate, uint32_t curTime, uint32_t fireTime) = 0;
 	/*
 	 *	回测结束事件
@@ -47,8 +47,8 @@ public:
 	 */
 	virtual void on_bactest_end() {};
 
-	virtual void on_bar_close(const char* stdCode, const char* period, VvTSBarStruct* newBar) = 0;
-	virtual void on_tick_updated(const char* stdCode, VvTSTickData* newTick){}
+	virtual void on_bar_close(const char* stdCode, const char* period, ZTSBarStruct* newBar) = 0;
+	virtual void on_tick_updated(const char* stdCode, ZTSTickData* newTick){}
 	virtual void on_strategy_schedule(uint32_t curDate, uint32_t curTime) {}
 
 	virtual void enum_position(FuncEnumSelPositionCallBack cb) = 0;
@@ -91,11 +91,11 @@ public:
 	 */
 	virtual double stra_get_detail_profit(const char* stdCode, const char* userTag, int flag = 0) = 0;
 
-	virtual VvTSCommodityInfo* stra_get_comminfo(const char* stdCode) = 0;
-	virtual VvTSSessionInfo* stra_get_sessinfo(const char* stdCode) = 0;
-	virtual VvTSKlineSlice*	stra_get_bars(const char* stdCode, const char* period, uint32_t count) = 0;
-	virtual VvTSTickSlice*	stra_get_ticks(const char* stdCode, uint32_t count) = 0;
-	virtual VvTSTickData*	stra_get_last_tick(const char* stdCode) = 0;
+	virtual ZTSCommodityInfo* stra_get_comminfo(const char* stdCode) = 0;
+	virtual ZTSSessionInfo* stra_get_sessinfo(const char* stdCode) = 0;
+	virtual ZTSKlineSlice*	stra_get_bars(const char* stdCode, const char* period, uint32_t count) = 0;
+	virtual ZTSTickSlice*	stra_get_ticks(const char* stdCode, uint32_t count) = 0;
+	virtual ZTSTickData*	stra_get_last_tick(const char* stdCode) = 0;
 
 	/*
 	 *	获取分月合约代码
@@ -117,4 +117,4 @@ protected:
 	std::string _name;
 };
 
-NS_VVTP_END
+NS_ZTP_END

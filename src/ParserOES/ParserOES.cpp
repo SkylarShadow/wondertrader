@@ -8,13 +8,13 @@
  * \brief 
  */
 #include "ParserOES.h"
-#include "../Includes/VvTSVariant.hpp"
-#include "../Includes/VvTSDataDef.hpp"
+#include "../Includes/ZTSVariant.hpp"
+#include "../Includes/ZTSDataDef.hpp"
 #include "../Share/DLLHelper.hpp"
 #include "../Share/ModuleHelper.hpp"
 
 #include "../Includes/IBaseDataMgr.h"
-#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/ZTSContractInfo.hpp"
 
 #ifdef _WIN32
 #ifdef _WIN64
@@ -27,7 +27,7 @@
  //By Wesley @ 2022.01.05
 #include "../Share/fmtlib.h"
 template<typename... Args>
-inline void write_log(IParserSpi* sink, VvTSLogLevel ll, const char* format, const Args&... args)
+inline void write_log(IParserSpi* sink, ZTSLogLevel ll, const char* format, const Args&... args)
 {
 	if (sink == NULL)
 		return;
@@ -124,7 +124,7 @@ ParserOES::~ParserOES()
 {
 }
 
-bool ParserOES::init( VvTSVariant* config )
+bool ParserOES::init( ZTSVariant* config )
 {
 	_config = config->getCString("config");
 	_gpsize = config->getUInt32("gpsize");
@@ -303,8 +303,8 @@ void ParserOES::doOnConnected(MdsAsyncApiChannelT *pAsyncChannel)
 		_inited = true;
 		if (_sink)
 		{
-			_sink->handleEvent(VvPE_Connect, 0);
-			_sink->handleEvent(VvPE_Login, 0);
+			_sink->handleEvent(ZPE_Connect, 0);
+			_sink->handleEvent(ZPE_Login, 0);
 		}
 		return;
 	}
@@ -312,8 +312,8 @@ void ParserOES::doOnConnected(MdsAsyncApiChannelT *pAsyncChannel)
 	//TCP模式下，只会有一次调用
 	if (_sink)
 	{
-		_sink->handleEvent(VvPE_Connect, 0);
-		_sink->handleEvent(VvPE_Login, 0);
+		_sink->handleEvent(ZPE_Connect, 0);
+		_sink->handleEvent(ZPE_Login, 0);
 	}
 
 	/* 订阅的数据类型 (dataTypes) 会以最后一次订阅为准, 所以每次都需要指定为所有待订阅的数据类型 */
@@ -401,7 +401,7 @@ void ParserOES::doOnDisconnected(MdsAsyncApiChannelT *pAsyncChannel)
 
 	if (_sink)
 	{
-		_sink->handleEvent(VvPE_Close, 0);
+		_sink->handleEvent(ZPE_Close, 0);
 	}
 }
 
@@ -434,15 +434,15 @@ void ParserOES::doOnMessage(SMsgHeadT *pMsgHead, void *pMsgItem)
 			}
 			code = pRspMsg->trade.SecurityID;
 
-			VvTSContractInfo* ct = _bd_mgr->getContract(code.c_str(), exchg.c_str());
+			ZTSContractInfo* ct = _bd_mgr->getContract(code.c_str(), exchg.c_str());
 			if (ct == NULL)
 			{
 				return;
 			}
-			VvTSCommodityInfo* commInfo = ct->getCommInfo();
+			ZTSCommodityInfo* commInfo = ct->getCommInfo();
 
-			VvTSTransData *trans = VvTSTransData::create(code.c_str());
-			VvTSTransStruct& ts = trans->getTransStruct();
+			ZTSTransData *trans = ZTSTransData::create(code.c_str());
+			ZTSTransStruct& ts = trans->getTransStruct();
 			strcpy(ts.exchg, commInfo->getExchg());
 
 			ts.trading_date = pRspMsg->trade.tradeDate;
@@ -483,15 +483,15 @@ void ParserOES::doOnMessage(SMsgHeadT *pMsgHead, void *pMsgItem)
 			}
 			code = pRspMsg->order.SecurityID;
 
-			VvTSContractInfo* ct = _bd_mgr->getContract(code.c_str(), exchg.c_str());
+			ZTSContractInfo* ct = _bd_mgr->getContract(code.c_str(), exchg.c_str());
 			if (ct == NULL)
 			{
 				return;
 			}
-			VvTSCommodityInfo* commInfo = ct->getCommInfo();
+			ZTSCommodityInfo* commInfo = ct->getCommInfo();
 
-			VvTSOrdDtlData *ordDtl = VvTSOrdDtlData::create(code.c_str());
-			VvTSOrdDtlStruct& ts = ordDtl->getOrdDtlStruct();
+			ZTSOrdDtlData *ordDtl = ZTSOrdDtlData::create(code.c_str());
+			ZTSOrdDtlStruct& ts = ordDtl->getOrdDtlStruct();
 			strcpy(ts.exchg, commInfo->getExchg());
 
 			ts.trading_date = pRspMsg->order.tradeDate;
@@ -529,18 +529,18 @@ void ParserOES::doOnMessage(SMsgHeadT *pMsgHead, void *pMsgItem)
 			}
 			code = pRspMsg->mktDataSnapshot.l2Stock.SecurityID;
 
-			VvTSContractInfo* ct = _bd_mgr->getContract(code.c_str(), exchg.c_str());
+			ZTSContractInfo* ct = _bd_mgr->getContract(code.c_str(), exchg.c_str());
 			if (ct == NULL)
 			{
 				//if (_sink)
 				//	write_log(_sink, LL_ERROR, "[ParserXTP] Instrument {}.{} not exists...", exchg.c_str(), code);
 				return;
 			}
-			VvTSCommodityInfo* commInfo = ct->getCommInfo();
+			ZTSCommodityInfo* commInfo = ct->getCommInfo();
 
-			VvTSTickData* tick = VvTSTickData::create(code.c_str());
+			ZTSTickData* tick = ZTSTickData::create(code.c_str());
 			tick->setContractInfo(ct);
-			VvTSTickStruct& quote = tick->getTickStruct();
+			ZTSTickStruct& quote = tick->getTickStruct();
 			strcpy(quote.exchg, commInfo->getExchg());
 
 			quote.trading_date = pRspMsg->mktDataSnapshot.head.tradeDate;
@@ -592,25 +592,25 @@ void ParserOES::doOnMessage(SMsgHeadT *pMsgHead, void *pMsgItem)
 			}
 			code = pRspMsg->mktDataSnapshot.l2BestOrders.SecurityID;
 
-			VvTSContractInfo* ct = _bd_mgr->getContract(code.c_str(), exchg.c_str());
+			ZTSContractInfo* ct = _bd_mgr->getContract(code.c_str(), exchg.c_str());
 			if (ct == NULL)
 			{
 				//if (_sink)
 				//	write_log(_sink, LL_ERROR, "[ParserXTP] Instrument {}.{} not exists...", exchg.c_str(), code);
 				return;
 			}
-			VvTSCommodityInfo* commInfo = ct->getCommInfo();
+			ZTSCommodityInfo* commInfo = ct->getCommInfo();
 
-			VvTSOrdQueData* buyQue = VvTSOrdQueData::create(code.c_str());
+			ZTSOrdQueData* buyQue = ZTSOrdQueData::create(code.c_str());
 			buyQue->setContractInfo(ct);
 
-			VvTSOrdQueData* sellQue = VvTSOrdQueData::create(code.c_str());
+			ZTSOrdQueData* sellQue = ZTSOrdQueData::create(code.c_str());
 			sellQue->setContractInfo(ct);
 
-			VvTSOrdQueStruct& buyOS = buyQue->getOrdQueStruct();
+			ZTSOrdQueStruct& buyOS = buyQue->getOrdQueStruct();
 			strcpy(buyOS.exchg, commInfo->getExchg());
 
-			VvTSOrdQueStruct& sellOS = sellQue->getOrdQueStruct();
+			ZTSOrdQueStruct& sellOS = sellQue->getOrdQueStruct();
 			strcpy(sellOS.exchg, commInfo->getExchg());
 
 			buyOS.trading_date = pRspMsg->mktDataSnapshot.head.tradeDate;
@@ -674,18 +674,18 @@ void ParserOES::doOnMessage(SMsgHeadT *pMsgHead, void *pMsgItem)
 			}
 			code = pRspMsg->mktDataSnapshot.stock.SecurityID;
 
-			VvTSContractInfo* ct = _bd_mgr->getContract(code.c_str(), exchg.c_str());
+			ZTSContractInfo* ct = _bd_mgr->getContract(code.c_str(), exchg.c_str());
 			if (ct == NULL)
 			{
 				//if (_sink)
 				//	write_log(_sink, LL_ERROR, "[ParserXTP] Instrument {}.{} not exists...", exchg.c_str(), code);
 				return;
 			}
-			VvTSCommodityInfo* commInfo = ct->getCommInfo();
+			ZTSCommodityInfo* commInfo = ct->getCommInfo();
 
-			VvTSTickData* tick = VvTSTickData::create(code.c_str());
+			ZTSTickData* tick = ZTSTickData::create(code.c_str());
 			tick->setContractInfo(ct);
-			VvTSTickStruct& quote = tick->getTickStruct();
+			ZTSTickStruct& quote = tick->getTickStruct();
 			strcpy(quote.exchg, commInfo->getExchg());
 
 			quote.trading_date = pRspMsg->mktDataSnapshot.head.tradeDate;
@@ -737,18 +737,18 @@ void ParserOES::doOnMessage(SMsgHeadT *pMsgHead, void *pMsgItem)
 			}
 			code = pRspMsg->mktDataSnapshot.option.SecurityID;
 
-			VvTSContractInfo* ct = _bd_mgr->getContract(code.c_str(), exchg.c_str());
+			ZTSContractInfo* ct = _bd_mgr->getContract(code.c_str(), exchg.c_str());
 			if (ct == NULL)
 			{
 				//if (_sink)
 				//	write_log(_sink, LL_ERROR, "[ParserXTP] Instrument {}.{} not exists...", exchg.c_str(), code);
 				return;
 			}
-			VvTSCommodityInfo* commInfo = ct->getCommInfo();
+			ZTSCommodityInfo* commInfo = ct->getCommInfo();
 
-			VvTSTickData* tick = VvTSTickData::create(code.c_str());
+			ZTSTickData* tick = ZTSTickData::create(code.c_str());
 			tick->setContractInfo(ct);
-			VvTSTickStruct& quote = tick->getTickStruct();
+			ZTSTickStruct& quote = tick->getTickStruct();
 			strcpy(quote.exchg, commInfo->getExchg());
 
 			quote.trading_date = pRspMsg->mktDataSnapshot.head.tradeDate;
@@ -801,16 +801,16 @@ void ParserOES::doOnMessage(SMsgHeadT *pMsgHead, void *pMsgItem)
 			}
 			code = pRspMsg->mktDataSnapshot.index.SecurityID;
 
-			VvTSContractInfo* ct = _bd_mgr->getContract(code.c_str(), exchg.c_str());
+			ZTSContractInfo* ct = _bd_mgr->getContract(code.c_str(), exchg.c_str());
 			if (ct == NULL)
 			{
 				return;
 			}
-			VvTSCommodityInfo* commInfo = ct->getCommInfo();
+			ZTSCommodityInfo* commInfo = ct->getCommInfo();
 
-			VvTSTickData* tick = VvTSTickData::create(code.c_str());
+			ZTSTickData* tick = ZTSTickData::create(code.c_str());
 			tick->setContractInfo(ct);
-			VvTSTickStruct& quote = tick->getTickStruct();
+			ZTSTickStruct& quote = tick->getTickStruct();
 			strcpy(quote.exchg, commInfo->getExchg());
 
 			quote.trading_date = pRspMsg->mktDataSnapshot.head.tradeDate;

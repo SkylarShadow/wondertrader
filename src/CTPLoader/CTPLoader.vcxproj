@@ -188,7 +188,7 @@
     <Xml Include="..\API\CTP6.3.15\error.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\VvTSUtils\VvTSUtils.vcxproj">
+    <ProjectReference Include="..\ZTSUtils\ZTSUtils.vcxproj">
       <Project>{9f0b15cc-34c6-46da-9575-d4ae11453b84}</Project>
     </ProjectReference>
   </ItemGroup>

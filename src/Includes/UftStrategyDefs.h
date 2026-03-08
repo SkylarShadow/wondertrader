@@ -11,19 +11,19 @@
 #include <string>
 #include <stdint.h>
 
-#include "../Includes/VvTSMarcos.h"
+#include "../Includes/ZTSMarcos.h"
 
-NS_VVTP_BEGIN
-class VvTSVariant;
+NS_ZTP_BEGIN
+class ZTSVariant;
 class IUftStraCtx;
-class VvTSTickData;
-class VvTSOrdDtlData;
-class VvTSOrdQueData;
-class VvTSTransData;
-struct VvTSBarStruct;
-NS_VVTP_END
+class ZTSTickData;
+class ZTSOrdDtlData;
+class ZTSOrdQueData;
+class ZTSTransData;
+struct ZTSBarStruct;
+NS_ZTP_END
 
-USING_NS_VVTP;
+USING_NS_ZTP;
 
 class UftStrategy
 {
@@ -45,7 +45,7 @@ public:
 	/*
 	*	初始化
 	*/
-	virtual bool init(VvTSVariant* cfg){ return true; }
+	virtual bool init(ZTSVariant* cfg){ return true; }
 
 	virtual const char* id() const { return _id.c_str(); }
 
@@ -73,22 +73,22 @@ public:
 	/*
 	 *	tick推送
 	 */
-	virtual void on_tick(IUftStraCtx* ctx, const char* stdCode, VvTSTickData* newTick) {}
+	virtual void on_tick(IUftStraCtx* ctx, const char* stdCode, ZTSTickData* newTick) {}
 
 	/*
 	 *	委托队列推送
 	 */
-	virtual void on_order_queue(IUftStraCtx* ctx, const char* stdCode, VvTSOrdQueData* newOrdQue) {}
+	virtual void on_order_queue(IUftStraCtx* ctx, const char* stdCode, ZTSOrdQueData* newOrdQue) {}
 
 	/*
 	 *	逐笔委托推送
 	 */
-	virtual void on_order_detail (IUftStraCtx* ctx, const char* stdCode, VvTSOrdDtlData* newOrdDtl) {}
+	virtual void on_order_detail (IUftStraCtx* ctx, const char* stdCode, ZTSOrdDtlData* newOrdDtl) {}
 
 	/*
 	 *	逐笔成交推送
 	 */
-	virtual void on_transaction(IUftStraCtx* ctx, const char* stdCode, VvTSTransData* newTrans) {}
+	virtual void on_transaction(IUftStraCtx* ctx, const char* stdCode, ZTSTransData* newTrans) {}
 
 	/*
 	 *	K线闭合事件
@@ -97,7 +97,7 @@ public:
 	 *	@period		周期
 	 *	@times		重采样倍数
 	 */
-	virtual void on_bar(IUftStraCtx* ctx, const char* stdCode, const char* period, uint32_t times, VvTSBarStruct* newBar) {}
+	virtual void on_bar(IUftStraCtx* ctx, const char* stdCode, const char* period, uint32_t times, ZTSBarStruct* newBar) {}
 
 	/*
 	 *	成交回报

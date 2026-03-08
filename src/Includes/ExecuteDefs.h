@@ -8,18 +8,18 @@
  * \brief 
  */
 #pragma once
-#include "../Includes/VvTSDataDef.hpp"
-#include "../Includes/VvTSCollection.hpp"
+#include "../Includes/ZTSDataDef.hpp"
+#include "../Includes/ZTSCollection.hpp"
 
-NS_VVTP_BEGIN
-class VvTSTickData;
-class VvTSHisTickData;
-class VvTSVariant;
-class VvTSCommodityInfo;
-class VvTSSessionInfo;
+NS_ZTP_BEGIN
+class ZTSTickData;
+class ZTSHisTickData;
+class ZTSVariant;
+class ZTSCommodityInfo;
+class ZTSSessionInfo;
 
 typedef std::vector<uint32_t> OrderIDs;
-typedef VvTSMap<uint32_t> OrderMap;
+typedef ZTSMap<uint32_t> OrderMap;
 
 //////////////////////////////////////////////////////////////////////////
 //执行环境基础类
@@ -38,15 +38,15 @@ public:
 	 *	
 	 *	返回值	历史数据封装类指针
 	 */
-	virtual VvTSTickSlice*	getTicks(const char* stdCode, uint32_t count, uint64_t etime = 0) = 0;
+	virtual ZTSTickSlice*	getTicks(const char* stdCode, uint32_t count, uint64_t etime = 0) = 0;
 
 	/*
 	 *	读取最近一笔Tick数据
 	 *	code	合约代码
 	 *	
-	 *	返回值	VvTSTickData指针
+	 *	返回值	ZTSTickData指针
 	 */
-	virtual VvTSTickData*	grabLastTick(const char* stdCode) = 0;
+	virtual ZTSTickData*	grabLastTick(const char* stdCode) = 0;
 
 	/*
 	 *	获取仓位
@@ -62,7 +62,7 @@ public:
 	 *	获取未完成订单
 	 *	code	合约代码
 	 *
-	 *	返回值	localid-VvTSOrderInfo的映射
+	 *	返回值	localid-ZTSOrderInfo的映射
 	 */
 	virtual OrderMap* getOrders(const char* stdCode) = 0;
 
@@ -121,12 +121,12 @@ public:
 	/*
 	 *	获取品种参数
 	 */
-	virtual VvTSCommodityInfo* getCommodityInfo(const char* stdCode) = 0;
+	virtual ZTSCommodityInfo* getCommodityInfo(const char* stdCode) = 0;
 
 	/*
 	 *	获取交易时间模板信息
 	 */
-	virtual VvTSSessionInfo* getSessionInfo(const char* stdCode) = 0;
+	virtual ZTSSessionInfo* getSessionInfo(const char* stdCode) = 0;
 
 	/*
 	 *	获取当前时间,精确到毫秒,格式如20191127174139500
@@ -167,7 +167,7 @@ public:
 	 *	ctx		执行单元运行环境
 	 *	code	管理的合约代码
 	 */
-	virtual void init(ExecuteContext* ctx, const char* stdCode, VvTSVariant* cfg){ _ctx = ctx; _code = stdCode; }
+	virtual void init(ExecuteContext* ctx, const char* stdCode, ZTSVariant* cfg){ _ctx = ctx; _code = stdCode; }
 
 public:
 	/*
@@ -187,7 +187,7 @@ public:
 	 *	tick数据回调
 	 *	newTick	最新的tick数据
 	 */
-	virtual void on_tick(VvTSTickData* newTick) = 0;
+	virtual void on_tick(ZTSTickData* newTick) = 0;
 
 	/*
 	 *	成交回报
@@ -281,4 +281,4 @@ typedef IExecuterFact* (*FuncCreateExeFact)();
 //删除执行工厂
 typedef void(*FuncDeleteExeFact)(IExecuterFact* &fact);
 
-NS_VVTP_END
+NS_ZTP_END

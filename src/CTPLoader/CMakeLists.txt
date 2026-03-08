@@ -20,7 +20,7 @@ LINK_DIRECTORIES(${LNKS})
 
 SET(LIBS
 	#boost_filesystem #临时过构建
-    VvTSUtils
+    ZTSUtils
 	#dl #临时过构建
 )
 

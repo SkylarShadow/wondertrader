@@ -9,10 +9,10 @@
  */
 #include "ParserXeleSkt.h"
 #include "md_struct.h"
-#include "../Includes/VvTSVariant.hpp"
-#include "../Includes/VvTSDataDef.hpp"
+#include "../Includes/ZTSVariant.hpp"
+#include "../Includes/ZTSDataDef.hpp"
 #include "../Includes/IBaseDataMgr.h"
-#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/ZTSContractInfo.hpp"
 #include "../Share/decimal.h"
 
 #include <boost/bind.hpp>
@@ -20,7 +20,7 @@
  //By Wesley @ 2022.01.05
 #include "../Share/fmtlib.h"
 template<typename... Args>
-inline void write_log(IParserSpi* sink, VvTSLogLevel ll, const char* format, const Args&... args)
+inline void write_log(IParserSpi* sink, ZTSLogLevel ll, const char* format, const Args&... args)
 {
 	if (sink == NULL)
 		return;
@@ -94,7 +94,7 @@ ParserXeleSkt::~ParserXeleSkt()
 {
 }
 
-bool ParserXeleSkt::init( VvTSVariant* config )
+bool ParserXeleSkt::init( ZTSVariant* config )
 {
 	_tcp_host = config->getCString("tcp_host");
 	_tcp_port = config->getInt32("tcp_port");
@@ -197,7 +197,7 @@ bool ParserXeleSkt::prepare()
 
 		CXeleShfeSnapShot *p = (CXeleShfeSnapShot *)(content.data() + sizeof(CXeleShfeMarketHead));
 		int instrumentNo = p->InstrumentNo;
-		VvTSContractInfo* ct = _bd_mgr->getContract(p->InstrumentID);
+		ZTSContractInfo* ct = _bd_mgr->getContract(p->InstrumentID);
 		if (ct != NULL)
 		{
 			auto it = _set_subs.find(ct->getFullCode());
@@ -206,10 +206,10 @@ bool ParserXeleSkt::prepare()
 
 				_price_scales[instrumentNo] = p->PriceTick;
 
-				VvTSTickData* tick = VvTSTickData::create(p->InstrumentID);
+				ZTSTickData* tick = ZTSTickData::create(p->InstrumentID);
 				tick->setContractInfo(ct);
 
-				VvTSTickStruct& quote = tick->getTickStruct();
+				ZTSTickStruct& quote = tick->getTickStruct();
 				vvt_strcpy(quote.exchg, ct->getExchg());
 
 				quote.action_date = strToTime(p->ActionDay);
@@ -332,7 +332,7 @@ void ParserXeleSkt::handle_udp_read(const boost::system::error_code& e, std::siz
 	if(e)
 	{
 		if(_sink)
-			_sink->handleEvent(VvPE_Close, 0);
+			_sink->handleEvent(ZPE_Close, 0);
 
 		write_log(_sink, LL_ERROR, "[ParserXeleSkt] Error occured while receiving: {}({})", e.message().c_str(), e.value());
 
@@ -382,7 +382,7 @@ void ParserXeleSkt::extract_buffer(uint32_t length)
 
 			//write_log(_sink, LL_DEBUG, "[ParserXeleSkt] Receiving market data, length: {}", packLen);
 
-			VvTSTickData* tick = (VvTSTickData*)_tick_cache->get(p->InstrumentNo);
+			ZTSTickData* tick = (ZTSTickData*)_tick_cache->get(p->InstrumentNo);
 			if (tick != NULL)
 			{
 				uint64_t SnapTime = ((p->SnapDateTime) >> FOUR_BIT) + XELE_MD_EPOCH;
@@ -394,7 +394,7 @@ void ParserXeleSkt::extract_buffer(uint32_t length)
 				actTime = actTime * 1000 + SnapMillisec;
 
 				double scale = _price_scales[p->InstrumentNo];
-				VvTSTickStruct& quote = tick->getTickStruct();
+				ZTSTickStruct& quote = tick->getTickStruct();
 				quote.action_date = actDate;
 				quote.action_time = actTime;
 				if(quote.trading_date == 0)
@@ -442,7 +442,7 @@ void ParserXeleSkt::extract_buffer(uint32_t length)
 
 			//write_log(_sink, LL_DEBUG, "[ParserXeleSkt] Receiving depth market data of {}, length: {}", p->InstrumentNo, packLen);
 
-			VvTSTickData* tick = (VvTSTickData*)_tick_cache->get(p->InstrumentNo);
+			ZTSTickData* tick = (ZTSTickData*)_tick_cache->get(p->InstrumentNo);
 			if (tick != NULL)
 			{
 				uint64_t SnapTime = ((p->SnapDateTime) >> FOUR_BIT) + XELE_MD_EPOCH;
@@ -454,7 +454,7 @@ void ParserXeleSkt::extract_buffer(uint32_t length)
 				actTime = actTime * 1000 + SnapMillisec;
 
 				double scale = _price_scales[p->InstrumentNo];
-				VvTSTickStruct& quote = tick->getTickStruct();
+				ZTSTickStruct& quote = tick->getTickStruct();
 				quote.action_date = actDate;
 				quote.action_time = actTime;
 				if (quote.trading_date == 0)
@@ -525,8 +525,8 @@ void ParserXeleSkt::doOnConnected()
 {
 	if(_sink)
 	{
-		_sink->handleEvent(VvPE_Connect, 0);
-		_sink->handleEvent(VvPE_Login, 0);
+		_sink->handleEvent(ZPE_Connect, 0);
+		_sink->handleEvent(ZPE_Login, 0);
 	}
 }
 
@@ -534,6 +534,6 @@ void ParserXeleSkt::doOnDisconnected()
 {
 	if(_sink)
 	{
-		_sink->handleEvent(VvPE_Close, 0);
+		_sink->handleEvent(ZPE_Close, 0);
 	}
 }

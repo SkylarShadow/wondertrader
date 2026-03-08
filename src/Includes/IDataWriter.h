@@ -9,21 +9,21 @@
  */
 #pragma once
 #include <stdint.h>
-#include "VvTSTypes.h"
+#include "ZTSTypes.h"
 #include "FasterDefs.h"
 
-NS_VVTP_BEGIN
-class VvTSTickData;
-class VvTSOrdQueData;
-class VvTSOrdDtlData;
-class VvTSTransData;
-class VvTSVariant;
+NS_ZTP_BEGIN
+class ZTSTickData;
+class ZTSOrdQueData;
+class ZTSOrdDtlData;
+class ZTSTransData;
+class ZTSVariant;
 class IBaseDataMgr;
-struct VvTSBarStruct;
-struct VvTSTickStruct;
-struct VvTSOrdDtlStruct;
-struct VvTSOrdQueStruct;
-struct VvTSTransStruct;
+struct ZTSBarStruct;
+struct ZTSTickStruct;
+struct ZTSOrdDtlStruct;
+struct ZTSOrdQueStruct;
+struct ZTSTransStruct;
 
 class IDataWriterSink
 {
@@ -33,13 +33,13 @@ public:
 
 	virtual bool canSessionReceive(const char* sid) = 0;
 
-	virtual void broadcastTick(VvTSTickData* curTick) = 0;
+	virtual void broadcastTick(ZTSTickData* curTick) = 0;
 
-	virtual void broadcastOrdQue(VvTSOrdQueData* curOrdQue) = 0;
+	virtual void broadcastOrdQue(ZTSOrdQueData* curOrdQue) = 0;
 
-	virtual void broadcastOrdDtl(VvTSOrdDtlData* curOrdDtl) = 0;
+	virtual void broadcastOrdDtl(ZTSOrdDtlData* curOrdDtl) = 0;
 
-	virtual void broadcastTrans(VvTSTransData* curTrans) = 0;
+	virtual void broadcastTrans(ZTSTransData* curTrans) = 0;
 
 	virtual CodeSet* getSessionComms(const char* sid) = 0;
 
@@ -50,18 +50,18 @@ public:
 	*	@ll			日志级别
 	*	@message	日志内容
 	*/
-	virtual void outputLog(VvTSLogLevel ll, const char* message) = 0;
+	virtual void outputLog(ZTSLogLevel ll, const char* message) = 0;
 };
 
 class IHisDataDumper
 {
 public:
-	virtual bool dumpHisBars(const char* stdCode, const char* period, VvTSBarStruct* bars, uint32_t count) = 0;
-	virtual bool dumpHisTicks(const char* stdCode, uint32_t uDate, VvTSTickStruct* ticks, uint32_t count) = 0;
+	virtual bool dumpHisBars(const char* stdCode, const char* period, ZTSBarStruct* bars, uint32_t count) = 0;
+	virtual bool dumpHisTicks(const char* stdCode, uint32_t uDate, ZTSTickStruct* ticks, uint32_t count) = 0;
 
-	virtual bool dumpHisOrdQue(const char* stdCode, uint32_t uDate, VvTSOrdQueStruct* items, uint32_t count) { return false; }
-	virtual bool dumpHisOrdDtl(const char* stdCode, uint32_t uDate, VvTSOrdDtlStruct* items, uint32_t count) { return false; }
-	virtual bool dumpHisTrans(const char* stdCode, uint32_t uDate, VvTSTransStruct* items, uint32_t count) { return false; }
+	virtual bool dumpHisOrdQue(const char* stdCode, uint32_t uDate, ZTSOrdQueStruct* items, uint32_t count) { return false; }
+	virtual bool dumpHisOrdDtl(const char* stdCode, uint32_t uDate, ZTSOrdDtlStruct* items, uint32_t count) { return false; }
+	virtual bool dumpHisTrans(const char* stdCode, uint32_t uDate, ZTSTransStruct* items, uint32_t count) { return false; }
 };
 
 typedef vvt_hashmap<std::string, IHisDataDumper*> ExtDumpers;
@@ -74,33 +74,33 @@ class IDataWriter
 public:
 	IDataWriter():_sink(NULL){}
 
-	virtual bool init(VvTSVariant* params, IDataWriterSink* sink) { _sink = sink; return true; }
+	virtual bool init(ZTSVariant* params, IDataWriterSink* sink) { _sink = sink; return true; }
 
 	virtual void release() = 0;
 
 	void	add_ext_dumper(const char* id, IHisDataDumper* dumper) { _dumpers[id] = dumper; }
 
 public:
-	virtual bool writeTick(VvTSTickData* curTick, uint32_t procFlag) = 0;
+	virtual bool writeTick(ZTSTickData* curTick, uint32_t procFlag) = 0;
 
-	virtual bool writeOrderQueue(VvTSOrdQueData* curOrdQue) { return false; }
+	virtual bool writeOrderQueue(ZTSOrdQueData* curOrdQue) { return false; }
 
-	virtual bool writeOrderDetail(VvTSOrdDtlData* curOrdDetail) { return false; }
+	virtual bool writeOrderDetail(ZTSOrdDtlData* curOrdDetail) { return false; }
 
-	virtual bool writeTransaction(VvTSTransData* curTrans) { return false; }
+	virtual bool writeTransaction(ZTSTransData* curTrans) { return false; }
 
 	virtual void transHisData(const char* sid) {}
 
 	virtual bool isSessionProceeded(const char* sid) { return true; }
 
-	virtual VvTSTickData* getCurTick(const char* code, const char* exchg = "") = 0;
+	virtual ZTSTickData* getCurTick(const char* code, const char* exchg = "") = 0;
 
 protected:
 	ExtDumpers			_dumpers;
 	IDataWriterSink*	_sink;
 };
 
-NS_VVTP_END
+NS_ZTP_END
 
 
 //获取IDataWriter的函数指针类型

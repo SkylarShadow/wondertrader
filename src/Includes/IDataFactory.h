@@ -9,20 +9,20 @@
  */
 #pragma once
 #include <stdint.h>
-#include "../Includes/VvTSTypes.h"
+#include "../Includes/ZTSTypes.h"
 
-//USING_NS_VVTP;
+//USING_NS_ZTP;
 
-NS_VVTP_BEGIN
-class VvTSKlineData;
-class VvTSHisTrendData;
-class VvTSTickData;
-class VvTSSessionInfo;
-class VvTSKlineSlice;
-class VvTSContractInfo;
-struct VvTSBarStruct;
-struct VvTSTickStruct;
-class VvTSTickSlice;
+NS_ZTP_BEGIN
+class ZTSKlineData;
+class ZTSHisTrendData;
+class ZTSTickData;
+class ZTSSessionInfo;
+class ZTSKlineSlice;
+class ZTSContractInfo;
+struct ZTSBarStruct;
+struct ZTSTickStruct;
+class ZTSTickSlice;
 
 /*
  *	数据工厂
@@ -38,7 +38,7 @@ public:
 	 *	@tick		tick数据
 	 *	@sInfo		交易时间模板
 	 */
-	virtual VvTSBarStruct*	updateKlineData(VvTSKlineData* klineData, VvTSTickData* tick, VvTSSessionInfo* sInfo, bool bAlignSec = false)						= 0;
+	virtual ZTSBarStruct*	updateKlineData(ZTSKlineData* klineData, ZTSTickData* tick, ZTSSessionInfo* sInfo, bool bAlignSec = false)						= 0;
 
 	/*
 	 *	利用基础周期K线数据更新K线
@@ -46,7 +46,7 @@ public:
 	 *	@newBasicBar	基础周期K线数据
 	 *	@sInfo			交易时间模板
 	 */
-	virtual VvTSBarStruct*	updateKlineData(VvTSKlineData* klineData, VvTSBarStruct* newBasicBar, VvTSSessionInfo* sInfo, bool bAlignSec = false)				= 0;
+	virtual ZTSBarStruct*	updateKlineData(ZTSKlineData* klineData, ZTSBarStruct* newBasicBar, ZTSSessionInfo* sInfo, bool bAlignSec = false)				= 0;
 
 	/*
 	 *	从基础周期K线数据提取非基础周期的K线数据
@@ -56,7 +56,7 @@ public:
 	 *	@sInfo		交易时间模板
 	 *	@bIncludeOpen	是否包含未闭合的K线
 	 */
-	virtual VvTSKlineData*	extractKlineData(VvTSKlineSlice* baseKline, VvTSKlinePeriod period, uint32_t times, VvTSSessionInfo* sInfo, bool bIncludeOpen = true, bool bSectionSplit = false) = 0;
+	virtual ZTSKlineData*	extractKlineData(ZTSKlineSlice* baseKline, ZTSKlinePeriod period, uint32_t times, ZTSSessionInfo* sInfo, bool bIncludeOpen = true, bool bSectionSplit = false) = 0;
 
 	/*
 	 *	从tick数据提取秒周期的K线数据
@@ -65,14 +65,14 @@ public:
 	 *	@sInfo		交易时间模板
 	 *	@bUnixTime	tick时间戳是否是unixtime
 	 */
-	virtual VvTSKlineData*	extractKlineData(VvTSTickSlice* ayTicks, uint32_t seconds, VvTSSessionInfo* sInfo, bool bUnixTime = false, bool bSectionSplit = false) = 0;
+	virtual ZTSKlineData*	extractKlineData(ZTSTickSlice* ayTicks, uint32_t seconds, ZTSSessionInfo* sInfo, bool bUnixTime = false, bool bSectionSplit = false) = 0;
 
 	/*
 	 *	合并K线
 	 *	@klineData	目标K线
 	 *	@newKline	待合并的K线
 	 */
-	virtual bool			mergeKlineData(VvTSKlineData* klineData, VvTSKlineData* newKline)											= 0;
+	virtual bool			mergeKlineData(ZTSKlineData* klineData, ZTSKlineData* newKline)											= 0;
 };
 
-NS_VVTP_END
+NS_ZTP_END

@@ -16,12 +16,12 @@
 
 #include "../Includes/ITraderApi.h"
 
-NS_VVTP_BEGIN
-class VvTSVariant;
+NS_ZTP_BEGIN
+class ZTSVariant;
 class ActionPolicyMgr;
-class VvTSContractInfo;
-class VvTSCommodityInfo;
-class VvtExecuter; //?没用到
+class ZTSContractInfo;
+class ZTSCommodityInfo;
+class ZtExecuter; //?没用到
 class EventNotifier;
 
 class ITrdNotifySink;
@@ -35,7 +35,7 @@ public:
 	~TraderAdapter();
 
 public:
-	bool init(const char* id, VvTSVariant* params, IBaseDataMgr* bdMgr);
+	bool init(const char* id, ZTSVariant* params, IBaseDataMgr* bdMgr);
 
 	void release();
 
@@ -51,33 +51,33 @@ public:
 public:
 	//////////////////////////////////////////////////////////////////////////
 	//ITraderSpi½Ó¿Ú
-	virtual void handleEvent(VvTSTraderEvent e, int32_t ec) override;
+	virtual void handleEvent(ZTSTraderEvent e, int32_t ec) override;
 
 	virtual void onLoginResult(bool bSucc, const char* msg, uint32_t tradingdate) override;
 
 	virtual void onLogout() override;
 
-	virtual void onRspAccount(VvTSArray* ayAccounts) override;
+	virtual void onRspAccount(ZTSArray* ayAccounts) override;
 
-	virtual void onRspPosition(const VvTSArray* ayPositions) override;
+	virtual void onRspPosition(const ZTSArray* ayPositions) override;
 
-	virtual void onRspTrades(const VvTSArray* ayTrades) override;
+	virtual void onRspTrades(const ZTSArray* ayTrades) override;
 
-	virtual void onRspOrders(const VvTSArray* ayOrders) override;
+	virtual void onRspOrders(const ZTSArray* ayOrders) override;
 
-	virtual void onPushTrade(VvTSTradeInfo* tradeRecord) override;
+	virtual void onPushTrade(ZTSTradeInfo* tradeRecord) override;
 
-	virtual void onPushOrder(VvTSOrderInfo* orderInfo) override;
+	virtual void onPushOrder(ZTSOrderInfo* orderInfo) override;
 
-	virtual void onTraderError(VvTSError* err, void* pData = NULL) override;
+	virtual void onTraderError(ZTSError* err, void* pData = NULL) override;
 
 	virtual IBaseDataMgr* getBaseDataMgr() override;
 
-	virtual void handleTraderLog(VvTSLogLevel ll, const char* message) override;
+	virtual void handleTraderLog(ZTSLogLevel ll, const char* message) override;
 
 private:
 	TraderAdapterMgr*	_mgr;
-	VvTSVariant*			_cfg;
+	ZTSVariant*			_cfg;
 	std::string			_id;
 
 	ITraderApi*			_trader_api;
@@ -123,4 +123,4 @@ private:
 	std::atomic<uint32_t>	_live_cnt;
 };
 
-NS_VVTP_END
+NS_ZTP_END

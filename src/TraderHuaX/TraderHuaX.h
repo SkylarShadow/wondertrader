@@ -14,19 +14,19 @@
 #include <boost/asio/io_service.hpp>
 
 #include "../Includes/ITraderApi.h"
-#include "../Includes/VvTSCollection.hpp"
+#include "../Includes/ZTSCollection.hpp"
 
 #include "../Share/StdUtils.hpp"
 #include "../Share/DLLHelper.hpp"
-#include "../Share/VvtKVCache.hpp"
+#include "../Share/ZtKVCache.hpp"
 
 #include "../Includes/IBaseDataMgr.h"
-#include "../Includes/VvTSContractInfo.hpp"
-#include "../Includes/VvTSSessionInfo.hpp"
-#include "../Includes/VvTSTradeDef.hpp"
-#include "../Includes/VvTSError.hpp"
-#include "../Includes/VvTSVariant.hpp"
-#include "../Includes/VvTSCollection.hpp"
+#include "../Includes/ZTSContractInfo.hpp"
+#include "../Includes/ZTSSessionInfo.hpp"
+#include "../Includes/ZTSTradeDef.hpp"
+#include "../Includes/ZTSError.hpp"
+#include "../Includes/ZTSVariant.hpp"
+#include "../Includes/ZTSCollection.hpp"
 #include "../Share/TimeUtils.hpp"
 #include "../Share/ModuleHelper.hpp"
 
@@ -37,7 +37,7 @@
 
 #include "../API/HuaX4.03/traderapi/TORATstpTraderApi.h"
 
-USING_NS_VVTP;
+USING_NS_ZTP;
 
 using namespace TORASTOCKAPI;
 typedef CTORATstpTraderSpi HuaXTraderSpi;
@@ -107,7 +107,7 @@ public:
 public:
 	//////////////////////////////////////////////////////////////////////////
 	//ITraderApi 接口
-	virtual bool init(VvTSVariant *params) override;
+	virtual bool init(ZTSVariant *params) override;
 
 	virtual void release() override;
 
@@ -125,9 +125,9 @@ public:
 
 	virtual int logout() override;
 
-	virtual int orderInsert(VvTSEntrust* eutrust) override;
+	virtual int orderInsert(ZTSEntrust* eutrust) override;
 
-	virtual int orderAction(VvTSEntrustAction* action) override;
+	virtual int orderAction(ZTSEntrustAction* action) override;
 
 	virtual int queryAccount() override;
 
@@ -142,15 +142,15 @@ private:
 	inline uint32_t			genRequestID();
 	void					doLogin();
 
-	inline VvTSOrderInfo*	makeOrderInfo(CTORATstpOrderField* orderField);
-	inline VvTSEntrust*		makeEntrust(CTORATstpInputOrderField* entrustField);
-	inline VvTSTradeInfo*	makeTradeInfo(CTORATstpTradeField*tradeField);
-	inline VvTSPositionItem* makePositionItem(CTORATstpPositionField* positionField);
-	inline VvTSAccountInfo*	makeAccountInfo(CTORATstpTradingAccountField* accountField);
+	inline ZTSOrderInfo*	makeOrderInfo(CTORATstpOrderField* orderField);
+	inline ZTSEntrust*		makeEntrust(CTORATstpInputOrderField* entrustField);
+	inline ZTSTradeInfo*	makeTradeInfo(CTORATstpTradeField*tradeField);
+	inline ZTSPositionItem* makePositionItem(CTORATstpPositionField* positionField);
+	inline ZTSAccountInfo*	makeAccountInfo(CTORATstpTradingAccountField* accountField);
 
-	inline VvTSDirectionType wrapDirectionType(TTORATstpDirectionType dirType);
-	inline VvTSPriceType wrapPriceType(TTORATstpDirectionType priceType);
-	inline VvTSOrderState wrapOrderState(TTORATstpOrderStatusType orderState);
+	inline ZTSDirectionType wrapDirectionType(TTORATstpDirectionType dirType);
+	inline ZTSPriceType wrapPriceType(TTORATstpDirectionType priceType);
+	inline ZTSOrderState wrapOrderState(TTORATstpOrderStatusType orderState);
 
 
 	inline bool	extractEntrustID(const char* entrustid, int &orderRef);
@@ -160,11 +160,11 @@ private:
 	HuaXTraderApi*	_api;
 	ITraderSpi*		_sink;
 
-	typedef VvTSHashMap<std::string> PositionMap;
-	VvTSArray*				_positions;
-	VvTSArray*				_trades;
-	VvTSArray*				_orders;
-	VvTSArray*				_accounts;
+	typedef ZTSHashMap<std::string> PositionMap;
+	ZTSArray*				_positions;
+	ZTSArray*				_trades;
+	ZTSArray*				_orders;
+	ZTSArray*				_accounts;
 
 	IBaseDataMgr*			_bd_mgr;
 
@@ -203,8 +203,8 @@ private:
 	HuaXCreator		_funcCreator;
 
 	//委托单标记缓存器
-	VvtKVCache		_eidCache;
+	ZtKVCache		_eidCache;
 	//订单标记缓存器
-	VvtKVCache		_oidCache;
+	ZtKVCache		_oidCache;
 };
 

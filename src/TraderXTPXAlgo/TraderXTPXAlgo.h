@@ -6,14 +6,14 @@
 #include "../API/XTPXAlgo/include/xtp_trader_api.h"
 
 #include "../Includes/ITraderApi.h"
-#include "../Includes/VvTSCollection.hpp"
+#include "../Includes/ZTSCollection.hpp"
 
 #include "../Share/StdUtils.hpp"
 #include "../Share/DLLHelper.hpp"
-#include "../Share/VvtKVCache.hpp"
+#include "../Share/ZtKVCache.hpp"
 
 
-USING_NS_VVTP;
+USING_NS_ZTP;
 
 class TraderXTPXAlgo : public XTP::API::TraderSpi, public ITraderApi
 {
@@ -141,7 +141,7 @@ public:
 public:
 	//////////////////////////////////////////////////////////////////////////
 	//ITraderApi 接口
-	virtual bool init(VvTSVariant *params) override;
+	virtual bool init(ZTSVariant *params) override;
 
 	virtual void release() override;
 
@@ -159,9 +159,9 @@ public:
 
 	virtual int logout() override;
 
-	virtual int orderInsert(VvTSEntrust* eutrust) override;
+	virtual int orderInsert(ZTSEntrust* eutrust) override;
 
-	virtual int orderAction(VvTSEntrustAction* action) override;
+	virtual int orderAction(ZTSEntrustAction* action) override;
 
 	virtual int queryAccount() override;
 
@@ -176,11 +176,11 @@ private:
 	inline uint32_t			genRequestID();
 	void					doLogin();
 
-	inline VvTSOrderInfo*	makeOrderInfo(XTPQueryOrderRsp* orderField);
-	inline VvTSEntrust*		makeEntrust(XTPOrderInfo *entrustField);
-	inline VvTSEntrust*		makeEntrust(XTPStrategyInfoStruct *stra_info);
-	inline VvTSTradeInfo*	makeTradeInfo(XTPQueryTradeRsp *tradeField);
-	inline VvTSOrderInfo*	makeOrderInfo(XTPStrategyInfoStruct *strategyState);  // 算法单信息
+	inline ZTSOrderInfo*	makeOrderInfo(XTPQueryOrderRsp* orderField);
+	inline ZTSEntrust*		makeEntrust(XTPOrderInfo *entrustField);
+	inline ZTSEntrust*		makeEntrust(XTPStrategyInfoStruct *stra_info);
+	inline ZTSTradeInfo*	makeTradeInfo(XTPQueryTradeRsp *tradeField);
+	inline ZTSOrderInfo*	makeOrderInfo(XTPStrategyInfoStruct *strategyState);  // 算法单信息
 
 	inline bool	extractEntrustID(const char* entrustid, uint32_t &orderRef);
 	inline void	genEntrustID(char* buffer, uint32_t orderRef);
@@ -189,10 +189,10 @@ private:
 	XTP::API::TraderApi*	_api;
 	ITraderSpi*		_sink;
 
-	typedef VvTSHashMap<std::string> PositionMap;
+	typedef ZTSHashMap<std::string> PositionMap;
 	PositionMap*			_positions;
-	VvTSArray*				_trades;
-	VvTSArray*				_orders;
+	ZTSArray*				_trades;
+	ZTSArray*				_orders;
 
 	IBaseDataMgr*			_bd_mgr;
 
@@ -239,8 +239,8 @@ private:
 	XTPCreator		m_funcCreator;
 
 	//委托单标记缓存器
-	VvtKVCache		m_eidCache;
+	ZtKVCache		m_eidCache;
 	//订单标记缓存器
-	VvtKVCache		m_oidCache;
+	ZtKVCache		m_oidCache;
 };
 

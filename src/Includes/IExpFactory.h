@@ -8,18 +8,18 @@
  * \brief 指标工接口定义
  */
 #pragma once
-#include "VvTSMarcos.h"
+#include "ZTSMarcos.h"
 
-NS_VVTP_BEGIN
-class VvTSKlineData;
-class VvTSExpressParams;
-class VvTSExpressData;
-class VvTSHisTrendData;
+NS_ZTP_BEGIN
+class ZTSKlineData;
+class ZTSExpressParams;
+class ZTSExpressData;
+class ZTSHisTrendData;
 
 class IExpFactory
 {
 public:
-	virtual VvTSExpressData *calcKlineExpress(const char* expName, VvTSKlineData* klineData, VvTSExpressParams* params) = 0;
-	virtual VvTSExpressData *calcTrendExpress(const char* expName, VvTSHisTrendData* trendData, VvTSExpressParams* params) = 0;
+	virtual ZTSExpressData *calcKlineExpress(const char* expName, ZTSKlineData* klineData, ZTSExpressParams* params) = 0;
+	virtual ZTSExpressData *calcTrendExpress(const char* expName, ZTSHisTrendData* trendData, ZTSExpressParams* params) = 0;
 };
-NS_VVTP_END
+NS_ZTP_END

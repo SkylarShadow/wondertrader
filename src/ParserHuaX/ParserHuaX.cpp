@@ -8,10 +8,10 @@
  * \brief
  */
 #include "ParserHuaX.h"
-#include "../Includes/VvTSRiskDef.hpp"
+#include "../Includes/ZTSRiskDef.hpp"
 
 template<typename... Args>
-inline void write_log(IParserSpi* sink, VvTSLogLevel ll, const char* format, const Args&... args)
+inline void write_log(IParserSpi* sink, ZTSLogLevel ll, const char* format, const Args&... args)
 {
 	if (sink == NULL)
 		return;
@@ -78,7 +78,7 @@ ParserHuaX::~ParserHuaX()
 	_api = NULL;
 }
 
-bool ParserHuaX::init(VvTSVariant* config)
+bool ParserHuaX::init(ZTSVariant* config)
 {
 	_front = config->getCString("front");
 	_strUser = config->getCString("user");
@@ -158,7 +158,7 @@ void ParserHuaX::DoLogin()
 	CTORATstpReqUserLoginField req_user_login_field;
 	memset(&req_user_login_field, 0, sizeof(req_user_login_field));
 
-	strcpy(req_user_login_field.UserProductInfo, VVT_PRODUCT);
+	strcpy(req_user_login_field.UserProductInfo, ZT_PRODUCT);
 
 	int iResult = _api->ReqUserLogin(&req_user_login_field, 1);
 
@@ -168,11 +168,11 @@ void ParserHuaX::DoLogin()
 		{
 			if (iResult == -1)
 			{
-				_sink->handleEvent(VvPE_Connect, iResult);
+				_sink->handleEvent(ZPE_Connect, iResult);
 			}
 			else
 			{
-				_sink->handleEvent(VvPE_Connect, 0);
+				_sink->handleEvent(ZPE_Connect, 0);
 
 				write_log(_sink, LL_ERROR, "[ParserHuaX] Sending login request failed: {}", iResult);
 			}
@@ -357,7 +357,7 @@ void ParserHuaX::registerSpi(IParserSpi* listener)
 void ParserHuaX::OnFrontConnected()
 {
 	if (_sink)
-		_sink->handleEvent(VvPE_Connect, 0);
+		_sink->handleEvent(ZPE_Connect, 0);
 	DoLogin();
 }
 
@@ -375,7 +375,7 @@ void ParserHuaX::OnRspUserLogin(CTORATstpRspUserLoginField* pRspUserLoginField, 
 
 		if (_sink)
 		{
-			_sink->handleEvent(VvPE_Login, 0);
+			_sink->handleEvent(ZPE_Login, 0);
 		}
 
 		DoSubscribeMD();
@@ -426,18 +426,18 @@ void ParserHuaX::OnRtnMarketData(CTORATstpMarketDataField* market_data)
 
 	code = market_data->SecurityID;
 
-	VvTSContractInfo* ct = _pBaseDataMgr->getContract(code.c_str(), exchg.c_str());
+	ZTSContractInfo* ct = _pBaseDataMgr->getContract(code.c_str(), exchg.c_str());
 	if (ct == NULL)
 	{
 		if (_sink)
 			write_log(_sink, LL_ERROR, "[ParserHuaX] Instrument {}.{} not exists...", exchg, code);
 		return;
 	}
-	VvTSCommodityInfo* commInfo = ct->getCommInfo();
+	ZTSCommodityInfo* commInfo = ct->getCommInfo();
 
-	VvTSTickData* tick = VvTSTickData::create(code.c_str());
+	ZTSTickData* tick = ZTSTickData::create(code.c_str());
 	tick->setContractInfo(ct);
-	VvTSTickStruct& quote = tick->getTickStruct();
+	ZTSTickStruct& quote = tick->getTickStruct();
 	strcpy(quote.exchg, commInfo->getExchg());
 
 	quote.action_date = actDate;

@@ -8,25 +8,25 @@
  * \brief 
  */
 #include "TraderAdapter.h"
-#include "VvtHelper.h"
+#include "ZtHelper.h"
 #include "Dumper.h"
 
 #include <atomic>
 
-#include "../VvTSTools/VvTSLogger.h"
+#include "../ZTSTools/ZTSLogger.h"
 
 #include "../Share/CodeHelper.hpp"
-#include "../Includes/VvTSError.hpp"
-#include "../Includes/VvTSVariant.hpp"
-#include "../Includes/VvTSTradeDef.hpp"
-#include "../Includes/VvTSRiskDef.hpp"
+#include "../Includes/ZTSError.hpp"
+#include "../Includes/ZTSVariant.hpp"
+#include "../Includes/ZTSTradeDef.hpp"
+#include "../Includes/ZTSRiskDef.hpp"
 #include "../Share/StrUtil.hpp"
 #include "../Share/StdUtils.hpp"
 #include "../Share/TimeUtils.hpp"
 #include "../Share/decimal.h"
-#include "../Includes/VvTSSessionInfo.hpp"
+#include "../Includes/ZTSSessionInfo.hpp"
 
-#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/ZTSContractInfo.hpp"
 #include "../Includes/IBaseDataMgr.h"
 #include "../Share/DLLHelper.hpp"
 #include "../Share/StdUtils.hpp"
@@ -50,7 +50,7 @@ TraderAdapter::~TraderAdapter()
 {
 }
 
-bool TraderAdapter::init(const char* id, VvTSVariant* params, IBaseDataMgr* bdMgr)
+bool TraderAdapter::init(const char* id, ZTSVariant* params, IBaseDataMgr* bdMgr)
 {
 	if (params == NULL)
 		return false;
@@ -74,7 +74,7 @@ bool TraderAdapter::init(const char* id, VvTSVariant* params, IBaseDataMgr* bdMg
 
 	if (!StdFile::exists(module.c_str()))
 	{
-		module = VvtHelper::get_module_dir();
+		module = ZtHelper::get_module_dir();
 		module += "traders/";
 		module += DLLHelper::wrap_module(params->getCString("module"), "lib");
 	}
@@ -82,21 +82,21 @@ bool TraderAdapter::init(const char* id, VvTSVariant* params, IBaseDataMgr* bdMg
 	DllHandle hInst = DLLHelper::load_library(module.c_str());
 	if (hInst == NULL)
 	{
-		VvTSLogger::error("[{}]交易模块{}加载失败", _id.c_str(), module.c_str());
+		ZTSLogger::error("[{}]交易模块{}加载失败", _id.c_str(), module.c_str());
 		return false;
 	}
 
 	FuncCreateTrader pFunCreateTrader = (FuncCreateTrader)DLLHelper::get_symbol(hInst, "createTrader");
 	if (NULL == pFunCreateTrader)
 	{
-		VvTSLogger::error("[{}]交易接口创建函数读取失败", _id.c_str());
+		ZTSLogger::error("[{}]交易接口创建函数读取失败", _id.c_str());
 		return false;
 	}
 
 	_trader_api = pFunCreateTrader();
 	if (NULL == _trader_api)
 	{
-		VvTSLogger::error("[{}]交易接口创建失败", _id.c_str());
+		ZTSLogger::error("[{}]交易接口创建失败", _id.c_str());
 		return false;
 	}
 
@@ -106,11 +106,11 @@ bool TraderAdapter::init(const char* id, VvTSVariant* params, IBaseDataMgr* bdMg
 	params->append("quick", true);
 	if (!_trader_api->init(params))
 	{
-		VvTSLogger::error("[{}]交易接口启动失败: 交易接口初始化失败", id);
+		ZTSLogger::error("[{}]交易接口启动失败: 交易接口初始化失败", id);
 		return false;
 	}
 
-	VvTSLogger::info("[{}]交易接口初始化成功", id);
+	ZTSLogger::info("[{}]交易接口初始化成功", id);
 	return true;
 }
 
@@ -135,9 +135,9 @@ void TraderAdapter::release()
 }
 
 #pragma region "ITraderSpi接口"
-void TraderAdapter::handleEvent(VvTSTraderEvent e, int32_t ec)
+void TraderAdapter::handleEvent(ZTSTraderEvent e, int32_t ec)
 {
-	if(e == VvTE_Connect)
+	if(e == ZTE_Connect)
 	{
 		if(ec == 0)
 		{
@@ -145,14 +145,14 @@ void TraderAdapter::handleEvent(VvTSTraderEvent e, int32_t ec)
 		}
 		else
 		{
-			VvTSLogger::error("[{}]交易账号连接失败: {}", _id.c_str(), ec);
+			ZTSLogger::error("[{}]交易账号连接失败: {}", _id.c_str(), ec);
 			_mgr->decAlive();
 			_done = true;
 		}
 	}
-	else if(e == VvTE_Close)
+	else if(e == ZTE_Close)
 	{
-		VvTSLogger::error("[{}]交易账号连接已断开: {}", _id.c_str(), ec);
+		ZTSLogger::error("[{}]交易账号连接已断开: {}", _id.c_str(), ec);
 	}
 }
 
@@ -160,14 +160,14 @@ void TraderAdapter::onLoginResult(bool bSucc, const char* msg, uint32_t tradingd
 {
 	if(!bSucc)
 	{
-		VvTSLogger::error("[{}]交易账号登录失败: {}", _id.c_str(), msg);
+		ZTSLogger::error("[{}]交易账号登录失败: {}", _id.c_str(), msg);
 		_mgr->decAlive();
 		_done = true;
 	}
 	else
 	{
 		_date = tradingdate;
-		VvTSLogger::info("[{}]交易账号登录成功, 当前交易日:{}", _id.c_str(), tradingdate);
+		ZTSLogger::info("[{}]交易账号登录成功, 当前交易日:{}", _id.c_str(), tradingdate);
 
 		_trader_api->queryPositions();	//查持仓
 	}
@@ -194,28 +194,28 @@ void TraderAdapter::queryPosition()
 	_trader_api->queryPositions();
 }
 
-void TraderAdapter::onRspAccount(VvTSArray* ayAccounts)
+void TraderAdapter::onRspAccount(ZTSArray* ayAccounts)
 {
 	if(ayAccounts && ayAccounts->size() > 0)
 	{
 		for (std::size_t idx = 0; idx < ayAccounts->size(); idx++)
 		{
-			VvTSAccountInfo* accInfo = (VvTSAccountInfo*)ayAccounts->at(idx);
+			ZTSAccountInfo* accInfo = (ZTSAccountInfo*)ayAccounts->at(idx);
 
 			getDumper().on_account(_id.c_str(), _date, accInfo->getCurrency(), accInfo->getPreBalance(), accInfo->getBalance(), accInfo->getBalance() + accInfo->getDynProfit(),
 				accInfo->getCloseProfit(), accInfo->getDynProfit(), accInfo->getCommission(), accInfo->getMargin(), accInfo->getDeposit(), accInfo->getWithdraw(), idx == ayAccounts->size()-1);
 		}
 	}
 
-	VvTSLogger::info("[{}]资金数据已更新", _id.c_str());
+	ZTSLogger::info("[{}]资金数据已更新", _id.c_str());
 
 	if(!_done)
 		_trader_api->queryTrades();
 }
 
-void TraderAdapter::onPushTrade(VvTSTradeInfo* tInfo)
+void TraderAdapter::onPushTrade(ZTSTradeInfo* tInfo)
 {
-	VvTSContractInfo* cInfo = _bd_mgr->getContract(tInfo->getCode(), tInfo->getExchg());
+	ZTSContractInfo* cInfo = _bd_mgr->getContract(tInfo->getCode(), tInfo->getExchg());
 	if (cInfo == NULL)
 		return;
 
@@ -224,14 +224,14 @@ void TraderAdapter::onPushTrade(VvTSTradeInfo* tInfo)
 		(uint32_t)tInfo->getOrderType(), (uint32_t)tInfo->getTradeType(), tInfo->getTradeTime(), true);
 }
 
-void TraderAdapter::onRspTrades(const VvTSArray* ayTrades)
+void TraderAdapter::onRspTrades(const ZTSArray* ayTrades)
 {
 	if (ayTrades && ayTrades->size() > 0)
 	{
 		for (std::size_t idx = 0; idx < ayTrades->size(); idx++)
 		{
-			VvTSTradeInfo* pItem = (VvTSTradeInfo*)((VvTSArray*)ayTrades)->at(idx);
-			VvTSContractInfo* cInfo = _bd_mgr->getContract(pItem->getCode(), pItem->getExchg());
+			ZTSTradeInfo* pItem = (ZTSTradeInfo*)((ZTSArray*)ayTrades)->at(idx);
+			ZTSContractInfo* cInfo = _bd_mgr->getContract(pItem->getCode(), pItem->getExchg());
 			if (cInfo == NULL)
 				continue;
 
@@ -241,19 +241,19 @@ void TraderAdapter::onRspTrades(const VvTSArray* ayTrades)
 		}
 	}
 
-	VvTSLogger::info("[{}]成交明细已更新", _id.c_str());
+	ZTSLogger::info("[{}]成交明细已更新", _id.c_str());
 
 	_trader_api->queryOrders();
 }
 
-void TraderAdapter::onRspOrders(const VvTSArray* ayOrders)
+void TraderAdapter::onRspOrders(const ZTSArray* ayOrders)
 {
 	if (ayOrders && ayOrders->size() > 0)
 	{
 		for (std::size_t idx = 0; idx < ayOrders->size(); idx++)
 		{
-			VvTSOrderInfo* pItem = (VvTSOrderInfo*)((VvTSArray*)ayOrders)->at(idx);
-			VvTSContractInfo* cInfo = _bd_mgr->getContract(pItem->getCode(), pItem->getExchg());
+			ZTSOrderInfo* pItem = (ZTSOrderInfo*)((ZTSArray*)ayOrders)->at(idx);
+			ZTSContractInfo* cInfo = _bd_mgr->getContract(pItem->getCode(), pItem->getExchg());
 			if (cInfo == NULL)
 				continue;
 
@@ -263,14 +263,14 @@ void TraderAdapter::onRspOrders(const VvTSArray* ayOrders)
 		}
 	}
 
-	VvTSLogger::info("[{}]订单明细已更新", _id.c_str());
+	ZTSLogger::info("[{}]订单明细已更新", _id.c_str());
 	_mgr->decAlive();
 	_done = true;
 }
 
-void TraderAdapter::onPushOrder(VvTSOrderInfo* oInfo)
+void TraderAdapter::onPushOrder(ZTSOrderInfo* oInfo)
 {
-	VvTSContractInfo* cInfo = _bd_mgr->getContract(oInfo->getCode(), oInfo->getExchg());
+	ZTSContractInfo* cInfo = _bd_mgr->getContract(oInfo->getCode(), oInfo->getExchg());
 	if (cInfo == NULL)
 		return;
 
@@ -286,17 +286,17 @@ void TraderAdapter::onPushOrder(VvTSOrderInfo* oInfo)
 		oInfo->getOrderType(), oInfo->getPriceType(), oInfo->getOrderTime(), oInfo->getOrderState(), oInfo->getStateMsg(), true);
 }
 
-void TraderAdapter::onRspPosition(const VvTSArray* ayPositions)
+void TraderAdapter::onRspPosition(const ZTSArray* ayPositions)
 {
 	if (ayPositions && ayPositions->size() > 0)
 	{
-		for (std::size_t idx = 0; idx < ((VvTSArray*)ayPositions)->size(); idx++)
+		for (std::size_t idx = 0; idx < ((ZTSArray*)ayPositions)->size(); idx++)
 		{
-			VvTSPositionItem* pItem = (VvTSPositionItem*)(((VvTSArray*)ayPositions)->at(idx));
-			VvTSContractInfo* cInfo = _bd_mgr->getContract(pItem->getCode());
+			ZTSPositionItem* pItem = (ZTSPositionItem*)(((ZTSArray*)ayPositions)->at(idx));
+			ZTSContractInfo* cInfo = _bd_mgr->getContract(pItem->getCode());
 			if (cInfo == NULL)
 				continue;
-			VvTSCommodityInfo* commInfo = cInfo->getCommInfo();
+			ZTSCommodityInfo* commInfo = cInfo->getCommInfo();
 
 			getDumper().on_position(_id.c_str(), cInfo->getExchg(), cInfo->getCode(), _date, (pItem->getDirection() == WDT_LONG ? 0 : 1),
 				pItem->getTotalPosition(), pItem->getPositionCost(), pItem->getMargin(), pItem->getAvgPrice(),
@@ -304,16 +304,16 @@ void TraderAdapter::onRspPosition(const VvTSArray* ayPositions)
 		}
 	}
 
-	VvTSLogger::info("[{}]持仓数据已更新", _id.c_str());
+	ZTSLogger::info("[{}]持仓数据已更新", _id.c_str());
 
 	if (!_done)
 		_trader_api->queryAccount();
 }
 
-void TraderAdapter::onTraderError(VvTSError* err, void* pData /* = NULL */)
+void TraderAdapter::onTraderError(ZTSError* err, void* pData /* = NULL */)
 {
 	if(err)
-		VvTSLogger::error("[{}]交易通道出现错误: {}", _id.c_str(), err->getMessage());
+		ZTSLogger::error("[{}]交易通道出现错误: {}", _id.c_str(), err->getMessage());
 }
 
 IBaseDataMgr* TraderAdapter::getBaseDataMgr()
@@ -321,9 +321,9 @@ IBaseDataMgr* TraderAdapter::getBaseDataMgr()
 	return _bd_mgr;
 }
 
-void TraderAdapter::handleTraderLog(VvTSLogLevel ll, const char* message)
+void TraderAdapter::handleTraderLog(ZTSLogLevel ll, const char* message)
 {
-	VvTSLogger::log_raw(ll, message);
+	ZTSLogger::log_raw(ll, message);
 }
 
 #pragma endregion "ITraderSpi接口"
@@ -339,7 +339,7 @@ bool TraderAdapterMgr::addAdapter(const char* tname, TraderAdapterPtr& adapter)
 	auto it = _adapters.find(tname);
 	if(it != _adapters.end())
 	{
-		VvTSLogger::error("交易通道名称相同: {}", tname);
+		ZTSLogger::error("交易通道名称相同: {}", tname);
 		return false;
 	}
 
@@ -367,7 +367,7 @@ void TraderAdapterMgr::run()
 		it->second->run();
 	}
 
-	VvTSLogger::info("{}个交易通道已启动", _adapters.size());
+	ZTSLogger::info("{}个交易通道已启动", _adapters.size());
 }
 
 void TraderAdapterMgr::release()
@@ -393,11 +393,11 @@ void TraderAdapterMgr::decAlive()
 		{
 			TraderAdapterPtr trader = it->second;
 			if (!trader->isDone())
-				VvTSLogger::info("{} is still undone", trader->id());
+				ZTSLogger::info("{} is still undone", trader->id());
 		}
 	}
 
-	VvTSLogger::info("{}/{}", left, _adapters.size());
+	ZTSLogger::info("{}/{}", left, _adapters.size());
 }
 
 void TraderAdapterMgr::refresh()

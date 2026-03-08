@@ -1,15 +1,15 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS
-#include "../VvtDtHelper/VvtDtHelper.h"
-#include "../VvtDtPorter/VvtDtPorter.h"
-#include "../Includes/VvTSDataDef.hpp"
+#include "../ZtDtHelper/ZtDtHelper.h"
+#include "../ZtDtPorter/ZtDtPorter.h"
+#include "../Includes/ZTSDataDef.hpp"
 #include "../Share/fmtlib.h"
 
-void on_get_bar(VvTSBarStruct* bar, VvTUInt32 count, bool isLast)
+void on_get_bar(ZTSBarStruct* bar, ZTUInt32 count, bool isLast)
 {
 	fmt::print("{}.{}\n", bar->date, bar->time);
 }
 
-void on_bar_cnt(VvTUInt32 dataCnt)
+void on_bar_cnt(ZTUInt32 dataCnt)
 {
 	fmt::print("共{}条K线\n", dataCnt);
 }

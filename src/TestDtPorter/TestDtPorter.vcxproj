@@ -69,25 +69,25 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\VvtDtPorter\</OutDir>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\ZtDtPorter\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <IncludePath>$(MyDepends141)\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\VvtDtPorter\</OutDir>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\ZtDtPorter\</OutDir>
     <IncludePath>$(MyDepends141)\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\VvtDtPorter\</OutDir>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\ZtDtPorter\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
     <IncludePath>$(MyDepends141)\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(MyDepends141)\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\VvtDtPorter\</OutDir>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\ZtDtPorter\</OutDir>
     <IncludePath>$(MyDepends141)\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(MyDepends141)\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
@@ -158,10 +158,10 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\VvtDtHelper\VvtDtHelper.vcxproj">
+    <ProjectReference Include="..\ZtDtHelper\ZtDtHelper.vcxproj">
       <Project>{cd6de209-c68e-43fa-8c55-a92a346d020a}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\VvtDtPorter\VvtDtPorter.vcxproj">
+    <ProjectReference Include="..\ZtDtPorter\ZtDtPorter.vcxproj">
       <Project>{ced17d95-54e5-4571-b2c3-727b4f0104f6}</Project>
     </ProjectReference>
   </ItemGroup>

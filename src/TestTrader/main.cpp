@@ -2,10 +2,10 @@
 #include <boost/filesystem.hpp>
 
 #include "../Includes/ITraderApi.h"
-#include "../Includes/VvTSVariant.hpp"
-#include "../Includes/VvTSTradeDef.hpp"
-#include "../Includes/VvTSError.hpp"
-#include "../Includes/VvTSCollection.hpp"
+#include "../Includes/ZTSVariant.hpp"
+#include "../Includes/ZTSTradeDef.hpp"
+#include "../Includes/ZTSError.hpp"
+#include "../Includes/ZTSCollection.hpp"
 
 #include "../Share/TimeUtils.hpp"
 #include "../Share/StdUtils.hpp"
@@ -13,12 +13,12 @@
 #include "../Share/StrUtil.hpp"
 #include "../Share/charconv.hpp"
 
-#include "../VvTSTools/VvTSBaseDataMgr.h"
-#include "../VvTSTools/VvTSLogger.h"
-#include "../VvTSUtils/VvTSCfgLoader.h"
+#include "../ZTSTools/ZTSBaseDataMgr.h"
+#include "../ZTSTools/ZTSLogger.h"
+#include "../ZTSUtils/ZTSCfgLoader.h"
 
 
-VvTSBaseDataMgr	g_bdMgr;
+ZTSBaseDataMgr	g_bdMgr;
 StdUniqueMutex	g_mtxOpt;
 StdCondVariable	g_condOpt;
 bool		g_exitNow = false;
@@ -37,14 +37,14 @@ inline void encoding_print(const char* format, const Args& ...args)
 //#endif
 }
 
-USING_NS_VVTP;
+USING_NS_ZTP;
 
 class TraderSpi : public ITraderSpi
 {
 public:
 	TraderSpi() :m_bLogined(false), m_mapOrds(NULL){}
 
-	bool init(VvTSVariant* params, const char* ttype)
+	bool init(ZTSVariant* params, const char* ttype)
 	{
 		m_pParams = params;
 		if (m_pParams)
@@ -84,21 +84,21 @@ public:
 		DllHandle hInst = DLLHelper::load_library(moduleName);
 		if (hInst == NULL)
 		{
-			VvTSLogger::info("Loading module {} failed", moduleName);
+			ZTSLogger::info("Loading module {} failed", moduleName);
 			return false;
 		}
 
 		FuncCreateTrader pFunCreateTrader = (FuncCreateTrader)DLLHelper::get_symbol(hInst, "createTrader");
 		if (NULL == pFunCreateTrader)
 		{
-			VvTSLogger::info("Entry function createTrader not exists");
+			ZTSLogger::info("Entry function createTrader not exists");
 			return false;
 		}
 
 		m_pTraderApi = pFunCreateTrader();
 		if (NULL == m_pTraderApi)
 		{
-			VvTSLogger::info("Creating trader api failed");
+			ZTSLogger::info("Creating trader api failed");
 			return false;
 		}
 
@@ -108,7 +108,7 @@ public:
 
 	bool qryFund()
 	{
-		VvTSLogger::info("Querying fund info...");
+		ZTSLogger::info("Querying fund info...");
 		m_pTraderApi->queryAccount();
 
 		return true;
@@ -116,7 +116,7 @@ public:
 
 	bool qryOrders()
 	{
-		VvTSLogger::info("Querying orders...");
+		ZTSLogger::info("Querying orders...");
 		m_pTraderApi->queryOrders();
 
 		return true;
@@ -124,7 +124,7 @@ public:
 
 	bool qryTrades()
 	{
-		VvTSLogger::info("Querying trades...");
+		ZTSLogger::info("Querying trades...");
 		m_pTraderApi->queryTrades();
 
 		return true;
@@ -132,7 +132,7 @@ public:
 
 	bool qryPosition()
 	{
-		VvTSLogger::info("Querying positions...");
+		ZTSLogger::info("Querying positions...");
 		m_pTraderApi->queryPositions();
 
 		return true;
@@ -141,7 +141,7 @@ public:
 	bool qrySettle()
 	{
 		uint32_t uDate = TimeUtils::getNextDate(TimeUtils::getCurDate(), -1);
-		VvTSLogger::info("Querying settlement info on {}...", uDate);
+		ZTSLogger::info("Querying settlement info on {}...", uDate);
 		m_pTraderApi->querySettlement(uDate);
 
 		return true;
@@ -205,14 +205,14 @@ public:
 			auto it = g_blkList.find(code);
 			if (it != g_blkList.end())
 			{
-				VvTSLogger::info("{}已被禁止交易", code);
+				ZTSLogger::info("{}已被禁止交易", code);
 				return false;
 			}
 		}
 
 		bool bNeedToday = (strcmp(exchg, "SHFE") == 0 || strcmp(exchg, "INE") == 0);
 
-		VvTSEntrust* entrust = VvTSEntrust::create(code, qty, price, exchg);
+		ZTSEntrust* entrust = ZTSEntrust::create(code, qty, price, exchg);
 		if(!isNet)
 		{
 			entrust->setDirection(bs == 0 ? WDT_LONG : WDT_SHORT);
@@ -232,9 +232,9 @@ public:
 		entrust->setUserTag("test");
 
 		if(!isNet)
-			VvTSLogger::info("[{}]Entrusting,Contract: {}.{},Price: {},Volume: {},Action: {}{}", m_pParams->getCString("user"), exchg, code, price, qty, offset == 0 ? "Open" : "Close", bs == 0 ? "Long" : "Short");
+			ZTSLogger::info("[{}]Entrusting,Contract: {}.{},Price: {},Volume: {},Action: {}{}", m_pParams->getCString("user"), exchg, code, price, qty, offset == 0 ? "Open" : "Close", bs == 0 ? "Long" : "Short");
 		else
-			VvTSLogger::info("[{}]Entrusting,Contract: {}.{},Price: {},Volume: {},Action: {}", m_pParams->getCString("user"), exchg, code, price, qty, bs == 0 ? "buy" : "sell");
+			ZTSLogger::info("[{}]Entrusting,Contract: {}.{},Price: {},Volume: {},Action: {}", m_pParams->getCString("user"), exchg, code, price, qty, bs == 0 ? "buy" : "sell");
 
 		entrust->setContractInfo(g_bdMgr.getContract(code, exchg));
 		m_pTraderApi->orderInsert(entrust);
@@ -280,13 +280,13 @@ public:
 			auto it = g_blkList.find(code);
 			if (it != g_blkList.end())
 			{
-				VvTSLogger::info("{}已被禁止交易", code);
+				ZTSLogger::info("{}已被禁止交易", code);
 				return false;
 			}
 		}
 
 		bool bNeedToday = (strcmp(exchg, "SHFE") == 0 || strcmp(exchg, "INE") == 0);
-		VvTSEntrust* entrust = VvTSEntrust::create(code, qty, 0, exchg);
+		ZTSEntrust* entrust = ZTSEntrust::create(code, qty, 0, exchg);
 		entrust->setDirection(bs == 0 ? WDT_LONG : WDT_SHORT);
 		entrust->setOffsetType(offset == 0 ? WOT_OPEN : (bNeedToday ? WOT_CLOSETODAY : WOT_CLOSE));
 		entrust->setPriceType(WPT_ANYPRICE);
@@ -296,7 +296,7 @@ public:
 		m_pTraderApi->makeEntrustID(entrustid, 64);
 		entrust->setEntrustID(entrustid);
 
-		VvTSLogger::info("[{}]Entrusting,Contract: {}.{},Price: MarketPx,Volume: {},Action: {}{}", m_pParams->getCString("user"), exchg, code, qty, offset == 0 ? "Open" : "Close", bs == 0 ? "Long" : "Short");
+		ZTSLogger::info("[{}]Entrusting,Contract: {}.{},Price: MarketPx,Volume: {},Action: {}{}", m_pParams->getCString("user"), exchg, code, qty, offset == 0 ? "Open" : "Close", bs == 0 ? "Long" : "Short");
 
 		m_pTraderApi->orderInsert(entrust);
 		entrust->release();
@@ -323,18 +323,18 @@ public:
 		}
 
 		if (m_mapOrds == NULL)
-			m_mapOrds = VvTSObjectMap::create();
+			m_mapOrds = ZTSObjectMap::create();
 
-		VvTSOrderInfo* ordInfo = (VvTSOrderInfo*)m_mapOrds->get(orderid);
+		ZTSOrderInfo* ordInfo = (ZTSOrderInfo*)m_mapOrds->get(orderid);
 		if (ordInfo == NULL)
 		{
-			VvTSLogger::info("Order not exists, Check your orders or query orders first");
+			ZTSLogger::info("Order not exists, Check your orders or query orders first");
 			return false;
 		}
 
 
-		VvTSLogger::info("[{}]Canceling [{}]...", m_pParams->getCString("user"), orderid);
-		VvTSEntrustAction* action = VvTSEntrustAction::create(ordInfo->getCode(), ordInfo->getExchg());
+		ZTSLogger::info("[{}]Canceling [{}]...", m_pParams->getCString("user"), orderid);
+		ZTSEntrustAction* action = ZTSEntrustAction::create(ordInfo->getCode(), ordInfo->getExchg());
 		action->setEntrustID(ordInfo->getEntrustID());
 		action->setOrderID(ordInfo->getOrderID());
 		action->setActionFlag(WAF_CANCEL);
@@ -346,13 +346,13 @@ public:
 	}
 
 public:
-	virtual void handleEvent(VvTSTraderEvent e, int32_t ec)
+	virtual void handleEvent(ZTSTraderEvent e, int32_t ec)
 	{
-		if(e == VvTE_Connect)
+		if(e == ZTE_Connect)
 		{
 			if (ec == 0)
 			{
-				VvTSLogger::info("[{}] Connected", m_pParams->getCString("user"));
+				ZTSLogger::info("[{}] Connected", m_pParams->getCString("user"));
 				m_pTraderApi->login(m_pParams->getCString("user"), m_pParams->getCString("pass"), "");
 			}
 			else
@@ -364,21 +364,21 @@ public:
 		}
 	}
 
-	virtual void handleTraderLog(VvTSLogLevel ll, const char* message) override
+	virtual void handleTraderLog(ZTSLogLevel ll, const char* message) override
 	{
-		VvTSLogger::log_raw(ll, message);
+		ZTSLogger::log_raw(ll, message);
 	}
 
 	virtual void onLoginResult(bool bSucc, const char* msg, uint32_t tradingdate)
 	{
 		if(bSucc)
 		{
-			VvTSLogger::info("[{}] Login Succ" , m_pParams->getCString("user"));
+			ZTSLogger::info("[{}] Login Succ" , m_pParams->getCString("user"));
 			m_bLogined = true;
 		}
 		else
 		{
-			VvTSLogger::info("[{}] Login Fail: {}", m_pParams->getCString("user"), msg);
+			ZTSLogger::info("[{}] Login Fail: {}", m_pParams->getCString("user"), msg);
 			g_exitNow = true;
 		}
 
@@ -386,25 +386,25 @@ public:
 		g_condOpt.notify_all();
 	}
 
-	virtual void onRspEntrust(VvTSEntrust* entrust, VvTSError *err)
+	virtual void onRspEntrust(ZTSEntrust* entrust, ZTSError *err)
 	{
 		if(err)
 		{
-			VvTSLogger::info("[{}] Entrust fail: {}", m_pParams->getCString("user"), err->getMessage());
+			ZTSLogger::info("[{}] Entrust fail: {}", m_pParams->getCString("user"), err->getMessage());
 			StdUniqueLock lock(g_mtxOpt);
 			g_condOpt.notify_all();
 		}
 		
 	}
 
-	virtual void onRspAccount(VvTSArray* ayAccounts)
+	virtual void onRspAccount(ZTSArray* ayAccounts)
 	{
 		if(ayAccounts != NULL)
 		{
-			VvTSAccountInfo* accInfo = (VvTSAccountInfo*)ayAccounts->at(0);
+			ZTSAccountInfo* accInfo = (ZTSAccountInfo*)ayAccounts->at(0);
 			if(accInfo)
 			{
-				VvTSLogger::info("[{}]Fund data updated, balance: {:.2f}", m_pParams->getCString("user"), accInfo->getBalance());
+				ZTSLogger::info("[{}]Fund data updated, balance: {:.2f}", m_pParams->getCString("user"), accInfo->getBalance());
 			}
 		}
 
@@ -412,77 +412,77 @@ public:
 		g_condOpt.notify_all();
 	}
 
-	virtual void onRspPosition(const VvTSArray* ayPositions)
+	virtual void onRspPosition(const ZTSArray* ayPositions)
 	{
 		uint32_t cnt = 0;
 		if (ayPositions != NULL)
 			cnt = ayPositions->size();
 
-		VvTSLogger::info("[{}] Positions updated, {} item totally", m_pParams->getCString("user"), cnt);
+		ZTSLogger::info("[{}] Positions updated, {} item totally", m_pParams->getCString("user"), cnt);
 		for(uint32_t i = 0; i < cnt; i++)
 		{
-			VvTSPositionItem* posItem = (VvTSPositionItem*)((VvTSArray*)ayPositions)->at(i);
+			ZTSPositionItem* posItem = (ZTSPositionItem*)((ZTSArray*)ayPositions)->at(i);
 			if(posItem && posItem->getTotalPosition() > 0)
 			{
 				if(g_riskAct)
 				{
 					g_blkList.insert(posItem->getCode());
-					VvTSLogger::info("{}持仓量超限,限制open", posItem->getCode());
+					ZTSLogger::info("{}持仓量超限,限制open", posItem->getCode());
 				}
 				
-				VvTSLogger::info("Position of {}({}) updated, {}[{}]", posItem->getCode(), posItem->getDirection() == WDT_LONG ? "L" : "S", posItem->getTotalPosition(), posItem->getAvailPosition());
+				ZTSLogger::info("Position of {}({}) updated, {}[{}]", posItem->getCode(), posItem->getDirection() == WDT_LONG ? "L" : "S", posItem->getTotalPosition(), posItem->getAvailPosition());
 			}
 		}
 		StdUniqueLock lock(g_mtxOpt);
 		g_condOpt.notify_all();
 	}
 
-	virtual void onRspOrders(const VvTSArray* ayOrders)
+	virtual void onRspOrders(const ZTSArray* ayOrders)
 	{
 		uint32_t cnt = 0;
 		if (ayOrders != NULL)
 			cnt = ayOrders->size();
 
 		if (m_mapOrds == NULL)
-			m_mapOrds = VvTSObjectMap::create();
+			m_mapOrds = ZTSObjectMap::create();
 
 		m_mapOrds->clear();
 		for (uint32_t i = 0; i < cnt; i++)
 		{
-			VvTSOrderInfo* ordInfo = (VvTSOrderInfo*)((VvTSArray*)ayOrders)->at(i);
+			ZTSOrderInfo* ordInfo = (ZTSOrderInfo*)((ZTSArray*)ayOrders)->at(i);
 			if (ordInfo->isAlive())
 			{
 				m_mapOrds->add(StrUtil::trim(ordInfo->getOrderID()), ordInfo, true);
-				VvTSLogger::info("[{}] Live order, code: {}, OrderId: {}", m_pParams->getCString("user"), ordInfo->getCode(), ordInfo->getOrderID());
+				ZTSLogger::info("[{}] Live order, code: {}, OrderId: {}", m_pParams->getCString("user"), ordInfo->getCode(), ordInfo->getOrderID());
 			}
 		}
 
-		VvTSLogger::info("[{}] Orders updated, {} orders totally, {} orders live", m_pParams->getCString("user"), cnt, m_mapOrds->size());
+		ZTSLogger::info("[{}] Orders updated, {} orders totally, {} orders live", m_pParams->getCString("user"), cnt, m_mapOrds->size());
 
 		StdUniqueLock lock(g_mtxOpt);
 		g_condOpt.notify_all();
 	}
 
-	virtual void onRspTrades(const VvTSArray* ayTrades)
+	virtual void onRspTrades(const ZTSArray* ayTrades)
 	{
 		uint32_t cnt = 0;
 		if (ayTrades != NULL)
 			cnt = ayTrades->size();
 
-		VvTSLogger::info("[{}] Trades updates, {} trades totally", m_pParams->getCString("user"), cnt);
+		ZTSLogger::info("[{}] Trades updates, {} trades totally", m_pParams->getCString("user"), cnt);
 		StdUniqueLock lock(g_mtxOpt);
 		g_condOpt.notify_all();
 	}
 
 	virtual void onRspSettlementInfo(uint32_t uDate, const char* content)
 	{
-		VvTSLogger::info("[{}]{} Settlement received", m_pParams->getCString("user"), uDate);
-		VvTSLogger::info(content);
+		ZTSLogger::info("[{}]{} Settlement received", m_pParams->getCString("user"), uDate);
+		ZTSLogger::info(content);
 		StdUniqueLock lock(g_mtxOpt);
 		g_condOpt.notify_all();
 	}
 
-	virtual void onPushOrder(VvTSOrderInfo* orderInfo)
+	virtual void onPushOrder(ZTSOrderInfo* orderInfo)
 	{
 		std::string orderid = StrUtil::trim(orderInfo->getOrderID());
 		if(orderInfo->getOrderState() != WOS_Canceled)
@@ -490,11 +490,11 @@ public:
 			if(!orderid.empty())
 			{
 				if (m_mapOrds == NULL)
-					m_mapOrds = VvTSObjectMap::create();
+					m_mapOrds = ZTSObjectMap::create();
 
 				if (m_mapOrds->find(orderid) == m_mapOrds->end())
 				{
-					VvTSLogger::info("[{}] Entrust Success,OrderID: {}",  m_pParams->getCString("user"), orderid);
+					ZTSLogger::info("[{}] Entrust Success,OrderID: {}",  m_pParams->getCString("user"), orderid);
 					m_mapOrds->add(orderid, orderInfo, true);
 				}
 
@@ -509,42 +509,42 @@ public:
 
 			if (orderid.empty())
 			{
-				VvTSLogger::info("[{}]Order {} Entrust failed and canceld:{}", m_pParams->getCString("user"), orderInfo->getEntrustID(), orderInfo->getStateMsg());
+				ZTSLogger::info("[{}]Order {} Entrust failed and canceld:{}", m_pParams->getCString("user"), orderInfo->getEntrustID(), orderInfo->getStateMsg());
 				StdUniqueLock lock(g_mtxOpt);
 				g_condOpt.notify_all();
 			}
 			else
 			{
-				VvTSLogger::info("[{}] Order {} canceld:{}", m_pParams->getCString("user"), orderid, orderInfo->getStateMsg());
+				ZTSLogger::info("[{}] Order {} canceld:{}", m_pParams->getCString("user"), orderid, orderInfo->getStateMsg());
 				StdUniqueLock lock(g_mtxOpt);
 				g_condOpt.notify_all();
 			}			
 		}
 	}
 
-	virtual void onPushTrade(VvTSTradeInfo* tradeRecord)
+	virtual void onPushTrade(ZTSTradeInfo* tradeRecord)
 	{
-		VvTSLogger::info("[{}] Trade pushed,contract: {},price: {},Volume: {}", m_pParams->getCString("user"), tradeRecord->getCode(), tradeRecord->getPrice(), tradeRecord->getVolume());
+		ZTSLogger::info("[{}] Trade pushed,contract: {},price: {},Volume: {}", m_pParams->getCString("user"), tradeRecord->getCode(), tradeRecord->getPrice(), tradeRecord->getVolume());
 
 		if(g_riskAct)
 		{
-			VvTSLogger::info("[{}]{}超过最大持仓Volume,禁止open", m_pParams->getCString("user"), tradeRecord->getCode());
+			ZTSLogger::info("[{}]{}超过最大持仓Volume,禁止open", m_pParams->getCString("user"), tradeRecord->getCode());
 
 			g_blkList.insert(tradeRecord->getCode());
 		}
 	}
 
-	virtual void onTraderError(VvTSError*	err)
+	virtual void onTraderError(ZTSError*	err)
 	{
 		if(err && err->getErrorCode() == WEC_ORDERCANCEL)
 		{
-			VvTSLogger::info("[{}] Canceling failed: {}", m_pParams->getCString("user"), err->getMessage());
+			ZTSLogger::info("[{}] Canceling failed: {}", m_pParams->getCString("user"), err->getMessage());
 			StdUniqueLock lock(g_mtxOpt);
 			g_condOpt.notify_all();
 		}
 		else if (err && err->getErrorCode() == WEC_ORDERINSERT)
 		{
-			VvTSLogger::info("[{}] Entrust failed: {}", m_pParams->getCString("user"), err->getMessage());
+			ZTSLogger::info("[{}] Entrust failed: {}", m_pParams->getCString("user"), err->getMessage());
 			StdUniqueLock lock(g_mtxOpt);
 			g_condOpt.notify_all();
 		}
@@ -561,10 +561,10 @@ private:
 	ITraderApi*			m_pTraderApi;
 	FuncDeleteTrader	m_funcDelTrader;
 	std::string			m_strModule;
-	VvTSVariant*			m_pParams;
+	ZTSVariant*			m_pParams;
 
-	typedef VvTSHashMap<std::string>	VvTSObjectMap;
-	VvTSObjectMap*		m_mapOrds;
+	typedef ZTSHashMap<std::string>	ZTSObjectMap;
+	ZTSObjectMap*		m_mapOrds;
 
 	bool				m_bLogined;
 };
@@ -584,16 +584,16 @@ std::string getBaseFolder()
 
 int main()
 {
-	VvTSLogger::init("logcfg.yaml");
+	ZTSLogger::init("logcfg.yaml");
 
-	VvTSVariant* root = VvTSCfgLoader::load_from_file("config.yaml");
+	ZTSVariant* root = ZTSCfgLoader::load_from_file("config.yaml");
 	if(root == NULL)
 	{
-		VvTSLogger::log_raw(LL_ERROR, "配置文件config.yaml加载失败");
+		ZTSLogger::log_raw(LL_ERROR, "配置文件config.yaml加载失败");
 		return 0;
 	}
 
-	VvTSVariant* cfg = root->get("config");
+	ZTSVariant* cfg = root->get("config");
 	bool isUTF8 = cfg->getBoolean("utf8");
 	if(cfg->has("session"))
 		g_bdMgr.loadSessions(cfg->getCString("session"));
@@ -608,14 +608,14 @@ int main()
 		g_bdMgr.loadHolidays(cfg->getCString("holiday"));
 
 	g_riskAct = cfg->getBoolean("risk");
-	VvTSLogger::info("RiskMon: {}", g_riskAct ? "Open" : "Closed");
+	ZTSLogger::info("RiskMon: {}", g_riskAct ? "Open" : "Closed");
 
 	std::string module = cfg->getCString("trader");
 	std::string profile = cfg->getCString("profile");
-	VvTSVariant* params = root->get(profile.c_str());
+	ZTSVariant* params = root->get(profile.c_str());
 	if(params == NULL)
 	{
-		VvTSLogger::error("配置项{}不存在", profile);
+		ZTSLogger::error("配置项{}不存在", profile);
 		return 0;
 	}
 

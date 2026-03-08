@@ -17,14 +17,14 @@
 #include "../API/AtpTradeApi/include/atp_trade_api.h"
 
 #include "../Includes/ITraderApi.h"
-#include "../Includes/VvTSCollection.hpp"
+#include "../Includes/ZTSCollection.hpp"
 
 #include "../Share/StdUtils.hpp"
 #include "../Share/DLLHelper.hpp"
-#include "../Share/VvtKVCache.hpp"
+#include "../Share/ZtKVCache.hpp"
 
 
-USING_NS_VVTP;
+USING_NS_ZTP;
 
 class TraderATP : public ATPTradeHandler, public ITraderApi
 {
@@ -113,7 +113,7 @@ public:
 public:
 	//////////////////////////////////////////////////////////////////////////
 	//ITraderApi 接口
-	virtual bool init(VvTSVariant *params) override;
+	virtual bool init(ZTSVariant *params) override;
 
 	virtual void release() override;
 
@@ -131,9 +131,9 @@ public:
 
 	virtual int logout() override;
 
-	virtual int orderInsert(VvTSEntrust* eutrust) override;
+	virtual int orderInsert(ZTSEntrust* eutrust) override;
 
-	virtual int orderAction(VvTSEntrustAction* action) override;
+	virtual int orderAction(ZTSEntrustAction* action) override;
 
 	virtual int queryAccount() override;
 
@@ -148,11 +148,11 @@ private:
 	inline uint32_t	genRequestID();
 	void		doLogin(const char* productid);
 
-	inline VvTSOrderInfo*	makeOrderInfo(const APIOrderUnit* orderField);
-	inline VvTSEntrust*		makeEntrust(const ATPRspOrderStatusAckMsg *entrustField);
-	inline VvTSTradeInfo*	makeTradeInfo(const APITradeOrderUnit *tradeField);
-	inline VvTSOrderInfo*	makeOrderInfo(const ATPRspOrderStatusAckMsg *order_status_ack);
-	inline VvTSTradeInfo*	makeTradeRecord(const ATPRspCashAuctionTradeERMsg *cash_auction_trade_er);
+	inline ZTSOrderInfo*	makeOrderInfo(const APIOrderUnit* orderField);
+	inline ZTSEntrust*		makeEntrust(const ATPRspOrderStatusAckMsg *entrustField);
+	inline ZTSTradeInfo*	makeTradeInfo(const APITradeOrderUnit *tradeField);
+	inline ZTSOrderInfo*	makeOrderInfo(const ATPRspOrderStatusAckMsg *order_status_ack);
+	inline ZTSTradeInfo*	makeTradeRecord(const ATPRspCashAuctionTradeERMsg *cash_auction_trade_er);
 
 	inline bool	extractEntrustID(const char* entrustid, uint32_t &orderRef);
 	inline void	genEntrustID(char* buffer, uint32_t orderRef);
@@ -162,10 +162,10 @@ private:
 	ITraderSpi*		_sink;
 	bool			_close_flag;
 
-	typedef VvTSHashMap<std::string> PositionMap;
+	typedef ZTSHashMap<std::string> PositionMap;
 	PositionMap*			_positions;
-	VvTSArray*				_trades;
-	VvTSArray*				_orders;
+	ZTSArray*				_trades;
+	ZTSArray*				_orders;
 
 	IBaseDataMgr*			_bd_mgr;
 
@@ -205,14 +205,14 @@ private:
 	DllHandle		m_hInstATP;
 
 	//委托单标记缓存器
-	VvtKVCache		m_eidCache;
+	ZtKVCache		m_eidCache;
 	//订单标记缓存器
-	VvtKVCache		m_oidCache;
+	ZtKVCache		m_oidCache;
 
 	std::map<int32_t, int32_t> report_sync;
 
-	VvTSArray* ayOrders;  // 订单查询结果
-	VvTSArray* ayTrades;  // 成交查询结果
+	ZTSArray* ayOrders;  // 订单查询结果
+	ZTSArray* ayTrades;  // 成交查询结果
 
 	std::atomic<int64_t> _return_nums;  // 查询返回条数
 };

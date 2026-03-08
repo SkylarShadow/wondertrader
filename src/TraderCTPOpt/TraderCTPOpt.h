@@ -13,9 +13,9 @@
 #include <queue>
 #include <stdint.h>
 
-#include "../Includes/VvTSTypes.h"
+#include "../Includes/ZTSTypes.h"
 #include "../Includes/ITraderApi.h"
-#include "../Includes/VvTSCollection.hpp"
+#include "../Includes/ZTSCollection.hpp"
 
 #include "../API/CTPOpt3.5.8/ThostFtdcTraderApi.h"
 
@@ -23,7 +23,7 @@
 #include "../Share/StdUtils.hpp"
 #include "../Share/DLLHelper.hpp"
 
-USING_NS_VVTP;
+USING_NS_ZTP;
 
 class TraderCTPOpt : public ITraderApi, public IOptTraderApi, public CThostFtdcTraderSpi
 {
@@ -57,7 +57,7 @@ private:
 	//////////////////////////////////////////////////////////////////////////
 	//ITraderApi接口
 public:
-	virtual bool init(VvTSVariant* params) override;
+	virtual bool init(ZTSVariant* params) override;
 
 	virtual void release() override;
 
@@ -75,9 +75,9 @@ public:
 
 	virtual int logout() override;
 
-	virtual int orderInsert(VvTSEntrust* entrust) override;
+	virtual int orderInsert(ZTSEntrust* entrust) override;
 
-	virtual int orderAction(VvTSEntrustAction* action) override;
+	virtual int orderAction(ZTSEntrustAction* action) override;
 
 	virtual int queryAccount() override;
 
@@ -92,11 +92,11 @@ public:
 
 	//////////////////////////////////////////////////////////////////////////
 	//IOptTraderApi
-	virtual int orderInsertOpt(VvTSEntrust* entrust) override;
+	virtual int orderInsertOpt(ZTSEntrust* entrust) override;
 
-	virtual int orderActionOpt(VvTSEntrustAction* action) override;
+	virtual int orderActionOpt(ZTSEntrustAction* action) override;
 
-	virtual int	queryOrdersOpt(VvTSBusinessType bType) override;
+	virtual int	queryOrdersOpt(ZTSBusinessType bType) override;
 
 
 	//////////////////////////////////////////////////////////////////////////
@@ -165,18 +165,18 @@ protected:
 	bool IsErrorRspInfo(CThostFtdcRspInfoField *pRspInfo);
 
 
-	VvTSOrderInfo*	makeOrderInfo(CThostFtdcOrderField* orderField);
-	VvTSOrderInfo*	makeOrderInfo(CThostFtdcExecOrderField* orderField);
-	VvTSEntrust*		makeEntrust(CThostFtdcInputOrderField *entrustField);
-	VvTSError*		makeError(CThostFtdcRspInfoField* rspInfo);
-	VvTSTradeInfo*	makeTradeRecord(CThostFtdcTradeField *tradeField);
-	VvTSEntrust*		makeEntrust(CThostFtdcInputExecOrderField *entrustField);
+	ZTSOrderInfo*	makeOrderInfo(CThostFtdcOrderField* orderField);
+	ZTSOrderInfo*	makeOrderInfo(CThostFtdcExecOrderField* orderField);
+	ZTSEntrust*		makeEntrust(CThostFtdcInputOrderField *entrustField);
+	ZTSError*		makeError(CThostFtdcRspInfoField* rspInfo);
+	ZTSTradeInfo*	makeTradeRecord(CThostFtdcTradeField *tradeField);
+	ZTSEntrust*		makeEntrust(CThostFtdcInputExecOrderField *entrustField);
 
 	void			generateEntrustID(char* buffer, uint32_t frontid, uint32_t sessionid, uint32_t orderRef);
 	bool			extractEntrustID(const char* entrustid, uint32_t &frontid, uint32_t &sessionid, uint32_t &orderRef);
 
-	//uint64_t		calcCommission(uint32_t qty, uint32_t price, VvTSOffsetType flag, VvTSContractInfo* ct);
-	//uint64_t		calcMargin(uint32_t qty, uint32_t price, VvTSDirectionType direct, VvTSContractInfo* ct);
+	//uint64_t		calcCommission(uint32_t qty, uint32_t price, ZTSOffsetType flag, ZTSContractInfo* ct);
+	//uint64_t		calcMargin(uint32_t qty, uint32_t price, ZTSDirectionType direct, ZTSContractInfo* ct);
 
 	uint32_t		genRequestID();
 
@@ -217,12 +217,12 @@ protected:
 	CThostFtdcTraderApi*		m_pUserAPI;
 	std::atomic<uint32_t>		m_iRequestID;
 
-	typedef VvTSHashMap<std::string> PositionMap;
+	typedef ZTSHashMap<std::string> PositionMap;
 	PositionMap*				m_mapPosition;
-	VvTSArray*					m_ayTrades;
-	VvTSArray*					m_ayOrders;
-	VvTSArray*					m_ayExecOrds;
-	VvTSArray*					m_ayPosDetail;
+	ZTSArray*					m_ayTrades;
+	ZTSArray*					m_ayOrders;
+	ZTSArray*					m_ayExecOrds;
+	ZTSArray*					m_ayPosDetail;
 
 	IBaseDataMgr*				m_bdMgr;
 

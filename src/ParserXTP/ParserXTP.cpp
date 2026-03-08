@@ -9,9 +9,9 @@
  */
 #include "ParserXTP.h"
 
-#include "../Includes/VvTSDataDef.hpp"
-#include "../Includes/VvTSContractInfo.hpp"
-#include "../Includes/VvTSVariant.hpp"
+#include "../Includes/ZTSDataDef.hpp"
+#include "../Includes/ZTSContractInfo.hpp"
+#include "../Includes/ZTSVariant.hpp"
 #include "../Includes/IBaseDataMgr.h"
 
 #include "../Share/TimeUtils.hpp"
@@ -22,7 +22,7 @@
  //By Wesley @ 2022.01.05
 #include "../Share/fmtlib.h"
 template<typename... Args>
-inline void write_log(IParserSpi* sink, VvTSLogLevel ll, const char* format, const Args&... args)
+inline void write_log(IParserSpi* sink, ZTSLogLevel ll, const char* format, const Args&... args)
 {
 	if (sink == NULL)
 		return;
@@ -89,7 +89,7 @@ ParserXTP::~ParserXTP()
 	m_pUserAPI = NULL;
 }
 
-bool ParserXTP::init(VvTSVariant* config)
+bool ParserXTP::init(ZTSVariant* config)
 {
 	m_strHost	= config->getCString("host");
 	m_iPort		= config->getInt32("port");
@@ -183,7 +183,7 @@ void ParserXTP::OnDisconnected(int nReason)
 	if(m_sink)
 	{
 		write_log(m_sink, LL_ERROR, "[ParserXTP] Market data server disconnected: {}...", nReason);
-		m_sink->handleEvent(VvPE_Close, 0);
+		m_sink->handleEvent(ZPE_Close, 0);
 	}
 
 	_asyncio.post([this]() {
@@ -215,14 +215,14 @@ void ParserXTP::OnTickByTick(XTPTBT *tbt_data)
 		exchg = "SZSE";
 	}
 
-	VvTSContractInfo* ct = m_pBaseDataMgr->getContract(tbt_data->ticker, exchg.c_str());
+	ZTSContractInfo* ct = m_pBaseDataMgr->getContract(tbt_data->ticker, exchg.c_str());
 	if (ct == NULL)
 	{
 		if (m_sink)
 			write_log(m_sink, LL_ERROR, "[ParserXTP] Instrument {}.{} not exists...", exchg.c_str(), tbt_data->ticker);
 		return;
 	}
-	VvTSCommodityInfo* commInfo = ct->getCommInfo();
+	ZTSCommodityInfo* commInfo = ct->getCommInfo();
 
 	uint32_t actDate = (uint32_t)(tbt_data->data_time / 1000000000);
 	uint32_t actTime = tbt_data->data_time % 1000000000;
@@ -230,9 +230,9 @@ void ParserXTP::OnTickByTick(XTPTBT *tbt_data)
 
 	if(tbt_data->type == XTP_TBT_ENTRUST)
 	{
-		VvTSOrdDtlData *ordDtl = VvTSOrdDtlData::create(tbt_data->ticker);
+		ZTSOrdDtlData *ordDtl = ZTSOrdDtlData::create(tbt_data->ticker);
 		ordDtl->setContractInfo(ct);
-		VvTSOrdDtlStruct& ts = ordDtl->getOrdDtlStruct();
+		ZTSOrdDtlStruct& ts = ordDtl->getOrdDtlStruct();
 		strcpy(ts.exchg, commInfo->getExchg());
 
 		const XTPTickByTickEntrust& eInfo = tbt_data->entrust;
@@ -253,9 +253,9 @@ void ParserXTP::OnTickByTick(XTPTBT *tbt_data)
 	}
 	else if (tbt_data->type == XTP_TBT_TRADE)
 	{
-		VvTSTransData *trans = VvTSTransData::create(tbt_data->ticker);
+		ZTSTransData *trans = ZTSTransData::create(tbt_data->ticker);
 		trans->setContractInfo(ct);
-		VvTSTransStruct& ts = trans->getTransStruct();
+		ZTSTransStruct& ts = trans->getTransStruct();
 		strcpy(ts.exchg, commInfo->getExchg());
 
 		const XTPTickByTickTrade& tInfo = tbt_data->trade;
@@ -300,18 +300,18 @@ void ParserXTP::OnDepthMarketData(XTPMD *market_data, int64_t bid1_qty[], int32_
 	}
 	code = market_data->ticker;
 
-	VvTSContractInfo* ct = m_pBaseDataMgr->getContract(code.c_str(), exchg.c_str());
+	ZTSContractInfo* ct = m_pBaseDataMgr->getContract(code.c_str(), exchg.c_str());
 	if(ct == NULL)
 	{
 		if (m_sink)
 			write_log(m_sink, LL_ERROR, "[ParserXTP] Instrument {}.{} not exists...", exchg.c_str(), market_data->ticker);
 		return;
 	}
-	VvTSCommodityInfo* commInfo = ct->getCommInfo();
+	ZTSCommodityInfo* commInfo = ct->getCommInfo();
 
-	VvTSTickData* tick = VvTSTickData::create(code.c_str());
+	ZTSTickData* tick = ZTSTickData::create(code.c_str());
 	tick->setContractInfo(ct);
-	VvTSTickStruct& quote = tick->getTickStruct();
+	ZTSTickStruct& quote = tick->getTickStruct();
 	strcpy(quote.exchg, commInfo->getExchg());
 	
 	quote.action_date = actDate;
@@ -355,10 +355,10 @@ void ParserXTP::OnDepthMarketData(XTPMD *market_data, int64_t bid1_qty[], int32_
 	//处理逐笔
 	if(bid1_count > 0)
 	{
-		VvTSOrdQueData* buyQue = VvTSOrdQueData::create(code.c_str());
+		ZTSOrdQueData* buyQue = ZTSOrdQueData::create(code.c_str());
 		buyQue->setContractInfo(ct);
 
-		VvTSOrdQueStruct& buyOS = buyQue->getOrdQueStruct();
+		ZTSOrdQueStruct& buyOS = buyQue->getOrdQueStruct();
 		strcpy(buyOS.exchg, commInfo->getExchg());
 
 		buyOS.trading_date = m_uTradingDate;
@@ -383,10 +383,10 @@ void ParserXTP::OnDepthMarketData(XTPMD *market_data, int64_t bid1_qty[], int32_
 	
 	if(ask1_count > 0)
 	{
-		VvTSOrdQueData* sellQue = VvTSOrdQueData::create(code.c_str());
+		ZTSOrdQueData* sellQue = ZTSOrdQueData::create(code.c_str());
 		sellQue->setContractInfo(ct);
 
-		VvTSOrdQueStruct& sellOS = sellQue->getOrdQueStruct();
+		ZTSOrdQueStruct& sellOS = sellQue->getOrdQueStruct();
 		strcpy(sellOS.exchg, commInfo->getExchg());
 
 		sellOS.trading_date = m_uTradingDate;
@@ -456,16 +456,16 @@ void ParserXTP::DoLogin()
 			if(iResult == -1)
 			{
 				_asyncio.post([this, iResult] {
-					m_sink->handleEvent(VvPE_Connect, iResult);
+					m_sink->handleEvent(ZPE_Connect, iResult);
 				});
 
 				write_log(m_sink, LL_ERROR, "[ParserXTP] Connecting server failed: {}", error_info->error_msg);
 			}
 			else
 			{
-				m_sink->handleEvent(VvPE_Connect, 0);
+				m_sink->handleEvent(ZPE_Connect, 0);
 				_asyncio.post([this, iResult] {
-					m_sink->handleEvent(VvPE_Connect, 0);
+					m_sink->handleEvent(ZPE_Connect, 0);
 				});
 
 				write_log(m_sink, LL_ERROR, "[ParserXTP] Sending login request failed: {}", error_info->error_msg);
@@ -478,8 +478,8 @@ void ParserXTP::DoLogin()
 		_asyncio.post([this] {
 			if (m_sink)
 			{
-				m_sink->handleEvent(VvPE_Connect, 0);
-				m_sink->handleEvent(VvPE_Login, 0);
+				m_sink->handleEvent(ZPE_Connect, 0);
+				m_sink->handleEvent(ZPE_Login, 0);
 			}
 		});
 		

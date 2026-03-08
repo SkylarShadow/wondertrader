@@ -1,11 +1,11 @@
 ﻿#include "TraderMocker.h"
 
-#include "../Includes/VvTSVariant.hpp"
-#include "../Includes/VvTSDataDef.hpp"
-#include "../Includes/VvTSTradeDef.hpp"
-#include "../Includes/VvTSContractInfo.hpp"
+#include "../Includes/ZTSVariant.hpp"
+#include "../Includes/ZTSDataDef.hpp"
+#include "../Includes/ZTSTradeDef.hpp"
+#include "../Includes/ZTSContractInfo.hpp"
 #include "../Includes/IBaseDataMgr.h"
-#include "../Includes/VvTSError.hpp"
+#include "../Includes/ZTSError.hpp"
 
 #include "../Share/TimeUtils.hpp"
 #include "../Share/decimal.h"
@@ -21,7 +21,7 @@ namespace rj = rapidjson;
 //By Wesley @ 2022.01.05
 #include "../Share/fmtlib.h"
 template<typename... Args>
-inline void write_log(ITraderSpi* sink, VvTSLogLevel ll, const char* format, const Args&... args)
+inline void write_log(ITraderSpi* sink, ZTSLogLevel ll, const char* format, const Args&... args)
 {
 	if (sink == NULL)
 		return;
@@ -135,7 +135,7 @@ bool TraderMocker::makeEntrustID(char* buffer, int length)
 	return false;
 }
 
-int TraderMocker::orderInsert(VvTSEntrust* entrust)
+int TraderMocker::orderInsert(ZTSEntrust* entrust)
 {	
 	if (entrust == NULL)
 	{
@@ -146,7 +146,7 @@ int TraderMocker::orderInsert(VvTSEntrust* entrust)
 	_io_service.post([this, entrust](){
 		StdUniqueLock lock(_mutex_api);
 
-		VvTSContractInfo* ct = entrust->getContractInfo();
+		ZTSContractInfo* ct = entrust->getContractInfo();
 		if(ct == NULL) 
 			ct = _bd_mgr->getContract(entrust->getCode(), entrust->getExchg());
 
@@ -167,7 +167,7 @@ int TraderMocker::orderInsert(VvTSEntrust* entrust)
 				msg = "品种不存在";
 				break;
 			}
-			VvTSCommodityInfo* commInfo = ct->getCommInfo();
+			ZTSCommodityInfo* commInfo = ct->getCommInfo();
 
 			//检查价格类型的合法性
 			if (entrust->getPriceType() == WPT_ANYPRICE && commInfo->getPriceMode() == PM_Limit)
@@ -267,7 +267,7 @@ int TraderMocker::orderInsert(VvTSEntrust* entrust)
 		
 		if(bPass)
 		{
-			VvTSOrderInfo* ordInfo = VvTSOrderInfo::create();
+			ZTSOrderInfo* ordInfo = ZTSOrderInfo::create();
 			ordInfo->setContractInfo(ct);
 			ordInfo->setCode(entrust->getCode());
 			ordInfo->setExchange(entrust->getExchg());
@@ -300,7 +300,7 @@ int TraderMocker::orderInsert(VvTSEntrust* entrust)
 			}
 
 			if (_orders == NULL)
-				_orders = VvTSArray::create();
+				_orders = ZTSArray::create();
 			_orders->append(ordInfo, false);
 
 			if (_awaits == NULL)
@@ -312,7 +312,7 @@ int TraderMocker::orderInsert(VvTSEntrust* entrust)
 		}
 		else
 		{
-			VvTSError* err = VvTSError::create(WEC_ORDERINSERT, msg.c_str());
+			ZTSError* err = ZTSError::create(WEC_ORDERINSERT, msg.c_str());
 			if (_listener != NULL)
 			{
 				_listener->onRspEntrust(entrust, err);
@@ -341,13 +341,13 @@ int32_t TraderMocker::match_once()
 		exchg = fullcode.substr(0, pos);
 		code = fullcode.substr(pos + 1);
 
-		VvTSContractInfo* ct = _bd_mgr->getContract(code.c_str(), exchg.c_str());
+		ZTSContractInfo* ct = _bd_mgr->getContract(code.c_str(), exchg.c_str());
 		if (ct == NULL)
 			continue;
 
-		VvTSCommodityInfo* commInfo = ct->getCommInfo();
+		ZTSCommodityInfo* commInfo = ct->getCommInfo();
 
-		VvTSTickData* curTick = (VvTSTickData*)_ticks->grab(fullcode);
+		ZTSTickData* curTick = (ZTSTickData*)_ticks->grab(fullcode);
 		if (curTick && strcmp(curTick->code(), ct->getCode())==0)
 		{
 			StdUniqueLock lock(_mtx_awaits);
@@ -360,7 +360,7 @@ int32_t TraderMocker::match_once()
 
 				for (auto it = _awaits->begin(); it != _awaits->end(); it++)
 				{
-					VvTSOrderInfo* ordInfo = (VvTSOrderInfo*)it->second;
+					ZTSOrderInfo* ordInfo = (ZTSOrderInfo*)it->second;
 					if (ordInfo->getVolLeft() == 0 || strcmp(ordInfo->getCode(), curTick->code()) != 0)
 						continue;
 
@@ -401,7 +401,7 @@ int32_t TraderMocker::match_once()
 					for (uint32_t curVol : ayVol)
 					{
 
-						VvTSTradeInfo* trade = VvTSTradeInfo::create(curTick->code(), curTick->exchg());
+						ZTSTradeInfo* trade = ZTSTradeInfo::create(curTick->code(), curTick->exchg());
 						trade->setDirection(ordInfo->getDirection());
 						trade->setOffsetType(ordInfo->getOffsetType());
 						trade->setContractInfo(ct);
@@ -482,7 +482,7 @@ int32_t TraderMocker::match_once()
 						}
 
 						if (_trades == NULL)
-							_trades = VvTSArray::create();
+							_trades = ZTSArray::create();
 
 						_trades->append(trade, false);
 					}
@@ -515,7 +515,7 @@ int32_t TraderMocker::match_once()
 
 //////////////////////////////////////////////////////////////////////////
 
-bool TraderMocker::init(VvTSVariant *params)
+bool TraderMocker::init(ZTSVariant *params)
 {
 	_millisecs = params->getUInt32("span");
 	_use_newpx = params->getBoolean("newpx");
@@ -570,7 +570,7 @@ void TraderMocker::load_positions()
 			{
 				const char* exchg = pItem["exchg"].GetString();
 				const char* code = pItem["code"].GetString();
-				VvTSContractInfo* ct = _bd_mgr->getContract(code, exchg);
+				ZTSContractInfo* ct = _bd_mgr->getContract(code, exchg);
 				if (ct == NULL)
 					continue;
 
@@ -698,7 +698,7 @@ void TraderMocker::connect()
 		load_positions();
 
 		if (_listener)
-			_listener->handleEvent(VvTE_Connect, 0);
+			_listener->handleEvent(ZTE_Connect, 0);
 	});
 }
 
@@ -747,13 +747,13 @@ int TraderMocker::logout()
 	return 0;
 }
 
-int TraderMocker::orderAction(VvTSEntrustAction* action)
+int TraderMocker::orderAction(ZTSEntrustAction* action)
 {
 	action->retain();
 	
 	_io_service.post([this, action](){
 		StdUniqueLock lck(_mtx_awaits);	//一定要把awaits锁起来,不然可能会导致一边撮合一边撤单
-		VvTSOrderInfo* ordInfo = (VvTSOrderInfo*)_awaits->grab(action->getOrderID());
+		ZTSOrderInfo* ordInfo = (ZTSOrderInfo*)_awaits->grab(action->getOrderID());
 
 		/*
 		 *	撤单也要考虑几个问题
@@ -764,15 +764,15 @@ int TraderMocker::orderAction(VvTSEntrustAction* action)
 		if(ordInfo == NULL)
 		{
 			write_log(_listener,LL_ERROR, "订单{}不存在或者已完成", action->getOrderID());
-			VvTSError* err = VvTSError::create(WEC_ORDERCANCEL, "订单不存在或者处于不可撤销状态");
+			ZTSError* err = ZTSError::create(WEC_ORDERCANCEL, "订单不存在或者处于不可撤销状态");
 			if (_listener)
 				_listener->onTraderError(err);
 			err->release();
 			return;
 		}
 
-		VvTSContractInfo* ct = ordInfo->getContractInfo();
-		VvTSCommodityInfo* commInfo = ct->getCommInfo();
+		ZTSContractInfo* ct = ordInfo->getContractInfo();
+		ZTSCommodityInfo* commInfo = ct->getCommInfo();
 
 		bool bPass = false;
 		do 
@@ -830,8 +830,8 @@ int TraderMocker::orderAction(VvTSEntrustAction* action)
 int TraderMocker::queryAccount()
 {
 	_io_service.post([this](){
-		VvTSArray* ay = VvTSArray::create();
-		VvTSAccountInfo* accountInfo = VvTSAccountInfo::create();
+		ZTSArray* ay = ZTSArray::create();
+		ZTSAccountInfo* accountInfo = ZTSAccountInfo::create();
 		accountInfo->setCurrency("CNY");
 		accountInfo->setBalance(0);
 		accountInfo->setPreBalance(0);
@@ -862,21 +862,21 @@ int TraderMocker::queryAccount()
 int TraderMocker::queryPositions()
 {
 	_io_service.post([this](){
-		VvTSArray* ayPos = VvTSArray::create();
+		ZTSArray* ayPos = ZTSArray::create();
 
 		for(auto& v : _positions)
 		{
 			const PosItem& pItem = v.second;
 
-			VvTSContractInfo* ct = _bd_mgr->getContract(pItem._code, pItem._exchg);
+			ZTSContractInfo* ct = _bd_mgr->getContract(pItem._code, pItem._exchg);
 			if(ct == NULL)
 				continue;
 
-			VvTSCommodityInfo* commInfo = ct->getCommInfo();
+			ZTSCommodityInfo* commInfo = ct->getCommInfo();
 
 			if(pItem._long._volume > 0)
 			{
-				VvTSPositionItem* pInfo = VvTSPositionItem::create(pItem._code, commInfo->getCurrency(), pItem._exchg);
+				ZTSPositionItem* pInfo = ZTSPositionItem::create(pItem._code, commInfo->getCurrency(), pItem._exchg);
 				pInfo->setContractInfo(ct);
 				pInfo->setDirection(WDT_LONG);
 				pInfo->setNewPosition(pItem._long._volume);
@@ -887,7 +887,7 @@ int TraderMocker::queryPositions()
 
 			if (pItem._short._volume > 0)
 			{
-				VvTSPositionItem* pInfo = VvTSPositionItem::create(pItem._code, commInfo->getCurrency(), pItem._exchg);
+				ZTSPositionItem* pInfo = ZTSPositionItem::create(pItem._code, commInfo->getCurrency(), pItem._exchg);
 				pInfo->setContractInfo(ct);
 				pInfo->setDirection(WDT_SHORT);
 				pInfo->setNewPosition(pItem._short._volume);
@@ -981,7 +981,7 @@ struct UDPDataPacket : UDPPacketHead
 	T			_data;
 };
 #pragma pack(pop)
-typedef UDPDataPacket<VvTSTickStruct>	UDPTickPacket;
+typedef UDPDataPacket<ZTSTickStruct>	UDPTickPacket;
 void TraderMocker::extract_buffer(uint32_t length, bool isBroad /* = true */)
 {
 	UDPPacketHead* header = (UDPTickPacket*)_b_buffer.data();
@@ -995,7 +995,7 @@ void TraderMocker::extract_buffer(uint32_t length, bool isBroad /* = true */)
 		if (it == _codes.end())
 			return;
 
-		VvTSTickData* curTick = VvTSTickData::create(packet->_data);
+		ZTSTickData* curTick = ZTSTickData::create(packet->_data);
 		
 		if (_ticks == NULL)
 			_ticks = TickCache::create();

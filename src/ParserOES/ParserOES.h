@@ -15,7 +15,7 @@
 
 #include <queue>
 
-USING_NS_VVTP;
+USING_NS_ZTP;
 
 class ParserOES : public IParserApi
 {
@@ -25,7 +25,7 @@ public:
 
 	//IQuoteParser ½Ó¿Ú
 public:
-	virtual bool init(VvTSVariant* config) override;
+	virtual bool init(ZTSVariant* config) override;
 
 	virtual void release() override;
 

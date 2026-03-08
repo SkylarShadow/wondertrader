@@ -164,7 +164,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\VvTSTools\VvTSTools.vcxproj">
+    <ProjectReference Include="..\ZTSTools\ZTSTools.vcxproj">
       <Project>{8b249955-de56-41a3-a904-21dbbe40ab34}</Project>
     </ProjectReference>
   </ItemGroup>

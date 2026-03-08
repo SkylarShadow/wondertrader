@@ -15,13 +15,13 @@
 #include <oes_api/oes_async_api.h>
 
 #include "../Includes/ITraderApi.h"
-#include "../Includes/VvTSCollection.hpp"
+#include "../Includes/ZTSCollection.hpp"
 
-#include "../Share/VvtKVCache.hpp"
+#include "../Share/ZtKVCache.hpp"
 #include "../Share/StdUtils.hpp"
 #include "../Share/DLLHelper.hpp"
 
-USING_NS_VVTP;
+USING_NS_ZTP;
 
 class TraderOES : public ITraderApi
 {
@@ -54,7 +54,7 @@ public:
 public:
 	//////////////////////////////////////////////////////////////////////////
 	//ITraderApi 接口
-	virtual bool init(VvTSVariant *params) override;
+	virtual bool init(ZTSVariant *params) override;
 
 	virtual void release() override;
 
@@ -72,9 +72,9 @@ public:
 
 	virtual int logout() override;
 
-	virtual int orderInsert(VvTSEntrust* eutrust) override;
+	virtual int orderInsert(ZTSEntrust* eutrust) override;
 
-	virtual int orderAction(VvTSEntrustAction* action) override;
+	virtual int orderAction(ZTSEntrustAction* action) override;
 
 	virtual int queryAccount() override;
 
@@ -88,9 +88,9 @@ private:
 	void		reconnect();
 	void		doLogin();
 
-	inline VvTSOrderInfo*	makeOrderInfo(OesOrdCnfmT* orderField);
-	inline VvTSEntrust*		makeEntrust(OesOrdRejectT *entrustField);
-	inline VvTSTradeInfo*	makeTradeInfo(OesTrdCnfmT *tradeField);
+	inline ZTSOrderInfo*	makeOrderInfo(OesOrdCnfmT* orderField);
+	inline ZTSEntrust*		makeEntrust(OesOrdRejectT *entrustField);
+	inline ZTSTradeInfo*	makeTradeInfo(OesTrdCnfmT *tradeField);
 
 	inline bool	extractEntrustID(const char* entrustid, uint32_t &orderRef);
 	inline void	genEntrustID(char* buffer, uint32_t orderRef);
@@ -103,10 +103,10 @@ private:
 
 	IBaseDataMgr*			_bd_mgr;
 
-	VvTSArray*		_trades;
-	VvTSArray*		_orders;
-	VvTSArray*		_funds;
-	VvTSArray*		_positions;
+	ZTSArray*		_trades;
+	ZTSArray*		_orders;
+	ZTSArray*		_funds;
+	ZTSArray*		_positions;
 
 	std::string		_config;
 	std::string		_user;
@@ -120,8 +120,8 @@ private:
 	StdThreadPtr				_thrd_worker;
 
 	//委托单标记缓存器
-	VvtKVCache		m_eidCache;
+	ZtKVCache		m_eidCache;
 	//订单标记缓存器
-	VvtKVCache		m_oidCache;
+	ZtKVCache		m_oidCache;
 };
 

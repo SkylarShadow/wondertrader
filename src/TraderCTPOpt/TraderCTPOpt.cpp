@@ -9,12 +9,12 @@
  */
 #include "TraderCTPOpt.h"
 
-#include "../Includes/VvTSError.hpp"
-#include "../Includes/VvTSContractInfo.hpp"
-#include "../Includes/VvTSSessionInfo.hpp"
-#include "../Includes/VvTSTradeDef.hpp"
-#include "../Includes/VvTSDataDef.hpp"
-#include "../Includes/VvTSVariant.hpp"
+#include "../Includes/ZTSError.hpp"
+#include "../Includes/ZTSContractInfo.hpp"
+#include "../Includes/ZTSSessionInfo.hpp"
+#include "../Includes/ZTSTradeDef.hpp"
+#include "../Includes/ZTSDataDef.hpp"
+#include "../Includes/ZTSVariant.hpp"
 #include "../Includes/IBaseDataMgr.h"
 
 #include "../Share/ModuleHelper.hpp"
@@ -28,7 +28,7 @@ const char* ORDER_SECTION = "orders";
 //By Wesley @ 2022.01.05
 #include "../Share/fmtlib.h"
 template<typename... Args>
-inline void write_log(ITraderSpi* sink, VvTSLogLevel ll, const char* format, const Args&... args)
+inline void write_log(ITraderSpi* sink, ZTSLogLevel ll, const char* format, const Args&... args)
 {
 	if (sink == NULL)
 		return;
@@ -72,7 +72,7 @@ extern "C"
 	}
 }
 
-inline int wrapDirectionType(VvTSDirectionType dirType, VvTSOffsetType offsetType)
+inline int wrapDirectionType(ZTSDirectionType dirType, ZTSOffsetType offsetType)
 {
 	if (WDT_LONG == dirType)
 		if (offsetType == WOT_OPEN)
@@ -86,7 +86,7 @@ inline int wrapDirectionType(VvTSDirectionType dirType, VvTSOffsetType offsetTyp
 			return THOST_FTDC_D_Buy;
 }
 
-inline int wrapPosDirType(VvTSDirectionType dirType)
+inline int wrapPosDirType(ZTSDirectionType dirType)
 {
 	if (WDT_LONG == dirType)
 		return THOST_FTDC_PD_Long;
@@ -96,7 +96,7 @@ inline int wrapPosDirType(VvTSDirectionType dirType)
 		return THOST_FTDC_PD_Net;
 }
 
-inline VvTSDirectionType wrapPosDirType(TThostFtdcPosiDirectionType dirType)
+inline ZTSDirectionType wrapPosDirType(TThostFtdcPosiDirectionType dirType)
 {
 	if (THOST_FTDC_PD_Long == dirType)
 		return WDT_LONG;
@@ -107,7 +107,7 @@ inline VvTSDirectionType wrapPosDirType(TThostFtdcPosiDirectionType dirType)
 }
 
 
-inline VvTSDirectionType wrapDirectionType(TThostFtdcDirectionType dirType, TThostFtdcOffsetFlagType offsetType)
+inline ZTSDirectionType wrapDirectionType(TThostFtdcDirectionType dirType, TThostFtdcOffsetFlagType offsetType)
 {
 	if (THOST_FTDC_D_Buy == dirType)
 		if (offsetType == THOST_FTDC_OF_Open)
@@ -121,7 +121,7 @@ inline VvTSDirectionType wrapDirectionType(TThostFtdcDirectionType dirType, TTho
 			return WDT_LONG;
 }
 
-inline VvTSDirectionType wrapPosDirection(TThostFtdcPosiDirectionType dirType)
+inline ZTSDirectionType wrapPosDirection(TThostFtdcPosiDirectionType dirType)
 {
 	if (THOST_FTDC_PD_Long == dirType)
 		return WDT_LONG;
@@ -129,7 +129,7 @@ inline VvTSDirectionType wrapPosDirection(TThostFtdcPosiDirectionType dirType)
 		return WDT_SHORT;
 }
 
-inline int wrapOffsetType(VvTSOffsetType offType)
+inline int wrapOffsetType(ZTSOffsetType offType)
 {
 	if (WOT_OPEN == offType)
 		return THOST_FTDC_OF_Open;
@@ -143,7 +143,7 @@ inline int wrapOffsetType(VvTSOffsetType offType)
 		return THOST_FTDC_OF_ForceClose;
 }
 
-inline VvTSOffsetType wrapOffsetType(TThostFtdcOffsetFlagType offType)
+inline ZTSOffsetType wrapOffsetType(TThostFtdcOffsetFlagType offType)
 {
 	if (THOST_FTDC_OF_Open == offType)
 		return WOT_OPEN;
@@ -155,7 +155,7 @@ inline VvTSOffsetType wrapOffsetType(TThostFtdcOffsetFlagType offType)
 		return WOT_FORCECLOSE;
 }
 
-inline int wrapPriceType(VvTSPriceType priceType, bool isCFFEX /* = false */)
+inline int wrapPriceType(ZTSPriceType priceType, bool isCFFEX /* = false */)
 {
 	if (WPT_ANYPRICE == priceType)
 		return isCFFEX ? THOST_FTDC_OPT_FiveLevelPrice : THOST_FTDC_OPT_AnyPrice;
@@ -167,7 +167,7 @@ inline int wrapPriceType(VvTSPriceType priceType, bool isCFFEX /* = false */)
 		return THOST_FTDC_OPT_LastPrice;
 }
 
-inline VvTSPriceType wrapPriceType(TThostFtdcOrderPriceTypeType priceType)
+inline ZTSPriceType wrapPriceType(TThostFtdcOrderPriceTypeType priceType)
 {
 	if (THOST_FTDC_OPT_AnyPrice == priceType || THOST_FTDC_OPT_FiveLevelPrice == priceType)
 		return WPT_ANYPRICE;
@@ -179,35 +179,35 @@ inline VvTSPriceType wrapPriceType(TThostFtdcOrderPriceTypeType priceType)
 		return WPT_LASTPRICE;
 }
 
-inline int wrapTimeCondition(VvTSTimeCondition timeCond)
+inline int wrapTimeCondition(ZTSTimeCondition timeCond)
 {
-	if (VvTC_IOC == timeCond)
+	if (ZTC_IOC == timeCond)
 		return THOST_FTDC_TC_IOC;
-	else if (VvTC_GFD == timeCond)
+	else if (ZTC_GFD == timeCond)
 		return THOST_FTDC_TC_GFD;
 	else
 		return THOST_FTDC_TC_GFS;
 }
 
-inline VvTSTimeCondition wrapTimeCondition(TThostFtdcTimeConditionType timeCond)
+inline ZTSTimeCondition wrapTimeCondition(TThostFtdcTimeConditionType timeCond)
 {
 	if (THOST_FTDC_TC_IOC == timeCond)
-		return VvTC_IOC;
+		return ZTC_IOC;
 	else if (THOST_FTDC_TC_GFD == timeCond)
-		return VvTC_GFD;
+		return ZTC_GFD;
 	else
-		return VvTC_GFS;
+		return ZTC_GFS;
 }
 
-inline VvTSOrderState wrapOrderState(TThostFtdcOrderStatusType orderState)
+inline ZTSOrderState wrapOrderState(TThostFtdcOrderStatusType orderState)
 {
 	if (orderState != THOST_FTDC_OST_Unknown)
-		return (VvTSOrderState)orderState;
+		return (ZTSOrderState)orderState;
 	else
 		return WOS_Submitting;
 }
 
-inline int wrapActionFlag(VvTSActionFlag actionFlag)
+inline int wrapActionFlag(ZTSActionFlag actionFlag)
 {
 	if (WAF_CANCEL == actionFlag)
 		return THOST_FTDC_AF_Delete;
@@ -238,7 +238,7 @@ TraderCTPOpt::~TraderCTPOpt()
 {
 }
 
-bool TraderCTPOpt::init(VvTSVariant* params)
+bool TraderCTPOpt::init(ZTSVariant* params)
 {
 	m_strFront = params->get("front")->asCString();
 	m_strBroker = params->get("broker")->asCString();
@@ -461,7 +461,7 @@ int TraderCTPOpt::logout()
 	return 0;
 }
 
-int TraderCTPOpt::orderInsertOpt(VvTSEntrust* entrust)
+int TraderCTPOpt::orderInsertOpt(ZTSEntrust* entrust)
 {
 	if (m_pUserAPI == NULL || m_wrapperState != WS_ALLREADY)
 	{
@@ -525,7 +525,7 @@ int TraderCTPOpt::orderInsertOpt(VvTSEntrust* entrust)
 	return 0;
 }
 
-int TraderCTPOpt::orderActionOpt(VvTSEntrustAction* action)
+int TraderCTPOpt::orderActionOpt(ZTSEntrustAction* action)
 {
 	if (m_wrapperState != WS_ALLREADY)
 		return -1;
@@ -570,7 +570,7 @@ int TraderCTPOpt::orderActionOpt(VvTSEntrustAction* action)
 	return 0;
 }
 
-int TraderCTPOpt::queryOrdersOpt(VvTSBusinessType bType)
+int TraderCTPOpt::queryOrdersOpt(ZTSBusinessType bType)
 {
 	if (m_pUserAPI == NULL || m_wrapperState != WS_ALLREADY)
 	{
@@ -598,14 +598,14 @@ int TraderCTPOpt::queryOrdersOpt(VvTSBusinessType bType)
 	return 0;
 }
 
-int TraderCTPOpt::orderInsert(VvTSEntrust* entrust)
+int TraderCTPOpt::orderInsert(ZTSEntrust* entrust)
 {
 	if (m_pUserAPI == NULL || m_wrapperState != WS_ALLREADY)
 	{
 		return -1;
 	}
 
-	VvTSContractInfo* ct = entrust->getContractInfo();
+	ZTSContractInfo* ct = entrust->getContractInfo();
 	if (ct == NULL)
 		return -1;
 
@@ -641,7 +641,7 @@ int TraderCTPOpt::orderInsert(VvTSEntrust* entrust)
 		m_iniHelper.save();
 	}
 
-	VvTSCommodityInfo* commInfo = ct->getCommInfo();
+	ZTSCommodityInfo* commInfo = ct->getCommInfo();
 
 	///用户代码
 	//	TThostFtdcUserIDType	UserID;
@@ -698,7 +698,7 @@ int TraderCTPOpt::orderInsert(VvTSEntrust* entrust)
 	return 0;
 }
 
-int TraderCTPOpt::orderAction(VvTSEntrustAction* action)
+int TraderCTPOpt::orderAction(ZTSEntrustAction* action)
 {
 	if (m_wrapperState != WS_ALLREADY)
 		return -1;
@@ -849,14 +849,14 @@ int TraderCTPOpt::querySettlement(uint32_t uDate)
 void TraderCTPOpt::OnFrontConnected()
 {
 	if (m_bscSink)
-		m_bscSink->handleEvent(VvTE_Connect, 0);
+		m_bscSink->handleEvent(ZTE_Connect, 0);
 }
 
 void TraderCTPOpt::OnFrontDisconnected(int nReason)
 {
 	m_wrapperState = WS_NOTLOGIN;
 	if (m_bscSink)
-		m_bscSink->handleEvent(VvTE_Close, nReason);
+		m_bscSink->handleEvent(ZTE_Close, nReason);
 }
 
 void TraderCTPOpt::OnHeartBeatWarning(int nTimeLapse)
@@ -936,7 +936,7 @@ void TraderCTPOpt::OnRspUserLogout(CThostFtdcUserLogoutField *pUserLogout, CThos
 {
 	m_wrapperState = WS_NOTLOGIN;
 	if (m_bscSink)
-		m_bscSink->handleEvent(VvTE_Logout, 0);
+		m_bscSink->handleEvent(ZTE_Logout, 0);
 }
 
 void TraderCTPOpt::OnRspQrySettlementInfoConfirm(CThostFtdcSettlementInfoConfirmField *pSettlementInfoConfirm, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
@@ -996,10 +996,10 @@ void TraderCTPOpt::OnRspSettlementInfoConfirm(CThostFtdcSettlementInfoConfirmFie
 
 void TraderCTPOpt::OnRspOrderInsert(CThostFtdcInputOrderField *pInputOrder, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
-	VvTSEntrust* entrust = makeEntrust(pInputOrder);
+	ZTSEntrust* entrust = makeEntrust(pInputOrder);
 	if (entrust)
 	{
-		VvTSError *err = makeError(pRspInfo);
+		ZTSError *err = makeError(pRspInfo);
 		//g_orderMgr.onRspEntrust(entrust, err);
 		if (m_bscSink)
 			m_bscSink->onRspEntrust(entrust, err);
@@ -1010,10 +1010,10 @@ void TraderCTPOpt::OnRspOrderInsert(CThostFtdcInputOrderField *pInputOrder, CTho
 
 void TraderCTPOpt::OnRspExecOrderInsert(CThostFtdcInputExecOrderField *pInputExecOrder, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
-	VvTSEntrust* entrust = makeEntrust(pInputExecOrder);
+	ZTSEntrust* entrust = makeEntrust(pInputExecOrder);
 	if (entrust)
 	{
-		VvTSError *err = makeError(pRspInfo);
+		ZTSError *err = makeError(pRspInfo);
 		//g_orderMgr.onRspEntrust(entrust, err);
 		if (m_optSink)
 			m_optSink->onRspEntrustOpt(entrust, err);
@@ -1030,7 +1030,7 @@ void TraderCTPOpt::OnRspExecOrderAction(CThostFtdcInputExecOrderActionField *pIn
 	}
 	else
 	{
-		VvTSError* error = VvTSError::create(WEC_EXECCANCEL, pRspInfo->ErrorMsg);
+		ZTSError* error = ZTSError::create(WEC_EXECCANCEL, pRspInfo->ErrorMsg);
 		if (m_bscSink)
 			m_bscSink->onTraderError(error);
 	}
@@ -1038,7 +1038,7 @@ void TraderCTPOpt::OnRspExecOrderAction(CThostFtdcInputExecOrderActionField *pIn
 
 void TraderCTPOpt::OnRtnExecOrder(CThostFtdcExecOrderField *pExecOrder)
 {
-	VvTSOrderInfo *orderInfo = makeOrderInfo(pExecOrder);
+	ZTSOrderInfo *orderInfo = makeOrderInfo(pExecOrder);
 	if (orderInfo)
 	{
 		if (m_optSink)
@@ -1050,10 +1050,10 @@ void TraderCTPOpt::OnRtnExecOrder(CThostFtdcExecOrderField *pExecOrder)
 
 void TraderCTPOpt::OnErrRtnExecOrderInsert(CThostFtdcInputExecOrderField *pInputExecOrder, CThostFtdcRspInfoField *pRspInfo)
 {
-	VvTSEntrust* entrust = makeEntrust(pInputExecOrder);
+	ZTSEntrust* entrust = makeEntrust(pInputExecOrder);
 	if (entrust)
 	{
-		VvTSError *err = makeError(pRspInfo);
+		ZTSError *err = makeError(pRspInfo);
 		//g_orderMgr.onRspEntrust(entrust, err);
 		if (m_optSink)
 			m_optSink->onRspEntrustOpt(entrust, err);
@@ -1073,9 +1073,9 @@ void TraderCTPOpt::OnRspQryExecOrder(CThostFtdcExecOrderField *pExecOrder, CThos
 	if (!IsErrorRspInfo(pRspInfo) && pExecOrder)
 	{
 		if (NULL == m_ayExecOrds)
-			m_ayExecOrds = VvTSArray::create();
+			m_ayExecOrds = ZTSArray::create();
 
-		VvTSOrderInfo* orderInfo = makeOrderInfo(pExecOrder);
+		ZTSOrderInfo* orderInfo = makeOrderInfo(pExecOrder);
 		if (orderInfo)
 		{
 			m_ayExecOrds->append(orderInfo, false);
@@ -1100,7 +1100,7 @@ void TraderCTPOpt::OnRspOrderAction(CThostFtdcInputOrderActionField *pInputOrder
 	}
 	else
 	{
-		VvTSError* error = VvTSError::create(WEC_ORDERCANCEL, pRspInfo->ErrorMsg);
+		ZTSError* error = ZTSError::create(WEC_ORDERCANCEL, pRspInfo->ErrorMsg);
 		if (m_bscSink)
 			m_bscSink->onTraderError(error);
 	}
@@ -1116,7 +1116,7 @@ void TraderCTPOpt::OnRspQryTradingAccount(CThostFtdcTradingAccountField *pTradin
 
 	if (bIsLast && !IsErrorRspInfo(pRspInfo))
 	{
-		VvTSAccountInfo* accountInfo = VvTSAccountInfo::create();
+		ZTSAccountInfo* accountInfo = ZTSAccountInfo::create();
 		accountInfo->setPreBalance(pTradingAccount->PreBalance);
 		accountInfo->setCloseProfit(pTradingAccount->CloseProfit + pTradingAccount->CashIn);
 		accountInfo->setDynProfit(pTradingAccount->PositionProfit);
@@ -1130,7 +1130,7 @@ void TraderCTPOpt::OnRspQryTradingAccount(CThostFtdcTradingAccountField *pTradin
 		accountInfo->setBalance(accountInfo->getPreBalance() + accountInfo->getCloseProfit() - accountInfo->getCommission() + accountInfo->getDeposit() - accountInfo->getWithdraw());
 		accountInfo->setCurrency("CNY");
 
-		VvTSArray * ay = VvTSArray::create();
+		ZTSArray * ay = ZTSArray::create();
 		ay->append(accountInfo, false);
 		if (m_bscSink)
 			m_bscSink->onRspAccount(ay);
@@ -1171,18 +1171,18 @@ void TraderCTPOpt::OnRspQryInvestorPosition(CThostFtdcInvestorPositionField *pIn
 		if (NULL == m_mapPosition)
 			m_mapPosition = PositionMap::create();
 
-		VvTSContractInfo* contract = m_bdMgr->getContract(pInvestorPosition->InstrumentID, pInvestorPosition->ExchangeID);
+		ZTSContractInfo* contract = m_bdMgr->getContract(pInvestorPosition->InstrumentID, pInvestorPosition->ExchangeID);
 		if (contract == NULL)
 			return;
 
-		VvTSCommodityInfo* commInfo = contract->getCommInfo();
+		ZTSCommodityInfo* commInfo = contract->getCommInfo();
 		if (contract)
 		{
 			std::string key = fmt::format("{}-{}", pInvestorPosition->InstrumentID, pInvestorPosition->PosiDirection);
-			VvTSPositionItem* pos = (VvTSPositionItem*)m_mapPosition->get(key);
+			ZTSPositionItem* pos = (ZTSPositionItem*)m_mapPosition->get(key);
 			if(pos == NULL)
 			{
-				pos = VvTSPositionItem::create(pInvestorPosition->InstrumentID, commInfo->getCurrency(), commInfo->getExchg());
+				pos = ZTSPositionItem::create(pInvestorPosition->InstrumentID, commInfo->getCurrency(), commInfo->getExchg());
 				pos->setContractInfo(contract);
 				m_mapPosition->add(key, pos, false);
 			}
@@ -1286,7 +1286,7 @@ void TraderCTPOpt::OnRspQryInvestorPosition(CThostFtdcInvestorPositionField *pIn
 	if (bIsLast)
 	{
 
-		VvTSArray* ayPos = VvTSArray::create();
+		ZTSArray* ayPos = ZTSArray::create();
 
 		if(m_mapPosition && m_mapPosition->size() > 0)
 		{
@@ -1320,9 +1320,9 @@ void TraderCTPOpt::OnRspQryTrade(CThostFtdcTradeField *pTrade, CThostFtdcRspInfo
 	if (!IsErrorRspInfo(pRspInfo) && pTrade)
 	{
 		if (NULL == m_ayTrades)
-			m_ayTrades = VvTSArray::create();
+			m_ayTrades = ZTSArray::create();
 
-		VvTSTradeInfo* trade = makeTradeRecord(pTrade);
+		ZTSTradeInfo* trade = makeTradeRecord(pTrade);
 		if (trade)
 		{
 			m_ayTrades->append(trade, false);
@@ -1350,9 +1350,9 @@ void TraderCTPOpt::OnRspQryOrder(CThostFtdcOrderField *pOrder, CThostFtdcRspInfo
 	if (!IsErrorRspInfo(pRspInfo) && pOrder)
 	{
 		if (NULL == m_ayOrders)
-			m_ayOrders = VvTSArray::create();
+			m_ayOrders = ZTSArray::create();
 
-		VvTSOrderInfo* orderInfo = makeOrderInfo(pOrder);
+		ZTSOrderInfo* orderInfo = makeOrderInfo(pOrder);
 		if (orderInfo)
 		{
 			m_ayOrders->append(orderInfo, false);
@@ -1376,7 +1376,7 @@ void TraderCTPOpt::OnRspError(CThostFtdcRspInfoField *pRspInfo, int nRequestID, 
 
 void TraderCTPOpt::OnRtnOrder(CThostFtdcOrderField *pOrder)
 {
-	VvTSOrderInfo *orderInfo = makeOrderInfo(pOrder);
+	ZTSOrderInfo *orderInfo = makeOrderInfo(pOrder);
 	if (orderInfo)
 	{
 		if (m_bscSink)
@@ -1390,7 +1390,7 @@ void TraderCTPOpt::OnRtnOrder(CThostFtdcOrderField *pOrder)
 
 void TraderCTPOpt::OnRtnTrade(CThostFtdcTradeField *pTrade)
 {
-	VvTSTradeInfo *tRecord = makeTradeRecord(pTrade);
+	ZTSTradeInfo *tRecord = makeTradeRecord(pTrade);
 	if (tRecord)
 	{
 		if (m_bscSink)
@@ -1401,13 +1401,13 @@ void TraderCTPOpt::OnRtnTrade(CThostFtdcTradeField *pTrade)
 }
 
 
-VvTSOrderInfo* TraderCTPOpt::makeOrderInfo(CThostFtdcOrderField* orderField)
+ZTSOrderInfo* TraderCTPOpt::makeOrderInfo(CThostFtdcOrderField* orderField)
 {
-	VvTSContractInfo* contract = m_bdMgr->getContract(orderField->InstrumentID, orderField->ExchangeID);
+	ZTSContractInfo* contract = m_bdMgr->getContract(orderField->InstrumentID, orderField->ExchangeID);
 	if (contract == NULL)
 		return NULL;
 
-	VvTSOrderInfo* pRet = VvTSOrderInfo::create();
+	ZTSOrderInfo* pRet = ZTSOrderInfo::create();
 	pRet->setPrice(orderField->LimitPrice);
 	pRet->setVolume(orderField->VolumeTotalOriginal);
 	pRet->setDirection(wrapDirectionType(orderField->Direction, orderField->CombOffsetFlag[0]));
@@ -1469,13 +1469,13 @@ VvTSOrderInfo* TraderCTPOpt::makeOrderInfo(CThostFtdcOrderField* orderField)
 	return pRet;
 }
 
-VvTSEntrust* TraderCTPOpt::makeEntrust(CThostFtdcInputOrderField *entrustField)
+ZTSEntrust* TraderCTPOpt::makeEntrust(CThostFtdcInputOrderField *entrustField)
 {
-	VvTSContractInfo* ct = m_bdMgr->getContract(entrustField->InstrumentID, entrustField->ExchangeID);
+	ZTSContractInfo* ct = m_bdMgr->getContract(entrustField->InstrumentID, entrustField->ExchangeID);
 	if (ct == NULL)
 		return NULL;
 
-	VvTSEntrust* pRet = VvTSEntrust::create(
+	ZTSEntrust* pRet = ZTSEntrust::create(
 		entrustField->InstrumentID,
 		entrustField->VolumeTotalOriginal,
 		entrustField->LimitPrice,
@@ -1513,13 +1513,13 @@ VvTSEntrust* TraderCTPOpt::makeEntrust(CThostFtdcInputOrderField *entrustField)
 	return pRet;
 }
 
-VvTSOrderInfo* TraderCTPOpt::makeOrderInfo(CThostFtdcExecOrderField* orderField)
+ZTSOrderInfo* TraderCTPOpt::makeOrderInfo(CThostFtdcExecOrderField* orderField)
 {
-	VvTSContractInfo* contract = m_bdMgr->getContract(orderField->InstrumentID, orderField->ExchangeID);
+	ZTSContractInfo* contract = m_bdMgr->getContract(orderField->InstrumentID, orderField->ExchangeID);
 	if (contract == NULL)
 		return NULL;
 
-	VvTSOrderInfo* pRet = VvTSOrderInfo::create();
+	ZTSOrderInfo* pRet = ZTSOrderInfo::create();
 	pRet->setContractInfo(contract);
 	pRet->setPrice(0);
 	pRet->setBusinessType(BT_EXECUTE);
@@ -1569,13 +1569,13 @@ VvTSOrderInfo* TraderCTPOpt::makeOrderInfo(CThostFtdcExecOrderField* orderField)
 	return pRet;
 }
 
-VvTSEntrust* TraderCTPOpt::makeEntrust(CThostFtdcInputExecOrderField *entrustField)
+ZTSEntrust* TraderCTPOpt::makeEntrust(CThostFtdcInputExecOrderField *entrustField)
 {
-	VvTSContractInfo* ct = m_bdMgr->getContract(entrustField->InstrumentID, entrustField->ExchangeID);
+	ZTSContractInfo* ct = m_bdMgr->getContract(entrustField->InstrumentID, entrustField->ExchangeID);
 	if (ct == NULL)
 		return NULL;
 
-	VvTSEntrust* pRet = VvTSEntrust::create(entrustField->InstrumentID, entrustField->Volume, 0, ct->getExchg(), BT_EXECUTE);
+	ZTSEntrust* pRet = ZTSEntrust::create(entrustField->InstrumentID, entrustField->Volume, 0, ct->getExchg(), BT_EXECUTE);
 	pRet->setContractInfo(ct);
 
 	pRet->setDirection(wrapPosDirType(entrustField->PosiDirection));
@@ -1592,21 +1592,21 @@ VvTSEntrust* TraderCTPOpt::makeEntrust(CThostFtdcInputExecOrderField *entrustFie
 }
 
 
-VvTSError* TraderCTPOpt::makeError(CThostFtdcRspInfoField* rspInfo)
+ZTSError* TraderCTPOpt::makeError(CThostFtdcRspInfoField* rspInfo)
 {
-	VvTSError* pRet = VvTSError::create((VvTSErrorCode)rspInfo->ErrorID, rspInfo->ErrorMsg);
+	ZTSError* pRet = ZTSError::create((ZTSErrorCode)rspInfo->ErrorID, rspInfo->ErrorMsg);
 	return pRet;
 }
 
-VvTSTradeInfo* TraderCTPOpt::makeTradeRecord(CThostFtdcTradeField *tradeField)
+ZTSTradeInfo* TraderCTPOpt::makeTradeRecord(CThostFtdcTradeField *tradeField)
 {
-	VvTSContractInfo* contract = m_bdMgr->getContract(tradeField->InstrumentID, tradeField->ExchangeID);
+	ZTSContractInfo* contract = m_bdMgr->getContract(tradeField->InstrumentID, tradeField->ExchangeID);
 	if (contract == NULL)
 		return NULL;
 
-	VvTSCommodityInfo* commInfo = contract->getCommInfo();
+	ZTSCommodityInfo* commInfo = contract->getCommInfo();
 
-	VvTSTradeInfo *pRet = VvTSTradeInfo::create(tradeField->InstrumentID, commInfo->getExchg());
+	ZTSTradeInfo *pRet = ZTSTradeInfo::create(tradeField->InstrumentID, commInfo->getExchg());
 	pRet->setVolume(tradeField->Volume);
 	pRet->setPrice(tradeField->Price);
 	pRet->setTradeID(tradeField->TradeID);
@@ -1636,12 +1636,12 @@ VvTSTradeInfo* TraderCTPOpt::makeTradeRecord(CThostFtdcTradeField *tradeField)
 	pRet->setTradeDate(uDate);
 	pRet->setTradeTime(TimeUtils::makeTime(uDate, uTime * 1000));
 
-	VvTSDirectionType dType = wrapDirectionType(tradeField->Direction, tradeField->OffsetFlag);
+	ZTSDirectionType dType = wrapDirectionType(tradeField->Direction, tradeField->OffsetFlag);
 
 	pRet->setDirection(dType);
 	pRet->setOffsetType(wrapOffsetType(tradeField->OffsetFlag));
 	pRet->setRefOrder(tradeField->OrderSysID);
-	pRet->setTradeType((VvTSTradeType)tradeField->TradeType);
+	pRet->setTradeType((ZTSTradeType)tradeField->TradeType);
 
 	double amount = commInfo->getVolScale()*tradeField->Volume*pRet->getPrice();
 	pRet->setAmount(amount);
@@ -1698,10 +1698,10 @@ bool TraderCTPOpt::IsErrorRspInfo(CThostFtdcRspInfoField *pRspInfo)
 
 void TraderCTPOpt::OnErrRtnOrderInsert(CThostFtdcInputOrderField *pInputOrder, CThostFtdcRspInfoField *pRspInfo)
 {
-	VvTSEntrust* entrust = makeEntrust(pInputOrder);
+	ZTSEntrust* entrust = makeEntrust(pInputOrder);
 	if (entrust)
 	{
-		VvTSError *err = makeError(pRspInfo);
+		ZTSError *err = makeError(pRspInfo);
 		//g_orderMgr.onRspEntrust(entrust, err);
 		if (m_bscSink)
 			m_bscSink->onRspEntrust(entrust, err);
@@ -1713,7 +1713,7 @@ void TraderCTPOpt::OnErrRtnOrderInsert(CThostFtdcInputOrderField *pInputOrder, C
 void TraderCTPOpt::OnRtnInstrumentStatus(CThostFtdcInstrumentStatusField *pInstrumentStatus)
 {
 	if (m_bscSink)
-		m_bscSink->onPushInstrumentStatus(pInstrumentStatus->ExchangeID, pInstrumentStatus->InstrumentID, (VvTSTradeStatus)pInstrumentStatus->InstrumentStatus);
+		m_bscSink->onPushInstrumentStatus(pInstrumentStatus->ExchangeID, pInstrumentStatus->InstrumentID, (ZTSTradeStatus)pInstrumentStatus->InstrumentStatus);
 }
 
 bool TraderCTPOpt::isConnected()

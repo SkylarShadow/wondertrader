@@ -12,8 +12,8 @@ SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_T
 file(GLOB SRCS *.cpp)
 
 SET(LIBS
-	VvTSTools
-	VvTSUtils
+	ZTSTools
+	ZTSUtils
 	)
     
 IF (MSVC)

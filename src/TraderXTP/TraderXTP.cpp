@@ -10,11 +10,11 @@
 #include "TraderXTP.h"
 
 #include "../Includes/IBaseDataMgr.h"
-#include "../Includes/VvTSContractInfo.hpp"
-#include "../Includes/VvTSSessionInfo.hpp"
-#include "../Includes/VvTSTradeDef.hpp"
-#include "../Includes/VvTSError.hpp"
-#include "../Includes/VvTSVariant.hpp"
+#include "../Includes/ZTSContractInfo.hpp"
+#include "../Includes/ZTSSessionInfo.hpp"
+#include "../Includes/ZTSTradeDef.hpp"
+#include "../Includes/ZTSError.hpp"
+#include "../Includes/ZTSVariant.hpp"
 
 #include "../Share/ModuleHelper.hpp"
 
@@ -23,7 +23,7 @@
  //By Wesley @ 2022.01.05
 #include "../Share/fmtlib.h"
 template<typename... Args>
-inline void write_log(ITraderSpi* sink, VvTSLogLevel ll, const char* format, const Args&... args)
+inline void write_log(ITraderSpi* sink, ZTSLogLevel ll, const char* format, const Args&... args)
 {
 	if (sink == NULL)
 		return;
@@ -62,7 +62,7 @@ inline bool IsErrorInfo(XTPRI *error_info)
 	return false;
 }
 
-inline VvTSDirectionType wrapPosDirection(XTP_POSITION_DIRECTION_TYPE dirType)
+inline ZTSDirectionType wrapPosDirection(XTP_POSITION_DIRECTION_TYPE dirType)
 {
 	switch (dirType)
 	{
@@ -72,7 +72,7 @@ inline VvTSDirectionType wrapPosDirection(XTP_POSITION_DIRECTION_TYPE dirType)
 	}
 }
 
-inline XTP_SIDE_TYPE wrapDirectionType(VvTSDirectionType dirType, VvTSOffsetType offsetType)
+inline XTP_SIDE_TYPE wrapDirectionType(ZTSDirectionType dirType, ZTSOffsetType offsetType)
 {
 	if (WDT_LONG == dirType)
 		if (offsetType == WOT_OPEN)
@@ -86,7 +86,7 @@ inline XTP_SIDE_TYPE wrapDirectionType(VvTSDirectionType dirType, VvTSOffsetType
 			return XTP_SIDE_BUY;
 }
 
-inline VvTSDirectionType wrapDirectionType(XTP_SIDE_TYPE side, XTP_POSITION_EFFECT_TYPE pe = 0)
+inline ZTSDirectionType wrapDirectionType(XTP_SIDE_TYPE side, XTP_POSITION_EFFECT_TYPE pe = 0)
 {
 	if (XTP_SIDE_BUY == side)
 		if (pe == XTP_POSITION_EFFECT_OPEN)
@@ -100,7 +100,7 @@ inline VvTSDirectionType wrapDirectionType(XTP_SIDE_TYPE side, XTP_POSITION_EFFE
 			return WDT_LONG;
 }
 
-inline XTP_POSITION_EFFECT_TYPE wrapOffsetType(VvTSOffsetType offType)
+inline XTP_POSITION_EFFECT_TYPE wrapOffsetType(ZTSOffsetType offType)
 {
 	if (WOT_OPEN == offType)
 		return XTP_POSITION_EFFECT_OPEN;
@@ -114,7 +114,7 @@ inline XTP_POSITION_EFFECT_TYPE wrapOffsetType(VvTSOffsetType offType)
 		return XTP_POSITION_EFFECT_FORCECLOSE;
 }
 
-inline VvTSOffsetType wrapOffsetType(XTP_SIDE_TYPE side, XTP_POSITION_EFFECT_TYPE offType = 0)
+inline ZTSOffsetType wrapOffsetType(XTP_SIDE_TYPE side, XTP_POSITION_EFFECT_TYPE offType = 0)
 {
 	if (XTP_POSITION_EFFECT_OPEN == offType)
 		return WOT_OPEN;
@@ -128,7 +128,7 @@ inline VvTSOffsetType wrapOffsetType(XTP_SIDE_TYPE side, XTP_POSITION_EFFECT_TYP
 		return WOT_FORCECLOSE;
 }
 
-inline VvTSPriceType wrapPriceType(XTP_PRICE_TYPE priceType)
+inline ZTSPriceType wrapPriceType(XTP_PRICE_TYPE priceType)
 {
 	if (XTP_PRICE_LIMIT == priceType)
 		return WPT_LIMITPRICE;
@@ -136,7 +136,7 @@ inline VvTSPriceType wrapPriceType(XTP_PRICE_TYPE priceType)
 		return WPT_ANYPRICE;
 }
 
-inline VvTSOrderState wrapOrderState(XTP_ORDER_STATUS_TYPE orderState)
+inline ZTSOrderState wrapOrderState(XTP_ORDER_STATUS_TYPE orderState)
 {
 	switch (orderState)
 	{
@@ -186,7 +186,7 @@ TraderXTP::~TraderXTP()
 
 #pragma region "XTP::API::TraderSpi"
 
-VvTSEntrust* TraderXTP::makeEntrust(XTPOrderInfo* order_info)
+ZTSEntrust* TraderXTP::makeEntrust(XTPOrderInfo* order_info)
 {
 	std::string code, exchg;
 	if (order_info->market == XTP_MKT_SH_A)
@@ -194,13 +194,13 @@ VvTSEntrust* TraderXTP::makeEntrust(XTPOrderInfo* order_info)
 	else
 		exchg = "SZSE";
 	code = order_info->ticker;
-	VvTSContractInfo* ct = _bd_mgr->getContract(code.c_str(), exchg.c_str());
+	ZTSContractInfo* ct = _bd_mgr->getContract(code.c_str(), exchg.c_str());
 	if (ct == NULL)
 		return NULL;
 
-	VvTSCommodityInfo* commInfo = ct->getCommInfo();
+	ZTSCommodityInfo* commInfo = ct->getCommInfo();
 
-	VvTSEntrust* pRet = VvTSEntrust::create(
+	ZTSEntrust* pRet = ZTSEntrust::create(
 		code.c_str(),
 		(uint32_t)order_info->quantity,
 		order_info->price,
@@ -226,7 +226,7 @@ VvTSEntrust* TraderXTP::makeEntrust(XTPOrderInfo* order_info)
 	return pRet;
 }
 
-VvTSOrderInfo* TraderXTP::makeOrderInfo(XTPQueryOrderRsp* order_info)
+ZTSOrderInfo* TraderXTP::makeOrderInfo(XTPQueryOrderRsp* order_info)
 {
 	std::string code, exchg;
 	if (order_info->market == XTP_MKT_SH_A)
@@ -234,13 +234,13 @@ VvTSOrderInfo* TraderXTP::makeOrderInfo(XTPQueryOrderRsp* order_info)
 	else
 		exchg = "SZSE";
 	code = order_info->ticker;
-	VvTSContractInfo* ct = _bd_mgr->getContract(code.c_str(), exchg.c_str());
+	ZTSContractInfo* ct = _bd_mgr->getContract(code.c_str(), exchg.c_str());
 	if (ct == NULL)
 		return NULL;
 
-	VvTSCommodityInfo* commInfo = ct->getCommInfo();
+	ZTSCommodityInfo* commInfo = ct->getCommInfo();
 
-	VvTSOrderInfo* pRet = VvTSOrderInfo::create();
+	ZTSOrderInfo* pRet = ZTSOrderInfo::create();
 	pRet->setContractInfo(ct);
 	pRet->setPrice(order_info->price);
 	pRet->setVolume((uint32_t)order_info->quantity);
@@ -295,7 +295,7 @@ VvTSOrderInfo* TraderXTP::makeOrderInfo(XTPQueryOrderRsp* order_info)
 	return pRet;
 }
 
-VvTSTradeInfo* TraderXTP::makeTradeInfo(XTPQueryTradeRsp* trade_info)
+ZTSTradeInfo* TraderXTP::makeTradeInfo(XTPQueryTradeRsp* trade_info)
 {
 	std::string code, exchg;
 	if (trade_info->market == XTP_MKT_SH_A)
@@ -303,13 +303,13 @@ VvTSTradeInfo* TraderXTP::makeTradeInfo(XTPQueryTradeRsp* trade_info)
 	else
 		exchg = "SZSE";
 	code = trade_info->ticker;
-	VvTSContractInfo* ct = _bd_mgr->getContract(code.c_str(), exchg.c_str());
+	ZTSContractInfo* ct = _bd_mgr->getContract(code.c_str(), exchg.c_str());
 	if (ct == NULL)
 		return NULL;
 
-	VvTSCommodityInfo* commInfo = ct->getCommInfo();
+	ZTSCommodityInfo* commInfo = ct->getCommInfo();
 
-	VvTSTradeInfo *pRet = VvTSTradeInfo::create(code.c_str(), exchg.c_str());
+	ZTSTradeInfo *pRet = ZTSTradeInfo::create(code.c_str(), exchg.c_str());
 	pRet->setVolume((uint32_t)trade_info->quantity);
 	pRet->setPrice(trade_info->price);
 	pRet->setTradeID(trade_info->exec_id);
@@ -331,7 +331,7 @@ VvTSTradeInfo* TraderXTP::makeTradeInfo(XTPQueryTradeRsp* trade_info)
 		pRet->setOffsetType(wrapOffsetType(trade_info->side, trade_info->position_effect));
 
 	fmtutil::format_to(pRet->getRefOrder(), "{}", trade_info->order_xtp_id);
-	pRet->setTradeType(VvTT_Common);
+	pRet->setTradeType(ZTT_Common);
 
 	double amount = trade_info->quantity*pRet->getPrice();
 	pRet->setAmount(amount);
@@ -346,7 +346,7 @@ VvTSTradeInfo* TraderXTP::makeTradeInfo(XTPQueryTradeRsp* trade_info)
 void TraderXTP::OnDisconnected(uint64_t session_id, int reason)
 {
 	if (_sink)
-		_sink->handleEvent(VvTE_Close, reason);
+		_sink->handleEvent(ZTE_Close, reason);
 
 	_asyncio.post([this](){
 		write_log(_sink, LL_WARN, "[TraderrXTP] Connection lost, relogin in 2 seconds...");
@@ -365,9 +365,9 @@ void TraderXTP::OnOrderEvent(XTPOrderInfo *order_info, XTPRI *error_info, uint64
 {
 	if(IsErrorInfo(error_info))
 	{
-		VvTSEntrust* entrust = makeEntrust(order_info);
+		ZTSEntrust* entrust = makeEntrust(order_info);
 
-		VvTSError* error = VvTSError::create(WEC_ORDERINSERT, error_info->error_msg);
+		ZTSError* error = ZTSError::create(WEC_ORDERINSERT, error_info->error_msg);
 		_sink->onRspEntrust(entrust, error);
 		error->release();
 
@@ -375,7 +375,7 @@ void TraderXTP::OnOrderEvent(XTPOrderInfo *order_info, XTPRI *error_info, uint64
 	}
 	else
 	{
-		VvTSOrderInfo *orderInfo = makeOrderInfo(order_info);
+		ZTSOrderInfo *orderInfo = makeOrderInfo(order_info);
 		if (orderInfo)
 		{
 			if (_sink)
@@ -388,7 +388,7 @@ void TraderXTP::OnOrderEvent(XTPOrderInfo *order_info, XTPRI *error_info, uint64
 
 void TraderXTP::OnTradeEvent(XTPTradeReport *trade_info, uint64_t session_id)
 {
-	VvTSTradeInfo *trdInfo = makeTradeInfo(trade_info);
+	ZTSTradeInfo *trdInfo = makeTradeInfo(trade_info);
 	if (trdInfo)
 	{
 		if (_sink)
@@ -402,7 +402,7 @@ void TraderXTP::OnCancelOrderError(XTPOrderCancelInfo *cancel_info, XTPRI *error
 {
 	if (IsErrorInfo(error_info))
 	{
-		VvTSError* error = VvTSError::create(WEC_ORDERCANCEL, error_info->error_msg);
+		ZTSError* error = ZTSError::create(WEC_ORDERCANCEL, error_info->error_msg);
 		_sink->onTraderError(error);
 		error->release();
 	}
@@ -420,9 +420,9 @@ void TraderXTP::OnQueryOrder(XTPQueryOrderRsp *order_info, XTPRI *error_info, in
 	if (!IsErrorInfo(error_info) && order_info)
 	{
 		if (NULL == _orders)
-			_orders = VvTSArray::create();
+			_orders = ZTSArray::create();
 
-		VvTSOrderInfo* orderInfo = makeOrderInfo(order_info);
+		ZTSOrderInfo* orderInfo = makeOrderInfo(order_info);
 		if (orderInfo)
 		{
 			_orders->append(orderInfo, false);
@@ -450,9 +450,9 @@ void TraderXTP::OnQueryTrade(XTPQueryTradeRsp *trade_info, XTPRI *error_info, in
 	if (!IsErrorInfo(error_info) && trade_info)
 	{
 		if (NULL == _trades)
-			_trades = VvTSArray::create();
+			_trades = ZTSArray::create();
 
-		VvTSTradeInfo* trdInfo = makeTradeInfo(trade_info);
+		ZTSTradeInfo* trdInfo = makeTradeInfo(trade_info);
 		if (trdInfo)
 		{
 			_trades->append(trdInfo, false);
@@ -488,15 +488,15 @@ void TraderXTP::OnQueryPosition(XTPQueryStkPositionRsp *position, XTPRI *error_i
 		else
 			exchg = "SZSE";
 		code += position->ticker;
-		VvTSContractInfo* contract = _bd_mgr->getContract(code.c_str(), exchg.c_str());
+		ZTSContractInfo* contract = _bd_mgr->getContract(code.c_str(), exchg.c_str());
 		if (contract)
 		{
-			VvTSCommodityInfo* commInfo = contract->getCommInfo();
+			ZTSCommodityInfo* commInfo = contract->getCommInfo();
 			std::string key = fmt::format("{}-{}", code.c_str(), position->position_direction);
-			VvTSPositionItem* pos = (VvTSPositionItem*)_positions->get(key);
+			ZTSPositionItem* pos = (ZTSPositionItem*)_positions->get(key);
 			if (pos == NULL)
 			{
-				pos = VvTSPositionItem::create(code.c_str(), commInfo->getCurrency(), commInfo->getExchg());
+				pos = ZTSPositionItem::create(code.c_str(), commInfo->getCurrency(), commInfo->getExchg());
 				pos->setContractInfo(contract);
 				_positions->add(key, pos, false);
 			}
@@ -519,7 +519,7 @@ void TraderXTP::OnQueryPosition(XTPQueryStkPositionRsp *position, XTPRI *error_i
 	if (is_last)
 	{
 
-		VvTSArray* ayPos = VvTSArray::create();
+		ZTSArray* ayPos = ZTSArray::create();
 
 		if (_positions && _positions->size() > 0)
 		{
@@ -552,7 +552,7 @@ void TraderXTP::OnQueryAsset(XTPQueryAssetRsp *asset, XTPRI *error_info, int req
 
 	if (is_last && !IsErrorInfo(error_info) && asset)
 	{
-		VvTSAccountInfo* accountInfo = VvTSAccountInfo::create();
+		ZTSAccountInfo* accountInfo = ZTSAccountInfo::create();
 		accountInfo->setPreBalance(asset->orig_banlance);
 		accountInfo->setCloseProfit(0);
 		accountInfo->setDynProfit(0);
@@ -568,7 +568,7 @@ void TraderXTP::OnQueryAsset(XTPQueryAssetRsp *asset, XTPRI *error_info, int req
 		accountInfo->setBalance(asset->total_asset);
 		accountInfo->setCurrency("CNY");
 
-		VvTSArray * ay = VvTSArray::create();
+		ZTSArray * ay = ZTSArray::create();
 		ay->append(accountInfo, false);
 		if (_sink)
 			_sink->onRspAccount(ay);
@@ -580,7 +580,7 @@ void TraderXTP::OnQueryAsset(XTPQueryAssetRsp *asset, XTPRI *error_info, int req
 #pragma endregion "XTP::API:TraderSpi"
 
 #pragma region "ITraderApi"
-bool TraderXTP::init(VvTSVariant *params)
+bool TraderXTP::init(ZTSVariant *params)
 {
 	_user = params->getCString("user");
 	_pass = params->getCString("pass");
@@ -665,7 +665,7 @@ void TraderXTP::reconnect()
 	if (_api == NULL)
 	{
 		if (_sink)
-			_sink->handleEvent(VvTE_Connect, -1);
+			_sink->handleEvent(ZTE_Connect, -1);
 		write_log(_sink,LL_ERROR, "[TraderrXTP] Module initializing failed");
 
 		StdThreadPtr thrd(new StdThread([this](){
@@ -683,7 +683,7 @@ void TraderXTP::reconnect()
 	_api->RegisterSpi(this);						// 注册事件
 
 	if (_sink)
-		_sink->handleEvent(VvTE_Connect, 0);
+		_sink->handleEvent(ZTE_Connect, 0);
 }
 
 void TraderXTP::connect()
@@ -840,7 +840,7 @@ int TraderXTP::logout()
 	return 0;
 }
 
-int TraderXTP::orderInsert(VvTSEntrust* entrust)
+int TraderXTP::orderInsert(ZTSEntrust* entrust)
 {
 	if (_api == NULL || _state != TS_ALLREADY)
 	{
@@ -879,7 +879,7 @@ int TraderXTP::orderInsert(VvTSEntrust* entrust)
 	return 0;
 }
 
-int TraderXTP::orderAction(VvTSEntrustAction* action)
+int TraderXTP::orderAction(ZTSEntrustAction* action)
 {
 	if (_api == NULL || _state != TS_ALLREADY)
 	{

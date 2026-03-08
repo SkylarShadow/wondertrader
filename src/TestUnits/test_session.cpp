@@ -1,11 +1,11 @@
-﻿#include "../Includes/VvTSSessionInfo.hpp"
+﻿#include "../Includes/ZTSSessionInfo.hpp"
 #include "gtest/gtest/gtest.h"
 
-USING_NS_VVTP;
+USING_NS_ZTP;
 
 TEST(test_session, test_allday)
 {
-	VvTSSessionInfo* sInfo = VvTSSessionInfo::create("ALLDAY", "ALLDAY", 0);
+	ZTSSessionInfo* sInfo = ZTSSessionInfo::create("ALLDAY", "ALLDAY", 0);
 	sInfo->addTradingSection(0, 2400);
 
 	EXPECT_EQ(sInfo->timeToMinutes(0), 0);

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-PROJECT(VvonTrader LANGUAGES CXX)
+PROJECT(ZonTrader LANGUAGES CXX)
 
 #C++标准
 set(CMAKE_CXX_STANDARD 17)
@@ -62,8 +62,8 @@ include_directories(${INCS})
 link_directories(${LNKS})
 
 #basic libraries
-add_subdirectory(VvTSUtils)
-add_subdirectory(VvTSTools)
+add_subdirectory(ZTSUtils)
+add_subdirectory(ZTSTools)
 
 #contract Loade through ctp channel
 add_subdirectory(CTPLoader)
@@ -78,20 +78,20 @@ add_subdirectory(ParserFemas)
 add_subdirectory(ParserXTP)
 add_subdirectory(ParserShm)
 add_subdirectory(ParserXeleSkt)
-add_subdirectory(VvtDataStorage)
-add_subdirectory(VvtDataStorageAD)
-add_subdirectory(VvtDtCore)
-add_subdirectory(VvtDtHelper)
-add_subdirectory(VvtDtPorter)
-add_subdirectory(VvtDtServo)
+add_subdirectory(ZtDataStorage)
+add_subdirectory(ZtDataStorageAD)
+add_subdirectory(ZtDtCore)
+add_subdirectory(ZtDtHelper)
+add_subdirectory(ZtDtPorter)
+add_subdirectory(ZtDtServo)
 #quote date processor
 add_subdirectory(QuoteFactory)
 
 #back test core library
-add_subdirectory(VvtBtCore)
+add_subdirectory(ZtBtCore)
 #back test c porter for outter libraries
-add_subdirectory(VvtBtPorter)
-add_subdirectory(VvtBtRunner)
+add_subdirectory(ZtBtPorter)
+add_subdirectory(ZtBtRunner)
 
 add_subdirectory(ParserUDP)
 add_subdirectory(TraderCTP)
@@ -101,26 +101,26 @@ add_subdirectory(TraderFemas)
 add_subdirectory(TraderMocker)
 add_subdirectory(TraderXTP)
 add_subdirectory(TraderYD)
-add_subdirectory(VvtExeFact)
-add_subdirectory(VvtRiskMonFact)
+add_subdirectory(ZtExeFact)
+add_subdirectory(ZtRiskMonFact)
 
-add_subdirectory(VvtMsgQue)
-add_subdirectory(VvtCore)
-add_subdirectory(VvtPorter)
-add_subdirectory(VvtExecMon)
-add_subdirectory(VvtRunner)
+add_subdirectory(ZtMsgQue)
+add_subdirectory(ZtCore)
+add_subdirectory(ZtPorter)
+add_subdirectory(ZtExecMon)
+add_subdirectory(ZtRunner)
 
 add_subdirectory(TraderDumper)
 
-add_subdirectory(VvtShareHelper)
+add_subdirectory(ZtShareHelper)
 
 #uft
-add_subdirectory(VvtUftCore)
-add_subdirectory(VvtUftStraFact)
-add_subdirectory(VvtUftRunner)
+add_subdirectory(ZtUftCore)
+add_subdirectory(ZtUftStraFact)
+add_subdirectory(ZtUftRunner)
 
-add_subdirectory(VvtLatencyHFT)
-add_subdirectory(VvtLatencyUFT)
+add_subdirectory(ZtLatencyHFT)
+add_subdirectory(ZtLatencyUFT)
 
 #test projects
 add_subdirectory(TestBtPorter)

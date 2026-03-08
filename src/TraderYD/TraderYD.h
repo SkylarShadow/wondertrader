@@ -13,18 +13,18 @@
 #include <queue>
 #include <stdint.h>
 
-#include "../Includes/VvTSTypes.h"
+#include "../Includes/ZTSTypes.h"
 #include "../Includes/ITraderApi.h"
-#include "../Includes/VvTSCollection.hpp"
+#include "../Includes/ZTSCollection.hpp"
 
 #include "../API/yd1.108.360/ydApi.h"
 
 #include "../Share/IniHelper.hpp"
 #include "../Share/StdUtils.hpp"
 #include "../Share/DLLHelper.hpp"
-#include "../Share/VvtKVCache.hpp"
+#include "../Share/ZtKVCache.hpp"
 
-USING_NS_VVTP;
+USING_NS_ZTP;
 
 class TraderYD : public ITraderApi, public YDListener
 {
@@ -77,7 +77,7 @@ private:
 	//////////////////////////////////////////////////////////////////////////
 	//ITraderApi接口
 public:
-	virtual bool init(VvTSVariant* params) override;
+	virtual bool init(ZTSVariant* params) override;
 
 	virtual void release() override;
 
@@ -95,9 +95,9 @@ public:
 
 	virtual int logout() override;
 
-	virtual int orderInsert(VvTSEntrust* eutrust) override;
+	virtual int orderInsert(ZTSEntrust* eutrust) override;
 
-	virtual int orderAction(VvTSEntrustAction* action) override;
+	virtual int orderAction(ZTSEntrustAction* action) override;
 
 	virtual int queryAccount() override;
 
@@ -109,10 +109,10 @@ public:
 
 
 protected:
-	VvTSOrderInfo*	makeOrderInfo(const YDOrder* orderField, const YDInstrument* instInfo);
-	VvTSEntrust*		makeEntrust(const YDInputOrder *entrustField, const YDInstrument* instInfo);
-	VvTSTradeInfo*	makeTradeRecord(const YDTrade *tradeField, const YDInstrument* instInfo);
-	VvTSError*		makeError(int errorno, VvTSErrorCode ec);
+	ZTSOrderInfo*	makeOrderInfo(const YDOrder* orderField, const YDInstrument* instInfo);
+	ZTSEntrust*		makeEntrust(const YDInputOrder *entrustField, const YDInstrument* instInfo);
+	ZTSTradeInfo*	makeTradeRecord(const YDTrade *tradeField, const YDInstrument* instInfo);
+	ZTSError*		makeError(int errorno, ZTSErrorCode ec);
 
 	bool			generateEntrustID(uint32_t orderRef, char* buffer);
 	bool			extractEntrustID(const char* entrustid, uint32_t &orderRef);
@@ -144,11 +144,11 @@ protected:
 	YDApi*						m_pUserAPI;
 	std::atomic<uint32_t>		m_iRequestID;
 
-	typedef VvTSHashMap<std::string> DataMap;
+	typedef ZTSHashMap<std::string> DataMap;
 	DataMap*					m_mapPosition;
 	DataMap*					m_mapTrades;
 	DataMap*					m_mapOrders;
-	VvTSArray*					m_ayFunds;
+	ZTSArray*					m_ayFunds;
 
 	IBaseDataMgr*				m_bdMgr;
 
@@ -165,8 +165,8 @@ protected:
 
 	//IniHelper		m_iniHelper;
 	//委托单标记缓存器
-	VvtKVCache		m_eidCache;
+	ZtKVCache		m_eidCache;
 	//订单标记缓存器
-	VvtKVCache		m_oidCache;
+	ZtKVCache		m_oidCache;
 };
 

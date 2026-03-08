@@ -8,7 +8,7 @@
  * \brief 主力合约管理器接口定义
  */
 #pragma once
-#include "VvTSMarcos.h"
+#include "ZTSMarcos.h"
 #include <vector>
 #include <string>
 #include <stdint.h>
@@ -29,7 +29,7 @@ typedef struct _HotSection
 } HotSection;
 typedef std::vector<HotSection>	HotSections;
 
-NS_VVTP_BEGIN
+NS_ZTP_BEGIN
 
 #define HOTS_MARKET		"HOTS_MARKET"
 #define SECONDS_MARKET	"SECONDS_MARKET"
@@ -116,4 +116,4 @@ public:
 
 	virtual double		getRuleFactor(const char* ruleTag, const char* fullPid, uint32_t uDate = 0) = 0;
 };
-NS_VVTP_END
+NS_ZTP_END

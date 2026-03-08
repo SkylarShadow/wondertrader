@@ -11,17 +11,17 @@
 #include <string>
 #include <stdint.h>
 
-#include "../Includes/VvTSMarcos.h"
+#include "../Includes/ZTSMarcos.h"
 
-NS_VVTP_BEGIN
-class VvTSVariant;
+NS_ZTP_BEGIN
+class ZTSVariant;
 class ICtaStraCtx;
 class ICtaTickStraCtx;
-class VvTSTickData;
-struct VvTSBarStruct;
-NS_VVTP_END
+class ZTSTickData;
+struct ZTSBarStruct;
+NS_ZTP_END
 
-USING_NS_VVTP;
+USING_NS_ZTP;
 
 class CtaStrategy
 {
@@ -43,7 +43,7 @@ public:
 	/*
 	*	初始化
 	*/
-	virtual bool init(VvTSVariant* cfg){ return true; }
+	virtual bool init(ZTSVariant* cfg){ return true; }
 
 	virtual const char* id() const { return _id.c_str(); }
 
@@ -75,12 +75,12 @@ public:
 	/*
 	 *	tick数据
 	 */
-	virtual void on_tick(ICtaStraCtx* ctx, const char* stdCode, VvTSTickData* newTick){}
+	virtual void on_tick(ICtaStraCtx* ctx, const char* stdCode, ZTSTickData* newTick){}
 
 	/*
 	 *	K线闭合
 	 */
-	virtual void on_bar(ICtaStraCtx* ctx, const char* stdCode, const char* period, VvTSBarStruct* newBar){}
+	virtual void on_bar(ICtaStraCtx* ctx, const char* stdCode, const char* period, ZTSBarStruct* newBar){}
 
 	/*
 	 *	条件单触发

@@ -10,18 +10,18 @@
 #pragma once
 #include <stdint.h>
 
-#include "../Includes/VvTSMarcos.h"
-#include "../Includes/VvTSTypes.h"
+#include "../Includes/ZTSMarcos.h"
+#include "../Includes/ZTSTypes.h"
 
-NS_VVTP_BEGIN
-class VvTSKlineSlice;
-class VvTSTickSlice;
-class VvTSOrdQueSlice;
-class VvTSOrdDtlSlice;
-class VvTSTransSlice;
+NS_ZTP_BEGIN
+class ZTSKlineSlice;
+class ZTSTickSlice;
+class ZTSOrdQueSlice;
+class ZTSOrdDtlSlice;
+class ZTSTransSlice;
 class IBaseDataMgr;
 class IHotMgr;
-class VvTSVariant;
+class ZTSVariant;
 
 
 /*
@@ -44,7 +44,7 @@ public:
 	/*
 	 *	@brief	输出数据读取模块的日志
 	 */
-	virtual void		reader_log(VvTSLogLevel ll, const char* message) = 0;
+	virtual void		reader_log(ZTSLogLevel ll, const char* message) = 0;
 };
 
 /*
@@ -59,19 +59,19 @@ public:
 	virtual ~IRdmDtReader(){}
 
 public:
-	virtual void init(VvTSVariant* cfg, IRdmDtReaderSink* sink) { _sink = sink; }
+	virtual void init(ZTSVariant* cfg, IRdmDtReaderSink* sink) { _sink = sink; }
 
-	virtual VvTSOrdDtlSlice*	readOrdDtlSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime = 0) = 0;
-	virtual VvTSOrdQueSlice*	readOrdQueSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime = 0) = 0;
-	virtual VvTSTransSlice*	readTransSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime = 0) = 0;
+	virtual ZTSOrdDtlSlice*	readOrdDtlSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime = 0) = 0;
+	virtual ZTSOrdQueSlice*	readOrdQueSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime = 0) = 0;
+	virtual ZTSTransSlice*	readTransSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime = 0) = 0;
 
-	virtual VvTSTickSlice*	readTickSliceByDate(const char* stdCode, uint32_t uDate = 0) = 0;
+	virtual ZTSTickSlice*	readTickSliceByDate(const char* stdCode, uint32_t uDate = 0) = 0;
 
-	virtual VvTSTickSlice*	readTickSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime = 0) = 0;
-	virtual VvTSKlineSlice*	readKlineSliceByRange(const char* stdCode, VvTSKlinePeriod period, uint64_t stime, uint64_t etime = 0) = 0;
+	virtual ZTSTickSlice*	readTickSliceByRange(const char* stdCode, uint64_t stime, uint64_t etime = 0) = 0;
+	virtual ZTSKlineSlice*	readKlineSliceByRange(const char* stdCode, ZTSKlinePeriod period, uint64_t stime, uint64_t etime = 0) = 0;
 
-	virtual VvTSTickSlice*	readTickSliceByCount(const char* stdCode, uint32_t count, uint64_t etime = 0) = 0;
-	virtual VvTSKlineSlice*	readKlineSliceByCount(const char* stdCode, VvTSKlinePeriod period, uint32_t count, uint64_t etime = 0) = 0;
+	virtual ZTSTickSlice*	readTickSliceByCount(const char* stdCode, uint32_t count, uint64_t etime = 0) = 0;
+	virtual ZTSKlineSlice*	readKlineSliceByCount(const char* stdCode, ZTSKlinePeriod period, uint32_t count, uint64_t etime = 0) = 0;
 
 	/*
 	 *	@brief 获取个股指定日期的复权因子
@@ -92,4 +92,4 @@ typedef IRdmDtReader* (*FuncCreateRdmDtReader)();
 //删除数据存储对象
 typedef void(*FuncDeleteRdmDtReader)(IRdmDtReader* store);
 
-NS_VVTP_END
+NS_ZTP_END

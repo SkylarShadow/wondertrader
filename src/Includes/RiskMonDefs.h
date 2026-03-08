@@ -8,7 +8,7 @@
  * \brief 
  */
 #pragma once
-#include "../Includes/VvTSMarcos.h"
+#include "../Includes/ZTSMarcos.h"
 
 #include <stdio.h>
 #include <stdint.h>
@@ -23,20 +23,20 @@
  *	风控模块只处理高效的风控策略
  */
 
-NS_VVTP_BEGIN
-class VvTSVariant;
-class VvTSPortFundInfo;
+NS_ZTP_BEGIN
+class ZTSVariant;
+class ZTSPortFundInfo;
 
 /*
  *	组合上下文
  */
-class VvtPortContext
+class ZtPortContext
 {
 public:
 	/*
 	 *	获取组合资金数据
 	 */
-	virtual VvTSPortFundInfo*	getFundInfo() = 0;
+	virtual ZTSPortFundInfo*	getFundInfo() = 0;
 
 	/*
 	 *	设置数量倍数
@@ -80,11 +80,11 @@ public:
 /*
  *	组合风控模块
  */
-class VvtRiskMonitor
+class ZtRiskMonitor
 {
 public:
-	VvtRiskMonitor():_ctx(NULL){}
-	virtual ~VvtRiskMonitor(){}
+	ZtRiskMonitor():_ctx(NULL){}
+	virtual ~ZtRiskMonitor(){}
 
 public:
 	/*
@@ -102,7 +102,7 @@ public:
 	*	ctx		执行单元运行环境
 	*	code	管理的合约代码
 	*/
-	virtual void init(VvtPortContext* ctx, VvTSVariant* cfg){ _ctx = ctx; }
+	virtual void init(ZtPortContext* ctx, ZTSVariant* cfg){ _ctx = ctx; }
 
 	/*
 	 *	启动风控模块
@@ -115,7 +115,7 @@ public:
 	virtual void stop(){}
 
 protected:
-	VvtPortContext*	_ctx;
+	ZtPortContext*	_ctx;
 };
 
 
@@ -143,12 +143,12 @@ public:
 	/*
 	*	根据名称创建交易通道风控模块
 	*/
-	virtual VvtRiskMonitor* createRiskMonotor(const char* name) = 0;
+	virtual ZtRiskMonitor* createRiskMonotor(const char* name) = 0;
 
 	/*
 	*	删除交易通道风控模块
 	*/
-	virtual bool deleteRiskMonotor(VvtRiskMonitor* unit) = 0;
+	virtual bool deleteRiskMonotor(ZtRiskMonitor* unit) = 0;
 };
 
 //创建执行工厂
@@ -156,4 +156,4 @@ typedef IRiskMonitorFact* (*FuncCreateRiskMonFact)();
 //删除执行工厂
 typedef void(*FuncDeleteRiskMonFact)(IRiskMonitorFact* &fact);
 
-NS_VVTP_END
+NS_ZTP_END

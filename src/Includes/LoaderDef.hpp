@@ -1,9 +1,9 @@
 ﻿#pragma once
-#include "VvTSTypes.h"
+#include "ZTSTypes.h"
 
 #include <map>
 
-USING_NS_VVTP;
+USING_NS_ZTP;
 
 typedef struct _Contract
 {

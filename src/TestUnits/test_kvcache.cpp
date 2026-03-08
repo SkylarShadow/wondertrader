@@ -1,15 +1,15 @@
-﻿#include "../Share/VvtKVCache.hpp"
+﻿#include "../Share/ZtKVCache.hpp"
 #include "../Share/IniHelper.hpp"
 #include "../Share/TimeUtils.hpp"
 #include "../Share/fmtlib.h"
 #include "gtest/gtest/gtest.h"
 
-USING_NS_VVTP;
+USING_NS_ZTP;
 
 TEST(test_kvcache, test_usage)
 {
 	{
-		VvtKVCache cache;
+		ZtKVCache cache;
 		EXPECT_TRUE(cache.init("./simplecache.dat", 20220325, [](const char* msg) {
 			printf(msg);
 			printf("\n");
@@ -29,7 +29,7 @@ TEST(test_kvcache, test_usage)
 	}
 
 	{
-		VvtKVCache cache;
+		ZtKVCache cache;
 		EXPECT_TRUE(cache.init("./simplecache.dat", 20220326, [](const char* msg) {
 			printf(msg);
 			printf("\n");
@@ -40,7 +40,7 @@ TEST(test_kvcache, test_usage)
 
 TEST(test_kvcache, test_perform)
 {
-	VvtKVCache cache;
+	ZtKVCache cache;
 	cache.init("./scperform.dat", 20220325, [](const char* msg) {
 		printf(msg);
 		printf("\n");

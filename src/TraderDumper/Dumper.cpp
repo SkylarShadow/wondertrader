@@ -1,34 +1,34 @@
 ﻿#include "Dumper.h"
-#include "VvtHelper.h"
+#include "ZtHelper.h"
 #include "TraderAdapter.h"
 
-#include "../VvTSTools/VvTSLogger.h"
-#include "../VvTSTools/VvTSBaseDataMgr.h"
-#include "../VvTSUtils/VvTSCfgLoader.h"
+#include "../ZTSTools/ZTSLogger.h"
+#include "../ZTSTools/ZTSBaseDataMgr.h"
+#include "../ZTSUtils/ZTSCfgLoader.h"
 
-#include "../Includes/VvTSVariant.hpp"
+#include "../Includes/ZTSVariant.hpp"
 
-USING_NS_VVTP;
+USING_NS_ZTP;
 
-VvTSBaseDataMgr		g_bdMgr;
+ZTSBaseDataMgr		g_bdMgr;
 TraderAdapterMgr	g_adapterMgr;
 
 void Dumper::init(const char* logProfile)
 {
-	VvTSLogger::init(logProfile);
+	ZTSLogger::init(logProfile);
 }
 
 bool Dumper::config(const char* cfgfile, bool isFile, const char* modDir)
 {
-	VvtHelper::set_module_dir(modDir);
+	ZtHelper::set_module_dir(modDir);
 
-	VvTSVariant* root = NULL;
+	ZTSVariant* root = NULL;
 	if (isFile)
-		root = VvTSCfgLoader::load_from_file(cfgfile);
+		root = ZTSCfgLoader::load_from_file(cfgfile);
 	else
-		root = VvTSCfgLoader::load_from_content(cfgfile, false);
+		root = ZTSCfgLoader::load_from_content(cfgfile, false);
 
-	VvTSVariant* cfg = root->get("config");
+	ZTSVariant* cfg = root->get("config");
 	if(cfg)
 	{
 		if(cfg->has("refresh_span"))
@@ -39,21 +39,21 @@ bool Dumper::config(const char* cfgfile, bool isFile, const char* modDir)
 	}
 
 	//基础数据文件
-	VvTSVariant* cfgBF = root->get("basefiles");
+	ZTSVariant* cfgBF = root->get("basefiles");
 	if (cfgBF->get("session"))
 	{
 		g_bdMgr.loadSessions(cfgBF->getCString("session"));
-		VvTSLogger::info("Trading sessions loaded");
+		ZTSLogger::info("Trading sessions loaded");
 	}
 
-	VvTSVariant* cfgItem = cfgBF->get("commodity");
+	ZTSVariant* cfgItem = cfgBF->get("commodity");
 	if (cfgItem)
 	{
-		if (cfgItem->type() == VvTSVariant::VT_String)
+		if (cfgItem->type() == ZTSVariant::VT_String)
 		{
 			g_bdMgr.loadCommodities(cfgItem->asCString());
 		}
-		else if (cfgItem->type() == VvTSVariant::VT_Array)
+		else if (cfgItem->type() == ZTSVariant::VT_Array)
 		{
 			for (uint32_t i = 0; i < cfgItem->size(); i++)
 			{
@@ -65,11 +65,11 @@ bool Dumper::config(const char* cfgfile, bool isFile, const char* modDir)
 	cfgItem = cfgBF->get("contract");
 	if (cfgItem)
 	{
-		if (cfgItem->type() == VvTSVariant::VT_String)
+		if (cfgItem->type() == ZTSVariant::VT_String)
 		{
 			g_bdMgr.loadContracts(cfgItem->asCString());
 		}
-		else if (cfgItem->type() == VvTSVariant::VT_Array)
+		else if (cfgItem->type() == ZTSVariant::VT_Array)
 		{
 			for (uint32_t i = 0; i < cfgItem->size(); i++)
 			{
@@ -81,7 +81,7 @@ bool Dumper::config(const char* cfgfile, bool isFile, const char* modDir)
 	cfg = root->get("traders");
 	for (uint32_t idx = 0; idx < cfg->size(); idx++)
 	{
-		VvTSVariant* cfgItem = cfg->get(idx);
+		ZTSVariant* cfgItem = cfg->get(idx);
 		if (!cfgItem->getBoolean("active"))
 			continue;
 
@@ -94,7 +94,7 @@ bool Dumper::config(const char* cfgfile, bool isFile, const char* modDir)
 
 	root->release();
 
-	VvTSLogger::info("交易数据落地模块初始化完成，主动刷新间隔:{}s", _refresh_span);
+	ZTSLogger::info("交易数据落地模块初始化完成，主动刷新间隔:{}s", _refresh_span);
 
 	return true;
 }
@@ -150,13 +150,13 @@ void Dumper::on_position(const char* channelid, const char* exchg, const char* c
 }
 
 void Dumper::on_trade(const char* channelid, const char* exchg, const char* code, uint32_t curTDate, const char* tradeid, const char* orderid, 
-		uint32_t direct, uint32_t offset, double volume, double price, double amount, uint32_t ordertype, uint32_t tradetype, VvTUInt64 tradetime, bool isLast)
+		uint32_t direct, uint32_t offset, double volume, double price, double amount, uint32_t ordertype, uint32_t tradetype, ZTUInt64 tradetime, bool isLast)
 {
 	if (_cb_trade)
 		_cb_trade(channelid, exchg, code, curTDate, tradeid, orderid, direct, offset, volume, price, amount, ordertype, tradetype, tradetime, isLast);
 }
 
-void Dumper::on_order(const char* channelid, const char* exchg, const char* code, uint32_t curTDate, const char* orderid, uint32_t direct, uint32_t offset, double volume, double leftover, double traded, double price, uint32_t ordertype, uint32_t pricetype, VvTUInt64 ordertime, uint32_t state, const char* statemsg, bool isLast)
+void Dumper::on_order(const char* channelid, const char* exchg, const char* code, uint32_t curTDate, const char* orderid, uint32_t direct, uint32_t offset, double volume, double leftover, double traded, double price, uint32_t ordertype, uint32_t pricetype, ZTUInt64 ordertime, uint32_t state, const char* statemsg, bool isLast)
 {
 	if (_cb_order)
 		_cb_order(channelid, exchg, code, curTDate, orderid, direct, offset, volume, leftover, traded, price, ordertype, pricetype, ordertime, state, statemsg, isLast);

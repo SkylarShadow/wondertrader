@@ -13,17 +13,17 @@
 #include <queue>
 #include <stdint.h>
 
-#include "../Includes/VvTSTypes.h"
+#include "../Includes/ZTSTypes.h"
 #include "../Includes/ITraderApi.h"
-#include "../Includes/VvTSCollection.hpp"
+#include "../Includes/ZTSCollection.hpp"
 
 #include "../API/CTP6.3.15/ThostFtdcTraderApi.h"
 
 #include "../Share/StdUtils.hpp"
 #include "../Share/DLLHelper.hpp"
-#include "../Share/VvtKVCache.hpp"
+#include "../Share/ZtKVCache.hpp"
 
-USING_NS_VVTP;
+USING_NS_ZTP;
 
 class TraderCTP : public ITraderApi, public CThostFtdcTraderSpi
 {
@@ -57,7 +57,7 @@ private:
 	//////////////////////////////////////////////////////////////////////////
 	//ITraderApi接口
 public:
-	virtual bool init(VvTSVariant* params) override;
+	virtual bool init(ZTSVariant* params) override;
 
 	virtual void release() override;
 
@@ -75,9 +75,9 @@ public:
 
 	virtual int logout() override;
 
-	virtual int orderInsert(VvTSEntrust* eutrust) override;
+	virtual int orderInsert(ZTSEntrust* eutrust) override;
 
-	virtual int orderAction(VvTSEntrustAction* action) override;
+	virtual int orderAction(ZTSEntrustAction* action) override;
 
 	virtual int queryAccount() override;
 
@@ -140,24 +140,24 @@ private:
 	*/
 	bool IsErrorRspInfo(CThostFtdcRspInfoField *pRspInfo);
 
-	int wrapPriceType(VvTSPriceType priceType, bool isCFFEX = false);
-	int wrapDirectionType(VvTSDirectionType dirType, VvTSOffsetType offType);
-	int wrapOffsetType(VvTSOffsetType offType);
-	int	wrapTimeCondition(VvTSTimeCondition timeCond);
-	int wrapActionFlag(VvTSActionFlag actionFlag);
+	int wrapPriceType(ZTSPriceType priceType, bool isCFFEX = false);
+	int wrapDirectionType(ZTSDirectionType dirType, ZTSOffsetType offType);
+	int wrapOffsetType(ZTSOffsetType offType);
+	int	wrapTimeCondition(ZTSTimeCondition timeCond);
+	int wrapActionFlag(ZTSActionFlag actionFlag);
 
-	VvTSPriceType		wrapPriceType(TThostFtdcOrderPriceTypeType priceType);
-	VvTSDirectionType	wrapDirectionType(TThostFtdcDirectionType dirType, TThostFtdcOffsetFlagType offType);
-	VvTSDirectionType	wrapPosDirection(TThostFtdcPosiDirectionType dirType);
-	VvTSOffsetType		wrapOffsetType(TThostFtdcOffsetFlagType offType);
-	VvTSTimeCondition	wrapTimeCondition(TThostFtdcTimeConditionType timeCond);
-	VvTSOrderState		wrapOrderState(TThostFtdcOrderStatusType orderState);
+	ZTSPriceType		wrapPriceType(TThostFtdcOrderPriceTypeType priceType);
+	ZTSDirectionType	wrapDirectionType(TThostFtdcDirectionType dirType, TThostFtdcOffsetFlagType offType);
+	ZTSDirectionType	wrapPosDirection(TThostFtdcPosiDirectionType dirType);
+	ZTSOffsetType		wrapOffsetType(TThostFtdcOffsetFlagType offType);
+	ZTSTimeCondition	wrapTimeCondition(TThostFtdcTimeConditionType timeCond);
+	ZTSOrderState		wrapOrderState(TThostFtdcOrderStatusType orderState);
 
-	VvTSOrderInfo*	makeOrderInfo(CThostFtdcOrderField* orderField);
-	VvTSEntrust*		makeEntrust(CThostFtdcInputOrderField *entrustField);
-	VvTSEntrustAction*	makeAction(CThostFtdcInputOrderActionField *entrustField);
-	VvTSError*		makeError(CThostFtdcRspInfoField* rspInfo, VvTSErrorCode ec = WEC_NONE);
-	VvTSTradeInfo*	makeTradeInfo(CThostFtdcTradeField *tradeField);
+	ZTSOrderInfo*	makeOrderInfo(CThostFtdcOrderField* orderField);
+	ZTSEntrust*		makeEntrust(CThostFtdcInputOrderField *entrustField);
+	ZTSEntrustAction*	makeAction(CThostFtdcInputOrderActionField *entrustField);
+	ZTSError*		makeError(CThostFtdcRspInfoField* rspInfo, ZTSErrorCode ec = WEC_NONE);
+	ZTSTradeInfo*	makeTradeInfo(CThostFtdcTradeField *tradeField);
 
 	void			generateEntrustID(char* buffer, uint32_t frontid, uint32_t sessionid, uint32_t orderRef);
 	bool			extractEntrustID(const char* entrustid, uint32_t &frontid, uint32_t &sessionid, uint32_t &orderRef);
@@ -198,11 +198,11 @@ protected:
 	CThostFtdcTraderApi*		m_pUserAPI;
 	std::atomic<uint32_t>		m_iRequestID;
 
-	typedef VvTSHashMap<std::string> PositionMap;
+	typedef ZTSHashMap<std::string> PositionMap;
 	PositionMap*				m_mapPosition;
-	VvTSArray*					m_ayTrades;
-	VvTSArray*					m_ayOrders;
-	VvTSArray*					m_ayPosDetail;
+	ZTSArray*					m_ayTrades;
+	ZTSArray*					m_ayOrders;
+	ZTSArray*					m_ayPosDetail;
 
 	IBaseDataMgr*				m_bdMgr;
 
@@ -221,8 +221,8 @@ protected:
 	CTPCreator		m_funcCreator;
 
 	//委托单标记缓存器
-	VvtKVCache		m_eidCache;
+	ZtKVCache		m_eidCache;
 	//订单标记缓存器
-	VvtKVCache		m_oidCache;
+	ZtKVCache		m_oidCache;
 };
 

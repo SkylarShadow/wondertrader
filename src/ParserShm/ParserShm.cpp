@@ -8,15 +8,15 @@
  * \brief 
  */
 #include "ParserShm.h"
-#include "../Includes/VvTSVariant.hpp"
-#include "../Includes/VvTSDataDef.hpp"
+#include "../Includes/ZTSVariant.hpp"
+#include "../Includes/ZTSDataDef.hpp"
 
 #include <boost/bind.hpp>
 
  //By Wesley @ 2022.01.05
 #include "../Share/fmtlib.h"
 template<typename... Args>
-inline void write_log(IParserSpi* sink, VvTSLogLevel ll, const char* format, const Args&... args)
+inline void write_log(IParserSpi* sink, ZTSLogLevel ll, const char* format, const Args&... args)
 {
 	if (sink == NULL)
 		return;
@@ -69,7 +69,7 @@ ParserShm::~ParserShm()
 {
 }
 
-bool ParserShm::init( VvTSVariant* config )
+bool ParserShm::init( ZTSVariant* config )
 {
 	_path = config->getCString("path");
 	_gpsize = config->getUInt32("gpsize");
@@ -104,8 +104,8 @@ bool ParserShm::connect()
 
 		if (_sink)
 		{
-			_sink->handleEvent(VvPE_Connect, 0);
-			_sink->handleEvent(VvPE_Login, 0);
+			_sink->handleEvent(ZPE_Connect, 0);
+			_sink->handleEvent(ZPE_Login, 0);
 		}
 		write_log(_sink, LL_INFO, "[ParserShm] {} loaded, start to receiving", _path);
 
@@ -159,7 +159,7 @@ bool ParserShm::connect()
 				auto it = _set_subs.find(fullCode);
 				if (it != _set_subs.end())
 				{
-					VvTSTickData* newData = VvTSTickData::create(item._tick);
+					ZTSTickData* newData = ZTSTickData::create(item._tick);
 					if (_sink)
 						_sink->handleQuote(newData, 0);
 					newData->release();
@@ -177,7 +177,7 @@ bool ParserShm::connect()
 				auto it = _set_subs.find(fullCode);
 				if (it != _set_subs.end())
 				{
-					VvTSOrdQueData* newData = VvTSOrdQueData::create(item._queue);
+					ZTSOrdQueData* newData = ZTSOrdQueData::create(item._queue);
 					if (_sink)
 						_sink->handleOrderQueue(newData);
 					newData->release();
@@ -195,7 +195,7 @@ bool ParserShm::connect()
 				auto it = _set_subs.find(fullCode);
 				if (it != _set_subs.end())
 				{
-					VvTSOrdDtlData* newData = VvTSOrdDtlData::create(item._order);
+					ZTSOrdDtlData* newData = ZTSOrdDtlData::create(item._order);
 					if (_sink)
 						_sink->handleOrderDetail(newData);
 					newData->release();
@@ -213,7 +213,7 @@ bool ParserShm::connect()
 				auto it = _set_subs.find(fullCode);
 				if (it != _set_subs.end())
 				{
-					VvTSTransData* newData = VvTSTransData::create(item._trans);
+					ZTSTransData* newData = ZTSTransData::create(item._trans);
 					if (_sink)
 						_sink->handleTransaction(newData);
 					newData->release();

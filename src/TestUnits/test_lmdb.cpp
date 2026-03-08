@@ -1,12 +1,12 @@
-﻿#include "../VvTSUtils/VvtLMDB.hpp"
+﻿#include "../ZTSUtils/ZtLMDB.hpp"
 #include "../Share/StrUtil.hpp"
 #include "gtest/gtest/gtest.h"
 
-USING_NS_VVTP;
+USING_NS_ZTP;
 
 TEST(test_lmdb, test_constructor)
 {
-	VvtLMDB* db = new VvtLMDB();
+	ZtLMDB* db = new ZtLMDB();
 	EXPECT_TRUE(db->open("./testdb"));
 	delete db;
 }
@@ -15,10 +15,10 @@ TEST(test_lmdb, test_query)
 {
 	{	
 		//–¥≤È—Ø
-		VvtLMDB db(false);
+		ZtLMDB db(false);
 		EXPECT_TRUE(db.open("./testdb"));
 
-		VvtLMDBQuery query(db);
+		ZtLMDBQuery query(db);
 		EXPECT_FALSE(db.has_error());
 		for(int i = 0; i < 100; i++)
 		{
@@ -33,10 +33,10 @@ TEST(test_lmdb, test_query)
 
 	{
 		//∂¡≤È—Ø
-		VvtLMDB db(true);
+		ZtLMDB db(true);
 		EXPECT_TRUE(db.open("./testdb"));
 
-		VvtLMDBQuery query(db);
+		ZtLMDBQuery query(db);
 		EXPECT_FALSE(db.has_error());
 		EXPECT_FALSE(query.put(std::string("key1"), std::string("value1")));
 
@@ -85,10 +85,10 @@ TEST(test_lmdb, test_endian)
 {
 	{
 		//–¥≤È—Ø
-		VvtLMDB db(false);
+		ZtLMDB db(false);
 		EXPECT_TRUE(db.open("./endiandb"));
 
-		VvtLMDBQuery query(db);
+		ZtLMDBQuery query(db);
 		EXPECT_FALSE(db.has_error());
 		for (int i = 0; i < 100; i++)
 		{
@@ -104,10 +104,10 @@ TEST(test_lmdb, test_endian)
 
 	{
 		//∂¡≤È—Ø
-		VvtLMDB db(true);
+		ZtLMDB db(true);
 		EXPECT_TRUE(db.open("./endiandb"));
 
-		VvtLMDBQuery query(db);
+		ZtLMDBQuery query(db);
 		EXPECT_FALSE(db.has_error());
 		EXPECT_FALSE(query.put(std::string("key1"), std::string("value1")));
 

@@ -12,9 +12,9 @@
 
 #include <boost/filesystem.hpp>
 
-#include "../VvTSUtils/VvTSCfgLoader.h"
-#include "../Includes/VvTSVariant.hpp"
-USING_NS_VVTP;
+#include "../ZTSUtils/ZTSCfgLoader.h"
+#include "../Includes/ZTSVariant.hpp"
+USING_NS_ZTP;
 
 #include "../Share/charconv.hpp"
 
@@ -68,11 +68,11 @@ int run(const char* cfgfile, bool bAsync = false, bool isFile = true)
 
 	if (!isFile)
 	{
-		VvTSVariant* root = VvTSCfgLoader::load_from_content(cfgfile, true);
+		ZTSVariant* root = ZTSCfgLoader::load_from_content(cfgfile, true);
 		if (root == NULL)
 			return 0;
 
-		VvTSVariant* ctp = root->get("ctp");
+		ZTSVariant* ctp = root->get("ctp");
 		FRONT_ADDR = ctp->getCString("front");
 		BROKER_ID = ctp->getCString("broker");
 		INVESTOR_ID = ctp->getCString("user");
@@ -80,7 +80,7 @@ int run(const char* cfgfile, bool bAsync = false, bool isFile = true)
 		APPID = ctp->getCString("appid");
 		AUTHCODE = ctp->getCString("authcode");
 
-		VvTSVariant* cfg = root->get("config");
+		ZTSVariant* cfg = root->get("config");
 		SAVEPATH = cfg->getCString("path");
 		CLASSMASK = cfg->getUInt32("mask"); //1-期货,2-期权,4-股票
 
@@ -137,11 +137,11 @@ int run(const char* cfgfile, bool bAsync = false, bool isFile = true)
 	}
 	else
 	{
-		VvTSVariant* root = VvTSCfgLoader::load_from_file(cfgfile);
+		ZTSVariant* root = ZTSCfgLoader::load_from_file(cfgfile);
 		if (root == NULL)
 			return 0;
 
-		VvTSVariant* ctp = root->get("ctp");
+		ZTSVariant* ctp = root->get("ctp");
 		FRONT_ADDR = ctp->getCString("front");
 		BROKER_ID = ctp->getCString("broker");
 		INVESTOR_ID = ctp->getCString("user");
@@ -149,7 +149,7 @@ int run(const char* cfgfile, bool bAsync = false, bool isFile = true)
 		APPID = ctp->getCString("appid");
 		AUTHCODE = ctp->getCString("authcode");
 
-		VvTSVariant* cfg = root->get("config");
+		ZTSVariant* cfg = root->get("config");
 		SAVEPATH = cfg->getCString("path");
 		CLASSMASK = cfg->getUInt32("mask"); //1-期货,2-期权,4-股票
 

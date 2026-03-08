@@ -1,13 +1,13 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS
-#include "../VvtExecMon/VvtExecPorter.h"
+#include "../ZtExecMon/ZtExecPorter.h"
 #include "../Share/DLLHelper.hpp"
 
 void test_exec()
 {
 #ifdef _WIN32
-	DLLHelper::load_library("VvtExecMon.dll");
+	DLLHelper::load_library("ZtExecMon.dll");
 #else
-	DLLHelper::load_library("libVvtExecMon.so");
+	DLLHelper::load_library("libZtExecMon.so");
 #endif
 
 	init_exec("logcfgexec.yaml");

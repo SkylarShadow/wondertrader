@@ -18,9 +18,9 @@ INCLUDE_DIRECTORIES(${INCS})
 LINK_DIRECTORIES(${LNKS})
 
 SET(LIBS
-	VvTSTools
-	VvTSUtils
-	VvtDtCore)
+	ZTSTools
+	ZTSUtils
+	ZtDtCore)
 
 IF(MSVC)
 	LIST(APPEND LIBS ws2_32)
@@ -62,7 +62,7 @@ add_custom_command(TARGET QuoteFactory POST_BUILD
 	copy ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/${PREFIX}ParserCTPMini${SUFFIX} ${EXECUTABLE_OUTPUT_PATH}/parsers/
 
 	COMMAND ${CMAKE_COMMAND} -E
-	copy ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/${PREFIX}VvtDataStorage${SUFFIX} ${EXECUTABLE_OUTPUT_PATH}/
+	copy ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/${PREFIX}ZtDataStorage${SUFFIX} ${EXECUTABLE_OUTPUT_PATH}/
 
 	COMMENT "depends modules copied")
 

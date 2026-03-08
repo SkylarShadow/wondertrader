@@ -10,13 +10,13 @@
 #pragma once
 #include "fmtlib.h"
 #include "StrUtil.hpp"
-#include "../Includes/VvTSTypes.h"
+#include "../Includes/ZTSTypes.h"
 #include "../Includes/IHotMgr.h"
 
 #include <boost/xpressive/xpressive_dynamic.hpp>
 
 
-USING_NS_VVTP;
+USING_NS_ZTP;
 
 //主力合约后缀
 static const char* SUFFIX_HOT = ".HOT";
