@@ -1,47 +1,47 @@
-cmake_minimum_required(VERSION 3.10)
+﻿cmake_minimum_required(VERSION 3.10)
 
-#2. 确定工程名
-PROJECT(ZtPorter LANGUAGES CXX)
-SET(CMAKE_CXX_STANDARD 17)
 
-SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/ZtPorter)
+project(ZtPorter LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
 
-#7. 添加源码
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/ZtPorter)
+
+#源码
 file(GLOB SRCS *.cpp)
 file(GLOB HDRS *.h)
 
-IF(MSVC)
+if(MSVC)
 	list (APPEND SRCS ../Common/mdump.cpp)
-ENDIF()
+endif()
 
-INCLUDE_DIRECTORIES(${INCS})
-LINK_DIRECTORIES(${LNKS})
-ADD_LIBRARY(ZtPorter SHARED ${SRCS} ${HDRS})
+include_directories(${INCS})
+link_directories(${LNKS})
+add_library(ZtPorter SHARED ${SRCS} ${HDRS})
 
-SET(LIBS ZtCore ZTSTools ZTSUtils)
+set(LIBS ZtCore ZTSTools ZTSUtils)
 
-IF (MSVC)
-	LIST(APPEND LIBS ws2_32)
-ELSE(GNUCC)
-	LIST(APPEND LIBS
+if(MSVC)
+	list(APPEND LIBS ws2_32)
+else()
+	list(APPEND LIBS
 		dl
 		pthread
 		boost_filesystem
 		boost_thread)
-	IF(WIN32)
-		LIST(APPEND LIBS
+	if(WIN32)
+		list(APPEND LIBS
 			ws2_32 iconv)
-	ENDIF()
-ENDIF()
+	endif()
+endif()
 
-TARGET_LINK_LIBRARIES(ZtPorter ${LIBS})
-IF (MSVC)
-ELSE (GNUCC)
-	SET_TARGET_PROPERTIES(ZtPorter PROPERTIES
+target_link_libraries(ZtPorter PRIVATE ${LIBS})
+if(MSVC)
+else()
+	set_target_properties(ZtPorter PROPERTIES
 		CXX_VISIBILITY_PRESET hidden
 		VISIBILITY_INLINES_HIDDEN 1
         LINK_FLAGS_RELEASE -s)
-ENDIF ()
+endif()
 
 file(MAKE_DIRECTORY ${LIBRARY_OUTPUT_PATH}/parsers/)
 file(MAKE_DIRECTORY ${LIBRARY_OUTPUT_PATH}/traders/)

@@ -1,26 +1,26 @@
-cmake_minimum_required(VERSION 3.10)
+﻿cmake_minimum_required(VERSION 3.10)
 
-#2. 确定工程名
-PROJECT(ZtRiskMonFact LANGUAGES CXX)
-SET(CMAKE_CXX_STANDARD 17)
 
-#7. 添加源码
+project(ZtRiskMonFact LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
+
+#源码
 file(GLOB SRCS *.cpp)
 file(GLOB HDRS *.h)
 
-SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin)
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin)
 
-INCLUDE_DIRECTORIES(${INCS})
-LINK_DIRECTORIES(${LNKS})
-ADD_LIBRARY(ZtRiskMonFact SHARED ${SRCS} ${HDRS})
+include_directories(${INCS})
+link_directories(${LNKS})
+add_library(ZtRiskMonFact SHARED ${SRCS} ${HDRS})
 
-IF (MSVC)
-ELSE (GNUCC)
+if(MSVC)
+else()
 	
-	SET_TARGET_PROPERTIES(ZtRiskMonFact PROPERTIES
+	set_target_properties(ZtRiskMonFact PROPERTIES
 		CXX_VISIBILITY_PRESET hidden
 		C_VISIBILITY_PRESET hidden
 		VISIBILITY_INLINES_HIDDEN 1
         LINK_FLAGS_RELEASE -s)
-ENDIF ()
+endif()
 

@@ -1,44 +1,44 @@
-
+﻿
 cmake_minimum_required(VERSION 3.10)
 
-#2. 确定工程名
-PROJECT(ParserShm LANGUAGES CXX)
-SET(CMAKE_CXX_STANDARD 17)
 
-SET(SRC  
+project(ParserShm LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
+
+set(SRC  
 	${PROJECT_SOURCE_DIR}/ParserShm.cpp
 	${PROJECT_SOURCE_DIR}/ParserShm.h
 )
 
-SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin)
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin)
 
-INCLUDE_DIRECTORIES(${INCS})
-LINK_DIRECTORIES(${LNKS})
-ADD_LIBRARY(ParserShm SHARED ${SRC})
+include_directories(${INCS})
+link_directories(${LNKS})
+add_library(ParserShm SHARED ${SRC})
 
-IF(MSVC)
-	SET(LIBS )
-ELSE(GNUCC)
-	IF (WIN32)
-		SET(LIBS
+if(MSVC)
+	set(LIBS )
+else()
+	if (WIN32)
+		set(LIBS
 			boost_thread
             boost_filesystem
 		)
-	ELSE(UNIX)
-		SET(LIBS
+	else(UNIX)
+		set(LIBS
 			boost_thread
             boost_filesystem
 		)
-	ENDIF()
-ENDIF()
-TARGET_LINK_LIBRARIES(ParserShm ${LIBS})
+	endif()
+endif()
+target_link_libraries(ParserShm PRIVATE ${LIBS})
 
-IF (MSVC)
-ELSE (GNUCC)
-	SET_TARGET_PROPERTIES(ParserShm PROPERTIES
+if(MSVC)
+else()
+	set_target_properties(ParserShm PROPERTIES
 		CXX_VISIBILITY_PRESET hidden
 		C_VISIBILITY_PRESET hidden
 		VISIBILITY_INLINES_HIDDEN 1
         LINK_FLAGS_RELEASE -s)
-ENDIF ()
+endif()
 

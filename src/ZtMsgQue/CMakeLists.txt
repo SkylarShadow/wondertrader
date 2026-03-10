@@ -1,48 +1,48 @@
-cmake_minimum_required(VERSION 3.10)
+﻿cmake_minimum_required(VERSION 3.10)
 
-#2. 确定工程名
-PROJECT(ZtMsgQue LANGUAGES CXX)
-SET(CMAKE_CXX_STANDARD 17)
 
-SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin)
+project(ZtMsgQue LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
 
-#7. 添加源码
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin)
+
+#源码
 file(GLOB SRCS *.cpp)
 file(GLOB HDRS *.h)
 
-INCLUDE_DIRECTORIES(${INCS})
-LINK_DIRECTORIES(${LNKS})
-ADD_LIBRARY(ZtMsgQue SHARED ${SRCS} ${HDRS})
+include_directories(${INCS})
+link_directories(${LNKS})
+add_library(ZtMsgQue SHARED ${SRCS} ${HDRS})
 
-IF(MSVC)
-	SET(LIBS
+if(MSVC)
+	set(LIBS
 		nanomsg
 		ws2_32
 		mswsock
 		)
-ELSE(GNUCC)
-	IF(WIN32)
-		SET(LIBS
+else()
+	if(WIN32)
+		set(LIBS
 			dl
 			pthread
 			nanomsg
 			ws2_32
 			mswsock
 		)
-	ELSE(UNIX)
-		SET(LIBS
+	else(UNIX)
+		set(LIBS
 			dl
 			pthread
 			nanomsg
 		)
-	ENDIF()
-ENDIF()
+	endif()
+endif()
 
-TARGET_LINK_LIBRARIES(ZtMsgQue ${LIBS})
-IF (MSVC)
-ELSE (GNUCC)
-	SET_TARGET_PROPERTIES(ZtMsgQue PROPERTIES
+target_link_libraries(ZtMsgQue PRIVATE ${LIBS})
+if(MSVC)
+else()
+	set_target_properties(ZtMsgQue PROPERTIES
 		CXX_VISIBILITY_PRESET hidden
 		VISIBILITY_INLINES_HIDDEN 1
         LINK_FLAGS_RELEASE -s)
-ENDIF ()
+endif()

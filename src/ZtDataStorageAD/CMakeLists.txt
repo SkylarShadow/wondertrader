@@ -1,41 +1,41 @@
-cmake_minimum_required(VERSION 3.10)
+﻿cmake_minimum_required(VERSION 3.10)
 
-#2. 确定工程名
-PROJECT(ZtDataStorageAD LANGUAGES CXX)
-SET(CMAKE_CXX_STANDARD 17)
 
-SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin)
+project(ZtDataStorageAD LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
 
-#7. 添加源码
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin)
+
+#源码
 file(GLOB SRCS *.cpp)
 file(GLOB HDRS *.h)
 
-INCLUDE_DIRECTORIES(${INCS})
-LINK_DIRECTORIES(${LNKS})
-ADD_LIBRARY(ZtDataStorageAD SHARED ${SRCS} ${HDRS})
+include_directories(${INCS})
+link_directories(${LNKS})
+add_library(ZtDataStorageAD SHARED ${SRCS} ${HDRS})
 
-SET(LIBS
+set(LIBS
 	ZTSUtils
 )
 
-IF (MSVC)
-ELSE (GNUCC)
-	LIST(APPEND LIBS
+if(MSVC)
+else()
+	list(APPEND LIBS
 		dl
 		pthread
 		boost_filesystem
 		)
 	if(WIN32)
-		LIST(APPEND LIBS iconv)
-	ENDIF()
-ENDIF()
-TARGET_LINK_LIBRARIES(ZtDataStorageAD ${LIBS})
+		list(APPEND LIBS iconv)
+	endif()
+endif()
+target_link_libraries(ZtDataStorageAD PRIVATE ${LIBS})
 
-IF (MSVC)
-ELSE (GNUCC)
-	SET_TARGET_PROPERTIES(ZtDataStorageAD PROPERTIES
+if(MSVC)
+else()
+	set_target_properties(ZtDataStorageAD PROPERTIES
 		CXX_VISIBILITY_PRESET hidden
 		VISIBILITY_INLINES_HIDDEN 1
         LINK_FLAGS_RELEASE -s)
-ENDIF ()
+endif()
 

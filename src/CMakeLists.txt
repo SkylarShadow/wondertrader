@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.16)
+﻿cmake_minimum_required(VERSION 3.16)
 
-PROJECT(ZonTrader LANGUAGES CXX)
+project(ZonTrader LANGUAGES CXX)
 
 #C++标准
 set(CMAKE_CXX_STANDARD 17)
@@ -37,9 +37,9 @@ set(INCS ${DEPS_DIR}/include)
 set(LNKS ${DEPS_DIR}/lib/${PLATFORM})
 set(BINS ${DEPS_DIR}/bin/${PLATFORM})
 
-message(STATUS "Deps root: ${DEPS_DIR}")
-message(STATUS "Deps Include: ${INCS}")
-message(STATUS "Deps lib: ${LNKS}")
+message(STATUS "deps root: ${DEPS_DIR}")
+message(STATUS "deps Include: ${INCS}")
+message(STATUS "deps lib: ${LNKS}")
 
 
 #库的前后缀

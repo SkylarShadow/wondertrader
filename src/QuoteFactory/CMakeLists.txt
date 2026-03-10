@@ -1,52 +1,58 @@
-cmake_minimum_required(VERSION 3.10)
+﻿cmake_minimum_required(VERSION 3.10)
 
-#2. 确定工程名
-PROJECT(QuoteFactory LANGUAGES CXX)
-SET(CMAKE_CXX_STANDARD 17)
 
-SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/QuoteFactory)
+project(QuoteFactory LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
 
-#7. 添加源码
-FILE( GLOB SRCS *.cpp)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/QuoteFactory)
 
-IF(MSVC)
+#源码
+file( GLOB SRCS *.cpp)
+
+if(MSVC)
 	list (APPEND SRCS ../Common/mdump.cpp)
-ENDIF()
+endif()
 
-INCLUDE_DIRECTORIES(${INCS})
-LINK_DIRECTORIES(${LNKS})
+link_directories(${LNKS})
 
-SET(LIBS
+# 依赖
+set(LIBS
 	ZTSTools
 	ZTSUtils
 	ZtDtCore)
 
-IF(MSVC)
-	LIST(APPEND LIBS ws2_32)
-ELSE(GNUCC)
-	LIST(APPEND LIBS
+if(MSVC)
+	list(APPEND LIBS ws2_32)
+else()
+	list(APPEND LIBS
 		dl
 		boost_filesystem
         boost_thread
         pthread
 		)
 	if(WIN32)
-		LIST(APPEND LIBS
+		list(APPEND LIBS
 			ws2_32 iconv)
-	ENDIF()
-ENDIF()
+	endif()
+endif()
 
-#9. 生成可执行文件
-ADD_EXECUTABLE(QuoteFactory ${SRCS})
-TARGET_LINK_LIBRARIES(QuoteFactory ${LIBS})
 
-IF (MSVC)
-ELSE (GNUCC)
-	SET_TARGET_PROPERTIES(QuoteFactory PROPERTIES
+
+#可执行文件
+add_executable(QuoteFactory ${SRCS})
+include_directories(${INCS})
+target_link_libraries(QuoteFactory ${LIBS})
+
+
+
+if(MSVC)
+else()
+	set_target_properties(QuoteFactory PROPERTIES
         LINK_FLAGS_RELEASE -s)
-ENDIF ()
+endif()
 
 file(MAKE_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/parsers/)
+
 add_custom_command(TARGET QuoteFactory POST_BUILD
 	COMMAND ${CMAKE_COMMAND} -E
 	copy ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/${PREFIX}ParserCTP${SUFFIX} ${EXECUTABLE_OUTPUT_PATH}/parsers/

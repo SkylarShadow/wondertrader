@@ -1,40 +1,40 @@
-
+﻿
 cmake_minimum_required(VERSION 3.10)
 
-#2. 确定工程名
-PROJECT(TestTrader LANGUAGES CXX)
-SET(CMAKE_CXX_STANDARD 17)
 
-SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/TestTrader)
+project(TestTrader LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
 
-#7. 添加源码
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/TestTrader)
+
+#源码
 file(GLOB SRCS *.cpp)
 
-SET(LIBS
+set(LIBS
 	ZTSTools
 	ZTSUtils
 	)
     
-IF (MSVC)
-ELSE(GNUCC)
-	LIST(APPEND LIBS
+if(MSVC)
+else()
+	list(APPEND LIBS
 		dl
         pthread
 		boost_filesystem)
-    IF(WIN32)
-		LIST(APPEND LIBS
+    if(WIN32)
+		list(APPEND LIBS
 			iconv)
-	ENDIF()
-ENDIF()
+	endif()
+endif()
 
-INCLUDE_DIRECTORIES(${INCS})
-LINK_DIRECTORIES(${LNKS})
+include_directories(${INCS})
+link_directories(${LNKS})
 
-ADD_EXECUTABLE(TestTrader ${SRCS})
-TARGET_LINK_LIBRARIES(TestTrader ${LIBS})
+add_executable(TestTrader ${SRCS})
+target_link_libraries(TestTrader PRIVATE ${LIBS})
 
-IF (MSVC)
-ELSE (GNUCC)
-	SET_TARGET_PROPERTIES(TestTrader PROPERTIES
+if(MSVC)
+else()
+	set_target_properties(TestTrader PROPERTIES
         LINK_FLAGS_RELEASE -s)
-ENDIF ()
+endif()

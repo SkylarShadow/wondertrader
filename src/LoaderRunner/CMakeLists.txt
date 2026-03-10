@@ -1,45 +1,53 @@
-cmake_minimum_required(VERSION 3.10)
+﻿cmake_minimum_required(VERSION 3.10)
 
-#2. 确定工程名
 project(LoaderRunner LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/Loader)
 
-include_directories(${INCS})
-link_directories(${LNKS})
-
-SET(LIBS
+set(LIBS
 	ZtBtCore
 	ZTSTools
 	ZTSUtils
 )
-
-if(MSVC)
-else(GNUCC)
-	LIST(APPEND LIBS
-		dl)
-	if(WIN32)
-		LIST(APPEND LIBS iconv)
-	endif()
-endif()
 
 #添加源码
 file(GLOB SRCS *.cpp)
 file(GLOB HDRS *.h)
 
 
-#9. 生成可执行文件
-ADD_EXECUTABLE(LoaderRunner ${SRCS} ${HDRS})
-TARGET_LINK_LIBRARIES(LoaderRunner ${LIBS})
+include_directories(${INCS})
+link_directories(${LNKS})
 
-IF (MSVC)
-ELSE (GNUCC)
-	SET_TARGET_PROPERTIES(LoaderRunner PROPERTIES
+add_executable(LoaderRunner ${SRCS} ${HDRS})
+
+target_link_libraries(LoaderRunner 
+    PRIVATE
+        ${LIBS}
+)
+
+if(MSVC)
+else()
+	if(WIN32)
+	    target_link_libraries(LoaderRunner
+            PRIVATE
+                dl
+        )
+    endif()
+    target_link_libraries(LoaderRunner
+        PRIVATE
+            iconv
+    )
+endif()
+
+
+if(MSVC)
+else()
+	set_target_properties(LoaderRunner PROPERTIES
         LINK_FLAGS_RELEASE -s)
-ENDIF ()
+endif()
 
-#SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/ZtBtPorter)
-#ADD_EXECUTABLE(TestBtPorter ../TestBtPorter/TestBtPorter.cpp)
-#TARGET_LINK_LIBRARIES(TestBtPorter ${LIBS})
+#set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/ZtBtPorter)
+#add_executable(TestBtPorter ../TestBtPorter/TestBtPorter.cpp)
+#target_link_libraries(TestBtPorter ${LIBS})
 

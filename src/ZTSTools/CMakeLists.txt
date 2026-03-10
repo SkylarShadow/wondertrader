@@ -1,25 +1,25 @@
-
+﻿
 #1. 确定CMake的最低版本需求
 cmake_minimum_required(VERSION 3.0.0)
 
-#2. 确定工程名
+
 project(ZTSTools LANGUAGES CXX)
-SET(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 17)
 
-IF(MSVC)
-ELSE(GNUCC)
-	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
-ENDIF()
+if(MSVC)
+else()
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+endif()
 
-SET(LIBRARY_OUTPUT_PATH  ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/libs)
+set(LIBRARY_OUTPUT_PATH  ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/libs)
 
-#7. 添加源码
+#源码
 file(GLOB SRCS *.cpp)
 file(GLOB HDRS *.h)
 
-LIST(APPEND INCS "../ZTSUtils/yamlcpp")
+list(APPEND INCS "../ZTSUtils/yamlcpp")
 
-INCLUDE_DIRECTORIES(${INCS})
-LINK_DIRECTORIES(${LNKS})
+include_directories(${INCS})
+link_directories(${LNKS})
 
-ADD_LIBRARY(ZTSTools ${SRCS} ${HDRS})
+add_library(ZTSTools ${SRCS} ${HDRS})

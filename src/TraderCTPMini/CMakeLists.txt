@@ -1,36 +1,36 @@
-cmake_minimum_required(VERSION 3.10)
+﻿cmake_minimum_required(VERSION 3.10)
 
-#2. 确定工程名
-PROJECT(TraderCTPMini LANGUAGES CXX)
-SET(CMAKE_CXX_STANDARD 17)
 
-SET(SRC  
+project(TraderCTPMini LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
+
+set(SRC  
 	${PROJECT_SOURCE_DIR}/TraderCTPMini.cpp
 	${PROJECT_SOURCE_DIR}/TraderCTPMini.h
 )
 
-SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin)
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin)
 
-INCLUDE_DIRECTORIES(${INCS})
-LINK_DIRECTORIES(${LNKS})
-ADD_LIBRARY(TraderCTPMini SHARED ${SRC})
+include_directories(${INCS})
+link_directories(${LNKS})
+add_library(TraderCTPMini SHARED ${SRC})
 
-IF(MSVC)
-ELSE(GNUCC)
-	SET(LIBS
+if(MSVC)
+else()
+	set(LIBS
 		pthread
 		boost_filesystem
 		dl
 		)
-	TARGET_LINK_LIBRARIES(TraderCTPMini ${LIBS})
-ENDIF()
+	target_link_libraries(TraderCTPMini PRIVATE ${LIBS})
+endif()
 
-IF (MSVC)
-ELSE (GNUCC)
-	SET_TARGET_PROPERTIES(TraderCTPMini PROPERTIES
+if(MSVC)
+else()
+	set_target_properties(TraderCTPMini PROPERTIES
 		CXX_VISIBILITY_PRESET hidden
 		C_VISIBILITY_PRESET hidden
 		VISIBILITY_INLINES_HIDDEN 1
         LINK_FLAGS_RELEASE -s)
-ENDIF ()
+endif()
 

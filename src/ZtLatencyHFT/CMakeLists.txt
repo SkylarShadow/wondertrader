@@ -1,48 +1,48 @@
-cmake_minimum_required(VERSION 3.10)
+﻿cmake_minimum_required(VERSION 3.10)
 
-#2. 确定工程名
-PROJECT(ZtLatencyHFT LANGUAGES CXX)
-SET(CMAKE_CXX_STANDARD 17)
 
-SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/ZtLatencyHFT)
+project(ZtLatencyHFT LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
 
-#7. 添加源码
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/ZtLatencyHFT)
+
+#源码
 file(GLOB SRCS *.cpp)
 file(GLOB HDRS *.h)
 
-IF(MSVC)
+if(MSVC)
 	list (APPEND SRCS ../Common/mdump.cpp)
-ENDIF()
+endif()
 
-INCLUDE_DIRECTORIES(${INCS})
-LINK_DIRECTORIES(${LNKS})
+include_directories(${INCS})
+link_directories(${LNKS})
 
-SET(LIBS
+set(LIBS
 	ZtCore
 	ZTSTools
     ZTSUtils
 	)
 
-IF (MSVC)
-	LIST(APPEND LIBS ws2_32)
-ELSE(GNUCC)
-	LIST(APPEND LIBS
+if(MSVC)
+	list(APPEND LIBS ws2_32)
+else()
+	list(APPEND LIBS
 		dl
 		pthread
 		boost_filesystem
 		boost_thread)
-	IF(WIN32)
-		LIST(APPEND LIBS
+	if(WIN32)
+		list(APPEND LIBS
 			ws2_32 iconv)
-	ENDIF()
-ENDIF()
+	endif()
+endif()
 
-ADD_EXECUTABLE(ZtLatencyHFT ${SRCS} ${HDRS})
-TARGET_LINK_LIBRARIES(ZtLatencyHFT ${LIBS})
+add_executable(ZtLatencyHFT ${SRCS} ${HDRS})
+target_link_libraries(ZtLatencyHFT PRIVATE ${LIBS})
 
-IF (MSVC)
-ELSE (GNUCC)
-	SET_TARGET_PROPERTIES(ZtLatencyHFT PROPERTIES
+if(MSVC)
+else()
+	set_target_properties(ZtLatencyHFT PROPERTIES
         LINK_FLAGS_RELEASE -s)
-ENDIF ()
+endif()
 

@@ -1,51 +1,51 @@
-
+﻿
 cmake_minimum_required(VERSION 3.10)
 
-#2. 确定工程名
-PROJECT(ZtTester LANGUAGES CXX)
-SET(CMAKE_CXX_STANDARD 17)
 
-SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/ZtBtRunner)
+project(ZtTester LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
 
-INCLUDE_DIRECTORIES(${INCS})
-LINK_DIRECTORIES(${LNKS})
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/ZtBtRunner)
 
-SET(LIBS
+include_directories(${INCS})
+link_directories(${LNKS})
+
+set(LIBS
 	ZtBtCore
 	ZTSTools
 	ZTSUtils
 )
 
-IF(MSVC)
-ELSE(GNUCC)
-	LIST(APPEND LIBS
+if(MSVC)
+else()
+	list(APPEND LIBS
 		boost_filesystem
 		pthread
 		dl)
 	if(WIN32)
-		LIST(APPEND LIBS iconv)
-	ENDIF()
-ENDIF()
+		list(APPEND LIBS iconv)
+	endif()
+endif()
 
 #添加源码
 file(GLOB SRCS *.cpp)
 file(GLOB HDRS *.h)
 
-IF(MSVC)
+if(MSVC)
 	list (APPEND SRCS ../Common/mdump.cpp)
-ENDIF()
+endif()
 
-#9. 生成可执行文件
-ADD_EXECUTABLE(ZtBtRunner ${SRCS} ${HDRS})
-TARGET_LINK_LIBRARIES(ZtBtRunner ${LIBS})
+#可执行文件
+add_executable(ZtBtRunner ${SRCS} ${HDRS})
+target_link_libraries(ZtBtRunner PRIVATE ${LIBS})
 
-IF (MSVC)
-ELSE (GNUCC)
-	SET_TARGET_PROPERTIES(ZtBtRunner PROPERTIES
+if(MSVC)
+else()
+	set_target_properties(ZtBtRunner PROPERTIES
         LINK_FLAGS_RELEASE -s)
-ENDIF ()
+endif()
 
-#SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/ZtBtPorter)
-#ADD_EXECUTABLE(TestBtPorter ../TestBtPorter/TestBtPorter.cpp)
-#TARGET_LINK_LIBRARIES(TestBtPorter ${LIBS})
+#set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/ZtBtPorter)
+#add_executable(TestBtPorter ../TestBtPorter/TestBtPorter.cpp)
+#target_link_libraries(TestBtPorter ${LIBS})
 

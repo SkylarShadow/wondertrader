@@ -1,28 +1,28 @@
-
+﻿
 cmake_minimum_required(VERSION 3.10)
 
-#2. 确定工程名
-PROJECT(TestDtPorter LANGUAGES CXX)
-SET(CMAKE_CXX_STANDARD 17)
 
-SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/ZtDtPorter)
+project(TestDtPorter LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
 
-#7. 添加源码
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/ZtDtPorter)
+
+#源码
 file(GLOB SRCS *.cpp)
 
-SET(LIBS
+set(LIBS
 	ZtDtPorter
 	ZtDtHelper
 )
 
-INCLUDE_DIRECTORIES(${INCS})
-LINK_DIRECTORIES(${LNKS})
+include_directories(${INCS})
+link_directories(${LNKS})
 
-ADD_EXECUTABLE(TestDtPorter ${SRCS})
-TARGET_LINK_LIBRARIES(TestDtPorter ${LIBS})
+add_executable(TestDtPorter ${SRCS})
+target_link_libraries(TestDtPorter PRIVATE ${LIBS})
 
-IF (MSVC)
-ELSE (GNUCC)
-	SET_TARGET_PROPERTIES(TestDtPorter PROPERTIES
+if(MSVC)
+else()
+	set_target_properties(TestDtPorter PROPERTIES
         LINK_FLAGS_RELEASE -s)
-ENDIF ()
+endif()

@@ -1,45 +1,45 @@
-
+﻿
 cmake_minimum_required(VERSION 3.10)
 
-#2. 确定工程名
-PROJECT(ParserXeleSkt LANGUAGES CXX)
-SET(CMAKE_CXX_STANDARD 17)
 
-SET(SRC  
+project(ParserXeleSkt LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
+
+set(SRC  
 	${PROJECT_SOURCE_DIR}/ParserXeleSkt.cpp
 	${PROJECT_SOURCE_DIR}/ParserXeleSkt.h
 )
 
-SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin)
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin)
 
-INCLUDE_DIRECTORIES(${INCS})
-LINK_DIRECTORIES(${LNKS})
-ADD_LIBRARY(ParserXeleSkt SHARED ${SRC})
+include_directories(${INCS})
+link_directories(${LNKS})
+add_library(ParserXeleSkt SHARED ${SRC})
 
-IF(MSVC)
-	SET(LIBS
+if(MSVC)
+	set(LIBS
 		ws2_32
 	)
-ELSE(GNUCC)
-	IF (WIN32)
-		SET(LIBS
+else()
+	if (WIN32)
+		set(LIBS
 			boost_thread
 			ws2_32
 		)
-	ELSE(UNIX)
-		SET(LIBS
+	else(UNIX)
+		set(LIBS
 			boost_thread
 		)
-	ENDIF()
-ENDIF()
-TARGET_LINK_LIBRARIES(ParserXeleSkt ${LIBS})
+	endif()
+endif()
+target_link_libraries(ParserXeleSkt PRIVATE ${LIBS})
 
-IF (MSVC)
-ELSE (GNUCC)
-	SET_TARGET_PROPERTIES(ParserXeleSkt PROPERTIES
+if(MSVC)
+else()
+	set_target_properties(ParserXeleSkt PROPERTIES
 		CXX_VISIBILITY_PRESET hidden
 		C_VISIBILITY_PRESET hidden
 		VISIBILITY_INLINES_HIDDEN 1
         LINK_FLAGS_RELEASE -s)
-ENDIF ()
+endif()
 

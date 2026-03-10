@@ -1,36 +1,35 @@
-cmake_minimum_required(VERSION 3.10)
+﻿cmake_minimum_required(VERSION 3.10)
 
-#2. 确定工程名
-PROJECT(ParserCTP LANGUAGES CXX)
-SET(CMAKE_CXX_STANDARD 17)
+project(ParserCTP LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
 
-SET(SRC  
+set(SRC  
 	${PROJECT_SOURCE_DIR}/ParserCTP.cpp
 	${PROJECT_SOURCE_DIR}/ParserCTP.h
 )
 
-SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin)
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin)
 
-INCLUDE_DIRECTORIES(${INCS})
-LINK_DIRECTORIES(${LNKS})
-ADD_LIBRARY(ParserCTP SHARED ${SRC})
+include_directories(${INCS})
+link_directories(${LNKS})
+add_library(ParserCTP SHARED ${SRC})
 
-IF (MSVC)
-ELSE (GNUCC)
-	SET(LIBS
+if(MSVC)
+else ()
+	set(LIBS
 		boost_thread
 		boost_filesystem
 		dl
 	)
-	TARGET_LINK_LIBRARIES(ParserCTP ${LIBS})
-ENDIF()
+	target_link_libraries(ParserCTP ${LIBS})
+endif()
 
-IF (MSVC)
-ELSE (GNUCC)
-	SET_TARGET_PROPERTIES(ParserCTP PROPERTIES
+if(MSVC)
+else()
+	set_target_properties(ParserCTP PROPERTIES
 		CXX_VISIBILITY_PRESET hidden
 		C_VISIBILITY_PRESET hidden
 		VISIBILITY_INLINES_HIDDEN 1
         LINK_FLAGS_RELEASE -s)
-ENDIF ()
+endif()
 
