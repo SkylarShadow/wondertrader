@@ -2,48 +2,48 @@
 cmake_minimum_required(VERSION 3.10)
 
 #2. 确定工程名
-PROJECT(TraderATP LANGUAGES CXX)
-SET(CMAKE_CXX_STANDARD 17)
+project(TraderATP LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
 
-SET(SRC  
+set(SRC  
 	${PROJECT_SOURCE_DIR}/TraderATP.cpp
 	${PROJECT_SOURCE_DIR}/TraderATP.h	
 )
 
-SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin)
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin)
 
-INCLUDE_DIRECTORIES(${INCS})
-LINK_DIRECTORIES(${LNKS})
-ADD_LIBRARY(TraderATP SHARED ${SRC})
+include_directories(${INCS})
+link_directories(${LNKS})
+add_library(TraderATP SHARED ${SRC})
 
-IF(MSVC)
-	SET(LIBS
+if(MSVC)
+	set(LIBS
 		ws2_32
 		)
-ELSE(GNUCC)
-	IF(WIN32)
-		SET(LIBS
+elseif(GNUCC)
+	if(WIN32)
+		set(LIBS
 			dl
 			boost_thread
 			boost_filesystem
 			ws2_32
 			)
-	ELSE(UNIX)
-		SET(LIBS
+	elseif(UNIX)
+		set(LIBS
 			dl
 			boost_thread
 			boost_filesystem
 			)
-	ENDIF()
-ENDIF()
-TARGET_LINK_LIBRARIES(TraderATP ${LIBS})
+	endif()
+endif()
+target_link_libraries(TraderATP ${LIBS})
 
-IF (MSVC)
-ELSE (GNUCC)
-	SET_TARGET_PROPERTIES(TraderATP PROPERTIES
+if (MSVC)
+elseif (GNUCC)
+	set_target_properties(TraderATP PROPERTIES
 		CXX_VISIBILITY_PRESET hidden
 		C_VISIBILITY_PRESET hidden
 		VISIBILITY_INLINES_HIDDEN 1
         LINK_FLAGS_RELEASE -s)
-ENDIF ()
+endif ()
 

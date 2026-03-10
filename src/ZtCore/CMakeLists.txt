@@ -1,7 +1,6 @@
 ﻿
 #1. 确定CMake的最低版本需求
-cmake_minimum_required(VERSION 3.0.0)
-
+cmake_minimum_required(VERSION 3.10)
 
 project(ZtCore LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
