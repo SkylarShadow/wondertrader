@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright 2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -193,7 +193,7 @@
 #define _OES_PROTOCOL_ERRORS_H
 
 
-#include    <sutil/net/spk_errmsg_base_define.h>
+#include    "../../sutil/net/spk_errmsg_base_define.h"
 
 
 #ifdef __cplusplus

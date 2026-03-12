@@ -1,9 +1,10 @@
-
+﻿
 cmake_minimum_required(VERSION 3.10)
 
 #2. 确定工程名
 PROJECT(TraderDD LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
+
 
 
 if (WIN32)
@@ -28,8 +29,12 @@ include_directories(${INCS})
 add_library(TraderDD SHARED ${SRC})
 
 if (WIN32)
+	target_link_libraries(TraderDD PRIVATE 
+							${PROJECT_SOURCE_DIR}/../API/FixApi/${PLATFORM}/fixapitool.lib  # 86要加文件名的后缀
+							${PROJECT_SOURCE_DIR}/../API/FixApi/${PLATFORM}/fixapi50.lib
+						)
 else (UNIX)
-	target_link_libraries(TraderDD PRIVATE ${PROJECT_SOURCE_DIR}/FixApi/libfixapi.so )
+	target_link_libraries(TraderDD PRIVATE ${PROJECT_SOURCE_DIR}/FixApi/linux/libfixapi.so )
 	set_target_properties(TraderDD PROPERTIES
 		CXX_VISIBILITY_PREset hidden
 		C_VISIBILITY_PREset hidden

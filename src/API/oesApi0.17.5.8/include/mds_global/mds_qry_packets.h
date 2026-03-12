@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright 2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,8 +28,8 @@
 #define _MDS_QRY_PACKETS_H
 
 
-#include    <mds_global/mds_base_model.h>
-#include    <sutil/net/spk_global_packet.h>
+#include    "mds_base_model.h"
+#include    "../sutil/net/spk_global_packet.h"
 
 
 #ifdef __cplusplus

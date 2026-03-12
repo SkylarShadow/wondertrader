@@ -24,9 +24,9 @@
 
 #ifdef _WIN32
 #ifdef _WIN64
-#pragma comment(lib, "../API/AtpTradeApi/x64/atptradeapi.lib")
+#pragma comment(lib, "atptradeapi.lib")
 #else
-#pragma comment(lib, "../API/AtpTradeApi/x86/atptradeapi.lib")
+#pragma comment(lib, "atptradeapi.lib")
 #endif
 #endif
 

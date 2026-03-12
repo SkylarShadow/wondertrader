@@ -12,7 +12,7 @@
 #include <stdint.h>
 #include <boost/asio/io_service.hpp>
 
-#include <oes_api/oes_async_api.h>
+#include "../API/oesApi0.17.5.8/include/oes_api/oes_async_api.h"
 
 #include "../Includes/ITraderApi.h"
 #include "../Includes/ZTSCollection.hpp"

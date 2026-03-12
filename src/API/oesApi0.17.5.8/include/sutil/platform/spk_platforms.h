@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright 2009-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,7 +28,7 @@
 #define _SPK_PLATFORMS_H
 
 
-#include    <sutil/types.h>
+#include    "../types.h"
 
 
 /* ===================================================================

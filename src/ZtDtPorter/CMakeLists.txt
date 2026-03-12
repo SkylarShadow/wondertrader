@@ -48,6 +48,30 @@ else()
 endif()
 
 file(MAKE_DIRECTORY ${LIBRARY_OUTPUT_PATH}/parsers/)
+
+if(MSVC)
+add_custom_command(TARGET ZtDtPorter POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E
+		copy ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/$<CONFIG>/${PREFIX}ParserCTP${SUFFIX} ${LIBRARY_OUTPUT_PATH}/parsers/
+
+		COMMAND ${CMAKE_COMMAND} -E
+		copy ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/$<CONFIG>/${PREFIX}ParserXTP${SUFFIX} ${LIBRARY_OUTPUT_PATH}/parsers/
+
+		COMMAND ${CMAKE_COMMAND} -E
+		copy ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/$<CONFIG>/${PREFIX}ParserFemas${SUFFIX} ${LIBRARY_OUTPUT_PATH}/parsers/
+
+		COMMAND ${CMAKE_COMMAND} -E
+		copy ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/$<CONFIG>/${PREFIX}ParserCTPMini${SUFFIX} ${LIBRARY_OUTPUT_PATH}/parsers/
+
+		COMMAND ${CMAKE_COMMAND} -E
+		copy ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/$<CONFIG>/${PREFIX}ZtDataStorage${SUFFIX} ${LIBRARY_OUTPUT_PATH}/
+
+		COMMAND ${CMAKE_COMMAND} -E
+		copy ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/$<CONFIG>/${PREFIX}ZtDataStorageAD${SUFFIX} ${LIBRARY_OUTPUT_PATH}/
+
+		COMMENT "depends modules copied")
+
+else()
 add_custom_command(TARGET ZtDtPorter POST_BUILD
 		COMMAND ${CMAKE_COMMAND} -E
 		copy ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/${PREFIX}ParserCTP${SUFFIX} ${LIBRARY_OUTPUT_PATH}/parsers/
@@ -68,4 +92,4 @@ add_custom_command(TARGET ZtDtPorter POST_BUILD
 		copy ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/${PREFIX}ZtDataStorageAD${SUFFIX} ${LIBRARY_OUTPUT_PATH}/
 
 		COMMENT "depends modules copied")
-		
+endif()

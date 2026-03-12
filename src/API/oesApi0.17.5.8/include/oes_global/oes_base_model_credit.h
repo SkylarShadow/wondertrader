@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright 2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -77,8 +77,8 @@
 #define _OES_BASE_MODEL_CREDIT_H
 
 
-#include    <oes_global/oes_base_constants.h>
-#include    <sutil/types.h>
+#include    "oes_base_constants.h"
+#include    "../sutil/types.h"
 
 
 #ifdef __cplusplus

@@ -22,9 +22,9 @@
 
 #ifdef _WIN32
 #ifdef _WIN64
-#pragma comment(lib, "../API/oesApi0.17.5.8/x64/oes_api.lib")
+#pragma comment(lib, "oes_api.lib")
 #else
-#pragma comment(lib, "../API/oesApi0.17.5.8/x86/oes_api.lib")
+#pragma comment(lib, "oes_api.lib")
 #endif
 #endif
 

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright 2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -76,8 +76,8 @@
 #define _MDS_ASYNC_API_H
 
 
-#include    <mds_api/mds_api.h>
-#include    <sutil/net/spk_general_endpoint_define.h>
+#include    "mds_api.h"
+#include   "../sutil/net/spk_general_endpoint_define.h"
 
 
 #ifdef __cplusplus

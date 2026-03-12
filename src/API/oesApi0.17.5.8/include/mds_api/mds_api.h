@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright 2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -189,11 +189,11 @@
 #define _MDS_API_H
 
 
-#include    <mds_global/mds_base_model.h>
-#include    <mds_global/mds_mkt_packets.h>
-#include    <mds_api/errors/mds_errors.h>
-#include    <sutil/net/spk_general_client_define.h>
-#include    <sutil/platform/spk_platforms.h>
+#include    "../mds_global/mds_base_model.h"
+#include    "../mds_global/mds_mkt_packets.h"
+#include    "errors/mds_errors.h"
+#include    "../sutil/net/spk_general_client_define.h"
+#include    "../sutil/platform/spk_platforms.h"
 
 /* 为了方便外部使用而额外引入的头文件 *
 #include    <sutil/time/spk_times.h>

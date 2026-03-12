@@ -1,4 +1,4 @@
-
+﻿
 cmake_minimum_required(VERSION 3.10)
 
 #2. 确定工程名
@@ -19,6 +19,7 @@ add_library(TraderATP SHARED ${SRC})
 if(MSVC)
 	set(LIBS
 		ws2_32
+		${PROJECT_SOURCE_DIR}/../API/AtpTradeApi/${PLATFORM}/atptradeapi.lib
 		)
 elseif(GNUCC)
 	if(WIN32)
@@ -27,16 +28,18 @@ elseif(GNUCC)
 			boost_thread
 			boost_filesystem
 			ws2_32
+			${PROJECT_SOURCE_DIR}/../API/AtpTradeApi/${PLATFORM}/atptradeapi.lib
 			)
 	elseif(UNIX)
 		set(LIBS
 			dl
 			boost_thread
 			boost_filesystem
+			# 似乎暂时没有Linux版本的库
 			)
 	endif()
 endif()
-target_link_libraries(TraderATP ${LIBS})
+target_link_libraries(TraderATP PRIVATE ${LIBS})
 
 if (MSVC)
 elseif (GNUCC)

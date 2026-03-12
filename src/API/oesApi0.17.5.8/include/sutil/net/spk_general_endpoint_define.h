@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright 2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,8 +28,8 @@
 #define _SPK_GENERAL_ENDPOINT_DEFINE_H
 
 
-#include    <sutil/net/spk_general_client_define.h>
-#include    <sutil/platform/spk_platforms.h>
+#include    "spk_general_client_define.h"
+#include   "../sutil/platform/spk_platforms.h"
 
 
 #ifdef __cplusplus

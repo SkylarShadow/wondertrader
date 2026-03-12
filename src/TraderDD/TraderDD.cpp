@@ -54,11 +54,11 @@ void inst_hlp() {}
 
 #ifdef _WIN32
 #ifdef _WIN64
-#pragma comment(lib, "../API/FixApi/x64/fixapitool.lib")
-#pragma comment(lib, "../API/FixApi/x64/FixApi50.lib")	//64位的库
+#pragma comment(lib, "fixapitool.lib")
+#pragma comment(lib, "FixApi50.lib")	//64位的库
 #else
 #pragma message("x86 version")
-#pragma comment(lib, "../API/FixApi/x86/fixapi50_x86.lib")	//32位的库
+#pragma comment(lib, "fixapi50_x86.lib")	//32位的库
 #endif
 #include <wtypes.h>
 HMODULE	g_dllModule = NULL;
@@ -899,7 +899,7 @@ int TraderDD::orderAction(ZTSEntrustAction* action)
 
 	action->retain();
 	m_strandIO->post([this, action]() {
-		write_log(m_traderSink, LL_INFO, "[TraderDD] 调用撤单接口 ..."）;
+		write_log(m_traderSink, LL_INFO, "[TraderDD] 调用撤单接口 ...");
 
 		HANDLE_SESSION sess = Fix_AllocateSession(m_hConn);
 		Fix_SetNode(sess, m_strNode.c_str());

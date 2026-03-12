@@ -50,6 +50,17 @@ file(MAKE_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/parsers/)
 file(MAKE_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/traders/)
 
 
+if(MSVC)
+add_custom_command(TARGET ZtUftRunner POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E
+	copy ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/$<CONFIG>/${PREFIX}TraderCTP${SUFFIX} ${EXECUTABLE_OUTPUT_PATH}/traders/
+    
+    COMMAND ${CMAKE_COMMAND} -E
+	copy ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/$<CONFIG>/${PREFIX}ParserCTP${SUFFIX} ${EXECUTABLE_OUTPUT_PATH}/parsers/
+
+	COMMENT "depends modules copied")
+
+else()
 
 add_custom_command(TARGET ZtUftRunner POST_BUILD
 	COMMAND ${CMAKE_COMMAND} -E
@@ -59,3 +70,4 @@ add_custom_command(TARGET ZtUftRunner POST_BUILD
 	copy ${CMAKE_BINARY_DIR}/build_${PLATFORM}/${CMAKE_BUILD_TYPE}/bin/${PREFIX}ParserCTP${SUFFIX} ${EXECUTABLE_OUTPUT_PATH}/parsers/
 
 	COMMENT "depends modules copied")
+endif()

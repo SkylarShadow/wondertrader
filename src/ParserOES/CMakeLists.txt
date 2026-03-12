@@ -1,4 +1,4 @@
-
+﻿
 cmake_minimum_required(VERSION 3.10)
 
 #2. 确定工程名
@@ -19,16 +19,19 @@ add_library(ParserOES SHARED ${SRC})
 if(MSVC)
 	set(LIBS
 		ws2_32
+		${PROJECT_SOURCE_DIR}/../API/oesApi0.17.5.8/${PLATFORM}/oes_api.lib
 	)
 elseif(GNUCC)
 	if (WIN32)
 		set(LIBS
 			boost_thread
 			ws2_32
+			${PROJECT_SOURCE_DIR}/../API/oesApi0.17.5.8/${PLATFORM}/oes_api.lib
 		)
 	else(UNIX)
 		set(LIBS
 			boost_thread
+			${PROJECT_SOURCE_DIR}/../API/oesApi0.17.5.8/linux/liboes_api.a
 		)
 	endif()
 endif()

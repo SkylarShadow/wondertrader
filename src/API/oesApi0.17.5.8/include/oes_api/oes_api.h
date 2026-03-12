@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright 2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -432,11 +432,11 @@
 #define _OES_API_H
 
 
-#include    <oes_global/oes_base_model.h>
-#include    <oes_global/oes_packets.h>
-#include    <oes_api/errors/oes_errors.h>
-#include    <sutil/net/spk_general_client_define.h>
-#include    <sutil/platform/spk_platforms.h>
+#include    "../oes_global/oes_base_model.h"
+#include    "../oes_global/oes_packets.h"
+#include    "errors/oes_errors.h"
+#include    "../sutil/net/spk_general_client_define.h"
+#include    "../sutil/platform/spk_platforms.h"
 
 /* 为了方便外部使用而额外引入的头文件 *
 #include    <sutil/time/spk_times.h>
